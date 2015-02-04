@@ -1,0 +1,573 @@
+\documentclass[a4paper,11pt,danish,twoside,openany]{look/05gr551c} % Sideopstning (openany starter et nyt kapitel p vilkrlig side)openright aabner paa hoejre side mvh Per
+
+
+%  Sideopstning inkl.  margin mm. 
+\usepackage{anysize}	              % Set margin sizes with simple commands.
+\usepackage{geometry}									%LOLOLOLOLLLLL######
+\marginsize{4cm}{5cm}{2.9 cm}{2.9 cm}		% Definerer strrelse af marginer
+\usepackage{setspace}										% Mulighed for dobbelt linieafstand
+\usepackage[makeroom]{cancel}
+
+\usepackage{transparent}
+
+%Akronymliste
+\usepackage[intoc]{nomencl}
+\renewcommand{\nomname}{Symbol- and Acronymlist}
+%\makeatletter
+%    \def\thenomenclature{%
+%      \@ifundefined{chapter}%
+%      {
+%        \section*{\nomname}
+%        \if@intoc\addcontentsline{toc}{section}{\nomname}\fi%
+%      }%
+%      {
+%        \chapter*{\nomname}
+%        \if@intoc\addcontentsline{toc}{chapter}{\nomname}\fi%
+%      }%
+%
+%      \nompreamble
+%      \list{}{%
+%        \labelwidth\nom@tempdim
+%        \leftmargin=0pt
+%        \itemindent=\dimexpr\itemsep+\labelwidth\relax
+%        \itemsep\nomitemsep
+%        \let\makelabel\nomlabel}}
+%    \makeatother
+
+\makenomenclature
+% Kræver at man i terminalen skriver:
+%
+% makeindex filename.nlo  -s nomencl.ist -o filename.nls
+%
+% for at printnomenclature i Rapport.tex tager input ind på listen.
+% Der oprettes et punkt på listen et vilkårligt sted (sammen med 
+% forkortelsen er nævnt første gang) ved at indsætte følgende:
+%
+% \nomenclature[prefix]{symbol}{description} 
+% hvor prefix er optional, symbol er forkortelsen, description er det den står for
+
+% This prints the Nomenclature in two columns % % % % % % % % % % % % % % % %
+\usepackage{multicol}
+\makeatletter
+\@ifundefined{chapter}
+  {\def\wilh@nomsection{section}}
+  {\def\wilh@nomsection{chapter}}  
+\def\thenomenclature{%
+  \begin{multicols}{2}[%  
+    \csname\wilh@nomsection\endcsname*{\nomname}
+    \if@intoc\addcontentsline{toc}{\wilh@nomsection}{\nomname}\fi
+    \nompreamble]
+  \list{}{%
+    \labelwidth\nom@tempdim
+    \leftmargin\labelwidth
+    \advance\leftmargin\labelsep
+    \itemsep\nomitemsep
+    \let\makelabel\nomlabel}%
+}
+\def\endthenomenclature{%
+  \endlist
+  \end{multicols}
+  \nompostamble}
+\makeatother
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+\setlength{\columnsep}{1.8em}	% specifies the margin (space) between columns in the nomenclature
+\setlength{\nomitemsep}{0.01cm} % specifies the space between item and explanation in the nomenclature
+
+% Makes it possible to specify unit inside nomenclature environment with nomunit
+\newcommand{\nomunit}[1]{%
+\renewcommand{\nomentryend}{\hspace*{\fill}#1}}
+
+
+%Appendixopsætning
+\usepackage[toc,page,titletoc]{appendix}
+\renewcommand{\appendixname}{Appendix}
+\renewcommand{\appendixtocname}{Appendix}
+\appendixpageoff
+\appendixheaderon
+\appendixtocoff
+\appendixtitletocon
+\appendixtitleon
+
+
+
+%  Oversttelse og tegnstning 
+\usepackage{t1enc}											% Hjlper med orddeling ved ,  og .
+\usepackage[english]{babel} 							% Dansk sprog, bl.a. figure bliver til figur
+%\usepackage[latin1]{inputenc}					% Gr det muligt at bruge ,  og  i sine .tex-filer
+\usepackage[ansinew]{inputenc}					% Gr det muligt at bruge ,  og  i sine .tex-filer
+\usepackage[T1]{fontenc}						% Giver flere mulige karakterer, så fx ö er én karakter i stedet for to bestående af o og ¨
+\usepackage{latexsym}										% LaTeX symboler
+\usepackage{ragged2e}										% Gr det mulig at venstre-/hjrecentrere blokke
+\usepackage{import}					%For at importere svg med latex font
+\usepackage{longtable}
+
+%  Figurer og tabeller  floats  
+%\usepackage{look/svg}	%makes it possible to define height of pdf_tex files for use in subfigure
+\usepackage{graphicx} %til Matlab%
+\usepackage{grffile}  %til Matlab%
+
+
+\usepackage{subfigure}               		% Til at stte flere underfigurer med hver sin caption ind i samme figur.
+%\usepackage{subfig}
+%\renewcommand{\thesubtable}{\arabic{subtable}}
+%\captionsetup[subtable]{labelformat=empty}
+\usepackage{sidecap} 										% Caption ved siden af figurer / tabellen.
+
+\usepackage{flafter}										% Srger for at dine floats ikke optrderi texten fr de er sat ind.
+\usepackage{tabularx}										% Muliggr at angive bredden af tabellen.
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}			% venstrejustering i tabularx (L=X)
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}			% Gør det muligt at højrejustere i tabularx
+\usepackage{float}											% Forbedrer samspillet mellem defineringer af flydende objekter.
+\usepackage{longtable}									% Gr s tabeller lettere kan strkke sig over flere sider
+
+\usepackage{multirow}                   % Tabelfunktion
+\usepackage{hhline}                     % Tabelfunktion
+\usepackage{multicol}                   % Tabelfunktion
+\usepackage{wrapfig}										% Muliggr float med figurer
+
+
+
+%  Matematiske formler og maskinkode 
+\usepackage{amssymb}										% Giver mulighed for matematiske symboler.
+\usepackage[fleqn]{amsmath}
+\usepackage{amsmath}										% Matematisk pakke
+\usepackage{mathtools}									% Udvidelse af amsmath-pakken.
+\allowdisplaybreaks 
+%\usepackage{theorem}										% Matematisk pakke - skal udkommenteres for at example-environment (ntheorem) fungerer
+\usepackage{listings}										% Linie nummerering af programkode
+\usepackage{color}                        % Package til \color-kommandoen
+
+\usepackage{soul}
+
+\newcommand{\pp}{\begin{flalign}}
+\newcommand{\kk}{\hspace{0.8cm}}
+
+%\usepackage{xcolor}						% indeholder 68 prædefinerede farver
+%\usepackage{listings}                     % Package til kodeeksempler
+\def\lstlistingname{Code snip}%        % Definerer hvad der str foran et stykke kodes caption
+\lstset{
+	basicstyle=\small,                    % Lille skrifttype
+	keywordstyle=\color{blue}\bfseries,   % Keywords bl og bold
+	commentstyle=\color[RGB]{126,126,126},  % Comments svag sort
+	showstringspaces=false,               % Ingen symbol for mellemrum i strings
+	numbers=left,                         % Linjenumre til venstre
+	numberstyle=\tiny,                    % Sm tal p linjenumre
+	numbersep=5pt,                        % ?
+	tabsize=4,                            % Indenteringer = 4 spaces
+	columns=flexible,                     % Font width = low
+	breaklines=true,                      % Deler en for lang linje over to linjer
+	frame=leftline,                       % Streg til venstre, der afgrnser kode
+	captionpos=b,                         % Caption til kode under kodeeksemplet
+	escapeinside={(*@}{@*)}               % Giver mulighed for at lave en (*@\label{label}@*), p en kodelinje,
+%										    s man kan referere til linjen
+}
+\usepackage{setspace}					%Giver adgang til onehalfspacing
+\onehalfspacing     					%S der er halvanden linjeafstnad
+\usepackage{textcomp}  % gør det muligt at skrive euro-tegn (?)
+
+\definecolor{matlab-color}{rgb}{0.13333,0.545,0.13333}
+\definecolor{matlab-color2}{rgb}{0.627,0.125,0.94}
+
+\lstdefinelanguage{matlab} {              % Definition af Arduino-language
+	morekeywords={all, on, quiet, x(n,N), u(p,N),to },
+		keywordstyle=\color[RGB]{160,32,240},classoffset=2,
+			morekeywords={end, for, if},
+		keywordstyle=\color[RGB]{0,0,255},classoffset=3,
+%   sensitive=false, morecomment=[l]{\%}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
+	 comment=[l][\color{matlab-color}]{\%},%morecomment=[s]{'}{'} % Ingen farver p kommentare
+%	 morecomment=[s][\color{matlab-color2}]{'}{'}
+	%	keywordstyle=\color[RGB]{34,139,34},classoffset=3,
+}
+
+\lstdefinelanguage{Arduino} {              % Definition af Arduino-language
+	morekeywords={pinMode, digitalWrite, begin, analogRead, delay, delayMicroseconds, if, println, print, for, int, float, char, volatile, micros, do, return, analogReference, analogWrite},
+		keywordstyle=\color[RGB]{204,102,0},classoffset=2,
+	morekeywords={OUTPUT, HIGH, LOW, INPUT, DEFAULT},
+		keywordstyle=\color[RGB]{0,102,153},classoffset=1,
+	morekeywords={=, \&, <, >, +, -, *, /, ., ||},
+		keywordstyle=\color[RGB]{0,0,0},classoffset=0,
+	morekeywords={loop, setup, serial, while, void, double, unsigned, long, int, float, uint_8},
+		keywordstyle=\color[RGB]{204,102,0},classoffset=0,
+	sensitive=false, morecomment=[l]{//}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
+}
+\lstdefinelanguage{Assembler} {              % Definition af Assembler-language
+basicstyle=\ttfamily\scriptsize,
+	morekeywords={DSIN, DSOUT, EQU},
+		keywordstyle=\color[RGB]{15,250,15},classoffset=4,
+%		
+	morekeywords={	ADD, ADDH, B, BC, BCND, BLZ, CALL ,CC , CRLT, RETD, RETE, RET, RETI, ADDCY, AND,CLRC,SETC, CALL, COMP, DINT, EINT, FETCH, IN, JUMP, LOAD, OR, OUT, ENABLE, DISABLE, APAC, SACH, MAC, NOP, RPTZ, LAR, LACL, MAR, RPT, SACL, SPLK, LT, MPY, LTD, LTA, SFL, ABS, SAMM, LAMM, LDP, RL, RR, SACB, SL0, SL1, SLA, SLX, SR0, SR1, SAR, SRA, SRX, STORE, SUB, TEST, XOR, LALK, SUBK, BNZ, PAC },
+		keywordstyle=\color[RGB]{20,10,150},classoffset=3,
+%		
+	morekeywords={XF,EQ	\$00, \$01,\$1, \$02, \$03, \$04, \$05, \$06, \$07, \$08, \$09, \$0A, \$0B, \$0C, \$0D, \$0E, \$0F,
+					\$10, \$11, \$12, \$13, \$14, \$15, \$16, \$17, \$18, \$19, \$1A, \$1B, \$1C, \$1D, \$1E, \$1F,
+					\$20, \$21, \$22, \$23, \$24, \$25, \$26, \$27, \$28, \$29, \$2A, \$2B, \$2C, \$2D, \$2E, \$2F,
+					\$30, \$31, \$32, \$33, \$34, \$35, \$36, \$37, \$38, \$39, \$3A, \$3B, \$3C, \$3D, \$3E, \$3F,
+					\$40, \$41, \$42, \$43, \$44, \$45, \$46, \$47, \$48, \$49, \$4A, \$4B, \$4C, \$4D, \$4E, \$4F,
+					\$50, \$51, \$52, \$53, \$54, \$55, \$56, \$57, \$58, \$59, \$5A, \$5B, \$5C, \$5D, \$5E, \$5F,
+					\$60, \$61, \$62, \$63, \$64, \$65, \$66, \$67, \$68, \$69, \$6A, \$6B, \$6C, \$6D, \$6E, \$6F,
+					\$70, \$71, \$72, \$73, \$74, \$75, \$76, \$77, \$78, \$79, \$7A, \$7B, \$7C, \$7D, \$7E, \$7F,
+					\$80, \$81, \$82, \$83, \$84, \$85, \$86, \$87, \$88, \$89, \$8A, \$8B, \$8C, \$8D, \$8E, \$8F,
+					\$90, \$91, \$92, \$93, \$94, \$95, \$96, \$97, \$98, \$99, \$9A, \$9B, \$9C, \$AD, \$9E, \$9F,
+					\$A0, \$A1, \$A2, \$A3, \$A4, \$A5, \$A6, \$A7, \$A8, \$A9, \$AA, \$AB, \$AC, \$BD, \$AE, \$AF,
+					\$B0, \$B1, \$B2, \$B3, \$B4, \$B5, \$B6, \$B7, \$B8, \$B9, \$BA, \$BB, \$BC, \$CD, \$BE, \$BF,
+					\$C0, \$C1, \$C2, \$C3, \$C4, \$C5, \$C6, \$C7, \$C8, \$C9, \$CA, \$CB, \$CC, \$CD, \$CE, \$CF,
+					\$D0, \$D1, \$D2, \$D3, \$D4, \$D5, \$D6, \$D7, \$D8, \$D9, \$DA, \$DB, \$DC, \$DD, \$DE, \$DF,
+					\$E0, \$E1, \$E2, \$E3, \$E4, \$E5, \$E6, \$E7, \$E8, \$E9, \$EA, \$EB, \$EC, \$ED, \$EE, \$EF,
+					\$F0, \$F1, \$F2, \$F3, \$F4, \$F5, \$F6, \$F7, \$F8, \$F9, \$FA, \$FB, \$FC, \$FD, \$FE, \$FF
+					},
+		keywordstyle=\color[RGB]{150,120,10},classoffset=2,
+%		
+	morekeywords={AR0, AR1, AR2, AR3, AR4, AR5, AR6, AR7, DRR, DXR},
+		keywordstyle=\color[RGB]{75,0,0},classoffset=1,
+%		
+	sensitive=false, morecomment=[l]{;} % Ingen farver p kommentare
+}
+\lstdefinelanguage{VHDL} {              % Definition af VHDL-language
+basicstyle=\ttfamily\scriptsize,
+	morekeywords={IEEE, STD_LOGIC_1164, NUMERIC_STD, STD_LOGIC_VECTOR, STD_LOGIC, STD_LOGIC_ARITH, STD_LOGIC_UNSIGNED, rising_edge},
+		keywordstyle=\color[RGB]{150,0,10},classoffset=4,
+%		
+	morekeywords={library, use, ALL, entity, is, Port, in, out, downto, end, begin, 
+				 architecture, of, signal, map, variable, integer, 
+				 process, when, if, elsif, else, others, with, select, then, case, 
+				 NOT, AND, OR, XOR },
+		keywordstyle=\color[RGB]{0,0,250},classoffset=3,
+		%
+    morekeywords={0, 1, 45, 152 },
+		keywordstyle=\color[RGB]{255,40,0},classoffset=2,
+%		
+%	morekeywords={	},
+%		keywordstyle=\color[RGB]{250,210,0},classoffset=2,
+%		
+	sensitive=false, morecomment=[l]{--} % Ingen farver p kommentare
+}
+\lstdefinelanguage{constraint} {              % Definition af .ucf-language
+basicstyle=\ttfamily\scriptsize,
+	morekeywords={FALSE, TRUE},
+		keywordstyle=\color[RGB]{150,0,10},classoffset=4,
+%		
+	morekeywords={NET, LOC, PERIOD},
+		keywordstyle=\color[RGB]{0,0,250},classoffset=3,
+%		
+%	morekeywords={	},
+%		keywordstyle=\color[RGB]{250,210,0},classoffset=2,
+%		
+	sensitive=false, morecomment=[l]{\#} % Ingen farver p kommentare
+}
+
+% Eksempler
+\usepackage{framed}%
+%%\usepackage{amsmath}
+\usepackage[framed,amsmath,thmmarks]{ntheorem}%	% when using thmmarks, amsmath must be an option as well. Otherwise \eqref doesn't work anymore.
+\usepackage{aliascnt}%
+\usepackage{hyperref}%							% Giver mulighed for at ens referencer bliver til en slags hyperlinks.
+\theoremheaderfont{\normalfont\bfseries}% 		% bruger samme font som resten af rapporten, i bold
+\theorembodyfont{\normalfont}% 					% bruger samme font som resten af rapporten
+\theoremstyle{break}% 							% linieskift efter overskrift
+\def\theoremframecommand{{\color{HeaderBlue}\vrule width 10pt \hspace{8pt}}}%
+\newtheorem{theorem}{Theorem}%
+\newaliascnt{example}{theorem}%
+\newshadedtheorem{exa}{Eksempel}[chapter]%		% navngivning af eksempel
+\aliascntresetthe{example}%
+\providecommand*{\exaautorefname}{eksempel}%	% Gør det muligt at bruge autoref på eksempler, og så er de navngivet Eksempel #.#
+\newenvironment{example}[1]{%					% tager ét input i {}-klammer (titel på eksempel)
+	\begin{exa}[#1]%
+}{%
+	\end{exa}%
+}
+%\newcommand{\exref}[1]{Eksempel~\ref{#1}}		% definerer hvordan der kan refereres til et eksempel således at referencen kommer til at hedder "Eksempel #" i stedet for "Titel #", hvor Titel er den titel der er givet eksemplet, angivet i lin 124 (5 linjer før denne). inde i environmentet skal \label sættes i linjen efter \begin{example}{Titel}, og når der skal refereres til eksemplet anvendes \exref{label_på_eksemplet}
+
+
+%\usepackage{xfrac}                                         %lort
+
+%  PDF og billede optimering 
+\usepackage{pslatex} 								 		% Pnere PDF-filer
+\usepackage{pdfpages}	
+\pdfoptionpdfminorversion=6		
+%\usepackage[pdftex]{graphicx} 					% Pakke til jpeg/png billeder
+\usepackage{graphicx}                		% Pnere grafik
+\usepackage[dvips]{epsfig}           		% For at inkludere eps billeder
+
+
+%  Refrenncer, litteraturliste og URL'er 
+\usepackage{url}												% Til at stte URL'er op med. Virker sammen med hyperref
+\usepackage{fancyref}										% Srger for at referencerne fr de rigtige ord med p vejen.
+\usepackage{varioref}										% Includerer sidenummeret i krydsreferancerne. Ikke hvis det er p samme side som referencen.
+\usepackage{natbib}				% Gr det muligt at bruge en rkke forskellige citationsmetoder, f.eks. Harvard
+\usepackage[draft,footnote,nomargin]{fixme}
+
+
+%% \Autoref is for the beginning of the sentence
+%\let\orgautoref\autoref
+%\providecommand{\Autoref}[1]%
+%{%
+%\def\equationautorefname{Equation}%
+%\def\figureautorefname{Figure}%
+%\def\subfigureautorefname{Figure}%
+%\def\chapterautorefname{chapter}%
+%\def\tableautorefname{Table}%
+%\def\sectionautorefname{Sect.}%
+%%\def\appendixautorefname{Appendix}
+%%
+%  \def\footnoteautorefname{footnote}%
+%  \def\itemautorefname{item}%
+%  \def\partautorefname{Part}%
+%  \def\subsectionautorefname{subsection}%
+%  \def\subsubsectionautorefname{subsubsection}%
+%%  \def\paragraphautorefname{paragraph}%
+%%  \def\subparagraphautorefname{subparagraph}%
+%  \def\FancyVerbLineautorefname{line}%
+%%  \def\theoremautorefname{Theorem}%
+%  \def\pageautorefname{page}%
+%%
+%%\def\appendixautorefname{Appendix}
+%\orgautoref{#1}%
+%}
+
+
+% \Autoref is for the beginning of the sentence
+\let\orgautoref\autoref
+\providecommand{\Autoref}[1]%
+{%
+\def\exaautorefname{Example}%
+\def\equationautorefname{Equation}%
+\def\figureautorefname{Figure}%
+\def\subfigureautorefname{Figure}%
+\def\chapterautorefname{Chapter}%
+\def\tableautorefname{Table}%
+\def\sectionautorefname{Section}%
+\def\appendixautorefname{Appendix}%
+%
+\def\footnoteautorefname{Foodnote}%
+\def\itemautorefname{Item}%
+\def\partautorefname{Part}%
+\def\subsectionautorefname{Subsection}%
+\def\subsubsectionautorefname{Subsection}%
+%  \def\paragraphautorefname{paragraph}%
+%  \def\subparagraphautorefname{subparagraph}%
+\def\FancyVerbLineautorefname{Line}%
+%  \def\theoremautorefname{Theorem}%
+\def\pageautorefname{Page}%
+\def\lstlistingautorefname{Code snip}%
+%
+%\def\appendixautorefname{Appendix}
+\orgautoref{#1}%
+}
+
+% \autoref is used inside the sentence to produce Fig., and Eq. for figures, subfigures, and equations
+\renewcommand{\autoref}[1]%
+{%
+\def\equationautorefname{equation}%
+\def\figureautorefname{figure}%
+\def\subfigureautorefname{figure}%
+\def\chapterautorefname{chapter}%
+\def\tableautorefname{table}%
+\def\sectionautorefname{section}%
+\def\appendixautorefname{appendix}%
+%
+\def\footnoteautorefname{foodnote}%
+\def\itemautorefname{item}%
+\def\partautorefname{part}%
+\def\subsectionautorefname{subsection}%
+\def\subsubsectionautorefname{subsection}%
+%  \def\paragraphautorefname{paragraph}%
+%  \def\subparagraphautorefname{subparagraph}%
+\def\FancyVerbLineautorefname{line}%
+\def\theoremautorefname{theorem}%
+\def\pageautorefname{page}%
+\def\lstlistingautorefname{code snip}%
+\def\exaautorefname{example}%
+\orgautoref{#1}%
+}
+
+
+
+%  Andre smarte pakker  
+\usepackage{ifthen}											% Tillader brugen af bolske ligniger, if, then osv
+\usepackage{soul} 											% Understtter understregning af tekst ved at skrive \ul{tekst}
+\hypersetup{pdfborder = 0} 							% Fjerner ramme omkring links i fx indholsfortegnelsen og ved kildehenvisninger
+\usepackage{lastpage}									% Til hvis man har brug for det totale antal sider.
+
+
+\lstset{basicstyle=\scriptsize\sf, tabsize=3, numberstyle=\tiny, stepnumber=1, numbersep=5pt,  language={java}, extendedchars=true} % Fjerner columns=flexible, samt numbers=left 
+
+
+\addtolength{\topmargin}{-1cm}					% Tilfjer vrdier til de respektive parametre
+\addtolength{\textheight}{2cm}					% -
+\addtolength{\textwidth}{2.0cm}   			% -
+\addtolength{\oddsidemargin}{7mm} 			% -
+\addtolength{\marginparwidth}{-1cm} 		% -
+\addtolength{\evensidemargin}{-2.3cm} 	% -
+
+\setlength{\parindent}{0mm}          		% Ingen indryk
+\setlength{\parskip}{1mm}          			% Afstand mellem afsnit
+\linespread{1.1}                     		% Linie afstand
+\setcounter{tocdepth}{1} 								% Angiver dybden i indholdsfortegnelse (1 angiver til og med \section).     
+
+% Kapiteludseende. De udkommenterede er andre typer.
+
+%%%%%%%% Overskrift 1 %%%%%%%%%%
+%\usepackage{curves}             				% Used by jalchap
+%\usepackage{look/jalchap}        				% The chapter heading
+
+%%%%%%%% Overskrift 2 %%%%%%%%%%
+%\usepackage{look/lgchappng}
+
+%%%%%%%% Overskrift 3 %%%%%%%%%%
+%\usepackage{look/popsmart}
+
+%%%%%%%% Overskrift 4 %%%%%%%%%% 
+%(Fjern alle %-tegn -->)
+
+\addtolength{\hoffset}{-1.6cm}
+\setlength{\textwidth}{16.0cm}
+\setlength{\topmargin}{-0.4in}
+\setlength{\topskip}{0.2in}
+\setlength{\textheight}{9.4in}
+\setlength{\oddsidemargin}{2.00cm}
+\setlength{\evensidemargin}{1.00cm}
+\makeatletter 
+\def\@makechapterhead#1{
+   \vspace *{-15mm} % 15                         % afstand fra topmargen til
+\hskip -5mm
+  \rule[4.8mm]{120mm}{0.3mm}             % verste bjlke
+  \hskip 5mm 
+  \huge                                   % formattering af "Kapitel"
+  {\centering \textbf{\@chapapp{} \thechapter}}
+{ 
+  \vskip 0 mm                             % afstand mellem topstreg og kaptxt
+ \parbox{150mm}{{\bf{\Huge  #1}}}\par     % kaptxt
+  \vskip 5mm                             % afstand mellem kaptxt og bundstreg
+ \ifnum
+  \c@secnumdepth >\m@ne 
+  }
+  \vskip 0mm    % 0                          % afstand mellem txt og bundbjlke
+\hskip -5mm % -5
+   \rule[15mm]{17cm}{0.3mm}   % 15,17,0.3            
+   \par\nobreak\normalsize
+  \fi  
+}
+%%%% (<-- Hertil)
+
+
+%%%% Fancy headings & chapters %%%%
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\pagestyle{fancy}
+\fancyhead{}                            % Sletter alt nuvrende hoved- og fodkonfiguration
+\fancyhead[RO,LE]{\nouppercase \slshape \rightmark}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[C]{ }
+\fancyfoot[RE,LO]{\emph{\leftmark}}
+\renewcommand{\headrulewidth}{0.4pt}    % Bredde af hovedets streg
+\renewcommand{\footrulewidth}{0.4pt}    % Bredde af fodens streg
+% ***** Layout for sider med \chapter eller \thispagestyle m.fl. *****
+\fancypagestyle{plain}{
+\fancyhf{}                              % Sletter alt nuvrende hoved- og fodkonfiguration
+%\fancyfoot[C]{\thepage\\ \tiny{Kompileret \today { }kl. \printtime { }af \input{userfile}}}
+\fancyfoot[LE,RO]{\thepage}
+\renewcommand{\headrulewidth}{0.0pt}    % Bredde af hovedets streg
+\renewcommand{\footrulewidth}{0.0pt}    % Bredde af fodens streg
+}
+% *****
+\newcommand{\celcius}{^{\circ}C}
+\newcommand{\bmath}[0]{\begin{eqnarray}}
+\newcommand{\emath}[0]{\end{eqnarray}}
+
+\bibpunct[,]{[}{]}{;}{a}{,}{,} % Definerer de 6 parametre ved Harvard henvisning (bl.a. parantestype og seperatortegn)
+
+\bibliographystyle{look/plainnat-custom} 						% Udseende af litteraturlisten
+
+% Settings for bibliography and table of contents
+%\bibliographystyle{apalike}
+%\bibliographystyle{alpha}
+%\setcounter{tocdepth}{1} %Bestemmer antallet af undersektioner der skal med i indholdsfortegnelsen
+\renewcommand{\chaptermark}[1]{%
+\markboth{\thechapter.\ #1}{}}
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+
+\parskip        =    1ex
+\parindent      =    0em
+\baselineskip   =    2ex
+
+%%%%%%% TLLER TIL KRAVSPEK %%%%%%%%%%%%
+\newcounter{kravenum}
+\makeatletter{
+\renewcommand\appendix{
+\renewcommand\section{
+\newpage\thispagestyle{plain}
+\suppressfloats[t]\@afterindentfalse}
+\secdef\Appendix\sAppendix}
+\setcounter{section}{0}\renewcommand\thesection{Alph{section}}}
+\newcommand\Appendix[2][?]{
+\refstepcounter{section}
+\addcontentsline{toc}{appendix}{\parskip=0ex}
+{\protect\numerline{\appendixname~\thesection}#1}
+{\raggedleft\large\bfseries \appendixname\
+\thesection\par \centering#2\par}
+\sectionmark{#1}
+\@afterheading
+\addvspace{\baselineskip}}
+\newcommand\sAppendix[1]{
+{\raggedleft\large\bfseries\appendixname\par \centering#1\par}
+\@afterheading\addvspace{\baselineskip}}
+\makeatother
+\newcommand*{\journal}{
+        \renewcommand{\thechapter}{\Roman{chapter}}    % Numeriske kapitelindeks
+        \renewcommand{\chaptername}{Bilag}             % "Bilag" som kapitelnavn
+        \setcounter{chapter}{0}
+        \rfoot{\fancyplain{}{\textbf{Group 451}}}
+				\cfoot{\fancyplain{}{\textbf{\thepage{}}}}
+				\lfoot{\fancyplain{}{\textbf{Computer Engineering, AAU}}}
+        }
+\usepackage{color}											% Pakke til farvning af tekst med \textcolor{farve}{target}
+\usepackage{colortbl}										
+\usepackage{caption}										% Tillader brug af figurtekst
+%\usepackage{ccaption}									% Kan stte caption under ting der ikke normalt har en caption.
+\usepackage[neverdecrease]{paralist}
+\usepackage{booktabs}
+
+\captionsetup{													% Figurtekst opstning
+font=small,															% Skriftstrrelse
+labelfont={bf,it},											% Figurlabel skrives altid med fed og kursiv
+margin=20pt,														% Definerer margin
+format=hang,														% Figurtekst p flere linier ordnes under hinanden og ikke helt ind under "Figur"
+}
+
+\let\olditemize=\itemize								% Fjerner den vertikale afstand mellem punktopstillinger
+\def\itemize{
+        \olditemize
+        \setlength{\itemsep}{-1ex}
+        }
+\let\oldenumerate=\enumerate						% Fjerner den vertikale afstand mellem listeopstillinger
+\def\enumerate{
+        \oldenumerate
+        \setlength{\itemsep}{-1ex}
+        }
+
+\hyphenation{hvis hvor hvad MPa ind-frt fle-re hvor-ved pro-jekt-pe-ri-o-dens In-ge-ni-r}
+
+%Colours for P4
+\definecolor{LightSkyBlue}{rgb}{0.529,0.8078,0.980}
+\definecolor{LighterSkyBlue}{rgb}{0.678, 0.847,0.961}
+\definecolor{LightererSkyBlue}{rgb}{0.957, 1, 1}
+\definecolor{HeaderBlue}{rgb}{0.80, 0.87, 1}    % {0.85, 0.925, 1}
+\definecolor{textBlue}{rgb}{0.90, 0.94, 1}    % {0.95, 0.98, 1}
+\definecolor{white}{rgb}{1, 1, 1}
+\definecolor{orange}{rgb}{1,0.4,0}
+\definecolor{OliveGreen}{rgb}{0.14,0.6,0.3}
+\definecolor{MidnightBlue}{rgb}{0.416,0.3529,0.804}
+\definecolor{Chocolate}{rgb}{0.804,0.41176,0.1176}
+\definecolor{WildStrawberry}{rgb}{1,0.263,0.643}
+
+%Colours for P5
+\definecolor{HeaderGreen}{rgb}{0.796, 0.906, 0.843}	% 203 231 215 %OLD 185 213 167
+\definecolor{textGreen}{rgb}{0.922, 0.965, 0.937}	% 235 246 239 %OLD 206 229 185
+%\definecolor{textGreenLight}{rgb}{0.925, 0.957, 0.878}    % 236 244 224
+
+\usepackage{enumerate}
+

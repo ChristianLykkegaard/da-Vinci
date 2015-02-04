@@ -1,0 +1,241 @@
+The purpose of this appendix is to verify that all variables can be found from the outlined equations in \autoref{sec:model}. This is accomplished by specifying a small amount of variables at first and hereafter see that all remaining variables can be found from the equations stated in \autoref{sec:model}. Variables related to the district water are not considered here (except Evaporator as that is the inlet).
+
+The inlet district water temperature, pressure and flow are measured as a starting point. Evaporator pressure and temperature are concurrently measured. The indexing in this appendix is aligned with the notation in \autoref{fig:ARS_basic}.
+\begin{itemize}
+\item All measured variables are marked with a {\color{MidnightBlue}{faded blue}} color.
+\item All controllable variables are marked with a {\color{Chocolate}{brown}} color.
+\item Constants are marked with an {\color{OliveGreen}{green}} color.
+\item Temporarily fixed variables are marked with a {\color{WildStrawberry}{light red}} color.
+\item Variables which becomes known due to measured variables are \underline{underlined}.
+\item "Normal" variables remain as the usual black text color.
+\end{itemize}
+In that manner all variables \textbf{must} end up by being \underline{underlined}. 
+
+Thereby:
+\begin{flalign*}
+&T_{17} = {\color{MidnightBlue}{T_{17}}} \ \ \ \ \ \wedge  \ \ \ \ \ T_{18} = {\color{MidnightBlue}{T_{18}}}% = 30.4\,^\circ\text{C} \ \ \ \ \ \wedge  \ \ \ \ \ {\color{MidnightBlue}{m_{17}}} = 116\,\text{kg/s} \ \ \ \ \ \wedge  \ \ \ \ \ {\color{MidnightBlue}{p_{17}}} = 200\,\text{bar}
+\end{flalign*}
+To be able to start the lumped system, the variables at \textbf{9} are temporarily fixed. They will in the end be updated.
+\begin{flalign*}
+&{\color{WildStrawberry}{T_9}} = 1.5\,^\circ\text{C} \ \ \ \ \ \wedge  \ \ \ \ \  {\color{WildStrawberry}{p_9}} = 0.679\,\text{kPa}
+\end{flalign*} 
+The Evaporator can in that way be considered as a starting point. First, the heat transfer rate for the Evaporator can be determined from \autoref{eq:Qe}.
+\begin{flalign}
+&Q_E={\color{OliveGreen}{U_E\cdot A_E}}\cdot \Delta T_{lm,E} \ \ \ \ \  \Leftrightarrow \ \ \ \ \ Q_E =  {\color{OliveGreen}{U_E\cdot A_E\cdot}} \dfrac{({\color{MidnightBlue}{T_{17}}}-T_{10})-({\color{MidnightBlue}{T_{18}}}-T_{9})}{\text{ln}\dfrac{{\color{MidnightBlue}{T_{17}}}-T_{10}}{{\color{MidnightBlue}{T_{18}}}-T_{9}}} \ \ \ \ \  {\scriptscriptstyle T_9 = T_{10} \ \text{(\autoref{eq:T9})} \above0pt \longrightarrow } \nonumber \\
+&Q_E =  {\color{OliveGreen}{U_E\cdot A_E\cdot}} \dfrac{({\color{MidnightBlue}{T_{17}}}-\underline{T_{10}})-({\color{MidnightBlue}{T_{18}}}-{\color{MidnightBlue}{T_9}})}{\text{ln}\dfrac{{\color{MidnightBlue}{T_{17}}}-\underline{T_{10}}}{{\color{MidnightBlue}{T_{18}}}-{\color{MidnightBlue}{T_{9}}}}} \ \ \ \ \ \Rightarrow \ \ \ \ \ Q_E = \underline{Q_E}
+\end{flalign}
+%It is from \autoref{eq:m17_18} valid that:
+%\begin{flalign}
+%{\color{MidnightBlue}{m_{17}}}=\underline{m_{18}} = 116\,\text{kg/s} 
+%\end{flalign}
+%The energy balance can from \autoref{eq:energyE2} be stated as:
+%\begin{flalign}
+%&{\color{MidnightBlue}{m_{17}}} \, h_{17} = \underline{m_{18}}\,h_{18} + \underline{Q_E}  \ \ \ \ \ { \scriptscriptstyle h_{17} =f({\color{MidnightBlue}{T_{17}}},{\color{MidnightBlue}{p_{17}}}) \ \text{(\autoref{eq:h17}})  \above0pt \longrightarrow }  \ \ \ \ \ {\color{MidnightBlue}{m_{17}}} \, \underline{h_{17}} = \underline{m_{17}}\,h_{18} + \underline{Q_E}  \ \ \ \ \Rightarrow \nonumber \\
+%&h_{18} = \dfrac{ {\color{MidnightBlue}{m_{17}}}\,\underline{h_{17}}-\underline{Q_E}}{\underline{m_{17}}} = \underline{h_{18}}
+%\end{flalign}
+With this knowledge the mass flow at \textbf{9} may be found from \autoref{eq:energyE1}.
+\begin{flalign}
+&\underline{Q_E} = m_{10}\,h_{10} - m_9\,h_9  \ \ \ \ \  
+{\scriptscriptstyle m_9 = m_{10} \ \text{(\autoref{eq:m9_10})} \above0pt
+{\scriptscriptstyle h_9 = f({\color{MidnightBlue}{p_9}},{\color{MidnightBlue}{T_9}}) 
+\ \text{(\autoref{eq:h9})}  \above0pt \longrightarrow } } \ \ \ \ \  
+\underline{Q_E} = m_9\,h_{10} - m_9\,\underline{h_9} \ \ \ \ \
+{{\scriptscriptstyle  T_{10}={\color{MidnightBlue}{T_9}}  \ \text{(\autoref{eq:T9}})  \above0pt \scriptscriptstyle h_{10}=f(T_{10}) \ \text{(\autoref{eq:h10}}) } \above0pt \longrightarrow }  \nonumber \\
+&\underline{Q_E} = m_9\,\underline{h_{10}}-m_9\,\underline{h_9} \ \ \ \ \  \Leftrightarrow \ \ \ \ \   m_9 = \dfrac{\underline{Q_E}}{\underline{h_{10}}-\underline{h_9}} = \underline{m_9} \ \ \ \ \ { \scriptscriptstyle m_{10} = \underline{m_9}\ \text{(\autoref{eq:m9_10})}  \above0pt   \Rightarrow }\ \ \ \ \ \ \underline{m_{10}} 
+\end{flalign}
+The last variables related to the Evaporator concerns pressures and enthalpy. They can be found from \autoref{p9_p10}, \ref{eq:p18_p17} and \ref{eq:h17}.
+\begin{flalign}
+\underline{p_9} = p_{10} = \underline{p_{10}} \ \ \ \ \ \wedge \ \ \ \ \ \underline{p_{17}} = p_{18} = \underline{p_{18}} \ \ \ \ \ \wedge \ \ \ \ \ h_{18} = f(\underline{p_{18}},{\color{MidnightBlue}{T_{18}}})=\underline{h_{18}}
+\end{flalign}
+%
+%$Q_E$ can additionally be stated from \autoref{eq:energyE1}:
+%\begin{flalign}
+%Q_E  = m_{10}\,h_{10} - m_9 \, h_9 \ \ \ \ \    {\scriptscriptstyle { { {\color{MidnightBlue}{T_9}} = T_{10}  \ \text{(\autoref{eq:T9}})  \above0pt  h_{10} = f(T_{10})  \ \text{(\autoref{eq:h10}}) } \above0pt m_9 = m_{10}  \ \text{(\autoref{eq:m9_10}}) }  \above0pt \longrightarrow } \ \ \ \ \ Q_E  = m_{9}\,f(T_9) - m_{9} \, h_9
+%\end{flalign}
+%Thus $h_{10}$ can be calculated as $T_9$ is measured initially.
+%\begin{flalign}
+%Q_E = m_9\,\underline{h_{10}} - m_9\,h_9 \ \ \ \ \  {\scriptscriptstyle h_9 = f({\color{MidnightBlue}{p_9}},{\color{MidnightBlue}{T_9}}) \ \text{(\autoref{eq:h9})} \above0pt \longrightarrow } Q_E = m_9\,\underline{h_{10}} - m_9\, \underline{h_9}
+%\end{flalign}
+%Finding $m_9$ from \autoref{eq:m8_m9} and \ref{eq:gayddd}
+The states at \textbf{8} can be found by moving anticlockwise towards EV$_1$. From \autoref{eq:gayddd}:
+\begin{flalign}
+&m_8 = {\color{Chocolate}{\text{OD$_1$}}} \cdot \sqrt{p_\text{8}-{\color{MidnightBlue}{p_\text{9}}}}\cdot \sqrt{{\color{OliveGreen}{\rho_w}}}\cdot {\color{OliveGreen}{C_{v1}}} \ \ \ \ \ { \scriptscriptstyle m_8 = \underline{m_9} \ \text{(\autoref{eq:m8_m9})} \above0Pt \longrightarrow } \ \ \ \ \ \underline{m_8} = {\color{Chocolate}{\text{OD$_1$}}} \cdot \sqrt{p_\text{8}-{\color{MidnightBlue}{p_\text{9}}}}\cdot \sqrt{{\color{OliveGreen}{\rho_w}}}\cdot {\color{OliveGreen}{C_{v1}}}\nonumber \\
+&p_8 = \dfrac{\underline{{m_8}^2}}{{\color{Chocolate}{\text{OD$_1$}}}^2\, {\color{OliveGreen}{\rho_w}}  {\color{OliveGreen}{C_{v1}}}^2}+\underline{p_9} = \underline{p_8}
+\end{flalign}
+The enthalpy is found from \autoref{eq:bjarniErEnFedLuder}.
+\begin{flalign}
+&\underline{m_8}\,h_8= \underline{m_9} \, \underline{h_9} \ \ \ \ \ \Rightarrow \ \ \ \ \ h_8 = \dfrac{\underline{m_9}\,\underline{h_9}}{\underline{m_8}} = \underline{h_8}
+\end{flalign}
+The temperature is found from \autoref{eq:h8_sat}.
+\begin{flalign}
+T_8 = f(\underline{h_8}) = \underline{T_8}
+\end{flalign}
+It is necessary to temporarily fix one of the Absorber inputs as it contain two inlets. This is okay as they will be updated in the next iteration. Those variables are:
+\pp
+&m_6 = {\color{WildStrawberry}{m_6}}\kk \wedge \kk h_6={\color{WildStrawberry}{h_6}}\kk \wedge \kk T_6={\color{WildStrawberry}{T_6}}\kk \wedge \kk x_6={\color{WildStrawberry}{x_6}}\label{eq:66spa}\\ 
+&( \text{The pressure is known from \autoref{eq:p_absorb}} \ \ \ \Rightarrow \ \ \ p_6 = \underline{p_{10}} = \underline{p_6} \ )\nonumber
+\end{flalign}
+Hence the mass flow at \textbf{1} can be found from \autoref{eq:lolwwww}.
+\pp
+m_1 = {\color{WildStrawberry}{m_6}} + \underline{m_{10}} = \underline{m_1}
+\end{flalign}
+The pressure at \textbf{1} is known from \autoref{eq:p_absorb}:
+\pp
+p_{1} = \underline{p_{10}} = \underline{p_1}
+\end{flalign}
+The LiBr resolution at \textbf{1} can thereby be found from \autoref{eq:abs2}:
+\pp
+&x_1\,\underline{m_1} = x_{10}\, \underline{m_{10}} + {\color{WildStrawberry}{x_6}}\,{\color{WildStrawberry}{m_6}} \ \ \ \ {\scriptscriptstyle  x_{10} = 0 \ \text{(\autoref{eq:x10})} \above0Pt \longrightarrow} \ \ \ \ x_1\,\underline{m_1} = \underline{x_{10}}\, \underline{m_{10}} + {\color{WildStrawberry}{x_6}}\,{\color{WildStrawberry}{m_6}} \kk \Leftrightarrow \nonumber \\
+&\underline{x_1} = \dfrac{\underline{x_{10}}\, \underline{m_{10}} + {\color{WildStrawberry}{x_6}}\,{\color{WildStrawberry}{m_6}}}{\underline{x_{10}}}
+\end{flalign}
+The enthalpy at \textbf{1} is found from \autoref{eq:h1_abs}.
+\pp
+h_1 = f(\underline{p_1},\underline{x_1}) = \underline{h_1}
+\end{flalign}
+The temperature at \textbf{1} can be found from \autoref{eq:T1abs}:
+\pp
+T_1 = f(\underline{h_1},\underline{x_1}) = \underline{T_1}
+\end{flalign}
+
+Continuing the flow towards the solution pump. It is straightforward to determine the mass flow at \textbf{2} from \autoref{eq:massSolPump}:
+\pp
+m_2 = \underline{m_1} = \underline{m_2}
+\end{flalign}
+The LiBr concentration is stated from \autoref{eq:LibrPump}:
+\begin{flalign}
+x_2 = \underline{x_1} = \underline{x_2}
+\end{flalign}
+The density at input can be found from \autoref{eq:dens1}
+\pp
+\rho_1 = f(\underline{T_1},\underline{x_1}) = \underline{\rho_1}
+\end{flalign}
+In that way the pressure can be determined from \autoref{eq:pump:Wsop}:
+\begin{flalign}
+{\color{Chocolate}{W_\text{SO,P}}} = (p_2 - \underline{p_1})\,\underline{m_1}\,\dfrac{1}{{\color{OliveGreen}{\eta_\text{SO,P}}}\,\underline{\rho_1}} \kk \Leftrightarrow \kk 
+p_2 = \underline{p_1} + \dfrac{{\color{OliveGreen}{\eta_\text{SO,P}}}\, {\color{OliveGreen}{\eta_\text{SO,P}}}\,\underline{\rho_1}}{m_1} = \underline{p_2}
+\end{flalign}
+The enthalpy is determined from \autoref{eq:h1Pump}:
+\pp
+\underline{m_1}\,\underline{h_1} + {\color{Chocolate}{W_\text{SO,P}}} = \underline{m_2}\,h_2 \kk \Leftrightarrow \kk h_2 = \dfrac{\underline{m_1\,\underline{h_1}+ {\color{Chocolate}{W_\text{SO,P}}}  }}{\underline{m_2}} = \underline{h_2}
+\end{flalign}
+The temperature is lastly determined from \autoref{eq:p2Pump}:
+\pp
+T_2 = f(\underline{p_2},\underline{h_2},x_2) = \underline{T_2}
+\end{flalign}
+
+The states at \textbf{3} will now be determined. The mass flow is easily stated from \autoref{eq:m2HEXSO}:
+\pp
+m_3 = \underline{m_2} = \underline{m_3}
+\end{flalign}
+The LiBr concentration is determined from \autoref{eq:xHEX1}:
+\pp
+\underline{m_2}\,\underline{x_2} = \underline{m_3}\,x_2 \kk \Leftrightarrow \kk x_3 = \dfrac{\underline{m_2}\,\underline{x_2}}{\underline{m_3}} = \underline{x_3}
+\end{flalign}
+The pressure at \textbf{3} is found from \autoref{p1HEXSO}:
+\pp
+p_3 = \underline{p_2} = \underline{p_3}
+\end{flalign}
+This leaves $T_3$ and $h_3$ as unknown. The following will concern how to find these values. All states at \textbf{4} can be considered temporarily fixed as they are outputs from the Generator such that:
+\begin{flalign}
+m_4 = {\color{WildStrawberry}{m_4}} \kk \wedge \kk  h_4 = {\color{WildStrawberry}{h_4}} \kk \wedge \kk T_4 = {\color{WildStrawberry}{T_4}} \kk \wedge \kk p_4 = {\color{WildStrawberry}{p_4}} \kk \wedge \kk x_4 = {\color{WildStrawberry}{x_4}} \nonumber
+\end{flalign}
+This implies from \autoref{eq:m4HEXSO}, \ref{x444} and \ref{p2p5} that: 
+\pp
+m_5 = {\color{WildStrawberry}{m_4}}  = \underline{m_5} \kk \wedge \kk x_4 = {\color{WildStrawberry}{x_4}} = \underline{x_4} \kk \wedge \kk p_5 = \underline{p_2} = \underline{p_5}
+\end{flalign}
+
+To create a better overview for the following derivation, the five needed equation are stated together below from \autoref{eq:m2:m2HEXSO}, \ref{p3t3x3}, \ref{heateq}, \ref{eq:m4HEXSO} and \ref{p5t5x5}.
+\pp
+&\underline{m_2}\,\underline{h_2} + Q_\text{SO} = h_3\,\underline{m_3}\label{app1}\\
+&h_3 = f(\underline{p_3},T_3,\underline{x_3})\label{app2}\\
+&Q_\text{SO} = \dfrac{({\color{WildStrawberry}{T_4}}-T_3)-(T_5-\underline{T_2})}{\ln \dfrac{{\color{WildStrawberry}{T_4}}-T_3}{T_5-\underline{T_2}}} \kk \Leftrightarrow \kk Q_\text{SO} = f(\underline{T_2},T_3,{\color{WildStrawberry}{T_4}},T_5)  \label{app3}\\
+&{\color{WildStrawberry}{m_4}}\,{\color{WildStrawberry}{h_4}} = Q_\text{SO} + h_5\,\underline{m_5}\label{app4}\\
+&h_5 = f(\underline{p_5},T_5,\underline{x_5})\label{app5}
+\end{flalign}
+This is five equations with five unknown variables. Deriving $h_3$ by starting with \autoref{app1}:
+\pp
+&\underline{m_2}\,\underline{h_2}+Q_\text{SO}=h_3\,\underline{m_3} \kk {\scriptstyle \text{insert $Q_\text{SO}$ from \ref{app4} }  \above0Pt \longrightarrow } \kk 
+\underline{m_2}\,\underline{h_2} + {\color{WildStrawberry}{m_4}}\,{\color{WildStrawberry}{h_4}} - h_5\,\underline{m_5} = h_3\,\underline{m_3}   
+\kk {\scriptstyle \text{insert $h_5$ from \ref{app5} }  \above0Pt \longrightarrow } \nonumber \\
+&\underline{m_2}\,\underline{h_2} + {\color{WildStrawberry}{m_4}}\,{\color{WildStrawberry}{h_4}} -
+f(\underline{p_5},T_5,\underline{x_5})\,\underline{m_5} = h_3\,\underline{m_3}   
+\kk {\scriptstyle \text{insert $T_5$ from \ref{app3} }  \above0Pt \longrightarrow } \nonumber \\
+&\underline{m_2}\,\underline{h_2} + {\color{WildStrawberry}{m_4}}\,{\color{WildStrawberry}{h_4}} - f(\underline{p_5},   f(\underline{T_2},T_3,{\color{WildStrawberry}{T_4}},Q_\text{SO})    ,\underline{x_5})\,\underline{m_5} = h_3\,\underline{m_3}   
+\kk {\scriptstyle \text{insert $Q_\text{SO}$ from \ref{app1} }  \above0Pt \longrightarrow } \nonumber \\
+&\underline{m_2}\,\underline{h_2} + {\color{WildStrawberry}{m_4}}\,{\color{WildStrawberry}{h_4}} - f(\underline{p_5},   f(\underline{T_2},T_3,{\color{WildStrawberry}{T_4}},   h_3\,\underline{m_3}-\underline{m_2}\,\underline{h_2}    ,\underline{x_5})\,\underline{m_5} = h_3\,\underline{m_3}
+\kk {\scriptstyle \text{insert $T_3$ from \ref{app2} }  \above0Pt \longrightarrow } \nonumber \\
+&\underline{m_2}\,\underline{h_2} + {\color{WildStrawberry}{m_4}}\,{\color{WildStrawberry}{h_4}} - f(\underline{p_5},   f(\underline{T_2},  f(\underline{p_3},h_3,\underline{x_3})   ,{\color{WildStrawberry}{T_4}},   h_3\,\underline{m_3}-\underline{m_2}\,\underline{h_2}    ,\underline{x_5})\,\underline{m_5} = h_3\,\underline{m_3} \label{eq:h3lortelort}
+\end{flalign}
+It is seen that $h_3$ is the only remaining unknown variable from \autoref{eq:h3lortelort} which implies:
+\pp
+h_3 = \underline{h_3}
+\end{flalign}
+Which from \autoref{app2} yields a known temperature:
+\begin{flalign}
+T_3 = f(\underline{p_3},\underline{h_3},\underline{x_3}) = \underline{T_3}
+\end{flalign}
+And from \autoref{app1}:
+\pp
+Q_\text{SO} = \underline{h_3}\,\underline{m_3}-\underline{m_2}\,\underline{h_2} = \underline{Q_\text{SO}}
+\end{flalign}
+From \autoref{app4}:
+\pp
+h_5 = \dfrac{\underline{m_4}\,{\color{WildStrawberry}{h_4}}-\underline{Q_\text{SO}}}{\underline{m_5}} = \underline{h_5}
+\end{flalign}
+Having all states at \textbf{5}, the states at \textbf{6} may be verified as they where temporarily fixed in \autoref{eq:66spa}. From \autoref{valve1}:
+\pp
+{\color{WildStrawberry}{m_6}} = \underline{m_5} = \underline{m_6}
+\end{flalign}
+With the mass flow equal to each other, the LiBr concentration remains also the same as stated in \autoref{valve2}:
+\pp
+\underline{m_5}\,\underline{x_5} = \underline{m_6}\,{\color{WildStrawberry}{x_6}} \kk \Rightarrow \kk \underline{x_6} = \dfrac{\underline{m_5}\,\underline{x_5}}{\underline{m_6}}
+\end{flalign}
+The same applies for the enthalpy from \autoref{eq:h_valve_2}:
+\pp
+\underline{m_5}\,\underline{h_5} = \underline{m_6}\,{\color{WildStrawberry}{h_6}} \kk \Rightarrow \kk \underline{h_6} = \dfrac{\underline{m_5}\,\underline{h_5}}{\underline{m_6}}
+\end{flalign}
+The pressure at \textbf{5} can be found from \autoref{eq:gaydddd}:
+\pp
+{\color{WildStrawberry}{p_6}} = \underline{p_5} - \dfrac{\underline{{m_5}^2}}{{\color{OliveGreen}{\rho_l}}{\color{OliveGreen}{{C_{v2}}}}^2{\color{Chocolate}{CO_2}}^2 } = \underline{p_5}
+\end{flalign}
+The temperature at \textbf{6} is found from \autoref{eq:TempValve2}:
+\pp
+{\color{WildStrawberry}{T_6}} = f(\underline{p_6},\underline{h_6}) = \underline{T_6}
+\end{flalign}
+Hence all variables at \textbf{6} are updated from the temporarily fixed values to actual values. Now, by redirecting the focus towards the Generator, the output variables at \textbf{4} are still at a temporarily fixed state. These values must be found from the variables at \textbf{3} alone. First, the saturated temperature at \textbf{3} is found from \autoref{genT3s}:
+\pp
+T_{\text{3s}} = f(\underline{p_3},\underline{x_3}) = \underline{T_\text{3s}}
+\end{flalign}
+The rest of the states at \textbf{7} may relatively easily be found. First the temperature and pressure form \autoref{eq:T7gen} and \ref{eq:p7_p3_p4}.
+\pp
+T_7 = \underline{T_{3s}} = \underline{T_7} \kk \wedge \kk p_7 = \underline{p_3} = \underline{p_7}
+\end{flalign} 
+Thereby also the enthalpy from \autoref{eq:h7_gen}.
+\pp
+h_7 = f(\underline{p_7},\underline{T_7}) = \underline{h_7}
+\end{flalign}
+The mass flow at \textbf{4} can be found as from \autoref{eq:m4HEXSO}:
+\pp
+m_4 = \underline{m_5} = \underline{m_4}
+\end{flalign}
+Which leaves the mass flow at \textbf{7} known from \autoref{eq:m7gen}:
+\pp
+m_7 = \underline{m_3} - \underline{m_4} = \underline{m_7}
+\end{flalign}
+The pressure at \textbf{4} can be found from \autoref{eq:p7_p3_p4}
+\pp
+p_4 = \underline{p_7} = \underline{p_4}
+\end{flalign}
+The concentration is fetched from \autoref{eq:m7genx}:
+\pp
+x_4 = \dfrac{\underline{x_3}\,\underline{m_3}}{\underline{m_4}} = \underline{x_4}
+\end{flalign}
+The enthalpy is fetched from \autoref{h_4_llllooooollll}:
+\pp
+h_4 = f(\underline{p_4},\underline{x_4}) = \underline{h_4}
+\end{flalign}
+And the temperature is in a similar easy manner collected from \autoref{T4:llllll}:
+\pp
+T_4 = f(\underline{h_4},\underline{x_4}) = \underline{T_4}
+\end{flalign}
+Hence all variables are \underline{underlined} and thereby found from true known variables alone.

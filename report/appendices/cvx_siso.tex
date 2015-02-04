@@ -1,0 +1,123 @@
+\section{Matlab Code - SISO}
+The following code is the MATLAB code used to setup and run the SISO simulation. The MATLAB scripts together with the simulation setup  may be found in \autoref{chap:cd} through the path \\ \texttt{MatlabScripts/MPC\_implementation\_SISO\_with\_disturbance}.
+\subsection*{\texttt{run\_mpc\_implementation.m}}
+\lstset{language=matlab,caption={MPC SISO setup code.},label={code_cvx_full_siso}}
+\begin{lstlisting}
+%% This function loads the parameters and opens op the simulation
+clear all
+close all
+clc
+% Load the parameters and model
+n = 2; % nr. of states
+p = 1; % nr. of inputs
+q = 1; % nr. of outputs
+
+% The model without disturbance model.
+% Used in the Observer
+
+A_ = [0.5382 0.0284;...
+      -0.7568 1.0115 ];
+B_ = [-0.0095;...
+      -0.0144];
+C_ = [97.9870  -58.7902];
+
+% The model with disturbance model.
+% The one implemented into the MPC
+A = [0.5382 0.0284 -0.0095;...
+      -0.7568 1.0115 -0.0144;...
+      0 0 1];
+B = [-0.0095;...
+      -0.0144;...
+      0];
+  
+C = [97.9870  -58.7902 0];
+
+% Find eigenvalues
+lambda = eig(A);
+% Define faster eigenvalues
+lambdaO = 0.1*lambda;
+% Design L
+L = -place(A',C',lambdaO)'
+
+
+% Split L op to L1 and L2
+L1 = L(1:2)
+L2 = L(3,1)
+
+% Define offsets
+m10offset=64;
+larg_signal_gain=75;
+p10offset=m10offset*larg_signal_gain;
+
+% Open op the simulation
+mpc_implementation
+\end{lstlisting}
+
+\subsection*{\texttt{cvx\_function.m}}
+\lstset{language=matlab,caption={MPC SISO function. MPC ONLINE code.},label={code_cvx_full_siso_mpc}}
+\begin{lstlisting}
+function [u_out, err1] = cvx_function(x_hat_1,x_hat_2,x_hat_3,u_old, m_evap, clock)
+% Load the system used in the MPC
+A = [0.5382 0.0284 -0.0095;...
+      -0.7568 1.0115 -0.0144;...
+      0 0 1];
+B = [-0.0095;...
+      -0.0144;...
+      0];
+C = [97.9870  -58.7902 0];
+
+n = 3; % nr. of states
+p = 1; % nr. of inputs
+q = 1; % nr. of outputs
+
+% Setup the reference moving into the MPC horizon by using the clock input
+clock_ = clock/6 % Ts = 6
+% Start by setting the whole simulation reference to 40 pa
+ref = ones(1,6100)*40;
+% Zeroize the 3999 sec
+ref(1,1:floor(3999/6)) = zeros(1,floor(3999/6));
+% Define the pressure reference depending how far the simulation
+% has gone by using the clock input
+y_ref = ref(1,1+clock_:10+clock_)
+ 
+
+% CVX init
+N = 10; % Horizon
+
+% The output reference. Pressure ref. smallsingal = 4 Pa
+%y_ref = 0*ones(q,N);% pressure ref
+
+% input constraints
+%m_evap = 29.6; % mass flow. district water Evaporator
+m_abs_setpoint = 1.591*m_evap; % This is from the control computer in Sonderborg
+umax = 1.6*m_abs_setpoint*ones(p,1); % 1.6 is the correct value
+umin = 0.95*m_abs_setpoint*ones(p,1); % 0.95 is the correct value
+
+% slew-rate constraint
+uSlewMax = 0.6535*ones(p,1); % data from Absorber measurements
+uSlewMin = -0.6535*ones(p,1); % the correct one is 0.6535
+
+% Gather the states to one state vector
+x_hat = zeros(n,1);
+x_hat = [x_hat_1;x_hat_2;x_hat_3];
+ 
+cvx_begin quiet
+        variables x(n,N) u(p,N) % Set the variables
+  minimize(sum (sum_square(C*x-y_ref) +  sum_square([u_old(:) u(:,1:end-1)]-u) ) )
+     subject to
+        % Model dynamic (equality constraints)
+        x == A*[x_hat(:) x(:,1:end-1)] + B*u;
+        % Actuator Constraints (inequality constraints)
+        repmat(umin,1,N) <= u+64 <= repmat(umax,1,N);
+        % Slew-rate constraint (inequality constraints)
+        repmat(uSlewMin,1,N) <= [u_old(:) u(:,1:end-1)] - u <= repmat(uSlewMax,1,N);
+cvx_end
+
+% Send out the output error
+err1 = C*x(:,1) - y_ref(:,1);
+
+% save the next control signal calculated by the MPC
+u_out = u(1); %save to system
+
+end
+\end{lstlisting}

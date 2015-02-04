@@ -1,0 +1,128 @@
+\section{Matlab Code - MIMO}
+The following code is the MATLAB code used to setup and run the MIMO simulation. The MATLAB scripts together with the simulation setup  may be found in \autoref{chap:cd} through the path \\ \texttt{MatlabScripts/MPC\_implementation\_MIMO}.
+\subsection*{\texttt{run\_mpc\_implementation\_nodistrubance.m}}
+\lstset{language=matlab,caption={MPC MIMO setup code.},label={code_cvx_full_mimo}}
+\begin{lstlisting}
+%% This function loads the parameters and opens op the simulation
+clear all
+close all
+clc
+
+% Define offsets
+mE_off=29.6;
+COP_inv_off= 0.5599;
+p_10_off=4.787195643815619e+03;
+L_C_off= 0.498481774984678;
+% Load the model for the observer
+A = [0.7580    0.0227;
+     1.0211    0.8794];
+
+B = [-0.0009   -0.0010;
+      0.0040    0.0046];
+
+C = 1.0e+03 *...
+  [7.923139655722197   1.885064147583517
+   0.000486848187609   0.000116104777680
+   -0.006559470559438  -0.002712232489827];
+ 
+% Find eigenvalues
+lambda = eig(A);
+% Define faster eigenvalues
+lambdaO = 0.01*lambda; 
+% Design L
+L = -place(A',C',lambdaO)'
+% Open op the simulation
+mpc_implementation_MIMO_nodisturb
+
+\end{lstlisting}
+
+\subsection*{\texttt{cvx\_function.m}}
+\lstset{language=matlab,caption={MPC MIMO function. MPC ONLINE code.},label={code_cvx_full_mimo_mpc}}
+\begin{lstlisting}
+function [u_out_mA, u_out_mC, errL, errP, errCOP] = cvx_function(x_hat_1,x_hat_2,x_hat_3,x_hat_4,u_old_mA,u_old_mC, m_evap, clock)
+% Load the system used in the MPC
+
+A = [0.7580    0.0227;
+     1.0211    0.8794];
+
+B = [-0.0009   -0.0010;
+      0.0040    0.0046];
+
+C = 1.0e+03 *...
+  [7.923139655722197   1.885064147583517
+   0.000486848187609   0.000116104777680
+   -0.006559470559438  -0.002712232489827];
+
+n = 2; % nr. of states
+p = 2; % nr. of inputs
+q = 3; % nr. of outputs
+
+
+% CVX init
+m_13_off = 63;
+m_16_off = 32.5000;
+N = 230; % Horizon
+
+% The output reference. NOTE SMALL SIGNAL REF
+p_ref = 0*ones(1,N);% pressure ref
+L_ref = 0*ones(1,N);% pressure ref
+
+%%
+% input constraints
+m_evap = 29.6; % mass flow. district water Evaporator
+m_abs_setpoint = 1.591*m_evap % This is from the control computer in Sonderborg
+m_abs_max = 1.6*m_abs_setpoint % 1.6 is the correct value
+m_abs_min = 0.95*m_abs_setpoint % 0.95 is the correct value
+
+m_con_setpoint = 1.078*m_evap % This is from the control computer in Sonderborg
+m_con_max = 1.15*m_con_setpoint % 1.15 is the correct value
+m_con_min = 0.85*m_con_setpoint % 0.85 is the correct value
+%%
+% slew-rate constraint
+m_abs_uSlewMax = 0.6535; % data from Absorber measurements
+m_abs_uSlewMin = -0.6535;
+
+m_con_uSlewMax = 0.2551; % data from Absorber measurements
+m_con_uSlewMin = -0.2551;
+
+% The weighting matrixes with some estimated normalisation
+Q_1 = 1/(10^5); % Pressure weighting
+Q_2 = 1; % Level weighting
+Q_3 = 100; % COP weighting
+R = eye(p);
+R(1,1)=1; % Tune the P_10 control 
+R(2,2)=1; % Tune the L_C control
+
+
+x_hat = zeros(n,1);
+x_hat = [x_hat_1;x_hat_2];
+
+u_old = [u_old_mA; u_old_mC];
+ 
+cvx_begin quiet
+        variables x(n,N) u(p,N)
+        minimize(sum( norm(Q_1*(C(1,:)*x-p_ref),1) + norm(Q_2*(C(2,:)*x-L_ref),1) + norm(Q_3*(C(3,:)*x)),1 ))     
+ subject to
+        % Model dynamic (equality constraints)
+        x == A*[x_hat(:) x(:,1:end-1)] + B*u;
+        % Actuator Constraints (inequality constraints)
+        repmat(m_abs_min,1,N) <= u(1,:)+m_13_off <=repmat(m_abs_max,1,N)
+        repmat(m_con_min,1,N) <= u(2,:)+m_16_off <=repmat(m_con_max,1,N)
+        % Slew-rate constraint (inequality constraints)
+        repmat(m_abs_uSlewMin,1,N) <= [u_old_mA u(1,1:end-1)] - u(1,:) <= repmat(m_abs_uSlewMax,1,N)
+        repmat(m_abs_uSlewMin,1,N) <= [u_old_mC u(2,1:end-1)] - u(2,:) <= repmat(m_abs_uSlewMax,1,N)
+cvx_end
+%
+% This update is used for the slew-rate constraint 
+u_out_mA = u(1,1); 
+u_out_mC = u(2,1); 
+
+% send out the error
+% errP = (Q_1*(C(1,:)*x-p_ref);
+% errL = (C(2,:)*x-L_ref);
+% errCOP = (Q_3*(C(3,:)*x));
+errP = 1;
+errL = 1;
+errCOP = 1;
+end
+\end{lstlisting}

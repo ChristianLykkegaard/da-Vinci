@@ -1,0 +1,426 @@
+% This file was created with JabRef 2.9.2.
+% Encoding: Cp1252
+
+@ARTICLE{bib:geothermal_energy_use,
+  author = {Allan Mahler and Birte Røgen and Claus Ditlefsen and Lars Henrik Nielsen
+	and Thomas Vangkilde-Pedersen},
+  title = {Geothermal Energy Use, Country Update for Denmark},
+  journal = {European Geothermal Congress 2013 - Pisa, Italy},
+  year = {2013},
+  month = {June},
+  owner = {Christian},
+  timestamp = {2014.02.10}
+}
+
+@ARTICLE{bib:palle2,
+  author = {Palle Andersen},
+  title = {OptSlides2},
+  journal = {Optimality and Robustness - Course material: Slides from mm 2 in
+	Optimal Control},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.05.12}
+}
+
+@ARTICLE{bib:palleMPC,
+  author = {Palle Andersen},
+  title = {OptSlides5},
+  journal = {Optimality and Robustness - Course material: Slides from mm 8 in
+	Model Predictive Control},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.04.04}
+}
+
+@ARTICLE{bib:palleopnnotes,
+  author = {Palle Andersen},
+  title = {Optimal Control},
+  journal = {Optimality and Robustness - Course material: Optimal Control Lecture
+	Notes},
+  year = {2010},
+  owner = {BjarniGeir},
+  timestamp = {2014.05.16}
+}
+
+@ARTICLE{bib:mpc_fig,
+  author = {Martin Behrendt},
+  title = {MPC scheme basic},
+  year = {2014},
+  owner = {BjarniGeir},
+  timestamp = {2014.05.11},
+  url = {http://en.wikipedia.org/wiki/File:MPC_scheme_basic.svg}
+}
+
+@BOOK{Boyd2004,
+  title = {Convex Optimization},
+  publisher = {cambridge university press},
+  year = {2004},
+  author = {Stephen Boyd and Lieven Vandenberghe},
+  isbn = {0 521 83378 7},
+  owner = {BjarniGeir},
+  timestamp = {2014.05.15}
+}
+
+@ARTICLE{bib:fjernvarme_1,
+  author = {{Dansk Fjernvarmes Geotermiselskab}},
+  title = {Dansk Fjernvarmes Geotermiselskab A.m.b.a},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.02.10},
+  url = {http://www.geotermi.dk/}
+}
+
+@ARTICLE{bib:DFG2,
+  author = {DFG},
+  title = {Dansk Fjernvarmes Geotermiselskab A.m.b.a - Om Projectet},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.02.11},
+  url = {http://www.geotermi.dk/showpage.php?pageid=5159}
+}
+
+@BOOK{Dincer2010,
+  title = {Refrigeration Systems and Applications},
+  publisher = {Wiley},
+  year = {2010},
+  author = {Ibrahim Dincer and Mehmet Kanoglu},
+  pages = {482},
+  edition = {2},
+  isbn = {978-0-470-74740-7},
+  owner = {BjarniGeir},
+  timestamp = {2014.02.12}
+}
+
+@ARTICLE{bib:jan_dimon,
+  author = {Kristian Edlund and Jan Dimon Bendtsen and Simon Børresen and Tommy
+	Mølbak},
+  title = {Introducing Model Predictive Control for Improving Power Plant Portfolio
+	Performance},
+  journal = {Proceedings of the 17th World Congress
+	
+	The International Federation of Automatic Control
+	
+	Seoul, Korea, July 6-11, 2008},
+  year = {2008},
+  volume = {IFAC},
+  owner = {Christian},
+  timestamp = {2014.04.08}
+}
+
+@ARTICLE{bib:euroheat,
+  author = {{Euroheat \& Power}},
+  title = {District Heating in Buildings},
+  journal = {Prepared by Euroheat \& Power - Task Force Customer Installations},
+  year = {2011},
+  owner = {Christian},
+  timestamp = {2014.02.10}
+}
+
+@ARTICLE{bib:ssd,
+  author = {M. Sami Fadali},
+  title = {Discrete-Time State-Space Equations},
+  journal = {Professor of Electrical Engineering 
+	
+	UNR - University of Nevada, Reno},
+  year = {2013},
+  owner = {Christian},
+  timestamp = {2014.05.17}
+}
+
+@ARTICLE{bib:fjernvarme,
+  author = {{FIF Marketing}},
+  title = {Fjernvarme - Fjernvarme er godt for miljøet},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.02.11},
+  url = {http://www.fjernvarme.info/Fjernvarme-er-godt-for-milj%C3%B8et.258.aspx}
+}
+
+@ARTICLE{bib:fjernvarme_2,
+  author = {{FIF Marketing}},
+  title = {Fjernvarme - Fjernvarme gør DK uafhængig},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.02.11},
+  url = {http://www.fjernvarme.info/Fjernvarme-g%C3%B8r-DK-uafh%C3%A6ngig.201.aspx}
+}
+
+@BOOK{bib:Franklin,
+  title = {Feedback Control of Dynamic Systems},
+  publisher = {Pearson},
+  year = {2010},
+  author = {Gene F. Franklin and J. David Powell and Abbas Emami-Naeini},
+  isbn = {978-0-13-500150-9},
+  owner = {Christian},
+  timestamp = {2014.05.20}
+}
+
+@ARTICLE{bib:oo_dyn,
+  author = {D.G. Fu and G. Poncia and Z. Lu},
+  title = {Implementation of an object-oriented dynamic modeling library for
+	absorption refrigeration systems},
+  journal = {Applied Thermal Engineering 26},
+  year = {2005},
+  pages = {217–225},
+  owner = {Christian},
+  timestamp = {2014.04.15}
+}
+
+@ARTICLE{bib:cvx,
+  author = {Michael Grant and Stephen Boyd},
+  title = {CVX},
+  year = {2012},
+  owner = {BjarniGeir},
+  timestamp = {2014.05.16},
+  url = {http://cvxr.com/}
+}
+
+@BOOK{bib:chillers,
+  title = {Absorption Chillers and Heat Pumps},
+  publisher = {CRC Press},
+  year = {1996},
+  author = {Keith E. Herold and Reinhard Radermacher and Sanford A. Klein},
+  isbn = {978-0-8493-9427-5},
+  owner = {Christian},
+  timestamp = {2014.02.18}
+}
+
+@BOOK{bib:holmen,
+  title = {Heat Transfer},
+  publisher = {McGraw-Hill Series in Mechanical Engineering},
+  year = {2009},
+  editor = {Jack P. Holman, Southern Methodist University and John Lloyd, Michigan
+	State University},
+  author = {J.P. Holman},
+  isbn = {978–0–07–352936–3},
+  owner = {Christian},
+  timestamp = {2014.03.17}
+}
+
+@ARTICLE{bib:fastNonconvexRefrige,
+  author = {Tobias Gybel Hovgard and Lars F. S. Larsen and John Bagterp Jørgensen
+	and Stephen Boyd},
+  title = {Fast Nonconvex Model Predictive Control for Commercial Refrigeration},
+  journal = {4th IFAC Nonlinear Model Predictive Control Conference International
+	Federation of Automatic Control
+	
+	Noordwijkerhout, NL. August 23-27, 2012},
+  year = {2012},
+  owner = {Christian},
+  timestamp = {2014.04.04}
+}
+
+@ARTICLE{bib:jakob_phd,
+  author = {Jakob Munch Jensen},
+  title = {Dynamic Modeling of Thermo-Fluid Systems - With focus on evaporators
+	for refrigeration},
+  journal = {Ph.D.-Thesis},
+  year = {2003},
+  volume = {Department of Mechanical Engineering, Technical University of Denmark},
+  owner = {Christian},
+  timestamp = {2014.04.16}
+}
+
+@ARTICLE{bib:fieldtrip,
+  author = {Jørgen Johansen},
+  title = {Chief Engineer at Sønderborg District Heating and CPH},
+  journal = {Field research trip to Sønderborg District Heating and CPH},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.02.26}
+}
+
+@ARTICLE{KaiWang2011,
+  author = {Kai Wang, Omar Abdelaziz, Padmaja Kisari and Edward A. Vineyard},
+  title = {State-of-the-art review on crystallization control technologies for
+	water/LiBr absorption heat pumps},
+  journal = {International Journal of Refrigeration},
+  year = {2011},
+  volume = {34 (1325-1337)},
+  pages = {13},
+  owner = {BjarniGeir},
+  timestamp = {2014.03.10}
+}
+
+@ARTICLE{Kerrigann2004,
+  author = {Eric C. Kerrigann and Jan M. Maciejowski},
+  title = {Feedback min–max model predictive control using a single
+	
+	linear program: robust stability and the explicit solution},
+  journal = {International Journal of Robust and Nonlinear Control},
+  year = {2004},
+  volume = {14:395–413},
+  owner = {BjarniGeir},
+  timestamp = {2014.05.14}
+}
+
+@ARTICLE{1976dsn_nasa,
+  author = {{Lansing}, F.~L.},
+  title = {Computer modeling of a single-stage lithium bromide/water absorption
+	refrigeration unit},
+  year = {1976},
+  pages = {247-257},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System},
+  adsurl = {http://adsabs.harvard.edu/abs/1976dsn..nasa..247L},
+  booktitle = {The Deep Space Network},
+  keywords = {Bromides, Computerized Simulation, Lithium Compounds, Absorbers (Materials),
+	Energy Conservation, Refrigerants, Solar Energy Conversion},
+  owner = {BjarniGeir},
+  timestamp = {2014.03.11}
+}
+
+@BOOK{bib:ljung,
+  title = {System Identification - Theory for the User},
+  publisher = {PTR Prentice Hall, Englewood Cliffs, New Jersey 07632},
+  year = {1987},
+  author = {Lennart Ljung},
+  isbn = {0-13-881640-9},
+  owner = {Christian},
+  timestamp = {2014.05.04}
+}
+
+@BOOK{Maciejowski2002,
+  title = {Predictive Control: With Constraints},
+  publisher = {Prentice Hall},
+  year = {2002},
+  author = {Maciejowski, J.M.},
+  series = {Pearson Education},
+  isbn = {9780201398236},
+  lccn = {00054713},
+  url = {http://books.google.dk/books?id=HV\_Y58c7KiwC}
+}
+
+@ARTICLE{bib:matlab_val,
+  author = {Mathworks},
+  title = {Validating Models After Estimation - MATLAB \& Simulink - MathWorks
+	Nordic},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.05.11}
+}
+
+@ARTICLE{bib:cvxgen,
+  author = {Jacob Mattingley and Stephen Boyd},
+  title = {CVXGEN},
+  year = {2013},
+  owner = {BjarniGeir},
+  timestamp = {2014.05.26},
+  url = {http://cvxgen.com/docs/index.html}
+}
+
+@BOOK{bib:Mooij1998,
+  title = {Linear Quadratic Regulator Design for an Unpowered, Winged Re-entry
+	Vehicle},
+  publisher = {Delft University Press},
+  year = {1998},
+  author = {E. Mooij},
+  isbn = {90-407-1597-1 },
+  owner = {BjarniGeir},
+  timestamp = {2014.05.23}
+}
+
+@ARTICLE{bib:greenflex,
+  author = {Tommy Mølbak},
+  title = {Green Flex: Mobilizing Operational Flexibility in Green Energy Production},
+  journal = {Added Values},
+  year = {2013},
+  owner = {Christian},
+  timestamp = {2014.02.18}
+}
+
+@ARTICLE{bib:mayor,
+  author = {Aase Nyegaard},
+  title = {Sønderborg satser på geotermi og biogasanlæg},
+  year = {2014},
+  note = {Aase Nyegaard is the mayor of Sønderborg municipality},
+  owner = {Christian},
+  timestamp = {2014.02.10}
+}
+
+@BOOK{bib:pita,
+  title = {Refrigeration Principle and Systems - An Energy Approach},
+  publisher = {John Wiley \& Sons},
+  year = {1984},
+  author = {Edward G. Pita},
+  isbn = {0-471-87611-9},
+  owner = {Christian},
+  timestamp = {2014.03.16}
+}
+
+@ARTICLE{bib:mpc_constraints,
+  author = {S. Joe Qin and Thomas A. Badgwell},
+  title = {A survey of industrial model predictive control technology},
+  journal = {Control Engineering Practice 11 (2003) 733–764},
+  year = {2003},
+  owner = {Christian},
+  timestamp = {2014.04.08}
+}
+
+@ARTICLE{bib:dynamic_modeling,
+  author = {Mihir Sen and Weihua Cai and Samuel Paolucci},
+  title = {Dynamic Modeling of an Absorption Refrigeration System using Ionic
+	Liquids},
+  journal = {Department of Aerospace and Mechanical Engineering, 
+	
+	University of Notre Dame, 
+	
+	Notre Dame, Indiana 46556},
+  year = {2007},
+  volume = {Proceedings of IMECE2007
+	
+	2007 ASME International Mechanical Engineering Congress and Exposition
+	
+	November 11-15, 2007, Seattle, Washington, USA},
+  owner = {Christian},
+  timestamp = {2014.03.11}
+}
+
+@BOOK{bib:Serway2014,
+  title = {Physics for Scientists and Engineers},
+  publisher = {Brooks/Cole},
+  year = {2014},
+  editor = {9th},
+  author = {Raymond A. Serway and John W. Jewett},
+  isbn = {978-1-133-95405-7},
+  owner = {BjarniGeir},
+  timestamp = {2014.02.24}
+}
+
+@ARTICLE{inspire,
+  author = {Swagelok},
+  title = {Valve Sizing},
+  owner = {BjarniGeir},
+  timestamp = {2014.03.30},
+  url = {http://www.swagelok.com/downloads/webcatalogs/EN/MS-06-84.PDF}
+}
+
+@ARTICLE{KasperVinther2012,
+  author = {Kasper Vinther and Casper Hillerup Lyhne and Erik Baasch Sørensen
+	and Henrik Rasmussen},
+  title = {Evaporator Superheat Control With One Temperature Sensor Using Qualitative
+	System Knowledge},
+  year = {2012},
+  owner = {BjarniGeir},
+  timestamp = {2014.03.27},
+  url = {http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=06314617&tag=1}
+}
+
+@ARTICLE{bib:kasper_og_rene,
+  author = {Kasper Vinther and René Just Nielsen},
+  title = {Dymola Environment.},
+  journal = {Static and dynamic equations implemented in Dymola.},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.04.29}
+}
+
+@ARTICLE{bib:worldenergy,
+  author = {{World Energy}},
+  title = {World Energy - Absorption Chiler Heat Pumps},
+  journal = {For Future Energy \& Environment. World Energy Absorption Chillers
+	Europe Ltd},
+  year = {2014},
+  owner = {Christian},
+  timestamp = {2014.03.24}
+}
+

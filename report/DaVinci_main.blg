@@ -1,0 +1,7 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: DaVinci_main.aux
+The style file: look/plainnat-custom.bst
+url: is an unknown function---line 330 of file look/plainnat-custom.bst
+Database file #1: bibtex/litteratur.bib
+1 is an integer literal, not a string, for entry bib:safety
+while executing---line 1495 of file look/plainnat-custom.bst
+(There were 2 error messages)
