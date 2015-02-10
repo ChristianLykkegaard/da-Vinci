@@ -1,7 +1,7 @@
 \select@language {english}
 \select@language {english}
-\contentsline {subsubsection}{Reading Guide}{I}{section*.5}
-\contentsline {subsubsection}{Acknowledgements}{I}{section*.6}
+\contentsline {subsubsection}{Reading Guide}{I}{section*.3}
+\contentsline {subsubsection}{Acknowledgements}{I}{section*.4}
 \contentsline {chapter}{\numberline {1}Introduction}{2}{chapter.1}
 \contentsline {part}{I\hspace {1em}System Analysis}{3}{part.1}
 \contentsline {chapter}{\numberline {2}Basic Concepts}{4}{chapter.2}

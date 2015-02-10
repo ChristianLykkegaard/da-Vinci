@@ -1,25 +1,20 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.13)  4 FEB 2015 09:06
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.11.21)  10 FEB 2015 14:39
 entering extended mode
 **DaVinci_main.tex
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.tex"
+("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.tex"
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
 croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
-lician, german, german-x-2012-05-30, greek, gujarati, hindi, hungarian, iceland
+lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
 ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
  lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
-german-x-2012-05-30, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
 ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\preamble.tex"
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\look/05gr551c.cls"
+("C:\Users\Britt\Documents\10. semester\GitHub\report\preamble.tex"
+("C:\Users\Britt\Documents\10. semester\GitHub\report\look/05gr551c.cls"
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\size11.clo"
 File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
@@ -164,7 +159,7 @@ Package: babel 2008/07/08 v3.8m The Babel package
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\bblopts.cfg"
 File: bblopts.cfg 2006/07/31 v1.0 MiKTeX 'babel' configuration
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\babel\danish.ldf"
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\babel-danish\danish.ldf"
 Language: danish 2009/09/19 v1.3r Danish support from the babel system
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\babel\babel.def"
@@ -174,8 +169,8 @@ File: babel.def 2008/07/08 v3.8m Babel common definitions
 )
 Package babel Info: Making " an active character on input line 82.
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\babel\english.ldf"
-Language: english 2005/03/30 v3.3o English support from the babel system
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\babel-english\english.ldf"
+Language: english 2012/08/20 v3.3p English support from the babel system
 \l@canadian = a dialect from \language\l@american 
 \l@australian = a dialect from \language\l@british 
 \l@newzealand = a dialect from \language\l@british 
@@ -451,8 +446,8 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mh\mathtools.sty"
-Package: mathtools 2013/02/12 v1.13 mathematical typesetting tools
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathtools\mathtools.sty"
+Package: mathtools 2014/07/16 v1.15 mathematical typesetting tools
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\calc.sty"
 Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
@@ -467,7 +462,7 @@ LaTeX Info: Redefining \addtolength on input line 77.
 \calc@Ccount=\count132
 \calc@Cskip=\skip77
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mh\mhsetup.sty"
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\mathtools\mhsetup.sty"
 Package: mhsetup 2010/01/21 v1.2a programming setup (MH)
 )
 LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
@@ -482,7 +477,7 @@ LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
 \l_MT_above_shortintertext_sep=\dimen161
 \l_MT_below_shortintertext_sep=\dimen162
 )
-(C:\Users\Christian\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\listings.sty"
 \lst@mode=\count134
 \lst@gtempboxa=\box62
 \lst@token=\toks30
@@ -496,17 +491,18 @@ LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
 \lst@lineno=\count139
 \lst@maxwidth=\dimen166
 
-(C:\Users\Christian\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstmisc.sty
-File: lstmisc.sty 2013/08/26 1.5b (Carsten Heinz)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstmisc.sty"
+File: lstmisc.sty 2014/09/06 1.5e (Carsten Heinz)
 \c@lstnumber=\count140
 \lst@skipnumbers=\count141
 \lst@framebox=\box63
 )
-(C:\Users\Christian\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.cfg
-File: listings.cfg 2013/08/26 1.5b listings configuration
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\listings.cfg"
+File: listings.cfg 2014/09/06 1.5e listings configuration
 ))
-Package: listings 2013/08/26 1.5b (Carsten Heinz)
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: listings 2014/09/06 1.5e (Carsten Heinz)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\color.sty"
 Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
@@ -718,9 +714,9 @@ Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
 \c@Hy@tempcnt=\count147
 
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ltxmisc\url.sty"
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\url\url.sty"
 \Urlmuskip=\muskip11
-Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5041.
 \XeTeXLinkMargin=\dimen181
@@ -801,7 +797,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 Package: pdfpages 2013/08/25 v0.4v Insert pages of external PDF documents (AM)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\eso-pic\eso-pic.sty"
-Package: eso-pic 2010/10/06 v2.0c eso-pic (RN)
+Package: eso-pic 2013/10/06 v2.0d eso-pic (RN)
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdfpages\pppdftex.def"
 File: pppdftex.def 2013/08/25 v0.4v Pdfpages driver for pdfTeX (AM)
@@ -862,9 +858,10 @@ Package hyperref Warning: Invalid value `0'
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\lastpage\lastpage.sty"
 Package: lastpage 2013/01/28 v1.2l Refers to last page's name (HMM; JPG)
 )
-(C:\Users\Christian\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang1.sty
-File: lstlang1.sty 2013/08/26 1.5b listings language file
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\fancyhdr\fancyhdr.sty"
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstlang1.sty"
+File: lstlang1.sty 2014/09/06 1.5e listings language file
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\fancyhdr\fancyhdr.sty"
 \fancy@headwidth=\skip93
 \f@ncyO@elh=\skip94
 \f@ncyO@erh=\skip95
@@ -943,38 +940,34 @@ Package color Info: Redefining color white on input line 560.
 Package: enumerate 1999/03/05 v3.00 enumerate extensions (DPC)
 \@enLab=\toks62
 ))
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.aux"
+("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.aux")
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 4.
+LaTeX Font Info:    Try loading font information for OMS+pzccm on input line 4.
 
-LaTeX Warning: Label `fig:lolspass' multiply defined.
 
-)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 2.
-LaTeX Font Info:    Try loading font information for OMS+pzccm on input line 2.
-
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omspzccm.fd"
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omspzccm.fd"
 File: omspzccm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/pzccm.
 )
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 2.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 2.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 4.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 4.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 2.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 2.
-LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1011,7 +1004,7 @@ LaTeX Font Info:    ... okay on input line 2.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 2.
+LaTeX Info: Redefining \selectfont on input line 4.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -1029,7 +1022,7 @@ LaTeX Info: Redefining \selectfont on input line 2.
 )
 \c@lstlisting=\count181
 \AtBeginShipoutBox=\box67
-Package hyperref Info: Link coloring OFF on input line 2.
+Package hyperref Info: Link coloring OFF on input line 4.
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -1039,36 +1032,33 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 \c@section@level=\count182
 LaTeX Info: Redefining \Ref on input line 513.
 )
-LaTeX Info: Redefining \ref on input line 2.
-LaTeX Info: Redefining \pageref on input line 2.
-LaTeX Info: Redefining \nameref on input line 2.
+LaTeX Info: Redefining \ref on input line 4.
+LaTeX Info: Redefining \pageref on input line 4.
+LaTeX Info: Redefining \nameref on input line 4.
 
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.out")
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.out")
+("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.out")
+("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.out")
 \@outlinefile=\write4
-LaTeX Info: Redefining \Ref on input line 2.
+LaTeX Info: Redefining \Ref on input line 4.
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             http://www.ctan.org/tex-archive/ 
 (lastpage)             macros/latex/contrib/pageslts/ 
 (lastpage)             or
 (lastpage)             http://www.ctan.org/tex-archive/ 
 (lastpage)             install/macros/latex/contrib/pageslts.tds.zip
-(lastpage)             ! on input line 2.
+(lastpage)             ! on input line 4.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/frontpage.tex" <formalia/da_vincy.png, id=58, 154.176pt x 86.724pt>
-File: formalia/da_vincy.png Graphic file (type png)
-
-<use formalia/da_vincy.png>
-Package pdftex.def Info: formalia/da_vincy.png used on input line 18.
+("C:\Users\Britt\Documents\10. semester\GitHub\report\formalia/frontpage.tex"
+<figures/da_vincy.png, id=58, 154.176pt x 86.724pt>
+File: figures/da_vincy.png Graphic file (type png)
+ <use figures/da_vincy.png>
+Package pdftex.def Info: figures/da_vincy.png used on input line 18.
 (pdftex.def)             Requested size: 657.2623pt x 369.8305pt.
 
 Overfull \hbox (118.74046pt too wide) in paragraph at lines 16--21
- []|  [] 
+ [][]|  [] 
  []
 
 LaTeX Font Info:    Font shape `T1/ptm/bx/sc' in size <14.4> not available
@@ -1123,21 +1113,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 42--43
 
 [1
 
-{C:/Users/Christian/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/User
-s/Christian/Documents/Privat/Aau/p10 - Da Vinci/github/da-Vincy/report/formalia
-/da_vincy.png>])
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/tomside.tex" [2])
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/titelblad.tex"
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <C:/Users/Britt/Documents/
+10. semester/GitHub/report/figures/da_vincy.png>])
+("C:\Users\Britt\Documents\10. semester\GitHub\report\formalia/tomside.tex"
+[2]) ("C:\Users\Britt\Documents\10. semester\GitHub\report\titelblad.tex"
+<figures/AAU_LOGO_RGB_UK.png, id=74, 135.1449pt x 95.1555pt>
+File: figures/AAU_LOGO_RGB_UK.png Graphic file (type png)
 
-<formalia/AAU_LOGO_RGB_UK.png, id=74, 135.1449pt x 95.1555pt>
-File: formalia/AAU_LOGO_RGB_UK.png Graphic file (type png)
-
-<use formalia/AAU_LOGO_RGB_UK.png>
-Package pdftex.def Info: formalia/AAU_LOGO_RGB_UK.png used on input line 18.
+<use figures/AAU_LOGO_RGB_UK.png>
+Package pdftex.def Info: figures/AAU_LOGO_RGB_UK.png used on input line 18.
 (pdftex.def)             Requested size: 141.4444pt x 99.58464pt.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 18.
@@ -1147,83 +1131,76 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 18.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 18.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 18.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 77.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 62.
 
-Overfull \hbox (30.72102pt too wide) in paragraph at lines 77--77
+Overfull \hbox (30.72102pt too wide) in paragraph at lines 62--62
 []$[]$ 
  []
 
-<formalia/20140526_140200_2.jpg, id=75, 2019.545pt x 2055.68pt>
-File: formalia/20140526_140200_2.jpg Graphic file (type jpg)
+<figures/IMG_3568_square.jpg, id=75, 1760.5775pt x 1761.58125pt>
+File: figures/IMG_3568_square.jpg Graphic file (type jpg)
 
-<use formalia/20140526_140200_2.jpg>
-Package pdftex.def Info: formalia/20140526_140200_2.jpg used on input line 77.
-(pdftex.def)             Requested size: 72.49788pt x 73.77544pt.
+<use figures/IMG_3568_square.jpg>
+Package pdftex.def Info: figures/IMG_3568_square.jpg used on input line 62.
+(pdftex.def)             Requested size: 72.49788pt x 72.52097pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--77
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--77
-
- []
-
-
-Overfull \hbox (30.72102pt too wide) in paragraph at lines 77--77
+Overfull \hbox (30.72102pt too wide) in paragraph at lines 62--62
 []$[]$ 
  []
 
-<formalia/cv_billede.jpg, id=76, 772.38562pt x 773.89125pt>
-File: formalia/cv_billede.jpg Graphic file (type jpg)
+<figures/cv_billede.jpg, id=76, 772.38562pt x 773.89125pt>
+File: figures/cv_billede.jpg Graphic file (type jpg)
 
-<use formalia/cv_billede.jpg>
-Package pdftex.def Info: formalia/cv_billede.jpg used on input line 77.
+<use figures/cv_billede.jpg>
+Package pdftex.def Info: figures/cv_billede.jpg used on input line 62.
 (pdftex.def)             Requested size: 72.49788pt x 72.63478pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--77
+Underfull \hbox (badness 10000) in paragraph at lines 62--62
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--77
+Underfull \hbox (badness 10000) in paragraph at lines 62--62
 
  []
 
 
-Overfull \hbox (312.98032pt too wide) in paragraph at lines 77--77
-$[]$ 
+Underfull \hbox (badness 10000) in paragraph at lines 62--62
+
+ []
+
+("C:\Users\Britt\Documents\10. semester\GitHub\report\formalia/synopsis.tex")
+Overfull \hbox (23.72743pt too wide) in paragraph at lines 73--73
+[][] [] 
  []
 
 
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/synopsis.tex")
-Overfull \hbox (23.72743pt too wide) in paragraph at lines 88--88
-[] [] 
+Overfull \hbox (64.67656pt too wide) in paragraph at lines 78--84
+[][]  $[]$ 
  []
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.90 \end{titlepage}
+l.86 \end{titlepage}
                      [1
 
- <C:/Users/Christian/Documents/Privat/Aau/p10 - Da Vinci/github/da-Vincy/report
-/formalia/AAU_LOGO_RGB_UK.png> <C:/Users/Christian/Documents/Privat/Aau/p10 - D
-a Vinci/github/da-Vincy/report/formalia/20140526_140200_2.jpg> <C:/Users/Christ
-ian/Documents/Privat/Aau/p10 - Da Vinci/github/da-Vincy/report/formalia/cv_bill
-ede.jpg>])
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/tomside.tex"pdfTeX warning (ext4): destination with the same identifi
-er (name{page.2}) has been already used, duplicate ignored
+ <C:/Users/Britt/Documents/10. semester/GitHub/report/figures/AAU_LOGO_RGB_UK.p
+ng> <C:/Users/Britt/Documents/10. semester/GitHub/report/figures/IMG_3568_squar
+e.jpg> <C:/Users/Britt/Documents/10. semester/GitHub/report/figures/cv_billede.
+jpg>])
+("C:\Users\Britt\Documents\10. semester\GitHub\report\formalia/tomside.tex"pdfT
+eX warning (ext4): destination with the same identifier (name{page.2}) has been
+ already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.14 \clearemptydoublepage
                            [2])
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/preface.tex"
+("C:\Users\Britt\Documents\10. semester\GitHub\report\preface.tex"
 
 Package geometry Warning: Over-specification in `v'-direction.
     `height' (826.67715pt) is ignored.
@@ -1270,17 +1247,16 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 
 
 ])
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\formalia/tomside.tex" [2
+("C:\Users\Britt\Documents\10. semester\GitHub\report\formalia/tomside.tex"
+[2
 
-])
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.toc"
+]) ("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.toc"
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 6.
 )
 \tf@toc=\write5
- [3
+
+[3
 
 
 ]
@@ -1292,13 +1268,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [4
 
-]
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\Nomenclatures.tex")
+] ("C:\Users\Britt\Documents\10. semester\GitHub\report\Nomenclatures.tex")
 No file DaVinci_main.nls.
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\spa.tex")
+("C:\Users\Britt\Documents\10. semester\GitHub\report\spa.tex")
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 13.59999pt.
@@ -1309,40 +1281,39 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.29 \chapter
+l.31 \chapter
              {Introduction}\label{chap:intro} [1]
 Chapter 1.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <20.74> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 31.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20.74> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 29.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 31.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 29.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 31.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 29--29
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 31--31
 [] [] 
  []
 
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\problemanalysis/Introduction.tex")pdfTeX warning (ext4): destination with the 
-same identifier (name{page.2}) has been already used, duplicate ignored
+("C:\Users\Britt\Documents\10. semester\GitHub\report\Introduction.tex")pdfTeX 
+warning (ext4): destination with the same identifier (name{page.2}) has been al
+ready used, duplicate ignored
 <to be read again> 
                    \relax 
-l.32 \part
+l.34 \part
           {System Analysis}\label{part:part1} [2
 
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/sc' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/sc' tried instead on input line 32.
+(Font)              Font shape `T1/ptm/b/sc' tried instead on input line 34.
 LaTeX Font Info:    Font shape `T1/ptm/bx/sc' in size <20.74> not available
-(Font)              Font shape `T1/ptm/b/sc' tried instead on input line 32.
+(Font)              Font shape `T1/ptm/b/sc' tried instead on input line 34.
  [3
 
 ]
 Chapter 2.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 34--34
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 36--36
 [] [] 
  []
 
@@ -1351,31 +1322,28 @@ Overfull \hbox (14.2264pt too wide) in paragraph at lines 34--34
 ]
 Chapter 3.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 36--36
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 38--38
 [] [] 
  []
 
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\problemanalysis/interim.tex") [5
+("C:\Users\Britt\Documents\10. semester\GitHub\report\interim.tex") [5
 
 ]
 Chapter 4.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 39--39
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 41--41
 [] [] 
  []
 
+("C:\Users\Britt\Documents\10. semester\GitHub\report\kravspec.tex") [6
 
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\requirementspec/kravspec.tex") [6
-
-] [7
+]
+[7
 
 ]
 Chapter 5.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 43--43
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 45--45
 [] [] 
  []
 
@@ -1386,34 +1354,30 @@ Overfull \hbox (14.2264pt too wide) in paragraph at lines 43--43
 ]
 Chapter 6.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 47--47
-[] [] 
- []
-
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\ending/conclusion.tex") [10
-
-]
-Chapter 7.
-
 Overfull \hbox (14.2264pt too wide) in paragraph at lines 49--49
 [] [] 
  []
 
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\ending/perspective.tex") [11
+("C:\Users\Britt\Documents\10. semester\GitHub\report\conclusion.tex") [10
 
 ]
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.bbl") [12
+Chapter 7.
+
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 51--51
+[] [] 
+ []
+
+("C:\Users\Britt\Documents\10. semester\GitHub\report\perspective.tex")
+[11
+
+] ("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.bbl")
+[12
 
 
 ]
 Appendix A.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 69--69
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 71--71
 [] [] 
  []
 
@@ -1422,7 +1386,7 @@ Overfull \hbox (14.2264pt too wide) in paragraph at lines 69--69
 ]
 Appendix B.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 71--71
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 73--73
 [] [] 
  []
 
@@ -1431,7 +1395,7 @@ Overfull \hbox (14.2264pt too wide) in paragraph at lines 71--71
 ]
 Appendix C.
 
-Overfull \hbox (14.2264pt too wide) in paragraph at lines 73--73
+Overfull \hbox (14.2264pt too wide) in paragraph at lines 75--75
 [] [] 
  []
 
@@ -1448,29 +1412,23 @@ AED: lastpage setting LastPage
 [15
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 78.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 78.
-
-("C:\Users\Christian\Documents\Privat\Aau\p10 - Da Vinci\github\da-Vincy\report
-\DaVinci_main.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 78.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 78.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 80.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 80.
+ ("C:\Users\Britt\Documents\10. semester\GitHub\report\DaVinci_main.aux")
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 80.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 80.
 Package rerunfilecheck Info: File `DaVinci_main.out' has not changed.
 (rerunfilecheck)             Checksum: A5C8ABE3159CD6615AAAA9BD59D31FA5;810.
-
-
-LaTeX Warning: There were multiply-defined labels.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 78.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 80.
  ) 
 Here is how much of TeX's memory you used:
- 14557 strings out of 493921
- 220496 string characters out of 3144864
- 327294 words of memory out of 3000000
- 17380 multiletter control sequences out of 15000+200000
- 112762 words of font info for 147 fonts, out of 3000000 for 9000
+ 14553 strings out of 493921
+ 218889 string characters out of 3144875
+ 327646 words of memory out of 3000000
+ 17381 multiletter control sequences out of 15000+200000
+ 112823 words of font info for 147 fonts, out of 3000000 for 9000
  850 hyphenation exceptions out of 8191
- 55i,21n,92p,527b,524s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,21n,92p,518b,446s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Progra
 m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/euler/eurb10.pfb><C:/Program
@@ -1478,9 +1436,9 @@ Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/euler/eurb10.pfb><C:/Program
 )/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.
 9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
 e1/urw/times/utmri8a.pfb>
-Output written on DaVinci_main.pdf (23 pages, 1925380 bytes).
+Output written on DaVinci_main.pdf (23 pages, 1733294 bytes).
 PDF statistics:
- 228 PDF objects out of 1000 (max. 8388607)
- 45 named destinations out of 1000 (max. 500000)
+ 226 PDF objects out of 1000 (max. 8388607)
+ 43 named destinations out of 1000 (max. 500000)
  133 words of extra memory for PDF output out of 10000 (max. 10000000)
 
