@@ -1,0 +1,19 @@
+\select@language {english}
+\select@language {english}
+\contentsline {subsubsection}{Reading Guide}{I}{section*.3}
+\contentsline {subsubsection}{Acknowledgements}{I}{section*.4}
+\contentsline {chapter}{\numberline {1}Introduction}{2}{chapter.1}
+\contentsline {section}{\numberline {1.1}Technical Overview}{2}{section.1.1}
+\contentsline {part}{I\hspace {1em}System Analysis}{3}{part.1}
+\contentsline {chapter}{\numberline {2}Basic Concepts}{4}{chapter.2}
+\contentsline {chapter}{\numberline {3}Interim Conclusion}{5}{chapter.3}
+\contentsline {chapter}{\numberline {4}Requirement Specification}{6}{chapter.4}
+\contentsline {part}{II\hspace {1em}Controller Design}{7}{part.2}
+\contentsline {chapter}{\numberline {5}Control System Introduction}{8}{chapter.5}
+\contentsline {part}{III\hspace {1em}Discussion}{9}{part.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{10}{chapter.6}
+\contentsline {chapter}{\numberline {7}Perspective}{11}{chapter.7}
+\contentsline {chapter}{Literature}{12}{chapter.7}
+\contentsline {chapter}{Appendix \numberline {A}My First Appendix}{12}{appendix.A}
+\contentsline {chapter}{Appendix \numberline {B}MATLAB Code}{13}{appendix.B}
+\contentsline {chapter}{Appendix \numberline {C}Attached CD}{14}{appendix.C}
