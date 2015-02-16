@@ -1,16 +1,18 @@
 \input{preamble}
+\graphicspath{{figures/}}
+
 \begin{document}
 
 \input{formalia/frontpage.tex}
 \input{formalia/tomside.tex}
 
-\input{formalia/titelblad.tex}
+\input{titelblad.tex}
 \input{formalia/tomside.tex}
 
 \setcounter{page}{1}
 \renewcommand{\thepage}{\Roman{page}}
 
-\input{formalia/preface.tex}
+\input{preface.tex}
 \input{formalia/tomside.tex}
 
 \setlength\parskip{0ex}
@@ -27,7 +29,7 @@
 \input{spa}
 
 \chapter{Introduction}\label{chap:intro}
-	\input{problemanalysis/Introduction}
+	\input{Introduction}
 
 \part{System Analysis}\label{part:part1}
 	
@@ -35,9 +37,9 @@
 
 \chapter{Interim Conclusion} \label{chap:interim_con}
 
-		\input{problemanalysis/interim.tex}
+		\input{interim.tex}
 \chapter{Requirement Specification}\label{chap:reqspec}
-		\input{requirementspec/kravspec.tex}
+		\input{kravspec.tex}
 			
 \part{Controller Design}\label{part:part2}
 \chapter{Control System Introduction}\label{chap:systemdesign}
@@ -45,9 +47,9 @@
 
 \part{Discussion}\label{part:part3}
 \chapter{Conclusion}\label{chap:conclusion}
-		\input{ending/conclusion.tex}
+		\input{conclusion.tex}
 \chapter{Perspective}\label{chap:perspektivering}	
-		\input{ending/perspective.tex}
+		\input{perspective.tex}
 
 \begingroup
 	\raggedright
