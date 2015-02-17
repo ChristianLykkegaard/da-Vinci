@@ -2,7 +2,7 @@
 \graphicspath{{figures/}}
 
 \begin{document}
-
+	
 \input{formalia/frontpage.tex}
 \input{formalia/tomside.tex}
 
@@ -29,35 +29,34 @@
 \input{spa}
 
 \chapter{Introduction}\label{chap:intro}
-	\input{Introduction}
-		\input{intro_blokdiagram}
+\input{Introduction}
+\input{intro_blokdiagram}
 
 \part{System Analysis}\label{part:part1}
-	
+
 \chapter{Basic Concepts}\label{basic_stuff}
 
 \chapter{Interim Conclusion} \label{chap:interim_con}
+\input{interim.tex}
 
-		\input{interim.tex}
 \chapter{Requirement Specification}\label{chap:reqspec}
-		\input{kravspec.tex}
-			
+\input{kravspec.tex}
+
 \part{Controller Design}\label{part:part2}
 \chapter{Control System Introduction}\label{chap:systemdesign}
 
-
 \part{Discussion}\label{part:part3}
 \chapter{Conclusion}\label{chap:conclusion}
-		\input{conclusion.tex}
-\chapter{Perspective}\label{chap:perspektivering}	
-		\input{perspective.tex}
+\input{conclusion.tex}
+
+\chapter{Perspective}\label{chap:perspektivering}
+\input{perspective.tex}
 
 \begingroup
-	\raggedright
-	\clearpage
+\raggedright
+\clearpage
 \addcontentsline{toc}{chapter}{Literature}
-
-	\bibliography{bibtex/litteratur}
+\bibliography{bibtex/litteratur}
 \endgroup
 \label{sourceliste}
 
@@ -68,14 +67,14 @@
 %\renewcommand{\appendixname}{Appendices}
 \renewcommand{\appendixname}{Appendix}
 \renewcommand{\appendixtocname}{Appendix}
-	
+
 \chapter{My First Appendix}\label{app:vest}
 
 \chapter{MATLAB Code}\label{app:source}
 
 \chapter{Attached CD} \label{chap:cd}
-	\subsection*{Datasheets}
-	\subsection*{MATLAB Scripts}
+\subsection*{Datasheets}
+\subsection*{MATLAB Scripts}
 
 \end{appendices}
 \end{document}

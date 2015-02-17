@@ -2,10 +2,12 @@ Minimally invasive surgery
 Laparoscopy, known as minimally invasive
 Endoscopy
 
+
 Master-slave system consisting of patient manipulator and master controller, with (stereo) visual feedback from slave to master, in more and more cases also force feedback, manipulator arm
 Telesurgery/telemanipulation, telementoring (telepresence)
 Early systems required the surgeon to be in the same room as the patient, later tests from remote areas
 One day, maybe patient-specific models may be created from advanced imaging, allowing  remotely simulating te procedure prior to operating and determine the best surgical strategy (or train robot!)
+New generation: surgical care not only to soldiers but also to remote locations lacking specialized physicians
 
 
 The idea of roboticized telemedicine dates back to 1925 \cite{bib:telemed_predict}, and the first robotic surgical procedure was accomplished in 1985 (non-laparoscopic) \cite{bib:telesurg_history}. % in the form of a CT-guided brain biopsy by PUMA. 
@@ -13,6 +15,7 @@ Robots for laparoscopic surgery introduced in medicine in 1987 \cite{bib:brown_u
 The development of telesurgery arose in the 1970s: for environments such as war or natural catastrophes
 The foundation fo telesurgery can be raced back to NASA, major development was funded by DARPA (Defence Advanced Research Projec Administration), a research administration under the U.S. DoD (Department of Defence), military tool for injured soldier.
 Two main teleoperator surgical systems were developed from the DARPA research: Integrated Surgical Systems (later Intuitive Surgical Inc \cite{bib:brown_univ}) da Vinci and Computer Motion's Zeus. \cite{bib:telesurg_history}
+U.S. Military funded initiative managed by SRI International (founded as Stanford research Institute by Stanford University in 1946, independent of the university in 1970), DARPA's Trauma Pod Program aims to develop unmanned mobile operating room \cite{bib:docatadist}.
 Researchers at NASA began working on telepresence surgery combining virtual reality, robots and medicine, and in the 1990s SRI (Stanford Research Institute) joined. \cite{bib:brown_univ}
 U.S. Army developed MASH (Mobile Advanced Surgical Hospital) \cite{bib:brown_univ}, soldier loaded and teleoperated in a vehicle
 The first commercially available surgical robot became available in 1992\cite{bib:telesurg_history}
@@ -35,19 +38,21 @@ less trauma to all else except the spot where operation is intended, less or no 
 can be much more precise
 tremor filtering of the surgeon's control, perfecting it
 
-Robotic surgery development areas:
+Robotic surgery development areas/challenges:
 - Minimizing the volume of the patient manipulator for better access in the operating room for the nurse, for transportability in remote/war areas and space ships
 - Dexterity of the hand and especially the instrument part, flexible instruments
 - Latency, image coding/decoding, fieroptic allow high bandwidth data transmission with delays below 500 ms
 - in addition to technical changes there are manymedical-legal, billing and liability issues
 - cost-effectiveness
-- access to bandwidth/advaced telecommunication (limitation in extremely remote areas), satellite-based telecommunication may has shown feasibility
+- access to bandwidth/advaced telecommunication (limitation in extremely remote areas), satellite-based telecommunication may has shown feasibility \cite{bib:telesurg_history}, but don't cover all areas \cite{bib:docatadist}
 - regulations and adoption (of surgeons)
 - lack of tactile feedback (2013)
 - Advanced imaging
 - Education of surgeons in the hand-eye-coordination using a surgical robot
 - Restricted degrees of motion
 - systems that can work under conditions very different from those of pristine operating rooms \cite{bib:docatadist}
+- reliable transmission of the surgeon's commands to a system often roaming in far-flung places
+- surgeons have remotely commanded surgical robots with real patints, but only in well-equipped hospitals with dedicated wired communication channels
 
 Our focus:
 safety

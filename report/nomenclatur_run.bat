@@ -1,5 +1,5 @@
-pdflatex Report.tex
-makeindex Report.nlo -s nomencl.ist -o Report.nls
-pdflatex Report.tex
+pdflatex DaVinci_main.tex
+makeindex DaVinci_main.nlo -s formalia/nomencl.ist -o DaVinci_main.nls
+pdflatex DaVinci_main.tex
 
 pause
