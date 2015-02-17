@@ -1,12 +1,22 @@
 \section{Technical Overview}
 A simplified overview of the overall setup is provided in \autoref{fig:overview} as a block diagram. The setup is physically located at the department of Control and Automation at Aalborg University in the laboratory. The figure is structured with the highest abstraction layer at the top (i.e. the ROS (Robotic Operation System)) environment which establish a wireless TCP/IP communication channel receiving all positions from the robot as feedback. It produces likewise positioning control signals to the NI (National Instruments) single board RIOs (Reconfigurable Input/Output) which handle all input/output communication with the user. The NI single board RIOs consist of a primary and a secondary board. The reason for having two RIO boards is solely the lack of input/outputs on one board.
 
-The RIO boards direct the control signals to a cascaded controller taking in a velocity reference and delivers a current control signal to the ESCON motor driver. The velocity and current controller are implemented in hardware (FPGA) to ensure sufficient controller speed relative to the system \citep{bib:robot_paper}
+The RIO boards direct the control signals to a cascaded controller taking in a velocity reference from the user and delivers a current control signal to the ESCON motor driver. The velocity and current controller are implemented in FPGA based hardware to ensure sufficient controller speed relative to the system \citep{bib:robot_paper}. The ESCON motor driver manage advanced processing and delivers essentially an appropriate PWM signal for the  actuators in form of seven maxon motors which represent the lowest abstraction layer located at the bottom of the figure.
 
-The lowest layer is located in the bottom, i.e. the actuators in form of seven Maxon motors. 
+The NI single board RIOs handle concurrently most safety precautions and enabling/disabling of the arm itself (see appendix ?? for location of the arm) through solenoids.
 \begin{figure}[H]
 	\center
 	\includegraphics[width=0.95\textwidth]{overview.pdf}	\caption{This is a nice figure. Here illustrated for hand roll master.}
 	\label{fig:overview}
 \end{figure}
-The focus of this thesis is the highest abstraction layer, i.e.the ROS environment.
+The focus of this thesis is the highest abstraction layer, i.e.the ROS environment. The purpose here primary constitute implementation of:
+\begin{itemize}
+\item Everything that require heavy processing \citep{bib:robot_paper}.
+\item Non real-time processing or tasks with loose timing constraints \citep{bib:robot_paper}.
+\end{itemize}
+The above pool of stipulations will essentially and practically entail the follow main topics of this thesis:
+\begin{itemize}
+\item All user interaction
+\item Positioning control loop
+\item Path planning
+\end{itemize}
