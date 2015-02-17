@@ -1,62 +1,93 @@
 Minimally invasive surgery
-Laparoscopy, known as minimally invasive
+Laparoscopy, known as minimally invasive, relatively recent invention of minimally invasive instrumentation incl laparoscopic devices with surgical tools, small incisions 0.25-1 cm (compared with several cm for conventional open surgery) and surgeons maneuvering them guidede by images from tiny camera probes
 Endoscopy
 
 
-Master-slave system consisting of patient manipulator and master controller, with (stereo) visual feedback from slave to master, in more and more cases also force feedback, manipulator arm
-Telesurgery/telemanipulation, telementoring (telepresence)
-Early systems required the surgeon to be in the same room as the patient, later tests from remote areas
-One day, maybe patient-specific models may be created from advanced imaging, allowing  remotely simulating te procedure prior to operating and determine the best surgical strategy (or train robot!)
-New generation: surgical care not only to soldiers but also to remote locations lacking specialized physicians
 
-
-The idea of roboticized telemedicine dates back to 1925 \cite{bib:telemed_predict}, and the first robotic surgical procedure was accomplished in 1985 (non-laparoscopic) \cite{bib:telesurg_history}. % in the form of a CT-guided brain biopsy by PUMA. 
-Robots for laparoscopic surgery introduced in medicine in 1987 \cite{bib:brown_univ}
+\section{Development over Time of Surgical Robotics}
+The idea of roboticized telemedicine dates back to 1925 \citep{bib:telemed_predict}, and the first robotic surgical procedure was accomplished in 1985 (non-laparoscopic) \citep{bib:telesurg_history}. % in the form of a CT-guided brain biopsy by PUMA. 
+Robots for laparoscopic surgery introduced in medicine in 1987 \citep{bib:brown_univ}
 The development of telesurgery arose in the 1970s: for environments such as war or natural catastrophes
 The foundation fo telesurgery can be raced back to NASA, major development was funded by DARPA (Defence Advanced Research Projec Administration), a research administration under the U.S. DoD (Department of Defence), military tool for injured soldier.
-Two main teleoperator surgical systems were developed from the DARPA research: Integrated Surgical Systems (later Intuitive Surgical Inc \cite{bib:brown_univ}) da Vinci and Computer Motion's Zeus. \cite{bib:telesurg_history}
-U.S. Military funded initiative managed by SRI International (founded as Stanford research Institute by Stanford University in 1946, independent of the university in 1970), DARPA's Trauma Pod Program aims to develop unmanned mobile operating room \cite{bib:docatadist}.
-Researchers at NASA began working on telepresence surgery combining virtual reality, robots and medicine, and in the 1990s SRI (Stanford Research Institute) joined. \cite{bib:brown_univ}
-U.S. Army developed MASH (Mobile Advanced Surgical Hospital) \cite{bib:brown_univ}, soldier loaded and teleoperated in a vehicle
-The first commercially available surgical robot became available in 1992\cite{bib:telesurg_history}
+Two main teleoperator surgical systems were developed from the DARPA research: Integrated Surgical Systems (later Intuitive Surgical Inc \citep{bib:brown_univ}) da Vinci and Computer Motion's Zeus. \citep{bib:telesurg_history}
+U.S. Military funded initiative managed by SRI International (founded as Stanford research Institute by Stanford University in 1946, independent of the university in 1970), DARPA's Trauma Pod Program aims to develop unmanned mobile operating room \citep{bib:docatadist}.
+Researchers at NASA began working on telepresence surgery combining virtual reality, robots and medicine, and in the 1990s SRI (Stanford Research Institute) joined. \citep{bib:brown_univ}
+U.S. Army developed MASH (Mobile Advanced Surgical Hospital) \citep{bib:brown_univ}, soldier loaded and teleoperated in a vehicle
+The first commercially available surgical robot became available in 1992\citep{bib:telesurg_history}
 First robotic system approved for general surgery in 1993 (Computer Motion robot)
 The first generation of surgical robots was notable for performing image-guided precision tasks but was limited by the need for preoperative planning
 early 90s: emerging era of laparoscopy, system designed to assist the surgeon by taking control of the laparoscopic camera and responding to voice commands
 Next step: telemanipulation, master control physically separated from the slave unit
 Early report from 1996 demonstrated ability of surgeon in same city to successfully mentor and manipulate endoscopic camera (but latency limits to few 100 km distance)
-Computer Motion's Zeus was introduced in 1998 and was the first to perform fully endoscopic robotic surgery and the initial beating-heart totally endoscopic coronary bypass procedure \cite{bib:brown_univ}
-da Vinci approved by the U.S. FDA (Food and Drug Administration) for general laparoscopic surgery in 2000, and heart surgery in 2002 \cite{bib:brown_univ}
+Computer Motion's Zeus was introduced in 1998 and was the first to perform fully endoscopic robotic surgery and the initial beating-heart totally endoscopic coronary bypass procedure \citep{bib:brown_univ}
+da Vinci approved by the U.S. FDA (Food and Drug Administration) for general laparoscopic surgery in 2000, and heart surgery in 2002 \citep{bib:brown_univ}
 Operation Lindbergh, first transatlantic surgical procedure in 2001, Computer Motion's Zeus/Socrates? with French doctors in New York performing (gall bladder removal) operation on patient in Strasbourg, France
-Intuitive Surgical and Computer Motion merged in 2003 after a series of patent lawsuits against each other: work on da Vinci
-In 2006 a test was performed with roboticists, surgeons, aerospace engineers, networking experts: placing manipulator and controller 100 m apart, and network linked via a drone, using the Raven \cite{bib:docatadist} (compact).
+Intuitive Surgical and Computer Motion merged in 2003 after a series of patent lawsuits against each other/lenghty patent litigation: work on da Vinci
+In 2006 a test was performed with roboticists, surgeons, aerospace engineers, networking experts: placing manipulator and controller 100 m apart, and network linked via a drone, using the Raven \citep{bib:docatadist} (compact). 2 Mbps, 20 ms delay manip. and 200 ms delay video
+2006: estimated 2800 robots in surgey and therapy worldwise incl da Vinci, the only commercially available FDA approved
 
-DARPAs Trauma Pod program, explain army and space interests, how many surgical robotic systems are out there
+DARPAs Trauma Pod program first phase goal is to demonstrate prototype of trauma pod with da Vinci + stretcher from MASH and cuustom tool changer nurse robot, second phase DARPA fund research aimed at miniaturizing and integrate systems \citep{bib:docatadist}
+Explain army and space interests, how many surgical robotic systems are out there
 
+\section{Surgical Robots Anno 2015}
+Master-slave system consisting of patient manipulator and master controller, with (stereo) visual feedback from slave to master, in more and more cases also force feedback, manipulator arm
+Telesurgery/telemanipulation, telementoring (telepresence)
+Early systems required the surgeon to be in the same room as the patient, later tests from remote areas
+One day, maybe patient-specific models may be created from advanced imaging, allowing  remotely simulating te procedure prior to operating and determine the best surgical strategy (or train robot!)
+New generation: surgical care not only to soldiers but also to remote locations lacking specialized physicians
+Surgery remains fundamentally the same for centuries still, relying heavily on the experience of the surgeon and the dexterity of their hands \citep{bib:docatadist},
+da Vinci has 2-3 arms with surgical tools and an extra with a stereoscopic video camera probe, surgeon controls the machine from a console in the same room as the patient, a new da Vinci costs \$1.5 million (2006).
+da Vinci not engineered to extremes of work in the field: weighs about  kg, designed specifically for MIS, remote control requires significant modification.
+Raven: developing surgical robot that can operate in harsh environments, miniaturized, mobile.
+Two types: preplan operation on preoperative images, or system where robot is directly teleoperated by slaved robot
+Raven has two arms, mechanical interface specificated is available upon request, open-source common hw/sw, sharing research innovations, embrace open standards \citep{bib:raven_ii} using ROS, currently Raven-II system is installed at Harvard,, John Hopkins University, U. Nebraska, UCLA, UCSC, UC Berkeley, U. Washington, newer also: U. Central Florida, U. Western Ontario, Stanford and Montpellier France \citep{bib:raven_ii}.
+Raven is open-architecture, cable-driven 7-DOF arms, stereo vision \citep{bib:raven_debride}.
+Open-source: creating subtasks \citep{bib:raven_debride}.
+Current robotic surgical assistants are primarily controlled by surgeons (master-slave with negligible delays) \citep{bib:raven_debride}.
+Multilateral manipulation (with two or more arms), important that the arms avoid collision \citep{bib:raven_debride} (workspaces are rarely disjoint).
+Sterilization demands actuators and encoders are outside the body, so actuation inside is achieved using long cable and flexible elements that compound uncertainty \citep{bib:raven_debride}.
+Most surgical robots such as da Vinci and Raven have 6 DOF per arm plus a grasp DOF \citep{bib:raven_debride}
+Existing surgical robot systems can be categorized into a spectrum based on the modality of interaction with the surgeon, ranging from pure teleoperated or master/slave systems that directly reproduce the motions of the surgeon - to supervisory or shared-control systems where the surgeon hold and is in control of the medical instrument while the robot provides assistance - to purely autonomous systems where the medical mortions are planned off-line when detailed pre-operative plans of the surgical procedure can be laid out and executed autonomously without interoperatie modification
 
 Superiority:
 less trauma to all else except the spot where operation is intended, less or no scars
 can be much more precise
 tremor filtering of the surgeon's control, perfecting it
+existing systems function like robotized laparoscopic instruments, miniaturized and electromechanically enhanced hands. Greater dexterity, accuracy, stability than humans. Tools positioned by high-precision motors can reach spaces surgeon hands often cannot \citep{bib:docatadist}
+daV beginning to show superiority to  conventional: laparoscopic radical prostatectomy, less blood loss, fewer complications, shorter hospital stays, but futture studies have yet to show the benefits og robotic surgery considering the costs (2006) \citep{bib:docatadist}
+Lab experiments suggest that autonomous robot can achieve robustness comparable to human performance \citep{bib:raven_debride}
 
 Robotic surgery development areas/challenges:
 - Minimizing the volume of the patient manipulator for better access in the operating room for the nurse, for transportability in remote/war areas and space ships
 - Dexterity of the hand and especially the instrument part, flexible instruments
 - Latency, image coding/decoding, fieroptic allow high bandwidth data transmission with delays below 500 ms
-- in addition to technical changes there are manymedical-legal, billing and liability issues
+- in addition to technical changes there are many medical-legal, billing and liability issues
 - cost-effectiveness
-- access to bandwidth/advaced telecommunication (limitation in extremely remote areas), satellite-based telecommunication may has shown feasibility \cite{bib:telesurg_history}, but don't cover all areas \cite{bib:docatadist}
+- access to bandwidth/advaced telecommunication (limitation in extremely remote areas), satellite-based telecommunication may has shown feasibility \citep{bib:telesurg_history}, but don't cover all areas \citep{bib:docatadist}
 - regulations and adoption (of surgeons)
 - lack of tactile feedback (2013)
 - Advanced imaging
 - Education of surgeons in the hand-eye-coordination using a surgical robot
 - Restricted degrees of motion
-- systems that can work under conditions very different from those of pristine operating rooms \cite{bib:docatadist}
+- systems that can work under conditions very different from those of pristine operating rooms \citep{bib:docatadist}
 - reliable transmission of the surgeon's commands to a system often roaming in far-flung places
 - surgeons have remotely commanded surgical robots with real patints, but only in well-equipped hospitals with dedicated wired communication channels
+- need to improve scientific rigor of experimental validation in robotics (statistically significant results) \citep{bib:raven_ii}.
+- dramatically enhanced dexterity, but integration between computation and surgery is essentially unchanged \citep{bib:raven_ii}
+- most surgery today use of computatinal tools (intelligent/networked/references to databases/processing of images) is limited to befre or after the procedure and not supported by the robot system itself \citep{bib:raven_ii}
+- it was 2-3 times slower than a human (Raven) \citep{bib:raven_debride}, execution speed could be improved with better state estimation (strict constraints due to safety)
+- reproduce the extraordinary perception and control skills of humans \citep{bib:raven_debride}
 
+
+\subsection{The da Vinci Surgical System}
+Over 2200 systems in place and over 360 000 procedures performed in 2011 worldwide \citep{bib:raven_ii}
+
+\section{Focus of this Project}
 Our focus:
 safety
 make forbidden areas where the robot cannot enter
+
+ROS middleware layer
 
 
 \begin{itemize}
