@@ -1,0 +1,249 @@
+% MATHEMATICAL SYMBOLS
+
+%\newglossaryentry{<label>}{
+%name=<symbol>,
+%description={<description>},
+%sort=<letter>, type=symbols, symbol=[<unit>]	% the letter allows to sort the list alphabetically
+%}
+
+% COMMANDS to use in the report to include the entry
+%\gls{<label>} 
+%\glspl{<label>} % for plural
+%\Gls{<label>}   % capitalized
+%\Glspl{<label>} % capitalized plural
+
+
+\newglossaryentry{TS}{
+name=$T_S$,
+description={day-ahead bid of energy production within a particular hour, made by the producer},
+sort=t, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{PS}{
+name=$P_S$,
+description={energy spot price within a particular hour, as announced by the TSO the day ahead},
+sort=p, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{Pup}{
+name=$P_{UP}$,
+description={up-regulation price within a particular hour, determined by bid activations in the regulating market},
+sort=p, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{Pdn}{
+name=$P_{DN}$,
+description={down-regulation price within a particular hour, determined by bid activations in the regulating market},
+sort=p, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{Pess}{
+name=$P_{ESS}$,
+description={revenue made per energy unit stored in the ESS},
+sort=p, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{QG}{
+name=$Q_G$,
+description={power production sent to the grid within a particular hour},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{delta}{
+name=$\Delta$,
+description={deviation between bid and actual power production within a particular hour},
+sort=d, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{delta+}{
+name=$\Delta^+$,
+description={positive part of deviation between bid and actual power production within a particular hour},
+sort=d, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{delta-}{
+name=$\Delta^-$,
+description={negative part of deviation between bid and actual power production within a particular hour},
+sort=d, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{Cdn}{
+name=$C_{DN}$,
+description={down-regulation penalty within a particular hour, defined as $P_S-P_{DN}$},
+sort=c, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{Cup}{
+name=$C_{UP}$,
+description={up-regulation penalty within a particular hour, defined as $P_{UP}-P_S$},
+sort=c, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{Cmin}{
+name=$C_{min}$,
+description={relative cost of storing energy in the ESS which is the minimum revenue that must be made on each unit of power for the ESS to be feasible},
+sort=c, type=symbols, symbol=[\euro/MWh]
+}
+\newglossaryentry{N}{
+name=$N$,
+description={time horizon of the optimization problem, $N=5$ is used throughout \autoref{part:analysis} and \ref{part:solution} of this report},
+sort=h, type=symbols, symbol=[h]
+}
+
+\newglossaryentry{QW}{
+name=$Q_W$,
+description={power production produced by the wind farm within a particular hour},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QB}{
+name=$Q_B$,
+description={power discharged from the ESS as seen from the grid},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QBC}{
+name=$Q_{BC}$,
+description={power charged to the ESS as seen from the grid, $Q_{BC}\leq 0$},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QBD}{
+name=$Q_{BD}$,
+description={power discharged from the ESS as seen from the grid, $Q_{BD}\geq 0$},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QBmax}{
+name=$Q_{B,max}$,
+description={maximum power that can be discharged from the ESS},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QE}{
+name=$Q_E$,
+description={power discharged from the ESS as seen from the ESS},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QED}{
+name=$Q_{ED}$,
+description={power discharged from the ESS as seen from the ESS, $Q_{ED}\geq 0$},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{QEC}{
+name=$Q_{EC}$,
+description={power charged to the ESS as seen from the ESS, $Q_{EC}\leq 0$},
+sort=q, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{EB}{
+name=$E_B$,
+description={energy stored in the ESS},
+sort=e, type=symbols, symbol=[MWh]
+}
+
+\newglossaryentry{EBmax}{
+name=$E_{B,max}$,
+description={energy capacity of the ESS},
+sort=e, type=symbols, symbol=[MWh]
+}
+
+\newglossaryentry{EE}{
+name=$E_E$,
+description={energy stored in the ESS, extended model},
+sort=e, type=symbols, symbol=[MWh]
+}
+
+\newglossaryentry{EEmax}{
+name=$E_{E,max}$,
+description={energy capacity of the ESS, extended model},
+sort=e, type=symbols, symbol=[MWh]
+}
+
+\newglossaryentry{Ecyc}{
+name=$E_{cyc}$,
+description={energy stored in the ESS per cycle},
+sort=e, type=symbols, symbol=[MWh/cycle]
+}
+
+
+\newglossaryentry{td}{
+name=$t_d$,
+description={conversion factor between MW per time resolution to MWh},
+sort=t, type=symbols, symbol=[h]
+}
+
+
+\newglossaryentry{deltaB+}{
+name=$\Delta^{+}_B$,
+description={positive part of decomposition of $Q_B$ (amount above $T_S$)},
+sort=d, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{deltaB-}{
+name=$\Delta^{-}_B$,
+description={negative part of decomposition of $Q_B$ (amount below $T_S$)},
+sort=d, type=symbols, symbol=[MW]
+}
+
+\newglossaryentry{eta}{
+name=$\eta$,
+description={efficiency of the ESS},
+sort=e, type=symbols, symbol=[\%]
+}
+
+\newglossaryentry{tau}{
+name=$\tau$,
+description={lifetime of the ESS},
+sort=t, type=symbols, symbol=[cycles]
+}
+
+\newglossaryentry{phi}{
+name=$\phi$,
+description={capital cost of the ESS},
+sort=ph, type=symbols, symbol=[\euro/MWh]
+}
+
+\newglossaryentry{Phi}{
+name=$\Phi$,
+description={initial cost of the ESS},
+sort=ph, type=symbols, symbol=[\euro]
+}
+
+\newglossaryentry{L}{
+name=$L$,
+description={lifetime of the ESS},
+sort=l, type=symbols, symbol=[years]
+}
+
+\newglossaryentry{deltaG}{
+name=$\Delta G_{ESS}$,
+description={increase in revenue per hour from using the ESS, $\Delta G_{ESS}=G_{ESS}-G_{no\,ESS}$},
+sort=g, type=symbols, symbol=[\euro/h]
+}
+
+\newglossaryentry{Gess}{
+name=$G_{ESS}$,
+description={revenue per hour made using the ESS},
+sort=g, type=symbols, symbol=[\euro/h]
+}
+
+\newglossaryentry{Gnoess}{
+name=$G_{no\,ESS}$,
+description={revenue per hour made without using the ESS},
+sort=g, type=symbols, symbol=[\euro/h]
+}
+
+\newglossaryentry{Rtau}{
+name=$R_\tau$,
+description={revenue made by the ESS at the end of cycle lifetime},
+sort=r, type=symbols, symbol=[\euro]
+}
+
+\newglossaryentry{xi}{
+name=$\xi_{est}$,
+description={performance (measured in revenue per hour) of the estimation method implementation by the MPC w.r.t. the VOPI implementation},
+sort=x, type=symbols, symbol=[\%]
+}
