@@ -1,4 +1,141 @@
-The idea of roboticized telemedicine dates back to 1925 \cite{bib:telemed_predict}, and the first robotic surgical procedure was accomplished in 1985 \cite{bib:telesurg_history} in the form of a CT-guided brain biopsy. The first commercially available surgical robot became available in 1992
+Minimally invasive surgery
+Laparoscopy, known as minimally invasive, relatively recent invention of minimally invasive instrumentation incl laparoscopic devices with surgical tools, small incisions 0.25-1 cm (compared with several cm for conventional open surgery) and surgeons maneuvering them guidede by images from tiny camera probes
+Endoscopy
+
+
+
+\section{Development over Time of Surgical Robotics}
+The idea of roboticized telemedicine dates back to 1925 \citep{bib:telemed_predict}
+Russians performed some animal surgery in microgravity, first one in 1967 during parabolic flight [SurgRob]
+The development of telesurgery arose in the 1970s: for environments such as war or natural catastrophes
+The foundation fo telesurgery can be raced back to NASA, major development was funded by DARPA (Defence Advanced Research Projec Administration), a research administration under the U.S. DoD (Department of Defence) responsible for development of innovative technology [SurgRob], military tool for injured soldiers: Trauma Pod program, autonomous and semi-autonomous mobile platforms for war.
+The first robotic surgical procedure was accomplished in 1985 (non-laparoscopic) \citep{bib:telesurg_history}. % in the form of a CT-guided brain biopsy by PUMA. 
+Robots for laparoscopic surgery introduced in medicine in 1987 \citep{bib:brown_univ}
+U.S. Military funded initiative managed by SRI International (founded as Stanford research Institute by Stanford University in 1946, independent of the university in 1970), DARPA's Trauma Pod Program aims to develop unmanned mobile operating room \citep{bib:docatadist}. Most of SRI's development was achieved with Trauma Pod [SurgRob]
+Two main teleoperator surgical systems were developed from the DARPA research: Integrated Surgical Systems (later Intuitive Surgical Inc \citep{bib:brown_univ}) da Vinci and Computer Motion's Zeus. \citep{bib:telesurg_history}
+DARPA invested in the research: early 1990 promising tech emerged, primarily SRI was investigating the feasibility of telesurgery with master-slave manipulators with stereo vision feedback, and in mid 1990s they licenced the master manipulator design of Madhani (MIT) along with many other patents [SurgRob]
+Researchers at NASA began working on telepresence surgery combining virtual reality, robots and medicine, and in the 1990s SRI (Stanford Research Institute) joined. \citep{bib:brown_univ}
+U.S. Army developed MASH (Mobile Advanced Surgical Hospital) \citep{bib:brown_univ}, soldier loaded and teleoperated in a vehicle
+The first commercially available surgical robot became available in 1992\citep{bib:telesurg_history}
+First robotic system approved for general surgery in 1993 (Computer Motion robot) \citep{bib:telesurg_history}
+The first generation of surgical robots was notable for performing image-guided precision tasks but was limited by the need for preoperative planning
+early 90s: emerging era of laparoscopy, system designed to assist the surgeon by taking control of the laparoscopic camera and responding to voice commands
+Next step: telemanipulation, master control physically separated from the slave unit
+In 1993 Madhani had the idea for the slave manipulator arm after watching an episode of M*A*S*H [SurgRob] and created the Black Falcon during his work at MIT, becoming he prototype of the da Vinci arms.
+In 1994 NASA built a pilot telesurgery system RAMS (Robotic Assist MicroSurgery), but project stopped late 1990 due to lack of funding [SurgRob].
+Early report from 1996 demonstrated ability of surgeon in same city to successfully mentor and manipulate endoscopic camera (but latency limits to few 100 km distance) \citep{bib:telesurg_history}.
+In 1997 the first prototype of da Vinci was ready for animal tests at Intuitive, and first human trial took place in Belgium in 1997, trials performed in Paris and Leipzig in 1998. [SurgRob]
+Computer Motion's Zeus was introduced in 1998 and was the first to perform fully endoscopic robotic surgery and the initial beating-heart totally endoscopic coronary bypass procedure \citep{bib:brown_univ}
+1998: teleoperation has been proposed as the next step in MIS \citep{bib:black_falcon}.
+Experiments with surgical procedure in space on animal in U.S. space shuttle in 1998 [SurgRob]
+SRI first developed Green Telepresence system, the very first to allow remote patient care, licenced by Intuitive, and around 1998 SRI develop the light-weight version M7 [SurgRob]
+DARPA and NASA sponsoring research project for space surgical robots: BioRobotics Lab in U. Washington developed 22 kg robot Raven for long distance remote control, SRI started to develop M7 in 1998, 15 kg portable and deployable [SurgRob]
+First market-ready version of da Vinci began tests in 1999. [SurgRob]
+da Vinci approved by the U.S. FDA (Food and Drug Administration) for general laparoscopic surgery in 2000, and heart surgery in 2002 \citep{bib:brown_univ}
+NASA started NEEMO projects in Aquarius undersea lab (19 m) in 2001 to test effects of latency [SurgRob]
+Operation Lindbergh, first transatlantic surgical procedure in 2001, Computer Motion's Zeus/Socrates? with French doctors in New York performing (gall bladder removal) operation on patient in Strasbourg, France
+First European operation in weightlessness performed in 2003 on animal onboard Zero G plane [SurgRob]
+Intuitive Surgical and Computer Motion merged in 2003 \citep{bib:telesurg_history} after a series of patent lawsuits against each other/lenghty patent litigation: work on da Vinci
+In 2004 the 7th NEEMO was performed with Zeus controlled from Ontario 2500 km away, delay of 0.1-2s, performed with telementor with not trained crew [SurgRob]
+New generation da Vinci S ready in 2005 [SurgRob]
+In 2005 a test was performed with roboticists, surgeons, aerospace engineers, networking experts: placing manipulator and controller 100 m apart, and network linked via a drone, using the Raven \citep{bib:docatadist} (compact). 2 Mbps, 20 ms delay manip. and 200 ms delay video. U.S. Army sponsored demonstration in 2005 where Raven was set up in a tent in the desert [SurgRob]
+ISS equipped with 150Mbps connection in 2005 [SurgRob]
+In 2006 surgeon performed human operation while on Zero G parabolic flight [SurgRob] 
+In 2006 first phase of Trauma Pod was successfully finished: equipping and integrating robotic operating room  with da Vinci and assisting Mitsubishi robot. [SurgRob]
+In 2006 the first-ever demonstration of unmanned telesurgery with M7 [SurgRob]
+NASA's NEEMO-12 mission in 2006 or 2007, Raven (and M7) in Aquarius underwater habitat in Florida and teleoperated from Seattle (comm delays about 1s, approx delays to ISS) [SurgRob] simulated in zero gravity?
+2006: estimated 2800 robots in surgey and therapy worldwide incl da Vinci, the only commercially available FDA approved
+NASA had its first zero gravity experiment in 2007 performed with M7 [SurgRob] M7 modified to overcome acceleration and movement from vehicle transport and showed robust performance uring parabolic flight.
+M7 performed the world's first automated ultrasound guided tumor biopsy in 2007 [SurgRob]
+2008 neuroArm was first used to remove a brain tumor [SurgRob]
+2009: DLR has already built several generations of lightweight robotic arms for ground and space application, e.g. KineMedic and MIRO. U. Nebraska has developed coin-sized wheeled robot for biopsy, can move teleoperated around the organs [SurgRob]
+After 40 years NASA is returning to the idea of telerobotics in space with Robonaut 2, a humanoid robot currently inhabiting ISS, has been trained on telemedicine (2014), sent to ISS in 2011 [SurgRob]
+
+DARPAs Trauma Pod program first phase goal is to demonstrate prototype of trauma pod with da Vinci + stretcher from MASH and cuustom tool changer nurse robot, second phase DARPA fund research aimed at miniaturizing and integrate systems \citep{bib:docatadist}
+Explain army and space interests, how many surgical robotic systems are out there
+
+\section{Surgical Robots Anno 2015}
+Master-slave system consisting of patient manipulator and master controller, with (stereo) visual feedback from slave to master, in more and more cases also force feedback, manipulator arm
+Telesurgery/telemanipulation, telementoring (telepresence)
+Early systems required the surgeon to be in the same room as the patient, later tests from remote areas
+One day, maybe patient-specific models may be created from advanced imaging, allowing  remotely simulating te procedure prior to operating and determine the best surgical strategy (or train robot!)
+New generation: surgical care not only to soldiers but also to remote locations lacking specialized physicians
+Surgery remains fundamentally the same for centuries still, relying heavily on the experience of the surgeon and the dexterity of their hands \citep{bib:docatadist},
+da Vinci has 2-3 arms with surgical tools and an extra with a stereoscopic video camera probe, surgeon controls the machine from a console in the same room as the patient, a new da Vinci costs \$1.5 million (2006).
+da Vinci not engineered to extremes of work in the field: weighs about  kg, designed specifically for MIS, remote control requires significant modification.
+Raven: developing surgical robot that can operate in harsh environments, miniaturized, mobile.
+Two types: preplan operation on preoperative images, or system where robot is directly teleoperated by slaved robot
+Raven has two arms, mechanical interface specificated is available upon request, open-source common hw/sw, sharing research innovations, embrace open standards \citep{bib:raven_ii} using ROS, currently Raven-II system is installed at Harvard,, John Hopkins University, U. Nebraska, UCLA, UCSC, UC Berkeley, U. Washington, newer also: U. Central Florida, U. Western Ontario, Stanford and Montpellier France \citep{bib:raven_ii}.
+Raven is open-architecture, cable-driven 7-DOF arms, stereo vision \citep{bib:raven_debride}.
+Open-source: creating subtasks \citep{bib:raven_debride}.
+Current robotic surgical assistants are primarily controlled by surgeons (master-slave with negligible delays) \citep{bib:raven_debride}.
+Multilateral manipulation (with two or more arms), important that the arms avoid collision \citep{bib:raven_debride} (workspaces are rarely disjoint).
+Sterilization demands actuators and encoders are outside the body, so actuation inside is achieved using long cable and flexible elements that compound uncertainty \citep{bib:raven_debride}.
+Most surgical robots such as da Vinci and Raven have 6 DOF per arm plus a grasp DOF \citep{bib:raven_debride}
+Existing surgical robot systems can be categorized into a spectrum based on the modality of interaction with the surgeon, ranging from pure teleoperated or master/slave systems that directly reproduce the motions of the surgeon - to supervisory or shared-control systems where the surgeon hold and is in control of the medical instrument while the robot provides assistance - to purely autonomous systems where the medical mortions are planned off-line when detailed pre-operative plans of the surgical procedure can be laid out and executed autonomously without interoperative modification \citep{bib:raven_debride}.
+da Vinci Research Kit platform provided by Intuitive built from mechanical components from first gen daVinci \citep{bib:raven_observ}, open-source electronics and sw develope by WPI and John Hopkins Univ., hw: two arms and surgeon console with stereo viewer, master controllers and foot pedals.
+2014: units of Raven are now in use at 12 leading medical rootics research institutes (currently marketed by Applied Dexterity) [SurgRob]
+Range of fields of Raven: cooperative teleoperation, haptics, virtual fixtures, supervision, machine learning, autonomy [SurgRob]
+Telementoring vs teleoperated robotic procedures: latter slightly better but much slower [SurgRob]
+Medical requirements document of upcoming space missions are composed using experience gained from NEEMO [SurgRob]
+The setting of virtual boundaries for the robot, tool limitations and speed constraints: may reduce the risk of malpractice [SurgRob]
+2012: Raven will be the only robo besides da Vinci that can collect data from multiple instruments and various grouped procedures [SurgRob]
+Raven is 3rd gen surgical robotics research platform originally developed with DoD funding to demonstrate lightweight and field deployable robotics, developed at U. Washington, using experiments deisgned to teach  computer model to recognize the motions of expert laparoscopic surgeons. [SurgRob] Record a stream of dynamic and ckinematioc data from surgeries, into a multi-state statistical model using Hidden Markov Models [SurgRob]
+U. Nebraska project: Natural Orifice Translumenal Endoscopic Surgery, no external incisions, with miniature robots [SurgRob]
+
+Superiority:
+less trauma to all else except the spot where operation is intended, less or no scars
+can be much more precise
+tremor filtering of the surgeon's control, perfecting it
+existing systems function like robotized laparoscopic instruments, miniaturized and electromechanically enhanced hands. Greater dexterity, accuracy, stability than humans. Tools positioned by high-precision motors can reach spaces surgeon hands often cannot \citep{bib:docatadist}
+daV beginning to show superiority to  conventional: laparoscopic radical prostatectomy, less blood loss, fewer complications, shorter hospital stays, but futture studies have yet to show the benefits og robotic surgery considering the costs (2006) \citep{bib:docatadist}
+Lab experiments suggest that autonomous robot can achieve robustness comparable to human performance \citep{bib:raven_debride}
+MIS requires execution of many subtasks (not all suited to autonomous operation) \citep{bib:raven_debride}.
+
+Robotic surgery development areas/challenges:
+- Minimizing the volume of the patient manipulator for better access in the operating room for the nurse, for transportability in remote/war areas and space ships
+- Dexterity of the hand and especially the instrument part, flexible instruments
+- Latency, image coding/decoding, fieroptic allow high bandwidth data transmission with delays below 500 ms
+- in addition to technical changes there are many medical-legal, billing and liability issues
+- cost-effectiveness
+- access to bandwidth/advaced telecommunication (limitation in extremely remote areas), satellite-based telecommunication may has shown feasibility \citep{bib:telesurg_history}, but don't cover all areas \citep{bib:docatadist}
+- regulations and adoption (of surgeons)
+- lack of tactile feedback (2013)
+- Advanced imaging
+- Education of surgeons in the hand-eye-coordination using a surgical robot
+- Restricted degrees of motion
+- systems that can work under conditions very different from those of pristine operating rooms \citep{bib:docatadist}
+- reliable transmission of the surgeon's commands to a system often roaming in far-flung places
+- surgeons have remotely commanded surgical robots with real patints, but only in well-equipped hospitals with dedicated wired communication channels
+- need to improve scientific rigor of experimental validation in robotics (statistically significant results) \citep{bib:raven_ii}.
+- dramatically enhanced dexterity, but integration between computation and surgery is essentially unchanged \citep{bib:raven_ii}
+- most surgery today use of computatinal tools (intelligent/networked/references to databases/processing of images) is limited to befre or after the procedure and not supported by the robot system itself \citep{bib:raven_ii}
+- it was 2-3 times slower than a human (Raven) \citep{bib:raven_debride}, execution speed could be improved with better state estimation (strict constraints due to safety)
+- reproduce the extraordinary perception and control skills of humans \citep{bib:raven_debride}
+- primary difficulty for Raven: state estimation (cable driven actuators, indirect sensors imprecise - slack/stretch in cables and flexibility of links/joints) since not feasible to install joint sensors. Stereo vision for pose estimate is highly noisy \citep{bib:raven_debride}
+- primary difficulty with teleoperation beyond Earth orbit is communication lag time/latency, for Mars orbit it is 6.5-44 min [SurgRob] Compression and decompression of video stream takes 1.2 s.
+- 1ms samplig time gives significant bandwidth demand, 10Mbps enough for teleoperation, but with HD requires 40Mbps [SurgRob]
+
+
+
+\subsection{The da Vinci Surgical System}
+2002: one serious case, person dired after surgery wih da Vinci [SurgRob]
+Used with more than 100 procedures (FDA approved for a dozen)
+December 2008: 111 da Vinci shipments worldwide, over 300 000 procedures performed
+Over 2200 systems in place and over 360 000 procedures performed in 2011 worldwide \citep{bib:raven_ii}
+
+da Vinci and Intuitive story here
+\$25 000 ow level controller boards and capacity of 7 laptops, >1.4 million lines of operating code, da Vinci S improved to avoid collisions, more slender (2009) [SurgRob]
+
+\section{Focus of this Project}
+Our focus:
+safety
+make forbidden areas where the robot cannot enter
+
+ROS middleware layer as in Raven.
+Prior work: designing planning and control algorithms for autonomous execution of several surgical subtasks (knot tying, suturing), advances in motion planning, control and perception: integrated task and motion planning ofhigh level task planning using state machines, and motion planning for low level planning algorithm  \citep{bib:raven_debride}
+Raven-II inverse control process (not primarily to estimate the pose, in which case standard estimation methods like Kalman would be appropriate) is to calculate, give an desired true pose, the input pose to send the control sw to reach the desired true pose (detected pose with vision system assumed to be the true pose), estimate between measurements using updates from forward kinematics \citep{bib:raven_debride}.
+da Vinci Research Kit: learning from demonstrations/by observation. Targets considered form convex regions spherical/linear. Patient Side Manipulators manipulates the instruments about a fixed point called the remote center of motion \citep{bib:raven_observ}.
 
 
 \begin{itemize}
