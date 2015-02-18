@@ -268,7 +268,7 @@ basicstyle=\ttfamily\scriptsize,
 \def\theoremframecommand{{\color{HeaderBlue}\vrule width 10pt \hspace{8pt}}}%
 \newtheorem{theorem}{Theorem}%
 \newaliascnt{example}{theorem}%
-\newshadedtheorem{exa}{Eksempel}[chapter]%		% navngivning af eksempel
+\newshadedtheorem{exa}{Definition}[chapter]%		% navngivning af eksempel
 \aliascntresetthe{example}%
 \providecommand*{\exaautorefname}{eksempel}%	% Gør det muligt at bruge autoref på eksempler, og så er de navngivet Eksempel #.#
 \newenvironment{example}[1]{%					% tager ét input i {}-klammer (titel på eksempel)
@@ -330,7 +330,7 @@ basicstyle=\ttfamily\scriptsize,
 \let\orgautoref\autoref
 \providecommand{\Autoref}[1]%
 {%
-\def\exaautorefname{Example}%
+\def\exaautorefname{Definition}%
 \def\equationautorefname{Equation}%
 \def\figureautorefname{Figure}%
 \def\subfigureautorefname{Figure}%
@@ -377,7 +377,7 @@ basicstyle=\ttfamily\scriptsize,
 \def\theoremautorefname{theorem}%
 \def\pageautorefname{page}%
 \def\lstlistingautorefname{code snip}%
-\def\exaautorefname{example}%
+\def\exaautorefname{definition}%
 \orgautoref{#1}%
 }
 
