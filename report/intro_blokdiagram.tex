@@ -22,6 +22,21 @@ The above pool of stipulations will essentially and practically entail the follo
 \end{itemize}
 A crucial matter when dealing with those topics within robotic surgeries feature necessary conditions to guarantee the patient safety and to avert patient trauma \citep{bib:safety}.
 \section{Safety Precautions for Automated Surgery Control}
+The system considered will be the general non-linear system on the form:
+\begin{flalign*}
+\dot{x} = f(x) + g(x)\,u + h(x)\,d
+\end{flalign*}
+\vspace{-0.7cm}
+\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+where & & \\
+\gls{x} is the state and restricted to $x \in \mathbb{R}^n$ where  \gls{n} is the number of states &[$\cdot$]& \\
+\gls{u} is the control input and restricted to $u \in \mathbb{R}^m$ where \gls{m} is the number of inputs& [$\cdot$]& \\
+\gls{d} is the disturbance input and restricted to $d \in D \subseteq \mathbb{R}^p$ where \gls{p} is the number of disturbances & [$\cdot$]& \\
+$f$ is the (potential) non-linear system matrix (or function??) & [$\cdot$]& \\
+$g$ is the (potential) non-linear input matrix (or function??) & [$\cdot$]& \\
+$h$ is the (potential) non-linear disturbance matrix (or function??) & [$\cdot$]& 
+\end{longtable}
+
 The definition of safety will follow the definition described in \citep{bib:safety}, i.e.:
 \begin{exa}
 A closed loop control system, $\Gamma_\text{cl} = (f_\text{cl},h,X,X_0.X_u,D)$, is unsafe if there exist a time $t \in [0,T]$ such that the trajectory $\phi_{X_0}^{\bar{d}} : [0,T]$ satisfy: 
@@ -29,7 +44,7 @@ A closed loop control system, $\Gamma_\text{cl} = (f_\text{cl},h,X,X_0.X_u,D)$, 
 		\left( \phi_{X_0}^{\bar{d}}([0,t]) \cap X_u \right) \neq \emptyset \kk \wedge \kk 
 		\phi_{X_0}^{\bar{d}}([0,t]) \subseteq X
 	\end{flalign*}
-The closed loop system $\Gamma_\text{cl}$ is safe if there are no unsafe trajectories. Here \gls{X} is the set of all allowed states. \gls{phi} is the set t of all allowed initial conditions with bounded disturbance $\bar{d}$
+The closed loop system $\Gamma_\text{cl}$ is safe if there are no unsafe trajectories. Here \gls{X} is the set of all allowed states. \gls{phi} is the set \gls{t} of all allowed initial conditions with bounded disturbance \gls{dbar}.
 
 \label{def_safety}
 \end{exa}
