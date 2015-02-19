@@ -24,9 +24,14 @@ A crucial matter when dealing with those topics within robotic surgeries feature
 \section{Safety Precautions for Automated Surgery Control}
 The definition of safety will follow the definition described in \citep{bib:safety}, i.e.:
 \begin{exa}
-This is a definition of safety
+A closed loop control system, $\Gamma_\text{cl} = (f_\text{cl},h,X,X_0.X_u,D)$, is unsafe if there exist a time $t \in [0,T]$ such that the trajectory $\phi_{X_0}^{\bar{d}} : [0,T]$ satisfy: 
+	\begin{flalign*}
+		\left( \phi_{X_0}^{\bar{d}}([0,t]) \cap X_u \right) \neq \emptyset \kk \wedge \kk 
+		\phi_{X_0}^{\bar{d}}([0,t]) \subseteq X
+	\end{flalign*}
+The closed loop system $\Gamma_\text{cl}$ is safe if there are no unsafe trajectories.
 \label{def_safety}
 \end{exa}
-A graphical interpretation is deduced from \autoref{def_safety} and found in figure ??.
+A graphical interpretation can be deduced from \autoref{def_safety} and found in figure ??.
 \section{Control Barrier Functions}
-The control of the safety problem can be carried out by Inspiration of ordinary CLFs (Control Lyapunov Functions) \citep{bib:org_control}
+The control of the safety problem can be carried out by inspiration of ordinary CLFs (Control Lyapunov Functions) \citep{bib:org_control}
