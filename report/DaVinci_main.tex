@@ -19,11 +19,17 @@
 \tableofcontents
 \setlength\parskip{1ex}
 
-\input{Nomenclatures.tex}
+\chapter*{Nomenclature}\label{chap:acronym}
+\addcontentsline{toc}{chapter}{Nomenclature} % Adds chapter to TOC even though it is unnumbered
+\printglossary[style=altlist,title=Glossary] %Print the glossary
+\printglossary[type=\acronymtype,style=mcoltree] %Print list of acronyms
+\printglossary[type=symbols,style=altlong4col] %Print list of symbols
+\clearpage
 
-\printnomenclature \label{chap:acronym}
 
-\printglossary[type=symbols,style=long4col]
+
+
+
 
 \input{spa}
 

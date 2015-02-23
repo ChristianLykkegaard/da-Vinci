@@ -73,12 +73,96 @@
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 
-\setlength{\columnsep}{1.8em}	% specifies the margin (space) between columns in the nomenclature
+
+% % % % % % % % % % % % % % % % % GLOSSARIES % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%Load the package: enables multiple glossaries
+\usepackage[
+nonumberlist, %do not show page numbers
+acronym,      %generate acronym listing   -> Not used in this example (see line with %%% )
+toc,          %show listings as entries in table of contents
+section]      %use section level for toc entries
+{glossaries}
+
+
+
+
+%Generate a list of symbols
+\newglossary[glg]{glossary}{gls}{glo}{Glossary}
+\newglossary[alg]{acronyms}{acr}{acn}{Acronyms}
+\newglossary[slg]{symbols}{syi}{syg}{Symbols}
+
+
+%Load nomenclature and glossary files
+\loadglsentries{glossary}
+\loadglsentries{acronym}
+\loadglsentries{symbols}
+
+
+% Style for making glossary in two columns
+\usepackage{glossary-mcols}
+\newglossarystyle{glossary2col}{% 
+	\glossarystyle{mcoltreenoname}% 
+	\renewcommand*{\glossaryentryfield}[5]{% 
+		\item[\glsentryitem{##1}\glstarget{##1}{##2}] \noindent##3 \hfill ##4 
+	}% 
+	\renewenvironment{theglossary}% 
+	{% 
+		\begin{multicols}{2} 
+			\begin{description}[style=multiline,leftmargin=13mm,font=\normalfont] 
+				\setlength{\parindent}{0pt}% 
+				\setlength{\parskip}{0pt plus 0.3pt}% 
+	}{ 
+			\end{description} 
+		\end{multicols} 
+	}% 
+}
+% Style for no extra margin
+\newglossarystyle{glossary1col}{% 
+	\glossarystyle{mcoltreenoname}% 
+	\renewcommand*{\glossaryentryfield}[5]{% 
+		\item[\glsentryitem{##1}\glstarget{##1}{##2}] \noindent##3 \hfill ##4 
+	}% 
+	\renewenvironment{theglossary}% 
+	{% 
+		\begin{description}[style=multiline,leftmargin=13mm,font=\normalfont] 
+			\setlength{\parindent}{0pt}% 
+			\setlength{\parskip}{0pt plus 0.3pt}% 
+	}{ 
+		\end{description}  
+	}% 
+}
+
+%Remove the dot at the end of glossary descriptions
+\renewcommand*{\glspostdescription}{}
+
+%Activate glossary commands
+\makeglossaries %
+
+\setlength{\glsdescwidth}{0.9\linewidth}
+
+%These commands sort the lists
+%%%makeindex -s filename.ist -t filename.alg -o filename.acr filename.acn
+%makeindex -s filename.ist -t filename.glg -o filename.gls filename.glo
+%makeindex -s filename.ist -t filename.slg -o filename.syi filename.syg
+
+% Make command to build the glossaries:
+%pdflatex -synctex=1 -interaction=nonstopmode %.tex | makeglossaries % | pdflatex -synctex=1 -interaction=nonstopmode %.tex
+
+
+
+\setlength{\columnsep}{4em}	% specifies the margin (space) between columns in the nomenclature
 \setlength{\nomitemsep}{0.01cm} % specifies the space between item and explanation in the nomenclature
 
 % Makes it possible to specify unit inside nomenclature environment with nomunit
 \newcommand{\nomunit}[1]{%
-\renewcommand{\nomentryend}{\hspace*{\fill}#1}}
+	\renewcommand{\nomentryend}{\hspace*{\fill}#1}}
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+
+
+
 
 
 %Appendixopsætning
@@ -135,7 +219,7 @@
 
 %  Matematiske formler og maskinkode 
 \usepackage{amssymb}										% Giver mulighed for matematiske symboler.
-\usepackage[fleqn]{amsmath}
+%\usepackage[fleqn]{amsmath}
 \usepackage{amsmath}										% Matematisk pakke
 \usepackage{mathtools}									% Udvidelse af amsmath-pakken.
 \allowdisplaybreaks 
@@ -145,7 +229,7 @@
 
 \usepackage{soul}
 
-\newcommand{\pp}{\begin{flalign}}
+%\newcommand{\pp}{\begin{flalign}}
 \newcommand{\kk}{\hspace{0.8cm}}
 
 %\usepackage{xcolor}						% indeholder 68 prædefinerede farver
@@ -582,21 +666,6 @@ format=hang,														% Figurtekst p flere linier ordnes under hinanden og i
 %\definecolor{textGreenLight}{rgb}{0.925, 0.957, 0.878}    % 236 244 224
 
 \usepackage{enumerate}
+\usepackage{enumitem}
 
-
-\usepackage[
-nonumberlist, %do not show page numbers
-acronym,      %generate acronym listing   -> Not used in this example (see line with %%% )
-%toc,          %show listings as entries in table of contents
-section]      %use section level for toc entries
-{glossaries}
-\newglossary[slg]{symbols}{syi}{syg}{List of Symbols}
-\renewcommand*{\glspostdescription}{}
-\makeglossaries
-\loadglsentries{symbols}
-
-\renewcommand{\nompreamble}{
-The Symbol- and Acronym List expands first all acronyms used in the report followed by an elaboration of all used symbols. Finally, it features additional remarks for the used nomenclature.
-\section*{List of Acronyms}
-\vspace{0.1cm}
-}
+%\usepackage{showframe}
