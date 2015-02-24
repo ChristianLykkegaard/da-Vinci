@@ -1,3 +1,21 @@
+%\newgeometry{left=3cm}
+\newgeometry{textwidth=15.5cm}
+
+\newglossaryentry{dbar}{
+name=$\bar{d}$,
+description={Bounded disturbance},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{d}{
+name=$d$,
+description={Disturbance input, restricted to $d \in D \subseteq \mathbb{R}^p$ and convex. \gls{p} is the number of disturbance inputs},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{fcl}{
+name=$f_\text{cl}$,
+description={A potential non-linear function with the closed loop characteristic: $f_{cl}: x \mapsto f(x)+g(x)k(x)$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
 \newglossaryentry{gammacl}{
 name=$\Gamma_\text{cl}$,
 description={Closep loop control system depended on....},
@@ -5,13 +23,8 @@ sort=g, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{phi}{
 name=$\phi_{X_0}^{\bar{d}}$,
-description={Trajectory initiating from the set of all allowed initial conditions with bounded disturbance \gls{dbar}},
+description={Trajectory initiating from the set of allowed initial conditions with bounded disturbance \gls{dbar}},
 sort=f, type=symbols, symbol=[$\cdot$]}
-
-\newglossaryentry{dbar}{
-name=$\bar{d}$,
-description={Bounded disturbance},
-sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{T}{
 name=T,
@@ -58,11 +71,6 @@ name=$u$,
 description={The control input which is restricted to $u \in \mathbb{R}^m$ where \gls{m} is the number of inputs},
 sort=u, type=symbols, symbol=[$\cdot$]}
 
-\newglossaryentry{d}{
-name=$d$,
-description={Disturbance input, restricted to $d \in D \subseteq \mathbb{R}^p$ and convex. \gls{p} is the number of disturbance inputs},
-sort=d, type=symbols, symbol=[$\cdot$]}
-
 \newglossaryentry{t}{
 name=$t$,
 description={Time variable},
@@ -70,25 +78,22 @@ sort=h, type=symbols, symbol=[s]}
 
 \newglossaryentry{f}{
 name=$f$,
-description={A potential non-linear function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$., mostly used as system function in a SS system},
+description={A potential non-linear function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$, mostly a system function in a SS system},
 sort=f, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{g}{
 name=$g$,
-description={A potential non-linear function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$, mostly used as input function in a SS system},
+description={A potential non-linear function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$, mostly an input function in a SS system},
 sort=g, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{h}{
 name=$h$,
-description={A potential non-linear function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$, mostly used as disturbance function in a SS system},
+description={A potential non-linear function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$, mostly a disturbance function in a SS system},
 sort=h, type=symbols, symbol=[$\cdot$]}
-
-\newglossaryentry{fcl}{
-name=$f_\text{cl}$,
-description={A potential non-linear function with the closed loop characteristic: $f_{cl}: x \mapsto f(x)+g(x)k(x)$},
-sort=f, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{k}{
 name=$k$,
 description={Feedback gain with the continuous map $k: \mathbb{R}^n \rightarrow \mathbb{R}^m$},
 sort=k, type=symbols, symbol=[$\cdot$]}
+
+%\restoregeometry
