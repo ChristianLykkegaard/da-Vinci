@@ -1,0 +1,29 @@
+% GLOSSARY
+
+%\newglossaryentry{<label>}{
+%  name={<list entry>},  % the term
+%  text={<entry as displayed in report text>},  % optional
+%  description={<long description of the entry>} % brief description
+%  plural={<entry in plural>} % entry in plural, only used if plural is not just -s
+%}
+
+% COMMANDS to use in the report to include the entry
+%\gls{<label>} 
+%\glspl{<label>} % for plural
+%\Gls{<label>}   % capitalized
+%\Glspl{<label>} % capitalized plural
+
+\newglossaryentry{laparoscopy}
+{name=laparoscopy,
+ description={type of \gls{mis} where telescopic surgical instruments are inserted via trocars through small incisions in the patient's abdomen or pelvis},
+ plural={laparoscopies}
+}
+
+\newglossaryentry{endoscope}
+{name=endoscope,
+	description={miniature telescopic camera used for \gls{laparoscopy}},
+	plural={endoscopes}
+}
+
+
+

@@ -1,0 +1,56 @@
+% ACRONYMS
+
+%\newacronym[]{<label>}{<short>}{<long>}
+% ------
+% where [] is optional:
+%[description={<description in the list of acronyms>}] % if not used, <long> is default
+%[longplural={<word in plural>}] % if plural differs from -s
+
+% COMMANDS to use in the report to include the entry
+%\gls{<label>} 
+%\glspl{<label>} % for plural
+%\Gls{<label>}   % capitalized
+%\Glspl{<label>} % capitalized plural
+
+\newacronym{ros}{ROS}{Robotic Operating System}%
+\newacronym{rio}{RIO}{Reconfigurable Input/Output}%
+\newacronym{clf}{CLF}{Control Lyapunov Functions}%
+\newacronym{ss}{SS}{State Space}%
+\newacronym[description={Defence Advanced Research Project Administration, research administration under DoD}]{darpa}{DARPA}{Defence Advanced Research Project Administration}
+\newacronym{mis}{MIS}{minimally invasive surgery}
+\newacronym{nasa}{NASA}{National Aeronautics and Space Administration}
+\newacronym{fda}{FDA}{U.S. Food and Drug Administration}
+\newacronym{dod}{DoD}{U.S. Department of Defence}
+\newacronym{neemo}{NEEMO}{NASA Extreme Environment Mission Operations}
+\newacronym{mash}{MASH}{Mobile Advanced Surgical Hospital}
+\newacronym{dof}{DOF}{degrees of freedom}
+\newacronym{iss}{ISS}{International Space Station}
+%\newacronym{}{}{}
+
+%\newacronym[description={Transmission Service Operator. Energinet.dk is the Danish TSO.}]{tso}{TSO}{transmission service operator}%
+
+
+
+%\item [VaR (Value at Risk)]
+%\item [CVaR (Conditional Value at Risk)]
+%\item [PPI-forecast (Partially Perfect forecast)] 
+%\item [UTC-time] The international timezone.
+%\item [ENFOR] ?
+%\item [Elbas]
+%\item [ex-post]?
+%\item [ex-ante]?
+%\item[ATC] Available Transfer Capacity
+%\item [CET] Central European Time
+
+
+
+% IF WE WANT TO ALTER THE DISPLAY OF THE FIRST TIME THE ENTRY APPEARS IN THE REPORT
+%\setacronymstyle{<style name>}
+% ------
+%<short> (<long>)
+%\setacronymstyle{short-long}
+%This displays the short form followed by the long form in parentheses.
+% ------
+%<long> (\textsc{<short>})
+%\setacronymstyle{long-short-sc}
+%This is like the default style but the short form is displayed in small caps. Remember that when you use \textsc{<text>} to generate small capitals, you must specify <text> in lower case, so the short form of the acronym should be defined in lower case. For example: \newacronym{svm}{svm}{support vector machine} 
