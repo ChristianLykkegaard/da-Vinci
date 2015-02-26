@@ -1,5 +1,5 @@
 %\newgeometry{left=3cm}
-\newgeometry{textwidth=15.5cm}
+\newgeometry{textwidth=14.5cm}
 
 \newglossaryentry{dbar}{
 name=$\bar{d}$,
@@ -16,6 +16,16 @@ name=$f_\text{cl}$,
 description={A potential non-linear function with the closed loop characteristic: $f_{cl}: x \mapsto f(x)+g(x)k(x)$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
+\newglossaryentry{lie}{
+name=$L_f(V(x))$,
+description={Lie derivative of $V(x)$ along the vector field $f(x)$, i.e. $L_fV(x)=\frac{\partial V(x)}{\partial x}f(x)$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{T}{
+name=T,
+description={Final value of a time series},
+sort=d, type=symbols, symbol=[s]}
+
 \newglossaryentry{gammacl}{
 name=$\Gamma_\text{cl}$,
 description={Closep loop control system depended on....},
@@ -26,10 +36,7 @@ name=$\phi_{X_0}^{\bar{d}}$,
 description={Trajectory initiating from the set of allowed initial conditions with bounded disturbance \gls{dbar}},
 sort=f, type=symbols, symbol=[$\cdot$]}
 
-\newglossaryentry{T}{
-name=T,
-description={Final value of a time series},
-sort=t, type=symbols, symbol=[s]}
+
 
 \newglossaryentry{X}{
 name=$X$,
