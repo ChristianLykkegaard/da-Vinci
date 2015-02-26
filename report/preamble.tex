@@ -108,9 +108,9 @@ section]      %use section level for toc entries
 	\renewenvironment{theglossary}% 
 	{% 
 		\begin{multicols}{2} 
-			\begin{description}[style=multiline,leftmargin=13mm,font=\normalfont] 
+			\begin{description}[style=multiline,leftmargin=16mm,font=\normalfont] 
 				\setlength{\parindent}{0pt}% 
-				\setlength{\parskip}{0pt plus 0.3pt}% 
+				\setlength{\parskip}{0pt plus 0.0pt}% 
 	}{ 
 			\end{description} 
 		\end{multicols} 
@@ -130,6 +130,16 @@ section]      %use section level for toc entries
 	}{ 
 		\end{description}  
 	}% 
+}
+\newglossarystyle{single_coltree}{%
+	\glossarystyle{tree}%
+	\renewenvironment{theglossary}%
+	{%
+		\begin{multicols}{1}
+			\setlength{\parindent}{0pt}%
+			\setlength{\parskip}{0pt plus 0.3pt}%
+		}%
+		{\end{multicols}}%
 }
 
 %Remove the dot at the end of glossary descriptions
