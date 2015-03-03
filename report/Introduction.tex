@@ -51,7 +51,8 @@ Autonomous procedures are still only implemented for entirely pre-planned motion
 
 \subsection{The da Vinci Surgical System}
 Although several FDA approved robotic surgical systems exist, da Vinci is still the only commercially available system \citep{bib:docatadist,bib:intuitive_monopoly}. The first da Vinci prototype was developed at SRI under contract with the U.S. Army in the late 1980s \citep{bib:mddi,bib:brown_univ}, and in the early 1990s \gls{darpa} invested in the research \citep[p 74]{bib:surgical_book}. The the mid 1990s SRI licensed the manipulator design of Madhani along with many other patents, and in 1995 SRI founded Intuitive Surgical and the focus shifted from battlefield to commercial use in hospitals \citep{bib:intuitive_monopoly}.
-In 1997 the first human trials were performed \citep{bib:intuitive_monopoly}, in 1999 the first market-ready da Vinci began tests [SurgRob] and the system was first approved by the FDA in 2000 \citep{bib:intuitive_monopoly,bib:brown_univ}. From 2000 until the merger in 2003 Intuitive Surgical and Computer Motion had a number of lengthy patent litigations \citep{bib:intuitive_monopoly,bib:telesurg_history}.
+In 1997 the first human trials were performed \citep{bib:intuitive_monopoly} %, in 1999 the first market-ready da Vinci began tests [SurgRob] 
+and the system was first approved by the FDA in 2000 \citep{bib:intuitive_monopoly,bib:brown_univ}. From 2000 until the merger in 2003 Intuitive Surgical and Computer Motion had a number of lengthy patent litigations \citep{bib:intuitive_monopoly,bib:telesurg_history}.
 
 The da Vinci Surgical System still has the predominant market share with more than 3000 units installed worldwide due to being the first-mover in the field and due to their many patents \citep{bib:intuitive_monopoly}, and has only had one serious case of a patient dying after surgery (2002) [SurgRob].
 The expiration of their patents in 2015 and 2016 \citep{bib:intuitive_monopoly} shows promise of many other robotic surgery systems entering the market, as both American, Canadian, European and not least Asian similar systems exist that are considerably cheaper than the da Vinci, and also more lightweight.
@@ -65,51 +66,3 @@ As Intuitive Surgical's patents gradually expire the University of Washington is
 
 The Raven robot is focused on remote telesurgery (with notable latency) in harsh conditions \citep{bib:docatadist}, and research at University of California has been made in teaching a computer model to autonomously mimic laparoscopic surgeons from recordings dynamic and kinematic data of their motions in a multi-state statistical Hidden Markov Model \citep{bib:economist}. 
 The primary difficulty reported from controlling the Raven has been state estimation, necessary because of the uncertainty inherent in actuators and encoders connected to flexible elements via long cables \citep{bib:raven_debride} and the necessity of collision avoidance of the arms.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{Focus of this Project}
-Our focus:
-safety
-make forbidden areas where the robot cannot enter
-
-ROS middleware layer as in Raven.
-Prior work: designing planning and control algorithms for autonomous execution of several surgical subtasks (knot tying, suturing), advances in motion planning, control and perception: integrated task and motion planning ofhigh level task planning using state machines, and motion planning for low level planning algorithm  \citep{bib:raven_debride}
-Raven-II inverse control process (not primarily to estimate the pose, in which case standard estimation methods like Kalman would be appropriate) is to calculate, give an desired true pose, the input pose to send the control sw to reach the desired true pose (detected pose with vision system assumed to be the true pose), estimate between measurements using updates from forward kinematics \citep{bib:raven_debride}.
-da Vinci Research Kit: learning from demonstrations/by observation. Targets considered form convex regions spherical/linear. Patient Side Manipulators manipulates the instruments about a fixed point called the remote center of motion \citep{bib:raven_observ}.
-DLR MIRo integrates torque sensing capabilities on the joint level, cosisting of actuation- position sensing- and torque sensing modules, can run in torque and impedance control mode. Virtual springs/potential fields are used to impose constraint forces preventing the robot from  entering predefined areas.
-
-
-One should certainly take the risk of patient trauma when an automated surgery is conducted into account. This is seen in Therac-25. It is therefore a necessity to formally prove that the procedure is safe as seen in \citep{bib:safety}

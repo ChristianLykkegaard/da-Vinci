@@ -1,4 +1,16 @@
-\section{Technical Overview}
+\section{Focus of this Report}
+A surgery consists of a series of subtasks, some suited for robotized autonomous execution. Prior work in motion planning and control of subtasks for surgical robots include knot tying, suturing and more advanced statistical learning of subtasks from recording surgeon motions \citep{bib:raven_debride,bib:raven_observ}.
+
+This report presents the work on a guaranteed safe end-effector trajectory control. As opposed to the safety control by virtual potential field constraints \citep{bib:dlr_miro}, this work utilizes the barrier certificate method where the robot is physically prevented from entering unsafe areas thereby guaranteeing safety \citep{bib:safety}. A short overview of the controller is given in \autoref{sec:project_overview}.
+
+The algorithm is tested on a first generation da Vinci surgical robot, detached from its surgeon controller console and modified to be controllable by automated processes. An overview of the system is given in \autoref{sec:technical_overview}.
+
+
+%One should certainly take the risk of patient trauma when an automated surgery is conducted into account. This is seen in Therac-25. 
+
+
+
+\subsection{Technical Overview of the Robotic Surgery System}\label{sec:technical_overview}
 A simplified overview of the overall setup is provided in \autoref{fig:overview} as a block diagram. The setup is physically located at the department of Control and Automation at Aalborg University in the laboratory. The figure is structured with the highest abstraction layer at the top (i.e. the \gls{ros} - an open source software framework for robots \citep{bib:ros}, see appendix ?? for further details) which establish a wireless TCP/IP communication channel receiving all positions from the robot as feedback. It produces likewise positioning control signals to the NI (National Instruments) single board \glspl{rio} which handle all input/output communication with the user. The NI single board \glspl{rio} consist of a primary and a secondary board. The reason for having two \gls{rio} boards is solely the lack of input/outputs on one board.
 
 The \gls{rio} boards direct the control signals to a cascaded controller taking in a velocity reference from the user and delivers a current control signal to the ESCON motor driver. The velocity and current controller are implemented in FPGA based hardware to ensure sufficient controller speed relative to the system \citep{bib:robot_paper}. The ESCON motor driver manage advanced processing and delivers essentially an appropriate PWM signal for the  actuators in form of seven maxon motors which represent the lowest abstraction layer located at the bottom of the figure.
@@ -21,58 +33,27 @@ The above pool of stipulations will essentially and practically entail the follo
 \item Path planning
 \end{itemize}
 A crucial matter when dealing with those topics within robotic surgeries feature necessary conditions to guarantee the patient safety and to avert patient trauma \citep{bib:safety}.
-\section{Safety Precautions for Automated Surgery Control}
-The system considered will be the general non-linear system on the form:
-\begin{flalign*}
-\dot{x} = f(x) + g(x)\,u + h(x)\,d
-\end{flalign*}
-\vspace{-0.7cm}
-\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-where & & \\
-\gls{x} is the state and restricted to $x \in \mathbb{R}^n$ where  \gls{n} is the number of states &[$\cdot$]& \\
-\gls{u} is the control input and restricted to $u \in \mathbb{R}^m$ where \gls{m} is the number of inputs& [$\cdot$]& \\
-\gls{d} is the disturbance input and restricted to $d \in D \subseteq \mathbb{R}^p$ where \gls{p} is the number of disturbances & [$\cdot$]& \\
-\gls{f} is a potential non-linear function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$ & [$\cdot$]& \\
-\gls{g} is a potential non-linear function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$ & [$\cdot$]& \\
-\gls{h} is a potential non-linear function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$ & [$\cdot$]& 
-\end{longtable}
 
-The definition of safety will follow the definition described in \citep{bib:safety}, i.e.:
-\begin{exa}
-A closed loop control system, $\Gamma_\text{cl} = (f_\text{cl},h,X,X_0.X_u,D)$, is unsafe if there exist a time $t \in [0,$\gls{T}$]$ such that the trajectory $\phi_{X_0}^{\bar{d}} : [0,T]$ satisfy: 
-	\begin{flalign}
-		\left( \phi_{X_0}^{\bar{d}}([0,t]) \cap X_u \right) \neq \emptyset \kk \wedge \kk 
-		\phi_{X_0}^{\bar{d}}([0,t]) \subseteq X
-	\label{eq:defsafety}
-	\end{flalign}
-The closed loop system $\Gamma_\text{cl}$ is safe if there are no unsafe trajectories.
-\vspace{-0.2cm}
-\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-Where  & & \\
-\gls{fcl} is a potential non-linear function with the closed loop characteristic:\\ \kk $f_\text{cl}: x \mapsto f(x)+g(x)k(x)$ where \gls{k} is the feedback gain with the map $k: \mathbb{R}^n \rightarrow \mathbb{R}^m$ & [$\cdot$] &  \\
-\gls{X} is the set of all allowed states & [$\cdot$] &  \\
-\gls{X0} is the set of all allowed initial states & [$\cdot$] &  \\
-\gls{Xu} is the set of all unsafe states & [$\cdot$] &  \\
-\gls{phi} is the set of all allowed initial conditions with the bounded disturbance input \gls{dbar} & [$\cdot$]
-\end{longtable}
-A graphical interpretation can be deduced from \autoref{eq:defsafety} and found in \autoref{fig:defsafety}.
-\begin{figure}[H]
-	\center
-		\includegraphics[width=0.75\textwidth]{safety.pdf}	
-	\caption{Graphically interpretation of \autoref{eq:defsafety} in the state space. The blue trajectory is unsafe while the green trajectory is safe.}
-	\label{fig:defsafety}
-\end{figure}
-\label{def_safety}
-\end{exa}
 
-\textbf{Beskriv forskellige m\aa der at h\aa ndtere constraint, samt beskriv deres fordele og ulemper!}
+\subsection{Project Overview}\label{sec:project_overview}
+The system consists of the surgical robot arm, which must follow a trajectory on the surface of a beating heart. This means that the setpoint will follow the heart's motion, and the coordinate frame fixed at the setpoint will translate and rotate according to the beating-heart model described in \citep{bib:heart_model,bib:safety}.
 
-- \gls{mpc} \\
-- \gls{clf} combined wiht \gls{cbf} (tabilization property of CLF
-with the safety aspect from the CBF) =  \\
-- reference governor?\\
+The input to the system will be the endpoint of a trajectory, and the ROS software will generate a trajectory and appropriate setpoints for the low-level controllers (which have been designed to be aggressive such that the system will react to small changes in desired position, and hence does not work well with large changes). The trajectory planning must take into account a Lyapunov function for the system, that ensures stability (what would instability mean in this case? would it be oscillations of the arm? the low-level controllers already implement constraints on the position preventing the system to reach its physical limits) and the barrier certificate, which imposes limits that physically cannot be violated by the system (in what way is this much more safe and a better mathematical guarantee of safety than virtual potential fields?), and hence limits the set of possible trajectories. These two functions can be combined in a barrier certificate control function (still need to perceive how), which must be or be connected to the trajectory planning algorithm.
 
-\gls{lie}
+The beating heart (moving setpoints/trajectory) can be seen as a disturbance, or uncontrollable input, and the beating heart model is included in the controller so the setpoint to send to the system should be as if the surface was immobile. The controller then handles both the trajectory planning with avoidance of unsafe areas, and the translation of the trajectory to the instantaneous surface point. The latter should be done by the time periodic transformation matrix (translation and rotation) between the beating heart setpoint coordinate frame, and the instrument end-effector coordinate frame. The setpoints may be given in the absolute (inertial) coordinate frame, and the transformation to end-effector coordinate frame (position and orientation) is given by the sequence of transformation matrices between each joint in the robot arm given in \cite{bib:heart_model}.
 
-\section{Control Barrier Functions}
-The control of the safety problem can be carried out by inspiration of ordinary CLFs (Control Lyapunov Functions) \citep{bib:org_control}
+In the continuous nonlinear system state space equation
+\begin{equation}
+\dot{x}=f(x)+g(x)\cdot k(x)
+\end{equation}
+the function $f(x)$ will hold the dynamics (and kinematics?) of the system, and $k(x)$ is the control input to the system (which implements the barrier certificate and somehow also the Lyapunov controller). Could this mean that $g(x)$ could be the beating heart model, and that $k(x)$ then should include some inverse function of this model in order for the setpoint/reference to be positions on the immobile surface of the heart at time $t_0$?
+If the system always moves very slowly, acceleration may be ignored and maybe dyamics could be ignored altogether, only leaving the evolution of kinematics in the function $f(x)$.
+
+It is desired at the end of the project to perform a trajectory following task with the robot arm (not only simulations or visualization through the ROS tool Rviz), and for that a tissue phantom must be procured, which allows for multiple tests with cutting tools. The phantom is desired to be able to imitate the motion of a beating heart, i.e. including a pump or other system allowing the surface to translate and rotate according to the beating heart model given in \citep{bib:heart_model}. This, however, seems to be an obstacle, since phantoms of moving hearts suited for cutting may not exist, or if they do may be too expensive. Alternatively a smaller/simpler phantom could be procured, allowing for attachment of a pump system, but in that case, would we not also have to design a pump system that would make the specific phantom translate as described in the model (but how could we possibly design it to also obtain the exact rotation if it has the wrong size and must be controlled by a simple pump system?)
+
+
+%Raven-II inverse control process (not primarily to estimate the pose, in which case standard estimation methods like Kalman would be appropriate) is to calculate, give an desired true pose, the input pose to send the control sw to reach the desired true pose (detected pose with vision system assumed to be the true pose), estimate between measurements using updates from forward kinematics \citep{bib:raven_debride}.
+
+%advances in motion planning, control and perception: integrated task and motion planning ofhigh level task planning using state machines, and motion planning for low level planning algorithm  \citep{bib:raven_debride}
+
+%da Vinci Research Kit: learning from demonstrations/by observation. Targets considered form convex regions spherical/linear. \citep{bib:raven_observ}.
