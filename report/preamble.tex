@@ -204,7 +204,7 @@ section]      %use section level for toc entries
 \usepackage{grffile}  %til Matlab%
 
 
-\usepackage{subfigure}               		% Til at stte flere underfigurer med hver sin caption ind i samme figur.
+%\usepackage{subfigure}               		% Til at stte flere underfigurer med hver sin caption ind i samme figur.
 %\usepackage{subfig}
 %\renewcommand{\thesubtable}{\arabic{subtable}}
 %\captionsetup[subtable]{labelformat=empty}
@@ -679,3 +679,6 @@ format=hang,														% Figurtekst p flere linier ordnes under hinanden og i
 \usepackage{enumitem}
 
 %\usepackage{showframe}
+
+\RequirePackage[caption=false,position=bottom]{subfig}
+\let\subbottom\subfloat
