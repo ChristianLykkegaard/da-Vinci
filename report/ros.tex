@@ -1,0 +1,40 @@
+\lstdefinestyle{ubuntu}
+{
+    backgroundcolor=\color{black},
+    basicstyle=\scriptsize\color{green}%\ttfamily
+}
+%
+\chapter{Interfacing da Vinci with ROS}
+This appendix ought to give any user concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix, that a ROS workspace is created ({\color{blue}{\textit{http://wiki.ros.org/catkin/Tutorials/create\_a\_workspace}}}) and that all the code located at the "Robotic Surgery Group - Aalborg University" has been copied/cloned to the root of the workspace ({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
+\subsubsection*{Setup of Low Level Control}
+Before the communication between ROS and da Vinci may be considered, all low level PID controllers must run correctly and the RIO configuration must be performed. 
+
+From the \texttt{aau86730} computer, launch the \texttt{p4\_primary\_Control} icon located on the desktop and connect \texttt{RT Single Board RIO (172.26.12.32)} by right clicking the icon and press connect. Subsequently, navigate to \texttt{p4\_prim\_control\_FPGA\_multichannel\_7\_FLOAT\_SPI\_5.vi} and open it. This launch a GUI comprising access to the seven low level controllers which are activated from the arrow in the upper left corner. The controller gains, setpoints, maximum step size and various calibration options are easily accessible from this GUI, though it should not be necessary to modify any of those. 
+
+To allow the ROS environment to access the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
+\subsubsection*{ROS}
+To communicate with da Vinci, it is important to execute a few commands in the correct order from the \texttt{surgery-srv.lab.es.aau.dk} computer. It is recommended to work directly on the server in the lab (it provides additional GUI applications such as rviz), but connection to a private laptop can be established through \texttt{ssh}:
+
+%\begin{lstlisting}[style=ubuntu]
+\hspace{1cm} \texttt{\$ ssh <user>@surgery-srv.lab.es.aau.dk}
+%\end{lstlisting}
+
+Every time a new terminal is commenced it is important to source the bash file from the workspace, i.e.:
+
+\hspace{1cm} \texttt{\$ source devel/setup.bash}
+
+It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. Open a terminal an run:
+
+\hspace{1cm} \textbf{1.} \ \ \ \texttt{\$ roscore} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running in the terminal}}}
+
+Now, to secure TCP/IP connection between ROS and the RIO board (Rx \& Tx of setpoints), launch the driver from a new terminal:
+
+\hspace{1cm} \textbf{2.} \ \ \  \texttt{\$ roslaunch davinci\_driver davinci\_driver.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
+
+To establish ???
+
+\hspace{1cm} \textbf{3.a} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config/ move\_group.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
+
+If a 3D GUI interface is desired, open a new terminal and launch:
+
+\hspace{1cm} \textbf{3.b} \ \ \  \texttt{\$ roslaunch davinci\_bringup/ visualization.launch} \ \ \ {\color{RoyalBlue}{\textit{\# This opens rviz}}} 
