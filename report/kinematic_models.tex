@@ -1,4 +1,4 @@
-A rotation matrix $^a_bR$ is an orthonormal matrix describing the rotation between two right-handed coordinate frames $\Psi_a$ and $\Psi_b$ such that any vector $^bv$ (including $\Psi_b$ coordinate axes) given in the $\Psi_b$ frame can be "rotated" into $\Psi_a$ coordinates by the operation
+A rotation matrix $^a_bR$ is an orthonormal matrix ($R^{-1}=R^T$) describing the rotation between two right-handed coordinate frames $\Psi_a$ and $\Psi_b$ such that any vector $^bv$ (including $\Psi_b$ coordinate axes) given in the $\Psi_b$ frame can be "rotated" into $\Psi_a$ coordinates by the operation
 \begin{equation}
 ^av =\, ^a_bR \,\,^bv
 \end{equation}
@@ -26,6 +26,10 @@ Rotation of the frame $\Psi_a$ with an angle $\theta$ counterclockwise about a s
 0 & 0 & 1
 \end{bmatrix}
 \end{equation}
+A sequence of rotations, transforming the vector $^cv$ given in the $\Psi_c$ frame to $\Psi_a$ coordinates, is implemented as
+\begin{equation}
+^av = \underbrace{^a_bR \,\, ^b_cR}_{^a_cR} \,\,^cv 
+\end{equation}
 
 The translation of the origin from the coordinate system $\Psi_a$ to $\Psi_b$ can be described by the position vector $^a_bp$, which is a vector given in the $\Psi_a$ coordinate frame.
 The relative configuration of two coordinate frames is their relative position and orientation, which can be expressed expressed by a homogeneous matrix
@@ -36,24 +40,33 @@ The relative configuration of two coordinate frames is their relative position a
 0 & 1
 \end{bmatrix}
 \end{equation}
+The inverse of a configuration matrix is
+\begin{equation}
+^a_bH^{-1} = 
+\begin{bmatrix}
+^a_bR^T & -^a_bp\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+A sequence of configurations is implemented as
+\begin{equation}
+^a_nH = ^a_bH \,\, ^b_cH \,\,...\,\, ^{n-1}_nH = 
+\begin{bmatrix}
+^a_bR \,\, ^b_cR \,\,...\,\, ^{n-2}_{n-1}R \,\,^{n-1}_nR & ^a_bp + ^a_bR \,\, ^b_cp + ... + (^a_bR\,\, ^b_cR \,\,...\,\, ^{n-2}_{n-1}R \,\, ^{n-1}_np )\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+where each matrix is a function of a rotation angle $\theta$ and a translation distance, which may be a function of time.
 
 
-The position of the end-effector (the tip of the instrument) given in an inertial frame, can be described as a sequence of joint rotations of the robot and and instrument, and translation from the inertial origin via the fixed-length links and the slide of the instrument.
+ 
 
-A coordinate frame is defined for each degree of freedom, with origin in the center of rotation. 
-
-
-
-
-
-
-
-
-The clockwise rotation of the frame $\Psi_a$ to coincide with the frame $\Psi_b$ corresponds to the counterclockwise rotation of the vector $^bv$ which will transform it to $\Psi_a$ coordinates. The inverse of a rotation matrix (rotation in the opposite direction) is its transpose.
 
 
 \section{Robot Hand Kinematics}
-Illustration of robotic arm and definition of coordinate frames of outer part of the arm incl hand/wrist/gripper. Can we define kinematic and dynamic equations?
+The position of the end-effector (the tip of the instrument) given in an inertial frame can be described as a sequence of joint rotations of the robot and the instrument, and translation from the inertial origin via the fixed-length links and the slide of the instrument.
+
+A coordinate frame is defined for each degree of freedom, with origin in the center of rotation. The coordinate frames of the robot hand and instrument is shown in \autoref{fig:robot_frames}, and defined in the following.
 
 \begin{figure}[htbp]
 	\hspace{-15mm}
@@ -62,18 +75,18 @@ Illustration of robotic arm and definition of coordinate frames of outer part of
 	\subbottom[The\,\,da\,\,Vinci\,\,inertial\,\,frame.]{\includegraphics[height=5.1cm]{robot_base_frame1.pdf}\label{fig:robot_base_frame}}%
 	\hspace{10mm}
 	\subbottom[Robot arm (grey) with inertial and robot hand base frame.]{\includegraphics[height=4.7cm]{robot_arm_with_frames.pdf}\label{fig:robot_arm_with_frames}}%
-	\caption{.}
+	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_7$ relative to the da Vinci robot.}
 	\label{fig:robot_frames}
 \end{figure}
 
 The inertial reference frame $\Psi_0$ is fixed with its origin at the robot base, as seen in \autoref{fig:robot_base_frame}. Assuming all arm joints (grey part of \autoref{fig:robot_arm_with_frames}) have zero angle, the configuration of the robot base frame (the joint of attachment between robot arm and robot hand) given in the inertial coordinates, is a pure translation along the inertial $x$- and $z$-axes:
 \begin{equation}
 ^0_b T = \begin{bmatrix}
-1 & 0 & 0 & ^0_bp_x\\
-0 & 1 & 0 & 0\\
-0 & 0 & 1 & ^0_bp_z\\
-0 & 0 & 0 & 1
-\end{bmatrix}
+I & ^0_bp\\
+0 & 1
+\end{bmatrix}, 
+\qquad\qquad\qquad
+^0_bp = [^0_bp_x \quad 0 \quad ^0_bp_z]^T
 \end{equation}
 
 The configuration of the first link frame $\Psi_1$ given in the base frame coordinates is identity, and the joint can be rotated some $\theta_1$ about the frame $z$-axis (see \autoref{fig:robot_coordinate_systems} and \ref{fig:robot_arm_with_frames}), giving the configuration matrix:

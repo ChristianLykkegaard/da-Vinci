@@ -239,6 +239,7 @@ section]      %use section level for toc entries
 
 \usepackage{soul}
 
+
 %\newcommand{\pp}{\begin{flalign}}
 \newcommand{\kk}{\hspace{0.8cm}}
 
@@ -688,3 +689,7 @@ format=hang,														% Figurtekst p flere linier ordnes under hinanden og i
 
 \RequirePackage[caption=false,position=bottom]{subfig}
 \let\subbottom\subfloat
+
+\usepackage{oubraces} % used as: \overunderbraces{upper_braces}{main_formula}{lower_braces} for example \overunderbraces{&\br{num_columns}{text_above}}% upper brace
+%{a+b+&c+d+&e+f+g&+h+i}% main formula
+%{&&\br{num_columns}{text_below}} % lower brace
