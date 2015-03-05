@@ -1,0 +1,30 @@
+\lstdefinestyle{ubuntu}
+{
+    backgroundcolor=\color{black},
+    basicstyle=\scriptsize\color{green}%\ttfamily
+}
+%
+\chapter{Interfacing da Vinci with ROS}
+This appendix ought to give any user concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system. 
+
+To communicate with da Vinci, it is important to execute a few commands in the correct order. It is recommended to work directly on the server in the lab (it provides additional GUI applications such as rviz), but connection to a private laptop can be established through \texttt{ssh}:
+
+%\begin{lstlisting}[style=ubuntu]
+\hspace{1cm} \texttt{\$ ssh <user>@surgery-srv.lab.es.aau.dk}
+%\end{lstlisting}
+
+It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. Open a terminal an run:
+
+\hspace{1cm} \textbf{1.} \ \ \ \texttt{\$ roscore} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running in the terminal}}}
+
+Now, to secure TCP/IP connection between ROS and the RIO board, launch the driver from a new terminal:
+
+\hspace{1cm} \textbf{2.} \ \ \  \texttt{\$ roslaunch davinci\_driver/ davinci\_driver.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
+
+To establish ???
+
+\hspace{1cm} \textbf{3.a} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config/ move\_group.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
+
+If a 3D GUI interface is desired, open a new terminal and launch:
+
+\hspace{1cm} \textbf{3.b} \ \ \  \texttt{\$ roslaunch davinci\_bringup/ visualization.launch} \ \ \ {\color{RoyalBlue}{\textit{\# This opens rviz}}} 
