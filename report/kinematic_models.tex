@@ -4,28 +4,31 @@ A rotation matrix $^a_bR$ is an orthonormal matrix ($R^{-1}=R^T$) describing the
 \end{equation}
 Note that the matrix $^a_bR$ can also be seen as the rotation required of the frame $\Psi_a$ for it to coincide with $\Psi_b$.
 Rotation of the frame $\Psi_a$ with an angle $\theta$ counterclockwise about a single axis (equal to clockwise "rotation" of the any vector in $\Psi_b$) correspond to the rotation matrices
+\begin{small}
 \begin{equation}
-^a_bR_x = 
+^a_bR_x(\theta) = 
 \begin{bmatrix}
 1 & 0 & 0\\
 0 & \cos\theta & -\sin\theta\\
 0 & \sin\theta & \cos\theta
 \end{bmatrix} 
 \qquad
-^a_bR_y = 
+^a_bR_y(\theta) = 
 \begin{bmatrix}
 \cos\theta & 0 & \sin\theta \\
 0 & 1 & 0\\
 -\sin\theta & 0 & \cos\theta
 \end{bmatrix}
 \qquad
-^a_bR_z = 
+^a_bR_z(\theta) = 
 \begin{bmatrix}
 \cos\theta & -\sin\theta & 0\\
 \sin\theta & \cos\theta & 0\\
 0 & 0 & 1
 \end{bmatrix}
+\label{eq:RxRyRz}
 \end{equation}
+\end{small}
 A sequence of rotations, transforming the vector $^cv$ given in the $\Psi_c$ frame to $\Psi_a$ coordinates, is implemented as
 \begin{equation}
 ^av = \underbrace{^a_bR \,\, ^b_cR}_{^a_cR} \,\,^cv 
@@ -50,13 +53,13 @@ The inverse of a configuration matrix is
 \end{equation}
 A sequence of configurations is implemented as
 \begin{equation}
-^a_nH = ^a_bH \,\, ^b_cH \,\,...\,\, ^{n-1}_nH = 
+^a_nH =\,\, ^a_bH \,\, ^b_cH \,\,...\,\, ^{n-1}_nH = 
 \begin{bmatrix}
 ^a_bR \,\, ^b_cR \,\,...\,\, ^{n-2}_{n-1}R \,\,^{n-1}_nR & ^a_bp + ^a_bR \,\, ^b_cp + ... + (^a_bR\,\, ^b_cR \,\,...\,\, ^{n-2}_{n-1}R \,\, ^{n-1}_np )\\
 0 & 1
 \end{bmatrix}
 \end{equation}
-where each matrix is a function of a rotation angle $\theta$ and a translation distance, which may be a function of time.
+where each matrix $H$ is a function of a rotation angle $\theta$ and a translation distance, which may be functions of time.
 
 
  
@@ -69,8 +72,8 @@ The position of the end-effector (the tip of the instrument) given in an inertia
 A coordinate frame is defined for each degree of freedom, with origin in the center of rotation. The coordinate frames of the robot hand and instrument is shown in \autoref{fig:robot_frames}, and defined in the following.
 
 \begin{figure}[htbp]
-	\hspace{-15mm}
-	\subbottom[Coordinate frames for the joints on the robot "hand".]{\includegraphics[width=1.2\textwidth]{robot_coordinate_systems.pdf}\label{fig:robot_coordinate_systems}}%
+	\hspace{-10mm}
+	\subbottom[Coordinate frames for the joints on the robot "hand".]{\includegraphics[width=1.2\textwidth]{robot_coordinate_systems_new.pdf}\label{fig:robot_coordinate_systems}}%
 	\vspace{1mm}
 	\subbottom[The\,\,da\,\,Vinci\,\,inertial\,\,frame.]{\includegraphics[height=5.1cm]{robot_base_frame1.pdf}\label{fig:robot_base_frame}}%
 	\hspace{10mm}
@@ -89,47 +92,79 @@ I & ^0_bp\\
 ^0_bp = [^0_bp_x \quad 0 \quad ^0_bp_z]^T
 \end{equation}
 
-The configuration of the first link frame $\Psi_1$ given in the base frame coordinates is identity, and the joint can be rotated some $\theta_1$ about the frame $z$-axis (see \autoref{fig:robot_coordinate_systems} and \ref{fig:robot_arm_with_frames}), giving the configuration matrix:
+All rotating frames are defined such that they have rotation freedom $\theta$ about their $z$-axis, and all translating frames will translate along their $z$-axis. The rotation matrices $^a_bR$ consist of the free rotation about the $z$-axis and possibly a rotation of $\alpha=90^\circ$, to ensure that the rotation (or translation) freedom of each frame is about/along the frame's $z$-axis. The translation vectors $^a_bp$ may consist of a variable distance $d$ along the $z$-axis and a fixed distance $a$ between the frame origins.
+
+The base link frame is rotated $\alpha=90^\circ$ about its $y$-axis to coincide with the first link frame $\Psi_1$ (see \autoref{fig:robot_coordinate_systems} and \ref{fig:robot_arm_with_frames}), and can according to \autoref{eq:RxRyRz} be expressed as
 \begin{equation}
 ^b_1 T(\theta_1) = 
 \begin{bmatrix}
-\cos\theta_1 & -\sin\theta_1 & 0 & 0\\
-\sin\theta_1 & \cos\theta_1 & 0 & 0\\
-0 & 0 & 1 & 0\\
-0& 0& 0& 1
+R_y(\alpha) R_z(\theta_1) & 0\\
+0 & 1
 \end{bmatrix}
 \end{equation}
 
-To get to the second link frame $\Psi_2$, the first frame is rotated 90$^\circ$ about its $x$-axis, and the joint can be rotated some $\theta_2$ about its $x$-axis. Finally the origin of the second link frame is displaced with a distance $d_2$ from the first link frame along its $z$-axis:
+The first link frame is rotated $\alpha=90^\circ$ about its $x$-axis to coincide with the second link frame $\Psi_2$ (see \autoref{fig:robot_coordinate_systems})
 \begin{equation}
 ^1_2 T(\theta_2) = 
 \begin{bmatrix}
-1 & 0 & 0 & 0\\
-0 & 0 & -1 & 0\\
-0 & 1 & 0 & 0\\
-0 & 0 &  0 & 1
+R_x(\alpha) R_z(\theta_2) & 0\\
+0 & 1
 \end{bmatrix} 
+\end{equation}
+
+The second link frame is translated $a_3$ along its $y$-axis and rotated $\alpha=90^\circ$ about its $y$-axis to coincide with the instrument roll frame $\Psi_3$ (see \autoref{fig:robot_coordinate_systems})
+\begin{equation}
+^2_3 T(\theta_3) = 
 \begin{bmatrix}
-1 & 0 & 0 & 0\\
-0 & \cos\theta & -\sin\theta & 0\\
-0 & \sin\theta & \cos\theta & 0\\
- 0 & 0 & 0 & 1
-\end{bmatrix}  
-=
+R_y(\alpha)R_z(\theta_3) & ^2_3p\\
+0 & 1
+\end{bmatrix}, 
+\qquad\qquad\qquad
+^2_3p = [0 \quad a_3 \quad 0]^T
+\end{equation}
+
+The instrument slide frame $\Psi_4$ has no rotation compared to the instrument roll frame, but includes the variable distance $d_4$ (see \autoref{fig:robot_coordinate_systems})
+\begin{equation}
+^3_4 T(d_4) = 
 \begin{bmatrix}
-1 & 0 & 0 & 0\\
-0 & -\sin\theta_2 & -\cos\theta_2 & 0\\
-0 & \cos\theta_2 & -\sin\theta_2 & 0\\
-0 & 0 &  0 & 1
-\end{bmatrix}
-\neq
+I & ^3_4p\\
+0 & 1
+\end{bmatrix}, 
+\qquad\qquad\qquad
+^3_4p = [0 \quad 0 \quad d_4]^T
+\end{equation}
+
+The instrument pitch frame (wrist frame) $\Psi_5$ is obtained by rotating $\Psi_4$ by $\alpha=90^\circ$ about its $x$-axis (see \autoref{fig:robot_coordinate_systems})
+\begin{equation}
+^4_5 T(\theta_5) = 
 \begin{bmatrix}
-\cos\theta_1 & -\sin\theta_1 & 0 & 0\\
-\sin\theta_1 & \cos\theta_1 & 0 & 0\\
-0 & 0 & 1 & 0\\
-0& 0& 0& 1
+R_x(\alpha)R_z(\theta_5) & 0\\
+0 & 1
 \end{bmatrix}
 \end{equation}
+
+The instrument yaw right (gripper right) frame $\Psi_6$ is displaced $a_6$ along the $\Psi_5$ $y$-axis, and the frame is rotated $-\alpha=-90^\circ$ about the $y$-axis
+\begin{equation}
+^5_6 T(\theta_6) = 
+\begin{bmatrix}
+R_y(-\alpha)R_z(\theta_6) & ^5_6p\\
+0 & 1
+\end{bmatrix}, 
+\qquad\qquad\qquad
+^5_6p = [0 \quad a_6 \quad 0]^T
+\end{equation}
+
+Finally the instrument yaw left (gripper left) frame $\Psi_7$ is neither rotated nor translated relative to the $\Psi_6$ frame (except for the free rotation about the $z$-axis as for all other configurations)
+\begin{equation}
+^6_7 T(\theta_7) = 
+\begin{bmatrix}
+R_z(\theta_7) & 0\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+
+The fixed distances are $a_3=530$\,mm and $a_6=14$\,mm, and the slider distance is $0\leq d_4 \leq 220$\,mm \textcolor{red}{check these and measure the $\theta$s} 
+
 
 \section{Beating Heart Dynamic Model}
 Illustration of heart model and description of kinematics and dynamics.
