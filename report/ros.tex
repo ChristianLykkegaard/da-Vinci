@@ -11,7 +11,7 @@ Before the communication between ROS and da Vinci may be considered, all low lev
 
 From the \texttt{aau86730} computer, launch the \texttt{p4\_primary\_Control} icon located on the desktop and connect \texttt{RT Single Board RIO (172.26.12.32)} by right clicking the icon and press connect. Subsequently, navigate to \texttt{p4\_prim\_control\_FPGA\_multichannel\_7\_FLOAT\_SPI\_5.vi} and open it. This launch a GUI comprising access to the seven low level controllers which are activated from the arrow in the upper left corner. The controller gains, setpoints, maximum step size and various calibration options are easily accessible from this GUI, though it should not be necessary to modify any of those. 
 
-To allow the ROS environment to access the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
+To allow the ROS environment access to the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
 \subsubsection*{ROS}
 To communicate with da Vinci, it is important to execute a few commands in the correct order from the \texttt{surgery-srv.lab.es.aau.dk} computer. It is recommended to work directly on the server in the lab (it provides additional GUI applications such as rviz), but connection to a private laptop can be established through \texttt{ssh}:
 
@@ -23,18 +23,20 @@ Every time a new terminal is commenced it is important to source the bash file f
 
 \hspace{1cm} \texttt{\$ source devel/setup.bash}
 
-It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. Open a terminal an run:
+It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. The following list of commands must be executed from the root of the workspace. Open a terminal an run:
 
 \hspace{1cm} \textbf{1.} \ \ \ \texttt{\$ roscore} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running in the terminal}}}
 
-Now, to secure TCP/IP connection between ROS and the RIO board (Rx \& Tx of setpoints), launch the driver from a new terminal:
+Now, to secure the TCP/IP connection between ROS and the RIO board (Rx \& Tx of setpoints), launch the driver from a new terminal:
 
 \hspace{1cm} \textbf{2.} \ \ \  \texttt{\$ roslaunch davinci\_driver davinci\_driver.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
 
-To establish ???
+To allow trajectory planning, link the OMPL (Open Motion Planning Library) to the system by running: 
 
-\hspace{1cm} \textbf{3.a} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config/ move\_group.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
+\hspace{1cm} \textbf{3.a} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config move\_group.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
 
 If a 3D GUI interface is desired, open a new terminal and launch:
 
-\hspace{1cm} \textbf{3.b} \ \ \  \texttt{\$ roslaunch davinci\_bringup/ visualization.launch} \ \ \ {\color{RoyalBlue}{\textit{\# This opens rviz}}} 
+\hspace{1cm} \textbf{3.b} \ \ \  \texttt{\$ roslaunch davinci\_bringup visualization.launch} \ \ \ {\color{RoyalBlue}{\textit{\# This opens rviz}}} 
+
+Press the "add" button in \texttt{rviz} and add the "MotionPlanning" option to the panel where start and goal state can be specified. Hereafter, plan and execute the specified goal. This cause the arm of da Vinci to reach out for the specified goal state consisting of five joint angles.
