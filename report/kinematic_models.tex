@@ -47,15 +47,15 @@ The inverse of a configuration matrix is
 \begin{equation}
 ^a_bH^{-1} = 
 \begin{bmatrix}
-^a_bR^T & -^a_bp\\
+^a_bR^T & -^a_bR^T\,\,^a_bp\\
 0 & 1
 \end{bmatrix}
 \end{equation}
 A sequence of configurations is implemented as
 \begin{equation}
-^a_nH =\,\, ^a_bH \,\, ^b_cH \,\,...\,\, ^{n-1}_nH = 
+^a_nH =\,\, ^a_bH \,\, ^b_cH \,\,...\,\, ^m_nH = 
 \begin{bmatrix}
-^a_bR \,\, ^b_cR \,\,...\,\, ^{n-2}_{n-1}R \,\,^{n-1}_nR & ^a_bp + ^a_bR \,\, ^b_cp + ... + (^a_bR\,\, ^b_cR \,\,...\,\, ^{n-2}_{n-1}R \,\, ^{n-1}_np )\\
+^a_bR \,\, ^b_cR \,\,...\,\, ^l_mR \,\,^m_nR & ^a_bp + ^a_bR \,\, ^b_cp + ... + (^a_bR\,\, ^b_cR \,\,...\,\, ^l_mR \,\, ^m_np )\\
 0 & 1
 \end{bmatrix}
 \end{equation}
