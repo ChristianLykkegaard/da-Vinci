@@ -238,7 +238,7 @@ section]      %use section level for toc entries
 \usepackage{color}                        % Package til \color-kommandoen
 
 \usepackage{soul}
-
+\usepackage{courier}
 
 %\newcommand{\pp}{\begin{flalign}}
 \newcommand{\kk}{\hspace{0.8cm}}
@@ -247,7 +247,7 @@ section]      %use section level for toc entries
 %\usepackage{listings}                     % Package til kodeeksempler
 \def\lstlistingname{Code snip}%        % Definerer hvad der str foran et stykke kodes caption
 \lstset{
-	basicstyle=\small,                    % Lille skrifttype
+	basicstyle=\small\ttfamily,                    % Lille skrifttype
 	keywordstyle=\color{blue}\bfseries,   % Keywords bl og bold
 	commentstyle=\color[RGB]{126,126,126},  % Comments svag sort
 	showstringspaces=false,               % Ingen symbol for mellemrum i strings
@@ -270,10 +270,10 @@ section]      %use section level for toc entries
 \definecolor{matlab-color2}{rgb}{0.627,0.125,0.94}
 
 \lstdefinelanguage{matlab} {              % Definition af Arduino-language
-	morekeywords={all, on, quiet, x(n,N), u(p,N),to },
-		keywordstyle=\color[RGB]{160,32,240},classoffset=2,
-			morekeywords={end, for, if},
-		keywordstyle=\color[RGB]{0,0,255},classoffset=3,
+	morekeywords={all, on, quiet, x(n,N), u(p,N),to},
+		keywordstyle=\color[RGB]{160,32,240},classoffset=2, %purple
+			morekeywords={end, for, if, function, elseif, else},
+		keywordstyle=\color[RGB]{0,0,255},classoffset=3, %blue
 %   sensitive=false, morecomment=[l]{\%}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
 	 comment=[l][\color{matlab-color}]{\%},%morecomment=[s]{'}{'} % Ingen farver p kommentare
 %	 morecomment=[s][\color{matlab-color2}]{'}{'}
