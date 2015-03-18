@@ -257,6 +257,7 @@ $|\,^6_{12} p|$ & 46.46 & 51.5\\
 $|\,^6_{13} p|$ & 40.27 & 47.0\\
 $|\,^6_{14} p|$ & 40.14 & 47.0\\\hline
 $\,^0_{14} p_x$ & 202.27 & 210.0\\
+$\,^0_{14} p_y$ & 0 & 0\\
 $\,^0_{14} p_z$ & 94.62 & 92.0
 \end{tabular}
 \label{tab:state0}%
@@ -264,22 +265,25 @@ $\,^0_{14} p_z$ & 94.62 & 92.0
 \subbottom[]{%
 \begin{tabular}{l r r}\hline
 dist. & calc. & meas.\\\hline
-$|\,^6_7 p|$ & 16.92 & 16.0\\
-$|\,^6_8 p|$ & 16.92 & 16.0\\
-$|\,^6_9 p|$ & 35.43 & 34.0\\
-$|\,^6_{10} p|$ & 48.78 & 53.0\\
-$|\,^6_{11} p|$ & 42.09 & 50.5\\
-$|\,^6_{12} p|$ & 46.46 & 51.5\\
-$|\,^6_{13} p|$ & 40.27 & 47.0\\
-$|\,^6_{14} p|$ & 40.14 & 47.0\\\hline
-$\,^0_{14} p_x$ & 202.27 & 210.0\\
-$\,^0_{14} p_z$ & 94.62 & 92.0
+$|\,^6_7 p|$ & 16.92 & 16\\
+$|\,^6_8 p|$ & 16.92 & 16\\
+$|\,^6_9 p|$ & 28.77 & 27\\
+$|\,^6_{10} p|$ & 25.10 & 36\\
+$|\,^6_{11} p|$ & 43.75 & 44\\
+$|\,^6_{12} p|$ & 42.81 & 46\\
+$|\,^6_{13} p|$ & 60.18 & 65\\
+$|\,^6_{14} p|$ & 61.07 & 66\\\hline
+$\,^0_{14} p_x$ & 221.01 & 220\\
+$\,^0_{14} p_y$ & 0.81 & 25\\
+$\,^0_{14} p_z$ & 106.65 & 96
 \end{tabular}
 \label{tab:state5}%
 }\hfill
-\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0} all variables are set to zero. In \ref{tab:state5} state$_\text{hand}=[]$ }
+\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0} all variables are set to zero. In \ref{tab:state5} state$_\text{hand}=$[2.6, 1.4, -0.1, 0, 0, -0.47, 0.01] }
 \label{tab:xacro_distances}
 \end{table}
+
+%% STATE
 
 
 \section{Defining Kinematics According to Denavit-Hartenberg Convention}
@@ -333,6 +337,7 @@ The placement of coordinate frames according to the \gls{dh} convention is shown
 
 \begin{table}[htbp]
 	\small
+	\vspace*{-3mm}
 	\centering
 	\begin{tabular}{r | rrrr}\hline
 		$i$  & $\theta_i$ [rad]& $d_i$ [m] & $a_i$ [m] & $\alpha_i$ [rad] \\\hline
@@ -360,7 +365,6 @@ The placement of coordinate frames according to the \gls{dh} convention is shown
 The new transformation matrices are computed and tested similarly, to determine the accuracy of the defined robot kinematics, and the results are seen in \autoref{tab:DH_distances}.
 \begin{lstlisting}[language=matlab]
 %% Coordinate frames defined according to Denavit-Hartenberg convention
-
 % Parameters
 a_fix = [0.198 0.5820 0.435 0 0 0 0 0.1900 0.515 0.0400 0 0 0.0095 0.0095 0.0095];
 d_fix = [1 0 0 0 0.4122 0.0474 -0.0450 0 0 0 0.282 0 0 0 0];
@@ -395,17 +399,55 @@ $|\,^5_{12} p|$ & 47.94 & 48\\
 $|\,^5_{13} p|$ & 48.04 & 48\\
 $|\,^5_{14} p|$ & 48.16 & 48\\\hline
 $\,^0_{14} p_x$ & 210.42 & 210\\
+$\,^0_{14} p_y$ & 0 & 0\\
 $\,^0_{14} p_z$ & 93.35 & 92
 \end{tabular}
 \label{tab:state0dh}%
 }\hfill
-\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0dh} all variables are set to zero. In \ref{tab:state5dh} state$_\text{hand}=[]$ }
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^5_6 p|$ & 4.74 & 5\\
+$|\,^5_7 p|$ & 6.54 & 8\\
+$|\,^5_8 p|$ & 23.99 & 24\\
+$|\,^5_9 p|$ & 28.41 & 34\\
+$|\,^5_{10} p|$ & 28.78 & 39\\
+$|\,^5_{11} p|$ & 66.70 & 64\\
+$|\,^5_{12} p|$ & 66.70 & 64\\
+$|\,^5_{13} p|$ & 67.65 & 65\\
+$|\,^5_{14} p|$ & 68.48 & 66\\\hline
+$\,^0_{14} p_x$ & 230.81 & 220\\
+$\,^0_{14} p_y$ & 1.88 & 25\\
+$\,^0_{14} p_z$ & 107.03 & 96
+\end{tabular}
+\label{tab:state5dh}%
+}\hfill
+\subbottom[]{%
+	\begin{tabular}{l r r}\hline
+		dist. & calc. & meas.\\\hline
+		$|\,^5_6 p|$ & 4.74 & new!\\
+		$|\,^5_7 p|$ & 6.54 & 8\\
+		$|\,^5_8 p|$ & 23.99 & 24\\
+		$|\,^5_9 p|$ & 28.41 & 34\\
+		$|\,^5_{10} p|$ & 28.78 & 39\\
+		$|\,^5_{11} p|$ & 66.70 & 64\\
+		$|\,^5_{12} p|$ & 66.70 & 64\\
+		$|\,^5_{13} p|$ & 67.65 & 65\\
+		$|\,^5_{14} p|$ & 68.48 & 66\\\hline
+		$\,^0_{14} p_x$ & 230.81 & 220\\
+		$\,^0_{14} p_y$ & 1.88 & 25\\
+		$\,^0_{14} p_z$ & 107.03 & 96
+	\end{tabular}
+	\label{tab:state6dh}%
+}\hfill
+\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0dh} all variables are set to zero. In \ref{tab:state5dh} state$_\text{hand}=$[2.6, 1.4, -0.1, 0, 0, -0.47, 0.01] }
 \label{tab:DH_distances}
 \end{table}
 
 \textcolor{red}{Add more measurements for verification}
 
 
+%% STATE5
 
 
 
