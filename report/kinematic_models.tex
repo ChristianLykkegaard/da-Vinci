@@ -68,18 +68,23 @@ The position of the end-effector (the tip of the instrument) given in an inertia
 A coordinate frame is defined for each degree of freedom, with origin on the axis of rotation. A set of coordinate frames and transformation matrices between the frames are given according to the \gls{ros} \texttt{xacro} files \texttt{tower}, \texttt{p4\_arm}, \texttt{remote\_center\_manipulator} and \texttt{needle\_driver}.
 
 \begin{figure}[htbp]
-	\hspace{-10mm}
-	\subbottom[Coordinate frames for the joints on the robot arm.]{\includegraphics[width=\textwidth]{p4_arm_xacro_frames.pdf}\label{fig:p4_arm_xacro_frames}}%
-	\vspace{1mm}
-	\subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.1\textwidth]{p4_hand_xacro_frames.pdf}\label{fig:p4_hand_xacro_frames}}%
-	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{14}$ according to the \gls{ros} \texttt{xacro} files.}
-	\label{fig:robot_xacro_frames}
+\vspace*{-10mm}
+\hspace{-10mm}
+\subbottom[Coordinate frames for the joints on the robot arm.]{\includegraphics[width=1.1\textwidth]{p4_arm_xacro_frames.pdf}\label{fig:p4_arm_xacro_frames}}%
+\vspace{5mm}\\
+\hspace*{-15mm}
+\subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.15\textwidth]{p4_hand_xacro_frames.pdf}\label{fig:p4_hand_xacro_frames}}%
+\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{14}$ according to the \gls{ros} \texttt{xacro} files.}
+\label{fig:robot_xacro_frames}
 \end{figure}
 
 The position and orientation of the $i$th coordinate frame is given as a transformation matrix from the $i-1$th frame, where fixed distances and rotations are measured along/about the axes of the $i-1$th frame while free distances and rotations are measured along/about the axes of the $i$th frame. The parameters and variables shown in \autoref{fig:robot_xacro_frames} are given in \autoref{tab:xacro_param}.
 
+\vspace{2mm}
 \begin{table}[htbp]
-	\begin{tabular}{r | rrr c c l}
+\small
+\centering
+	\begin{tabular}{r | rrr c c l}\hline
 		frame  & $a$ [m] & $b$ [m] & $d$ [m] & fixed rot. $\alpha$ [rad] & free rot. $\theta$ [rad] & name\\\hline
 		1 & 0 & 0 & $d_1^*$ & $I$ & $I$ & \texttt{elevation}\\
 		2 & 0.186 & 0 & 0.554 & $R_z(\pi/2)R_x(\pi)$ & $R_z(\theta_2^*)$ & \texttt{arm\_yaw1} \\
@@ -114,17 +119,17 @@ p_2 = [0.186 \quad 0 \quad 0.554]^T
 
 The physical, low level controller and \gls{ros} limits for each of the variables are given in \autoref{tab:var_limits}
 
-
+\vspace{2mm}
 \begin{table}[htbp]
-\small%
-%\hspace{-10mm}
+\small
+\hspace*{-9mm}
 %\begin{tabular}{l | cccccc}
 %limits & $d_1^*$ & $\theta_2^*$ & $\theta_3^*$ & $\theta_4^*$ & $\theta_5^*$ & $\theta_6^*$ \\\hline
 %physical & & & & & & \\
 %\texttt{xacro} & [0, 1] & $\pm\pi/2$ & $\pm 2.8$ & $\pm 2.8$ & $\pm\pi/2$ & $\pm 2.8$
 %\end{tabular}\\\\%
 %\vspace{1mm}\\%
-\begin{tabular}{l | ccccccc}
+\begin{tabular}{l | ccccccc}\hline
 limits & $\theta_7^*$ & $\theta_8^*$ & $d_{11}^*$ & $\theta_{12}^*$ & $\theta_{13}^*$ & $\theta_{14L}^*$ & $\theta_{14R}^*$ \\\hline
 physical & $\pm$1.670 & [-0.951, 0.912] & [0.169, 0.410] & $\pm$4.712 & [-1.466, 1.536] & [-1.850, $\theta_{14R}^*$] & [$\theta_{14L}^*$, 1.702] \\
 FPGA & [-1.333, 1.424] & [-0.812, 0.773] & [0.170, 0.409] & [-4.294, 4.416] & [-0.977, 0.908] & [-0.785, 1.335] & \\
@@ -134,6 +139,7 @@ FPGA & [-1.333, 1.424] & [-0.812, 0.773] & [0.170, 0.409] & [-4.294, 4.416] & [-
 \caption{Limits on the (controllable) variables in \autoref{tab:xacro_param} and \autoref{fig:robot_xacro_frames}. The low level controller limits in the FPGA are set to avoid the physical limits, by switching off the motors on violation. The physical limits are measured limits.}
 \label{tab:var_limits}
 \end{table}
+\vspace{2mm}
 
 The first 6 degrees of freedom are elevation and rotation of the arm joints, and are manually set preoperatively and fixed, hence only the last 7 variables are controllable for trajectory planning. 
 The frames are superimposed on the robot in \autoref{fig:robot_frames_pot}.
@@ -234,107 +240,173 @@ for i = 1:length(a)
 end
 \end{lstlisting}
 
-Measurements of distances
+To test the accuracy of the defined kinematics, computed distances are compared to measured distances. The results are shown in \autoref{tab:xacro_distances}, for different state configurations, with state = [state$_\text{arm}$, state$_\text{hand}$] $= [\{d_1, \theta_2, \theta_3, \theta_4, \theta_5, \theta_6\}, \{\theta_7, \theta_8, d_{11}, \theta_{12}, \theta_{13}, \theta_{14L}, \theta_{14R}\}]$ ($\theta_8=\theta_9=\theta_{10}$ and hence 9 and 10 will be left out here).
+
+\begin{table}[htbp]
+\small
+\centering
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^6_7 p|$ & 16.92 & 16.0\\
+$|\,^6_8 p|$ & 16.92 & 16.0\\
+$|\,^6_9 p|$ & 35.43 & 34.0\\
+$|\,^6_{10} p|$ & 48.78 & 53.0\\
+$|\,^6_{11} p|$ & 42.09 & 50.5\\
+$|\,^6_{12} p|$ & 46.46 & 51.5\\
+$|\,^6_{13} p|$ & 40.27 & 47.0\\
+$|\,^6_{14} p|$ & 40.14 & 47.0\\\hline
+$\,^0_{14} p_x$ & 202.27 & 210.0\\
+$\,^0_{14} p_z$ & 94.62 & 92.0
+\end{tabular}
+\label{tab:state0}%
+}\hfill
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^6_7 p|$ & 16.92 & 16.0\\
+$|\,^6_8 p|$ & 16.92 & 16.0\\
+$|\,^6_9 p|$ & 35.43 & 34.0\\
+$|\,^6_{10} p|$ & 48.78 & 53.0\\
+$|\,^6_{11} p|$ & 42.09 & 50.5\\
+$|\,^6_{12} p|$ & 46.46 & 51.5\\
+$|\,^6_{13} p|$ & 40.27 & 47.0\\
+$|\,^6_{14} p|$ & 40.14 & 47.0\\\hline
+$\,^0_{14} p_x$ & 202.27 & 210.0\\
+$\,^0_{14} p_z$ & 94.62 & 92.0
+\end{tabular}
+\label{tab:state5}%
+}\hfill
+\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0} all variables are set to zero. In \ref{tab:state5} state$_\text{hand}=[]$ }
+\label{tab:xacro_distances}
+\end{table}
+
 
 \section{Defining Kinematics According to Denavit-Hartenberg Convention}
 
-I order to simplify calculations, the robot coordinate frame convention Denavit-Hartenberg is adapted, and a 
+In order to simplify calculations, the robot coordinate frame convention \gls{dh} is adapted, and a new set of coordinate frames and transformation matrices are established. According to the \gls{dh} convention a frame is placed such that
+\begin{itemize}
+\itemsep-1.3mm 
+\item frame $i$ is fixed with respect to link $i$
+\item the $z_i$ axis is aligned with link $i+1$ actuation axis
+\item variable/parameter $\theta_i$ is the angle from $x_{i-1}$ to $x_i$ about $z_{i-1}$
+\item variable/parameter $d_i$ is the distance from origin $i-1$ to $x_i$ measured along $z_{i-1}$
+\item parameter $a_i$ is the distance from $z_{i-1}$ to $z_i$ measured along $x_i$
+\item parameter $\alpha_i$ is the angle from $z_{i-1}$ to $z_i$ about $x_i$
+\end{itemize}
 
-The coordinate frames of the robot hand and instrument is shown in \autoref{fig:robot_frames}, and defined in the following.
-
-%\begin{figure}[htbp]
-%	\hspace{-10mm}
-%	\subbottom[Coordinate frames for the joints on the robot "hand".]{\includegraphics[width=1.2\textwidth]{robot_coordinate_systems_new.pdf}\label{fig:robot_coordinate_systems}}%
-%	\vspace{1mm}
-%	\subbottom[The\,\,da\,\,Vinci\,\,inertial\,\,frame.]{\includegraphics[height=5.1cm]{robot_base_frame1.pdf}\label{fig:robot_base_frame}}%
-%	\hspace{10mm}
-%	\subbottom[Robot arm (grey) with inertial and robot hand base frame.]{\includegraphics[height=4.7cm]{robot_arm_with_frames.pdf}\label{fig:robot_arm_with_frames}}%
-%	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_7$ relative to the da Vinci robot.}
-%	\label{fig:robot_frames}
-%\end{figure}
-
-The inertial reference frame $\Psi_0$ is fixed with its origin at the robot base, as seen in \autoref{fig:robot_base_frame}. Assuming all arm joints (grey part of \autoref{fig:robot_arm_with_frames}) have zero angle, the configuration of the robot base frame (the joint of attachment between robot arm and robot hand) given in the inertial coordinates, is a pure translation along the inertial $x$- and $z$-axes:
+Using this convention, all transformations between frames can be written on the form
 \begin{equation}
-^0_b T = \begin{bmatrix}
-I & ^0_bp\\
-0 & 1
-\end{bmatrix}, 
-\qquad\qquad\qquad
-^0_bp = [^0_bp_x \quad 0 \quad ^0_bp_z]^T
-\end{equation}
-
-All rotating frames are defined such that they have rotation freedom $\theta$ about their $z$-axis, and all translating frames will translate along their $z$-axis. The rotation matrices $^a_bR$ consist of the free rotation about the $z$-axis and possibly a rotation of $\alpha=90^\circ$, to ensure that the rotation (or translation) freedom of each frame is about/along the frame's $z$-axis. The translation vectors $^a_bp$ may consist of a variable distance $d$ along the $z$-axis and a fixed distance $a$ between the frame origins.
-
-The base link frame is rotated $\alpha=90^\circ$ about its $y$-axis to coincide with the first link frame $\Psi_1$ (see \autoref{fig:robot_coordinate_systems} and \ref{fig:robot_arm_with_frames}), and can according to \autoref{eq:RxRyRz} be expressed as
-\begin{equation}
-^b_1 T(\theta_1) = 
+\hspace*{-2mm}
+\small
+^{i-1}_i H = %H_{rot\,z,\theta_i} H_{trans\,z,d_i} H_{trans\,x,a_i} H_{rot\,x,\alpha_i} =
 \begin{bmatrix}
-R_y(\alpha) R_z(\theta_1) & 0\\
+R_z(\theta_i) & \begin{bmatrix}0\\ 0\\ d_i\end{bmatrix}\\
 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+R_x(\alpha_i) & \begin{bmatrix}a_i\\ 0\\ 0\end{bmatrix}\\
+0 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cos(\theta_i) & -\cos(\alpha_i)\sin(\theta_i) & \sin(\alpha_i)\sin(\theta_i) & a_i \cos(\theta_i)\\
+\sin(\theta_i) & \cos(\alpha_i)\cos(\theta_i) & -\sin(\alpha_i)\cos(\theta_i) & a_i \sin(\theta_i)\\
+0 & \sin(\alpha_i) & \cos(\alpha_i) & d_i\\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \end{equation}
 
-The first link frame is rotated $\alpha=90^\circ$ about its $x$-axis to coincide with the second link frame $\Psi_2$ (see \autoref{fig:robot_coordinate_systems})
-\begin{equation}
-^1_2 T(\theta_2) = 
-\begin{bmatrix}
-R_x(\alpha) R_z(\theta_2) & 0\\
-0 & 1
-\end{bmatrix} 
-\end{equation}
+The placement of coordinate frames according to the \gls{dh} convention is shown in \autoref{fig:robot_DH_frames} and the parameters used for this set of frame transformations are given in \autoref{tab:DH_param}.
 
-The second link frame is translated $a_3$ along its $y$-axis and rotated $\alpha=90^\circ$ about its $y$-axis to coincide with the instrument roll frame $\Psi_3$ (see \autoref{fig:robot_coordinate_systems})
-\begin{equation}
-^2_3 T(\theta_3) = 
-\begin{bmatrix}
-R_y(\alpha)R_z(\theta_3) & ^2_3p\\
-0 & 1
-\end{bmatrix}, 
-\qquad\qquad\qquad
-^2_3p = [0 \quad a_3 \quad 0]^T
-\end{equation}
 
-The instrument slide frame $\Psi_4$ has no rotation compared to the instrument roll frame, but includes the variable distance $d_4$ (see \autoref{fig:robot_coordinate_systems})
-\begin{equation}
-^3_4 T(d_4) = 
-\begin{bmatrix}
-I & ^3_4p\\
-0 & 1
-\end{bmatrix}, 
-\qquad\qquad\qquad
-^3_4p = [0 \quad 0 \quad d_4]^T
-\end{equation}
+\begin{figure}[htbp]
+	\vspace*{-10mm}
+	\hspace{-10mm}
+	\subbottom[Coordinate frames for the joints on the robot arm.]{\includegraphics[width=1.1\textwidth]{p4_arm_DH_frames.pdf}\label{fig:p4_arm_DH_frames}}%
+	\vspace{5mm}\\
+	\hspace*{-15mm}
+	\subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.15\textwidth]{p4_hand_DH_frames.pdf}\label{fig:p4_hand_DH_frames}}%
+	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{14}$ defined according to the \gls{dh} convention.}
+	\label{fig:robot_DH_frames}
+\end{figure}
 
-The instrument pitch frame (wrist frame) $\Psi_5$ is obtained by rotating $\Psi_4$ by $\alpha=90^\circ$ about its $x$-axis (see \autoref{fig:robot_coordinate_systems})
-\begin{equation}
-^4_5 T(\theta_5) = 
-\begin{bmatrix}
-R_x(\alpha)R_z(\theta_5) & 0\\
-0 & 1
-\end{bmatrix}
-\end{equation}
+\begin{table}[htbp]
+	\small
+	\centering
+	\begin{tabular}{r | rrrr}\hline
+		$i$  & $\theta_i$ [rad]& $d_i$ [m] & $a_i$ [m] & $\alpha_i$ [rad] \\\hline
+		1 & 0 &  $0.453+d_1^*$ & 0.198 & 0 \\
+		2 & $\theta_2^*$ & 0 & 0.582 & 0 \\
+		3 & $\theta_3^*$ & 0 & 0.435 & 0\\
+		4 & $\pi/2+\theta_4^*$ & 0 & 0 & $\pi/2$\\
+		5 & $\pi+\theta_5^*$ & 0.412 & 0 & $\pi/2$ \\
+		6 & $\theta_6^*$ & 0.047 & 0 & $-\pi/2$ \\
+		7 & $-\pi/2+\theta_7^*$ & -0.035 & 0 & $-\pi/2$ \\
+		8 & $0.03+\theta_8^*$ & 0 & 0.190 & $\pi$ \\
+		9 & $0.03+\pi/2+\theta_8^*$ & 0 & 0.515 & $\pi$ \\
+		10 & $\theta_8^*$ & 0 & 0.040 & $\pi/2$\\
+		11 & 0 & $0.282+d_{11}^*$ & 0  & 0 \\
+		12 & $\theta_{12}^*$ & 0 & 0 & $\pi/2$ \\
+		13 & $\pi/2+\theta_{13}^*$ & 0 & 0.009 & $\pi/2$ \\
+		14L & $\theta_{14L}^*$ & 0 & 0.009 & 0\\
+		14R & $\theta_{14R}^*$ & 0 & 0.009 & 0 \\
+	\end{tabular}
+	\caption{Variables (marked with $^*$) and parameters for the robot in \autoref{fig:robot_DH_frames} defined according to the \gls{dh} convention, where $\theta_i$ and $d_i$ are rotation/translation along $z_{i-1}$, while $a_i$ and $\alpha_i$ are translation/rotation along $x_i$.}
+	\label{tab:DH_param}
+\end{table}
 
-The instrument yaw right (gripper right) frame $\Psi_6$ is displaced $a_6$ along the $\Psi_5$ $y$-axis, and the frame is rotated $-\alpha=-90^\circ$ about the $y$-axis
-\begin{equation}
-^5_6 T(\theta_6) = 
-\begin{bmatrix}
-R_y(-\alpha)R_z(\theta_6) & ^5_6p\\
-0 & 1
-\end{bmatrix}, 
-\qquad\qquad\qquad
-^5_6p = [0 \quad a_6 \quad 0]^T
-\end{equation}
+\subsection{Testing \gls{dh} Kinematics in Matlab}
+The new transformation matrices are computed and tested similarly, to determine the accuracy of the defined robot kinematics, and the results are seen in \autoref{tab:DH_distances}.
+\begin{lstlisting}[language=matlab]
+%% Coordinate frames defined according to Denavit-Hartenberg convention
 
-Finally the instrument yaw left (gripper left) frame $\Psi_7$ is neither rotated nor translated relative to the $\Psi_6$ frame (except for the free rotation about the $z$-axis as for all other configurations)
-\begin{equation}
-^6_7 T(\theta_7) = 
-\begin{bmatrix}
-R_z(\theta_7) & 0\\
-0 & 1
-\end{bmatrix}
-\end{equation}
+% Parameters
+a_fix = [0.198 0.5820 0.435 0 0 0 0 0.1900 0.515 0.0400 0 0 0.0095 0.0095 0.0095];
+d_fix = [1 0 0 0 0.4122 0.0474 -0.0450 0 0 0 0.282 0 0 0 0];
+alpha = [0 0 0 pi/2 pi/2 -pi/2 -pi/2 pi pi pi/2 0 pi/2 pi/2 0 0];
+theta_fix = [0 0 0 pi/2 pi 0 -pi/2 10/180*pi 10/180*pi+pi/2 0 0 0 pi/2 0 0];
 
-The fixed distances are $a_3=530$\,mm and $a_6=14$\,mm, and the slider distance is $0\leq d_4 \leq 220$\,mm \textcolor{red}{check these and measure the $\theta$s} 
+% Variables (signs are included as long as state comes from old frame convention)
+d_free = [d1 0 0 0 0 0 0 0 0 0 -d11 0 0 0 0];
+theta_free = [0 -th2 -th3 -th4 -th5 th6 th7 th8 th8 th8 0 th12 -th13 th14L -th14R];
+
+% Transformation matrices
+for i = 1:length(a_fix)
+	Tz = [rot(3,theta_free(i)+theta_fix(i)) [0;0;d_free(i)+d_fix(i)]; zeros(1,3) 1];
+	Tx = [rot(1,alpha(i)) [a_fix(i);0;0]; zeros(1,3) 1];
+	T_DH(:,:,i) = Tz*Tx;
+end
+\end{lstlisting}
+
+\begin{table}[htbp]
+	\small
+\centering
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^5_6 p|$ & 4.74 & 5\\
+$|\,^5_7 p|$ & 6.54 & 6\\
+$|\,^5_8 p|$ & 24.71 & 24\\
+$|\,^5_9 p|$ & 49.60 & 49\\
+$|\,^5_{10} p|$ & 53.15 & 53\\
+$|\,^5_{11} p|$ & 47.94 & 48\\
+$|\,^5_{12} p|$ & 47.94 & 48\\
+$|\,^5_{13} p|$ & 48.04 & 48\\
+$|\,^5_{14} p|$ & 48.16 & 48\\\hline
+$\,^0_{14} p_x$ & 210.42 & 210\\
+$\,^0_{14} p_z$ & 93.35 & 92
+\end{tabular}
+\label{tab:state0dh}%
+}\hfill
+\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0dh} all variables are set to zero. In \ref{tab:state5dh} state$_\text{hand}=[]$ }
+\label{tab:DH_distances}
+\end{table}
+
+\textcolor{red}{Add more measurements for verification}
+
+
+
 
 
 \section{Beating Heart Dynamic Model}
