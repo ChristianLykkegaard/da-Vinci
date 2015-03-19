@@ -11,6 +11,16 @@ Before the communication between ROS and da Vinci may be considered, all low lev
 
 From the \texttt{aau86730} computer, launch the \texttt{p4\_primary\_Control} icon located on the desktop and connect \texttt{RT Single Board RIO (172.26.12.32)} by right clicking the icon and press connect. Subsequently, navigate to \texttt{p4\_prim\_control\_FPGA\_multichannel\_7\_FLOAT\_SPI\_5.vi} and open it. This launch a GUI comprising access to the seven low level controllers which are activated from the arrow in the upper left corner. The controller gains, setpoints, maximum step size and various calibration options are easily accessible from this GUI, though it should not be necessary to modify any of those. 
 
+Be sure that the gearing factors are specified as follows:
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{X X X X X X X}
+\rowcolor{HeaderBlue} 
+\scriptsize \textbf{Intrument Jaw Left} &\scriptsize  \textbf{Intrument Jaw Right} &\scriptsize  \textbf{Intrument Jaw Pitch} &\scriptsize  \textbf{Instrument Pitch} &\scriptsize  \textbf{Instrument Roll} & \scriptsize   \textbf{Hand Pitch} &  \scriptsize\textbf{Hand Roll}\\
+11.71 & 11.71 & 11.71 & 11.71 & 1340 & 100 & 100\\
+\end{tabularx}
+	\caption{Measured gearing factors. Gearing factors are measured such that $\pi$/4 from \gls{ros} corresponds to 45 degrees on the real robot.}
+\label{tab:gearing}
+\end{table}
 To allow the ROS environment access to the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
 \subsubsection*{ROS}
 To communicate with da Vinci, it is important to execute a few commands in the correct order from the \texttt{surgery-srv.lab.es.aau.dk} computer. It is recommended to work directly on the server in the lab (it provides additional GUI applications such as rviz), but connection to a private laptop can be established through \texttt{ssh}:
@@ -61,5 +71,13 @@ view to all active topics:
 To create a \gls{urdf} file from the present xacro files, type the below command from the root of the workspace:
 
 \hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosrun xacro xacro.py src/davinci\_description/robots/davinci.xacro > <name>.URDF} %\ \ \ {\color{RoyalBlue}{\textit{\# URDF is created}}} 
+%
+\subsection*{Setup Assistant}
+Files that needs to be created/modified manually when the setup assistant is launched:
+\begin{itemize}
+	\item \texttt{src/davinci\_moveit\_config/launch/davinci\_moveit\_controller\_manager.launch}
+	\item \texttt{src/davinci\_moveit\_config/config/controllers.yaml}
+\end{itemize}
 
 
+{\color{white}{\gls{yaml}}}{\color{white}{\gls{xacro}}}
