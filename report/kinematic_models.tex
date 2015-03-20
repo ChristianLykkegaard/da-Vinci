@@ -166,7 +166,7 @@ The position of the potentiometers measuring the joint variables 1-6 can be read
 	\centering
 \begin{tabular}{l | ccccc}
 joint rotation [rad] & $\theta_2$, \texttt{yaw1} & $\theta_3$, \texttt{yaw2} & $\theta_4$, \texttt{yaw3} & $\theta_5$, \texttt{roll1} & $\theta_6$, \texttt{yaw4} \\
-scaling factor [rad/V] & -0.225365326 & 0.302076216 & -0.306198114 & -0.311665937 & -0.314159265
+scaling factor [rad/V] & -0.225365326 & 0.302076216 & -0.306198114 & -0.311665937 & 0.314159265
 \end{tabular}
 \caption{Factor from potentiometer voltage measurements to arm joint angles.}
 \label{tab:arm_pot_factors}
@@ -207,7 +207,7 @@ for i = 1:length(a)
 	Rot(:,:,i) = R(:,(i-1)*3+1:i*3);
 end
 
-% -------------------------------------------------------------------------
+% -----------------------------------------------------------------------
 % variables: actuation axes
 ax = [3 3 -3 -3 -1 3 1 -2 2 -2 3 3 -1 -3 3];
 
@@ -240,25 +240,27 @@ for i = 1:length(a)
 end
 \end{lstlisting}
 
-To test the accuracy of the defined kinematics, computed distances are compared to measured distances. The results are shown in \autoref{tab:xacro_distances}, for different state configurations, with state = [state$_\text{arm}$, state$_\text{hand}$] $= [\{d_1, \theta_2, \theta_3, \theta_4, \theta_5, \theta_6\}, \{\theta_7, \theta_8, d_{11}, \theta_{12}, \theta_{13}, \theta_{14L}, \theta_{14R}\}]$ ($\theta_8=\theta_9=\theta_{10}$ and hence 9 and 10 will be left out here).
+To test the accuracy of the defined kinematics, computed distances are compared to measured distances. The results are shown in \autoref{tab:xacro_distances}, for different state configurations, with state = [state$_\text{arm}$, state$_\text{hand}$] $= [\{d_1, \theta_2, \theta_3, \theta_4, \theta_5, \theta_6\}, \{\theta_7, \theta_8, d_{11}, \theta_{12}, \theta_{13}, \theta_{14L}, \theta_{14R}\}]$ (as $\theta_8=\theta_9=\theta_{10}$, 9 and 10 are left out).
 
 \begin{table}[htbp]
 \small
+\setlength{\tabcolsep}{4pt}
 \centering
 \subbottom[]{%
 \begin{tabular}{l r r}\hline
 dist. & calc. & meas.\\\hline
-$|\,^6_7 p|$ & 16.92 & 16.0\\
-$|\,^6_8 p|$ & 16.92 & 16.0\\
-$|\,^6_9 p|$ & 35.43 & 34.0\\
-$|\,^6_{10} p|$ & 48.78 & 53.0\\
-$|\,^6_{11} p|$ & 42.09 & 50.5\\
-$|\,^6_{12} p|$ & 46.46 & 51.5\\
-$|\,^6_{13} p|$ & 40.27 & 47.0\\
-$|\,^6_{14} p|$ & 40.14 & 47.0\\\hline
-$\,^0_{14} p_x$ & 202.27 & 210.0\\
-$\,^0_{14} p_y$ & 0 & 0\\
-$\,^0_{14} p_z$ & 94.62 & 92.0
+$|\,^6_7 p|$ & 16.92 & 16\\
+$|\,^6_8 p|$ & 16.92 & 16\\
+$|\,^6_9 p|$ & 35.43 & 34\\
+$|\,^6_{10} p|$ & 48.78 & 53\\
+$|\,^6_{11} p|$ & 42.09 & 51\\
+$|\,^6_{12} p|$ & 46.46 & 52\\
+$|\,^6_{13} p|$ & 40.27 & 47\\
+$|\,^6_{14} p|$ & 40.14 & 47\\\hline
+%$\,^0_{14} p_x$ & 202.27 & 210.0\\
+%$\,^0_{14} p_y$ & 0 & 0\\
+%$\,^0_{14} p_z$ & 94.62 & 92.0
+$|\,^0_{14} p|$ & 223.31 & 229
 \end{tabular}
 \label{tab:state0}%
 }\hfill
@@ -273,21 +275,60 @@ $|\,^6_{11} p|$ & 43.75 & 44\\
 $|\,^6_{12} p|$ & 42.81 & 46\\
 $|\,^6_{13} p|$ & 60.18 & 65\\
 $|\,^6_{14} p|$ & 61.07 & 66\\\hline
-$\,^0_{14} p_x$ & 221.01 & 220\\
-$\,^0_{14} p_y$ & 0.81 & 25\\
-$\,^0_{14} p_z$ & 106.65 & 96
+%$\,^0_{14} p_x$ & 221.01 & 220\\
+%$\,^0_{14} p_y$ & 0.81 & 25\\
+%$\,^0_{14} p_z$ & 106.65 & 96
+$|\,^0_{14} p|$ & 245.40 & 241
 \end{tabular}
 \label{tab:state5}%
 }\hfill
-\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0} all variables are set to zero. In \ref{tab:state5} state$_\text{hand}=$[2.6, 1.4, -0.1, 0, 0, -0.47, 0.01] }
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^6_7 p|$ & 16.92 & 16\\
+$|\,^6_8 p|$ & 16.92 & 16\\
+$|\,^6_9 p|$ & 29.94 & 31\\
+$|\,^6_{10} p|$ & 27.72 & 46\\
+$|\,^6_{11} p|$ & 30.46 & 49\\
+$|\,^6_{12} p|$ & 34.17 & 50\\
+$|\,^6_{13} p|$ & 45.81 & 53\\
+$|\,^6_{14} p|$ & 46.50 & 54\\\hline
+%$\,^0_{14} p_x$ & 147.41 & 156\\
+%$\,^0_{14} p_y$ & 30.52 & 42\\
+%$\,^0_{14} p_z$ & 104.72 & 98
+$|\,^0_{14} p|$ & 183.38 & 189
+\end{tabular}
+\label{tab:state6}%
+}\hfill
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^6_7 p|$ & 16.92 & 16\\
+$|\,^6_8 p|$ & 16.92 & 16\\
+$|\,^6_9 p|$ & 24.07 & 32\\
+$|\,^6_{10} p|$ & 57.87 & 65\\
+$|\,^6_{11} p|$ & 47.95 & 55\\
+$|\,^6_{12} p|$ & 48.77 & 56\\
+$|\,^6_{13} p|$ & 33.01 & 42\\
+$|\,^6_{14} p|$ & 32.26 & 41\\\hline
+%$\,^0_{14} p_x$ & 175.48 & 177\\
+%$\,^0_{14} p_y$ & 42.04 & 53\\
+%$\,^0_{14} p_z$ & 103.19 & 94
+$|\,^0_{14} p|$ & 207.87 & 207
+\end{tabular}
+\label{tab:state7}%
+}\hfill
+\setlength{\tabcolsep}{6pt}
+\caption{Calculated and measured distances [cm] between frame origins. In \ref{tab:state0} all variables are set to zero. In \ref{tab:state5} state$_\text{hand}=$[2.6, 1.4, -0.1, 0, 0, -0.47, 0.01]. In \ref{tab:state6} state = [\{0, 0.2, 0.5, -1.4, 0, 0.8\}, \{-1.1, 1.1, 0.1, 0, 0, -0.4, 0\}]. In \ref{tab:state7} state = [\{0, -0.2, -0.6, 0.9, 0, 0.4\}, \{-1.2, -1.2, 0, 0, 0, -0.4, 0\}].}
 \label{tab:xacro_distances}
 \end{table}
 
-%% STATE
+% % state 7
 
 
+%\vspace*{-3mm}
 \section{Defining Kinematics According to Denavit-Hartenberg Convention}
-
+\vspace{-2mm}
 In order to simplify calculations, the robot coordinate frame convention \gls{dh} is adapted, and a new set of coordinate frames and transformation matrices are established. According to the \gls{dh} convention a frame is placed such that
 \begin{itemize}
 \itemsep-1.3mm 
@@ -384,150 +425,91 @@ end
 \end{lstlisting}
 
 \begin{table}[htbp]
-	\small
+\small
+\setlength{\tabcolsep}{4pt}
 \centering
 \subbottom[]{%
 \begin{tabular}{l r r}\hline
 dist. & calc. & meas.\\\hline
 $|\,^5_6 p|$ & 4.74 & 5\\
-$|\,^5_7 p|$ & 6.54 & 6\\
+$|\,^5_7 p|$ & 6.54 & 7\\ %6\\
 $|\,^5_8 p|$ & 24.71 & 24\\
 $|\,^5_9 p|$ & 49.60 & 49\\
-$|\,^5_{10} p|$ & 53.15 & 53\\
+$|\,^5_{10} p|$ & 53.15 & 53\\ %52\\
 $|\,^5_{11} p|$ & 47.94 & 48\\
 $|\,^5_{12} p|$ & 47.94 & 48\\
 $|\,^5_{13} p|$ & 48.04 & 48\\
 $|\,^5_{14} p|$ & 48.16 & 48\\\hline
-$\,^0_{14} p_x$ & 210.42 & 210\\
-$\,^0_{14} p_y$ & 0 & 0\\
-$\,^0_{14} p_z$ & 93.35 & 92
+%$\,^0_{14} p_x$ & 210.42 & 210\\
+%$\,^0_{14} p_y$ & 0 & 0\\
+%$\,^0_{14} p_z$ & 93.35 & 92
+$|\,^0_{14} p|$ & 230.20 & 229
 \end{tabular}
 \label{tab:state0dh}%
 }\hfill
 \subbottom[]{%
 \begin{tabular}{l r r}\hline
 dist. & calc. & meas.\\\hline
-$|\,^5_6 p|$ & 4.74 & 5\\
-$|\,^5_7 p|$ & 6.54 & 8\\
-$|\,^5_8 p|$ & 23.99 & 24\\
-$|\,^5_9 p|$ & 28.41 & 34\\
-$|\,^5_{10} p|$ & 28.78 & 39\\
-$|\,^5_{11} p|$ & 66.70 & 64\\
-$|\,^5_{12} p|$ & 66.70 & 64\\
-$|\,^5_{13} p|$ & 67.65 & 65\\
-$|\,^5_{14} p|$ & 68.48 & 66\\\hline
-$\,^0_{14} p_x$ & 230.81 & 220\\
-$\,^0_{14} p_y$ & 1.88 & 25\\
-$\,^0_{14} p_z$ & 107.03 & 96
+$|\,^5_6 p|$ & 4.74 & 5\\ %4\\
+$|\,^5_7 p|$ & 6.54 & 7\\ %8\\
+$|\,^5_8 p|$ & 23.99 & 24\\ %20\\
+$|\,^5_9 p|$ & 28.41 & 33\\ %34\\
+$|\,^5_{10} p|$ & 28.78 & 39\\ %49\\
+$|\,^5_{11} p|$ & 66.70 & 66\\ %64\\
+$|\,^5_{12} p|$ & 66.70 & 66\\ %64\\
+$|\,^5_{13} p|$ & 67.65 & 67\\ %65\\
+$|\,^5_{14} p|$ & 68.48 & 68\\ %66\\\hline
+%$\,^0_{14} p_x$ & 230.81 & 220\\
+%$\,^0_{14} p_y$ & 1.88 & 25\\
+%$\,^0_{14} p_z$ & 107.03 & 96
+$|\,^0_{14} p|$ & 254.43 & 241
 \end{tabular}
 \label{tab:state5dh}%
 }\hfill
 \subbottom[]{%
-	\begin{tabular}{l r r}\hline
-		dist. & calc. & meas.\\\hline
-		$|\,^5_6 p|$ & 4.74 & new!\\
-		$|\,^5_7 p|$ & 6.54 & 8\\
-		$|\,^5_8 p|$ & 23.99 & 24\\
-		$|\,^5_9 p|$ & 28.41 & 34\\
-		$|\,^5_{10} p|$ & 28.78 & 39\\
-		$|\,^5_{11} p|$ & 66.70 & 64\\
-		$|\,^5_{12} p|$ & 66.70 & 64\\
-		$|\,^5_{13} p|$ & 67.65 & 65\\
-		$|\,^5_{14} p|$ & 68.48 & 66\\\hline
-		$\,^0_{14} p_x$ & 230.81 & 220\\
-		$\,^0_{14} p_y$ & 1.88 & 25\\
-		$\,^0_{14} p_z$ & 107.03 & 96
-	\end{tabular}
-	\label{tab:state6dh}%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^5_6 p|$ & 4.74 & 5\\ %6\\
+$|\,^5_7 p|$ & 6.54 & 7\\ %8\\
+$|\,^5_8 p|$ & 24.31 & 24\\ %19\\
+$|\,^5_9 p|$ & 30.14 & 37\\ %40\\
+$|\,^5_{10} p|$ & 32.92 & 41\\ %42\\
+$|\,^5_{11} p|$ & 51.49 & 51\\ %54\\
+$|\,^5_{12} p|$ & 51.49 & 51\\ %54\\
+$|\,^5_{13} p|$ & 52.33 & 52\\ %55\\
+$|\,^5_{14} p|$ & 53.15 & 52\\\hline %55\\
+%$\,^0_{14} p_x$ & 150.05 & 156\\
+%$\,^0_{14} p_y$ & 39.71 & 42\\
+%$\,^0_{14} p_z$ & 103.79 & 98
+$|\,^0_{14} p|$ & 186.72 & 189
+\end{tabular}
+\label{tab:state6dh}%
 }\hfill
-\caption{Calculated and measured distances [cm] between frame origins. In \autoref{tab:state0dh} all variables are set to zero. In \ref{tab:state5dh} state$_\text{hand}=$[2.6, 1.4, -0.1, 0, 0, -0.47, 0.01] }
+\subbottom[]{%
+\begin{tabular}{l r r}\hline
+dist. & calc. & meas.\\\hline
+$|\,^5_6 p|$ & 4.74 & 5\\
+$|\,^5_7 p|$ & 6.54 & 7\\ %8\\
+$|\,^5_8 p|$ & 17.07 & 22\\ %24\\
+$|\,^5_9 p|$ & 64.45 & 56\\ %58\\
+$|\,^5_{10} p|$ & 65.32 & 61\\ %59\\
+$|\,^5_{11} p|$ & 38.74 & 39\\ %41\\
+$|\,^5_{12} p|$ & 38.74 & 39\\ %41\\
+$|\,^5_{13} p|$ & 37.88 & 38\\ %40\\
+$|\,^5_{14} p|$ & 37.14 & 38\\\hline %40\\
+%$\,^0_{14} p_x$ & 183.40 & 177\\
+%$\,^0_{14} p_y$ & 44.76 & 53\\
+%$\,^0_{14} p_z$ & 103.27 & 94
+$|\,^0_{14} p|$ & 215.18 & 207
+\end{tabular}
+\label{tab:state7dh}%
+}\hfill
+\setlength{\tabcolsep}{6pt}
+\caption{Calculated and measured distances [cm] between frame origins. The same states are used as given in \autoref{tab:xacro_distances}.}
 \label{tab:DH_distances}
 \end{table}
 
-\textcolor{red}{Add more measurements for verification}
-
-
-%% STATE5
+%%% STATE5
 
 
 
-\section{Beating Heart Dynamic Model}
-Illustration of heart model and description of kinematics and dynamics.
-Quasi-periodic rigid 3D motion, combination of two periodic motions \cite{bib:heart_berkeley}. Frequencies assumed known from ECG and mechanical ventilator.
-
-"The estimated components are then combined to predict future motion of the heart surface. This information, in turn, is used in the design of an explicit controller that stabilizes the relative motion of a surgical tool to a desired distance and orientation with respect to the heart surface."
-
-"We then present a control law that uses the predicted motion to asymptotically stabilize the motion of the surgical tool to a desired distance and orientation with respect to the heart surface."
-
-"To simplify the analysis and allow real-time prediction, we do not take the cause of the motion into consideration, and only consider the kinematics of a local area of interest on the heart surface."
-
-"Fortunately, in this application, we have a reasonably good estimate of the phase1 and frequency of the two motion components: the respiratory phase and frequency can be obtained from the mechanical ventilator, and the cardiac phase and frequency are detected by an ECG monitor."
-
-"choosing a convenient initial position and orientation for $\Psi_d$, e.g. such that $p^d_h(0)=0$ and $R^0_d(0) = I$
-
-Relative configuration between heart and robot tool $H^h_r$ (with $R^h_r =[r_x, r_y, r_z]$) and error function $J(H^h_r)$
-\begin{equation}
-J(H^h_r) = \underbrace{\tfrac{1}{2}k_p (p^h_r-\Delta r_z)^T(p^h_r-\Delta r_z)}_\text{translational error} + \underbrace{k_x (1-e_x^T r_x) + k_y (1-e_y^T r_y) + k_z (1-e_z^T r_z)}_\text{rotational error}
-\end{equation}
-\begin{tabular}{rl}
-	where &\\
-	$\Delta$ & is the desired relative distance between the tool and the heart\\
-	$E=[e_x,e_y,e_z]$ & is a rotation matrix describing the desired orientation of the tool frame\\
-	$k_p,k_x,k_y,k_z$ & are constant positive parameters\\
-\end{tabular}\\
-
-Then $J$ is equal to zero (has its minimum) only when $p^h_r=\Delta r_z$ (the origin of $\Psi_r$ given in h coordinates is $\Delta$ away from the origin of $Psi_h$ along the surface normal) and $R^h_r=E$ (frame h and r axes are aligned).
-\begin{align}
-\dot{J} &= 
-\begin{bmatrix}
-k_x \hat{e}_x r_x + k_y \hat{e}_y r_y + k_z \hat{e}_z r_z\\
-k_p(p^h_r - \Delta r_z)
-\end{bmatrix}^T
-\begin{bmatrix}
-\omega^{h,h}_r \\
-r^{h,h}_r
-\end{bmatrix}
-= (dJ)^T T^{h,h}_r\\
-\dot{H}^h_r &= 
-\begin{bmatrix}
-\hat{\omega}^{h,h}_r r_x & \hat{\omega}^{h,h}_r r_y & \hat{\omega}^{h,h}_r r_z & \hat{\omega}^{h,h}_r p^h_r + v^{h,h}_r\\
-0 & 0 & 0 & 0
-\end{bmatrix}\\
-(\dot{dJ}) &=
-\begin{bmatrix}
--k_x \hat{e}_x \hat{r}_x  - k_y \hat{e}_y \hat{r}_y - k_z \hat{e}_z \hat{r}_z & 0\\
--k_p(\hat{p}^h_r - \Delta \hat{r}_z) & k_p I
-\end{bmatrix}
-T^{h,h}_r
-\end{align}
-
-"We do not consider specific robot dynamics at this point and only specify the desired inertial acceleration $\dot{T}^{0,0}_r$ of the robot end effector frame $\Psi_r$. Proposed desired acceleration"
-\begin{equation}
-\left(\dot{T}^{0,0}_r\right)_\text{des} = \dot{T}^{0,0}_h - \text{Ad}_{H^0_h} K_1 (\dot{dJ}) + \text{ad}_{T^{0,0}_h} T^{0,h}_r - \text{Ad}_{H^0_h} K_2 (T^{h,h}_r + K_1 dJ)
-\end{equation}
-\begin{tabular}{rl}
-	where & \\
-	$K1, K_2$ & are symmetric and positive definite matrices\\
-	$H^0_h$ & is the estimated configuration of the frame $\Psi_h$ at the area of interest on the heart surface\\
-	$T^{0,0}_h$ & is the estimated velocity of the frame $\Psi_h$ at the area of interest on the heart surface\\
-	$\dot{T}^{0,0}_h$ & is the estimated acceleration of the frame $\Psi_h$ at the area of interest on the heart surface\\
-\end{tabular}\\
-
-This controller drives $T^{h,h}_r$ to $-K_1dJ$ by the gain $K_2$, along the steepest descend of $J$. Asymptotic stability at $J=0$, with Lyapunov function
-\begin{equation}
-V=\kappa_1 J + \tfrac{1}{2} (T^{h,h}_r + K_1dJ)^T K_2^{-1}(T^{h,h}_r + K_1dJ)
-\end{equation}
-\begin{tabular}{rl}
-	where & \\
-	$\kappa_1$ & is a positive constant strictly less than 4 times the smallest singular value of $K_1$, $0<\kappa_1 <4\sigma_\text{min}(K_1)$
-\end{tabular}
-
-Assuming the robot achieves perfect tracking of $\left(\dot{T}^{0,0}_r\right)_\text{des}$, the time derivative of $V$ along the system trajectories is
-\begin{equation}
-\dot{V} = -\left(T^{h,h}_r + (K_1 - \tfrac{\kappa_1}{2}I)dJ\right)^T \left(T^{h,h}_r + (K_1 - \tfrac{\kappa_1}{2}I)dJ\right) - \kappa_1(dJ ^T(K_1 - \tfrac{\kappa_1}{4}I)dJ
-\end{equation}
-\begin{tabular}{rl}
-	where & \\
-	$I$ & is the identity matrix\\
-	$K_1 - \tfrac{\kappa_1}{4}$ & is strictly positive because of the choice of $\kappa_1$\\
-\end{tabular}
