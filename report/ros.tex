@@ -73,6 +73,10 @@ To create a \gls{urdf} file from the present xacro files, type the below command
 \hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosrun xacro xacro.py src/davinci\_description/robots/davinci.xacro > <name>.URDF} %\ \ \ {\color{RoyalBlue}{\textit{\# URDF is created}}} 
 %
 \subsection*{Setup Assistant}
+To run the setup assistant, open a terminal, navigate to the root of the workspace and type:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ roslaunch moveit\_setup\_assistant setup\_assistant.launch} \ \ \ {\color{RoyalBlue}{\textit{\# GUI is launched}}} 
+
 Files that needs to be created/modified manually when the setup assistant is launched:
 \begin{itemize}
 	\item \texttt{src/davinci\_moveit\_config/launch/davinci\_moveit\_controller\_manager.launch}
