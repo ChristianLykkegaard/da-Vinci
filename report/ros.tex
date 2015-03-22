@@ -75,7 +75,7 @@ To create a \gls{urdf} file from the present xacro files, type the below command
 \subsection*{Setup Assistant}
 To run the setup assistant, open a terminal, navigate to the root of the workspace and type:
 
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ roslaunch moveit\_setup\_assistant setup\_assistant.launch} \ \ \ {\color{RoyalBlue}{\textit{\# GUI is launched}}} 
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config setup\_assistant.launch} \ \ \ {\color{RoyalBlue}{\textit{\# GUI is launched}}} 
 
 Files that needs to be created/modified manually when the setup assistant is launched:
 \begin{itemize}
@@ -83,5 +83,12 @@ Files that needs to be created/modified manually when the setup assistant is lau
 	\item \texttt{src/davinci\_moveit\_config/config/controllers.yaml}
 \end{itemize}
 
+\subsection*{Useful Debugging Commands}
+To check which files are recently modified, open a terminal and run:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ find . -type f -exec ls -lt $\backslash$\{$\backslash$\} $\backslash$+ | head} 
+
+This is fairly useful as, for example, the setup-assistant overwrites a number of files. 
 
 {\color{white}{\gls{yaml}}}{\color{white}{\gls{xacro}}}
+
