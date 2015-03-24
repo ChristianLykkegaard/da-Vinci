@@ -38,8 +38,8 @@ x(t_0) =
 -2 \omega_h x_{11}\\
 -\tfrac{9}{4} \omega_h x_9 x_{14}\\
 \tfrac{9}{4} \omega_h x_9 x_{13}\\
--\tfrac{6}{8} \omega_h x_11 x_{16}\\
-\tfrac{6}{8} \omega_h x_11 x_{15}
+-\tfrac{6}{8} \omega_h x_{11} x_{16}\\
+\tfrac{6}{8} \omega_h x_{11} x_{15}
 \end{bmatrix}
 +
 \begin{bmatrix}
@@ -62,13 +62,16 @@ x_2&0\\
 \end{bmatrix}
 \cdot d
 \end{equation}
+\vspace{-3mm}
 \begin{tabular}{rll}
 where & &\\
 $t_0$ & is the start time ($t_0=0$) & [s]\\
 $\omega_d$ & is the frequency of the diaphragm movement, read off ECG ($\omega_d=\tfrac{2\pi}{4}$) & [rad/s]\\
 $\omega_h$ & is the frequency of the heart movement, read off mechanical ventilator ($\omega_h=\tfrac{2\pi}{1.1}$) & [rad/s]\\
-$x_i$ & is the $i$th entry of the state vector $x$ & [$\cdot$]
+$x_i$ & is the $i$th entry of the state vector $x$ & [$\cdot$]\\
+$d$ & is a disturbance vector ($d_1=d_\text{diaphragm}\equiv [-0.4, 0.4]$ and $d_2=d_\text{heart}\equiv [-0.11,0.11]$) & [rad/s]
 \end{tabular}
+\vspace*{3mm}
 
 The two transformation matrices describing the movement of the diaphragm frame relative to the inertial frame, and the heart frame relative to the diaphragm frame can be composed from the state at time $t$ as \citep{bib:heart_model}
 \begin{equation}
