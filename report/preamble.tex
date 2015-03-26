@@ -693,3 +693,15 @@ format=hang,														% Figurtekst p flere linier ordnes under hinanden og i
 %\usepackage{oubraces} % used as: \overunderbraces{upper_braces}{main_formula}{lower_braces} for example \overunderbraces{&\br{num_columns}{text_above}}% upper brace
 %{a+b+&c+d+&e+f+g&+h+i}% main formula
 %{&&\br{num_columns}{text_below}} % lower brace
+
+\usepackage{qtree}
+% Like \DescribeMacro, but arbitrary text
+\def\marginpost#1{\leavevmode \marginpar{~\hfill\texttt{#1}}\ignorespaces}
+
+% The name of the package, capitalized or not.
+\def\QT{\textsf{\emph{Qtree}}}
+\def\Qt{\textsf{\emph{qtree}}}
+
+\def\pstyle#1{\textsf{#1}} % style filenames
+
+\def\argplain#1{\textit{$\langle$#1$\rangle$}} % Like \marg, but without { }

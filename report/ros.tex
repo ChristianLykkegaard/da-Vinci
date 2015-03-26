@@ -6,6 +6,53 @@
 %
 \chapter{Interfacing da Vinci with ROS}\label{app:ros}
 This appendix ought to give any user concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix, that a ROS workspace is created ({\color{blue}{\textit{http://wiki.ros.org/catkin/Tutorials/create\_a\_workspace}}}) and that all the code located at the "Robotic Surgery Group - Aalborg University" has been copied/cloned to the root of the workspace ({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
+
+The original environment (clean configuration) can be cloned with the following git terminal commands:\vspace{0.1cm}
+
+\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description}
+
+\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_driver}
+
+\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_moveit\_config}\vspace{0.1cm}
+
+Each command copies a so called \gls{ros} package which initially are created by the \texttt{catkin\_create\_pkg} command. A "package" is simply the name convention for a chunk of software. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep}. This ought to make it easier to share and reuse code. The code developed in this thesis obeys to some extend the \gls{rep}s but exceptions may occur. 
+
+The development branch, i.e. the result of the work undertaken in this project, can be cloned as:
+
+\hspace{0cm} \texttt{\$ git clone <URL> ---branch develop} \ \ \ {\color{RoyalBlue}{\textit{\# Clone all three packages}}}
+
+The overall code structure should look like the tree structure found below:
+
+\vspace{0.5cm}
+
+\Tree [.\texttt{<name of workspace>}  
+ \scriptsize  \color{green}{\texttt{CMakeLists.txt}}\\\text{(auto-generated)}
+  [.\scriptsize  \texttt{build/} \text{all make-files}\\\text{(auto-generated}) ] 
+ [.\scriptsize  \texttt{devel/} \text{setup files,}\\\text{libraries etc.} ]  
+  [.\scriptsize  \texttt{src/}  \text{\hspace{0.5cm}all packages are placed here, i.e.:}\\\texttt{\hspace{0.5cm}davinci\_description}\\\texttt{\hspace{0.5cm}davinci\_driver}\\\texttt{\hspace{0.5cm}davinci\_moveit\_config} ] 
+  ]
+  
+\vspace{0.5cm}
+
+The package where most of the development takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. The structure of this is therefore shown in further details below.
+
+\hspace{-1.5cm}
+ \Tree [.\texttt{<name of workspace>} 
+ %[.\scriptsize  \texttt{build/} \text{all make-files}\\\text{(auto-generated}) ] 
+  [.\scriptsize  \texttt{src/} 
+  %\scriptsize  \color{green}{\texttt{CMakeLists.txt}} 
+  \scriptsize \texttt{davinci\_}\\\scriptsize \texttt{description/}	 
+[.\scriptsize \texttt{davinci\_}\\\scriptsize \texttt{moveit\_config/} \scriptsize  \color{green}{\texttt{CMakeLists.txt}} [.\scriptsize  \texttt{src} \scriptsize \texttt{MoveGroupInterface.cpp}\\\text{(main C++ interface)} ]  \scriptsize  \texttt{config} \scriptsize  \texttt{launch} \scriptsize  \color{green}{\texttt{package.xml}} ]   
+  \scriptsize \texttt{davinci\_}\\\scriptsize \texttt{driver/} ]  
+  %[.\scriptsize  \texttt{devel/} \text{setup files +}\\\text{libraries etc.} ] 
+  ] 
+
+
+%[.\texttt{davinci\_moveit\_config} \texttt{config} \texttt{launch} ] \texttt{davinci\_description} \texttt{davinci\_driver} [.VP [.V is ] \qroof{a simple tree}.NP ] ]
+
+
+
+%Be very sure to clone all three packages.
 \subsubsection*{Setup of Low Level Control}
 Before the communication between ROS and da Vinci may be considered, all low level PID controllers must run correctly and the RIO configuration must be performed. 
 
@@ -16,7 +63,7 @@ Be sure that the gearing factors are specified as follows:
 \begin{tabularx}{\textwidth}{X X X X X X X}
 \rowcolor{HeaderBlue} 
 \scriptsize \textbf{Intrument Jaw Left} &\scriptsize  \textbf{Intrument Jaw Right} &\scriptsize  \textbf{Intrument Jaw Pitch} &\scriptsize  \textbf{Instrument Pitch} &\scriptsize  \textbf{Instrument Roll} & \scriptsize   \textbf{Hand Pitch} &  \scriptsize\textbf{Hand Roll}\\
-11.71 & 11.71 & 11.71 & 11.71 & 1340 & 100 & 100\\
+12 & 12 & 12.4 & 7.5 & 1340 & 200 & 200\\
 \end{tabularx}
 	\caption{Measured gearing factors. Gearing factors are measured such that $\pi$/4 from \gls{ros} corresponds to 45 degrees on the real robot.}
 \label{tab:gearing}
