@@ -3,9 +3,8 @@
     backgroundcolor=\color{black},
     basicstyle=\scriptsize\color{green}%\ttfamily
 }
-%
 \chapter{Interfacing da Vinci with ROS}\label{app:ros}
-This appendix ought to give any user concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix, that a ROS workspace is created ({\color{blue}{\textit{http://wiki.ros.org/catkin/Tutorials/create\_a\_workspace}}}) and that all the code located at the "Robotic Surgery Group - Aalborg University" has been copied/cloned to the root of the workspace ({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
+This appendix ought to give concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix, that a ROS workspace is created ({\color{blue}{\textit{http://wiki.ros.org/catkin/Tutorials/create\_a\_workspace}}}) and that all the code located at the "Robotic Surgery Group - Aalborg University" has been copied/cloned to the root of the workspace ({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
 
 The original environment (clean configuration) can be cloned with the following git terminal commands:\vspace{0.1cm}
 
@@ -21,36 +20,108 @@ The development branch, i.e. the result of the work undertaken in this project, 
 
 \hspace{0cm} \texttt{\$ git clone <URL> ---branch develop} \ \ \ {\color{RoyalBlue}{\textit{\# Clone all three packages}}}
 
-The overall code structure should look like the tree structure found below:
+After the workspace is created (call it \texttt{daVinci\_ws}) and the packages are cloned, the overall code structure should look like the tree structure found below:
 
 \vspace{0.5cm}
 
-\Tree [.\texttt{<name of workspace>}  
- \scriptsize  \color{green}{\texttt{CMakeLists.txt}}\\\text{(auto-generated)}
-  [.\scriptsize  \texttt{build/} \text{all make-files}\\\text{(auto-generated}) ] 
- [.\scriptsize  \texttt{devel/} \text{setup files,}\\\text{libraries etc.} ]  
-  [.\scriptsize  \texttt{src/}  \text{\hspace{0.5cm}all packages are placed here, i.e.:}\\\texttt{\hspace{0.5cm}davinci\_description}\\\texttt{\hspace{0.5cm}davinci\_driver}\\\texttt{\hspace{0.5cm}davinci\_moveit\_config} ] 
+\begin{tikzpicture}[scale=1]
+\Tree [.\color{blue}{\texttt{daVinci\_ws}}
+  [.\color{blue}{\texttt{build}} \text{make files etc.} ]  [.\color{blue}{\texttt{devel}} lib/setup ]  
+     [.\color{blue}{\texttt{src}} {\color{white}{m}}$\underset{\text{input to the CMake build system}}{\text{\color{ForestGreen}{\texttt{CMakeLists.txt}}}}${\color{white}{m}} [.\hspace{0.2cm}\text{package $1$}\hspace{0.2cm} $\cdots$ $\cdots$ ]
+     [.\hspace{0.2cm}\text{package 2}\hspace{0.2cm} $\cdots$ $\cdots$ ] \hspace{0.2cm}$\cdots$\hspace{0.2cm}  [.\hspace{0.2cm}\text{package $n$}\hspace{0.2cm} $\cdots$ $\cdots$  ]   ] 
   ]
+\end{tikzpicture}
   
-\vspace{0.5cm}
+\vspace{0.2cm}
 
-The package where most of the development takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. The structure of this is therefore shown in further details below.
+The package where most of the development in this thesis takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. To give some idea of the content and how the code is structured, the directory tree on the following page is provided. It shows merely the "interesting files" seen from a developers point of view. In reality, additionally files are present. 
 
+\begin{comment}
 \hspace{-1.5cm}
- \Tree [.\texttt{<name of workspace>} 
+ \Tree [.\color{blue}{\texttt{daVinci\_ws}} 
  %[.\scriptsize  \texttt{build/} \text{all make-files}\\\text{(auto-generated}) ] 
   [.\scriptsize  \texttt{src/} 
   %\scriptsize  \color{green}{\texttt{CMakeLists.txt}} 
   \scriptsize \texttt{davinci\_}\\\scriptsize \texttt{description/}	 
-[.\scriptsize \texttt{davinci\_}\\\scriptsize \texttt{moveit\_config/} \scriptsize  \color{green}{\texttt{CMakeLists.txt}} [.\scriptsize  \texttt{src} \scriptsize \texttt{MoveGroupInterface.cpp}\\\text{(main C++ interface)} ]  \scriptsize  \texttt{config} \scriptsize  \texttt{launch} \scriptsize  \color{green}{\texttt{package.xml}} ]   
+[.\scriptsize \texttt{davinci\_}\\\scriptsize \texttt{moveit\_config/} \scriptsize  \color{green}{\texttt{CMakeLists.txt}} [.\texttt{src} \scriptsize \texttt{MoveGroupInterface.cpp}\\\text{(main C++ interface)} ]  \scriptsize  \texttt{config}  \texttt{launch}  \color{green}{\texttt{package.xml}} ]   
   \scriptsize \texttt{davinci\_}\\\scriptsize \texttt{driver/} ]  
   %[.\scriptsize  \texttt{devel/} \text{setup files +}\\\text{libraries etc.} ] 
   ] 
-
+\end{comment}
+\newpage
 
 %[.\texttt{davinci\_moveit\_config} \texttt{config} \texttt{launch} ] \texttt{davinci\_description} \texttt{davinci\_driver} [.VP [.V is ] \qroof{a simple tree}.NP ] ]
 
+\renewcommand*\DTstylecomment{\rmfamily\color{gray}\textsc}
+\renewcommand*\DTstyle{\ttfamily\textcolor{blue}}
 
+\begin{figure}[H]
+% to make comment:
+% .4 davinci\_moveit\_config\DTcomment{Guillaume}.
+\dirtree{%
+.1 /...
+.2 davinci\_ws. %\DTcomment{workspace folder, created by mkdir}.
+.3 build. %\DTcomment{generated by catkin\_init\_workspace}.
+%.4 \color{gray}{..}.
+.4 \color{gray}{... all make-files}. %\DTcomment{generated by catkin\_init\_workspace}.
+.3 devel. %\DTcomment{generated by catkin\_init\_workspace}.
+%.4 \color{gray}{..}.
+.4 \color{gray}{... all libraries and setup files}. %\DTcomment{generated by catkin\_init\_workspace}.
+.3 src.
+.4 \color{ForestGreen}{CMakeLists.txt}.
+.4 davinci\_description. %\DTcomment{\underline{Package:} Physical sizes and rotation matrices}.
+.5 \color{ForestGreen}{CMakeLists.txt}.
+.5 config.
+.6 \color{ForestGreen}{davinci.rviz}.
+.5 launch.
+.6 \color{ForestGreen}{demo.launch}.
+.6 \color{ForestGreen}{visualize\_in\_rviz.launch}.
+.5 meshes.
+.6 \color{gray}{... all .stl files (used for the 3D model in rviz)}.
+.5 \color{ForestGreen}{package.xml}.
+.5 robots.
+.6 \color{ForestGreen}{remote\_center\_manipulator.xacro}\hspace{0.5cm}\color{gray}{\# rotation matrices for the hand}.
+.6 \color{ForestGreen}{davinci.xacro}\hspace{0.5cm}\color{gray}{\# assembles all xml macros}.
+.6 \color{ForestGreen}{p4\_arm.xacro}\hspace{0.5cm}\color{gray}{\# rotation matrices for the arm}.
+.6 instruments.
+.7 \color{ForestGreen}{needle\_driver.xacro}\hspace{0.5cm}\color{gray}{\# rotation matrices for instrument}.
+.4 davinci\_driver. %\DTcomment{\underline{Package:} Interface with the physical robot}.
+.5 \color{ForestGreen}{CMakeLists.txt}.
+.5 \color{ForestGreen}{dstp.json}.
+.5 launch.
+.5 src.  
+.6 \color{ForestGreen}{davinci\_driver.cpp}\hspace{0.5cm}\color{gray}{\# ...}.
+.6 \color{ForestGreen}{ros\_driver.cpp}\hspace{0.5cm}\color{gray}{\# ...}.
+.6 \color{ForestGreen}{sbrio\_driver.cpp}\hspace{0.5cm}\color{gray}{\# ...}.
+.5 srv.
+.6 \color{gray}{... various hard-coded names}.
+.5 config.
+.6 \color{ForestGreen}{davinci\_ip\_adresses.yaml}\hspace{0.5cm}\color{gray}{\# set IP for RIO primary/secondary board}.
+.6 \color{ForestGreen}{p4\_hand\_controller.yaml}\hspace{0.5cm}\color{gray}{\# specify each controllable joint}.
+.5 include.
+.6 \color{gray}{... header files for davinci\_driver.cpp and sbrio\_driver.cpp}.
+.5 libsjon.
+.6 \color{gray}{... various libraries}.
+.4 davinci\_moveit\_config. %\DTcomment{\underline{Package:} Trajectory planning}.
+.5 \color{ForestGreen}{CMakeLists.txt}.
+.5 config.
+.6 \color{ForestGreen}{controllers.yaml}\hspace{0.5cm}\color{gray}{\# specifies each controllable joint}.
+.6 \color{ForestGreen}{davinci.srdf}\hspace{0.5cm}\color{gray}{\# collision states, group states and group specification}.
+.6 \color{ForestGreen}{fake\_controllers.yaml}\hspace{0.5cm}\color{gray}{\# simulation controller specification}.
+.6 \color{ForestGreen}{joint\_limits.yaml}\hspace{0.5cm}\color{gray}{\# Acceleration, velocity and position limits}.
+.6 \color{ForestGreen}{kinematics.yaml}\hspace{0.5cm}\color{gray}{\# Kinematic solver specification}.
+.6 \color{ForestGreen}{ompl\_planning.yaml}\hspace{0.5cm}\color{gray}{\# path planning specification}. 	
+.5 launch.
+.6 \color{ForestGreen}{davinci\_moveit\_controller\_manager.launch.xml}\hspace{0.5cm}\color{gray}{}.
+.6 \color{ForestGreen}{move\_group.launch}\hspace{0.5cm}\color{gray}{\# launch all essential drivers }.
+.6 \color{ForestGreen}{setup\_assistant.launch}\hspace{0.5cm}\color{gray}{\# launch to generate essential moveit files}.
+.6 \color{gray}{... + a number of other launch files controlled by the setup assistant}.
+.5 \color{ForestGreen}{package.xml}\hspace{0.5cm}\color{gray}{\# specification of moveit dependencies}.
+.5 src.
+.6 \color{ForestGreen}{MoveGroupInterface.cpp}\hspace{0.5cm}\color{gray}{\# main C++ interface}.
+}
+%\caption{Code structure in the ROS environment}
+\end{figure}
 
 %Be very sure to clone all three packages.
 \subsubsection*{Setup of Low Level Control}

@@ -694,6 +694,7 @@ format=hang,														% Figurtekst p flere linier ordnes under hinanden og i
 %{a+b+&c+d+&e+f+g&+h+i}% main formula
 %{&&\br{num_columns}{text_below}} % lower brace
 
+\usepackage{dirtree}
 \usepackage{qtree}
 % Like \DescribeMacro, but arbitrary text
 \def\marginpost#1{\leavevmode \marginpar{~\hfill\texttt{#1}}\ignorespaces}
@@ -705,3 +706,5 @@ format=hang,														% Figurtekst p flere linier ordnes under hinanden og i
 \def\pstyle#1{\textsf{#1}} % style filenames
 
 \def\argplain#1{\textit{$\langle$#1$\rangle$}} % Like \marg, but without { }
+\usepackage{graphicx}
+\usepackage{tikz-qtree}
