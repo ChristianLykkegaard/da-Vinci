@@ -4,9 +4,9 @@
     basicstyle=\scriptsize\color{green}%\ttfamily
 }
 \chapter{Interfacing da Vinci with ROS}\label{app:ros}
-This appendix ought to give concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. It also intends to provide an overview over the code structure and the underlying thoughts. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix. 
+This appendix ought to give concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. It also intends to provide an overview of the code structure and the underlying thoughts. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix. 
 
-To install ROS on a private laptop, follow the below URL:
+To install ROS on a private laptop, it is recommended to simply follow the below URL:
 
 \hspace{1cm} {\color{blue}{\textit{http://wiki.ros.org/ROS/Installation}}}
 
@@ -24,7 +24,7 @@ Then navigate to the source directory (\texttt{src}) and type:
 
 \hspace{1cm} \texttt{\$ catkin\_init\_workspace}
 
-This create a number of necessary files and folders. The code located at the "Robotic Surgery Group - Aalborg University" must be copied/cloned to the \texttt{src} folder. %({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
+This creates a number of necessary files and folders. The code located at the "Robotic Surgery Group - Aalborg University" must be copied/cloned to the \texttt{src} folder. %({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
 The original environment (clean configuration) can be cloned with the following git terminal commands:\vspace{0.1cm}
 
 \hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description}
@@ -33,7 +33,7 @@ The original environment (clean configuration) can be cloned with the following 
 
 \hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_moveit\_config}\vspace{0.2cm}
 
-Each command copies a so called \gls{ros} package which initially are created by the \texttt{catkin\_create\_pkg} command. A "package" is simply the name convention for a chunk of software in \gls{ros}. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep}. This ought to make it easier to share and reuse code. The code developed in this thesis obeys to a large extend the \gls{rep}s but exceptions may occur. 
+Each command copies a so called \gls{ros} package which initially are created by the \texttt{catkin\_create\_pkg} command. A "package" is simply the name convention for a chunk of software in \gls{ros}. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep} (it is not just the packages which should follow the \gls{rep} standard, but in fact the entire ROS workspace). This ought to make it easier to share and reuse code. The code developed in this thesis obeys to a large extend the \gls{rep}s but exceptions may occur. 
 
 The three packages used are in that sense:
 \begin{itemize}
@@ -51,7 +51,7 @@ To build the entire environment, open a terminal, navigate to the root of the wo
 \hspace{1cm} \texttt{\$ catkin\_make}
 
 This connects all executables and the environment should hereafter be ready for use.
-
+\subsection*{General structure of a ROS setup}
 After the workspace is created (called \texttt{daVinci\_ws}), the packages are cloned and the environment is build, the overall code structure should look like the tree structure found below:
 
 \vspace{0.5cm}
@@ -66,42 +66,76 @@ After the workspace is created (called \texttt{daVinci\_ws}), the packages are c
   
 \vspace{0.2cm}
 
-Each package has a similar structure. While the content may vary, they always have a file called \texttt{package.xml} and \texttt{CMakeLists.txt} and often the below showed structure:
+Each package has a similar structure. While the content may vary, they always have a file called \texttt{package.xml} and \texttt{CMakeLists.txt}, and often the structure shown below.
 
 %\begin{tikzpicture}[scale=1]
 \hspace{2.5cm}
-\Tree [.\text{package $m$} \color{ForestGreen}{\texttt{CMakeLists.txt}} \color{ForestGreen}{\texttt{package.xml}} [.\color{blue}{\texttt{config}} $\cdots$ $\cdots$ ]  [.\color{blue}{\texttt{launch}} $\cdots$ $\cdots$  ] [.\color{blue}{\texttt{src}} $\cdots$ $\cdots$ ] $\cdots$ ]
+\Tree [.\text{package $m$} \color{ForestGreen}{\texttt{CMakeLists.txt}} \color{ForestGreen}{\texttt{package.xml}} [.\color{blue}{\texttt{config}} $\cdots$ $\cdots$ ]  [.\color{blue}{\texttt{launch}} $\cdots$ $\cdots$  ] [.\color{blue}{\texttt{others}} $\cdots$ $\cdots$ ] $\cdots$ ]
 %\end{tikzpicture}
-\vspace{0.2cm}
-\begin{table}[H]
-\begin{tabularx}{\textwidth}{X X X X}
-\rowcolor{HeaderBlue} 
- \textbf{\texttt{CMakeLists.txt}} & \textbf{\texttt{package.xml}}& \textbf{launch} & \textbf{Others} \\
-Adding executables,  & .. & .. & Usually folders like \texttt{src}, \texttt{config}, \texttt{include} and similar. They all have the purpose to enhance overview. The name should to some extend be self explaining. \\  \rowcolor{textBlue}
-\end{tabularx}
-	\caption{Brief explanation of the purpose of the most common used folder names in a package.} 
-\label{tab:minmax}
-\end{table}
 
-The package where most of the development in this thesis takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. To give some idea of the content and how the code is structured, the directory tree on the following page is provided. It shows merely the "interesting files" seen from a developers point of view. In reality, additionally files are present. 
 
+
+
+
+
+
+%%%>
 \begin{comment}
-\hspace{-1.5cm}
- \Tree [.\color{blue}{\texttt{daVinci\_ws}} 
- %[.\scriptsize  \texttt{build/} \text{all make-files}\\\text{(auto-generated}) ] 
-  [.\scriptsize  \texttt{src/} 
-  %\scriptsize  \color{green}{\texttt{CMakeLists.txt}} 
-  \scriptsize \texttt{davinci\_}\\\scriptsize \texttt{description/}	 
-[.\scriptsize \texttt{davinci\_}\\\scriptsize \texttt{moveit\_config/} \scriptsize  \color{green}{\texttt{CMakeLists.txt}} [.\texttt{src} \scriptsize \texttt{MoveGroupInterface.cpp}\\\text{(main C++ interface)} ]  \scriptsize  \texttt{config}  \texttt{launch}  \color{green}{\texttt{package.xml}} ]   
-  \scriptsize \texttt{davinci\_}\\\scriptsize \texttt{driver/} ]  
-  %[.\scriptsize  \texttt{devel/} \text{setup files +}\\\text{libraries etc.} ] 
-  ] 
+:Title: Simple graph
+:Tags: Arrows;Diagrams;Graphs;Mathematics
+:Author: Stefan Kottwitz
+:Slug: graph
+
+A simple example of a graph with straight and bend arrows and loops.
+It has been posted as answer to the question
+http://tex.stackexchange.com/q/45734/213 of Ichibann.
+
+* Define styles for edges, arrows, and nodes
+* Place the main nodes
+* Draw edges with nodes for description
+* Use options `loop` and `bend` for loops and bent edges
+* Specify `left` and `right` for bend direction and node placement
 \end{comment}
 
-%\newpage
+Before elaborating on the significance of these folders and files, it is to some extend important to have an overview of the general used terms in the \gls{ros} environment. Those terms are briefly mentioned in \autoref{ros:node_etc}. 
+\begin{figure}[H]
+\center
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=5.5cm,
+  thick,main node/.style={circle,fill=blue!20,draw,font=\sffamily\Large\bfseries}]
+  \node[main node] (1) {\small \text{rosnode 1}};
+  \node[main node] (2) [right of=1] {\small \text{rosnode 2}};
 
-%[.\texttt{davinci\_moveit\_config} \texttt{config} \texttt{launch} ] \texttt{davinci\_description} \texttt{davinci\_driver} [.VP [.V is ] \qroof{a simple tree}.NP ] ]
+  \path[every node/.style={font=\sffamily\small}]
+    (1) 
+         edge node [right] {\hspace{-1.3cm}$\overset{\text{\normalsize rostopic}}{\text{\color{black}{(communication)}}}$} (2)
+      %  edge [bend right] node[left] {0.3} (2)
+      %  edge [loop above] node {0.1} (1)
+      %  edge [bend right] node[right] {0.2} (2)
+    (2) %edge node [right] {} (1)
+        %edge [loop right] node {0.6} (2)
+        %edge [bend right] node[right] {0.2} (1)
+        ;
+\end{tikzpicture}
+\caption{Coherence between rosnodes and rostopics. A topic is the communication channel between two or more ROS nodes. Two often used terms in this context are to publish/subscribe to a topic. To "publish" means to send a message from a topic and one can decode the message by "subscribing" to a topic.}
+\label{ros:node_etc}
+\end{figure}
+With a basic understanding of ROS nodes and topics, the generic content of the two required files (\texttt{CMakeLists.txt} and \texttt{package.xml}) and the often used \texttt{launch} folder can be elaborated in \autoref{tab:eleb}. Other folders and files like \texttt{src}, \texttt{config}, \texttt{include} and similar are indeed also often used. They all have the purpose to enhance overview. The name should to some extend be self explaining, e.g. the \texttt{config} folder includes configuration files for the da-Vinci robot, the \texttt{src} folder often includes C++ files used for algorithms designed for specific purposes etc.
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{X X X}
+\rowcolor{HeaderBlue} 
+ \textbf{\texttt{CMakeLists.txt}} & \textbf{\texttt{package.xml}}& \textbf{launch} \\
+Package/project description, \gls{catkin} version, specification of required packages (not ROS packages but packages to create CMake environment variables), catkin dependencies and definitions and the specification of catkin build targets (executables and library targets). 
+%%
+$^*$  & Also referenced as a package manifest. It provides information about the maintainer, version, package name (e.g. \texttt{davinci\_driver}) and author. It specifies build tool dependencies (for the package to build itself - typically only catkin), build dependencies (required packages at build time), run-time dependencies and test dependencies (not used).  $^{**}$ & The content of a launch folder is primary used to start a group of nodes with unique topics and/or parameters. They are executed by the \texttt{roslaunch} terminal command followed by package name and lastly the name of the launch file, i.e.:\newline \texttt{roslaunch <package name> <name of launch file>}. \\  \rowcolor{textBlue}
+\end{tabularx}
+	\caption{Brief explanation of the purpose of the most common used folder names in a package.\newline $^*$ \citep{bib:CmakeLists}, $^{**}$ \citep{bib:package}.} 
+\label{tab:eleb}
+\end{table}
+\subsection*{Specific File Structure of this Thesis}
+Low level flowcharts and low level code decomposition may be found in ??? and is as such not treated in this section.
 
+The package where most of the development in this thesis takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. To give some idea of the content and how the code is structured, the directory tree on the following page is provided. It shows merely the "interesting files" seen from a developers point of view. In reality, additionally files are present. 
+\newpage
 \renewcommand*\DTstylecomment{\rmfamily\color{gray}\textsc}
 \renewcommand*\DTstyle{\ttfamily\textcolor{blue}}
 
@@ -135,6 +169,7 @@ The package where most of the development in this thesis takes place is in the \
 .6 \color{ForestGreen}{p4\_arm.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for the arm}.
 .6 instruments.
 .7 \color{ForestGreen}{needle\_driver.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for instrument}.
+.6 \color{gray}{... + other xacro files}.
 .4 davinci\_driver. %\DTcomment{\underline{Package:} Interface with the physical robot}.
 .5 \color{ForestGreen}{CMakeLists.txt}.
 .5 \color{ForestGreen}{dstp.json}.
