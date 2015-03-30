@@ -4,23 +4,55 @@
     basicstyle=\scriptsize\color{green}%\ttfamily
 }
 \chapter{Interfacing da Vinci with ROS}\label{app:ros}
-This appendix ought to give concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix, that a ROS workspace is created ({\color{blue}{\textit{http://wiki.ros.org/catkin/Tutorials/create\_a\_workspace}}}) and that all the code located at the "Robotic Surgery Group - Aalborg University" has been copied/cloned to the root of the workspace ({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
+This appendix ought to give concrete knowlegde to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. It also intends to provide an overview over the code structure and the underlying thoughts. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix. 
 
+To install ROS on a private laptop, follow the below URL:
+
+\hspace{1cm} {\color{blue}{\textit{http://wiki.ros.org/ROS/Installation}}}
+
+Once ROS is installed, it is important to work on the \texttt{surgery-srv.lab.es.aau.dk} computer. It is recommended to work directly on the server in the lab as it provides additional GUI applications such as rviz, but it is obviously more convenient to work from a private laptop. Connection can be established through \texttt{ssh}:
+
+%\begin{lstlisting}[style=ubuntu]
+\hspace{1cm} \texttt{\$ ssh <user>@surgery-srv.lab.es.aau.dk}
+%\end{lstlisting}
+
+To get started with everything, open a terminal and initialize a ROS workspace as:
+
+\hspace{1cm} \texttt{\$ mkdir daVinci\_ws/src}
+
+Then navigate to the source directory (\texttt{src}) and type:
+
+\hspace{1cm} \texttt{\$ catkin\_init\_workspace}
+
+This create a number of necessary files and folders. The code located at the "Robotic Surgery Group - Aalborg University" must be copied/cloned to the \texttt{src} folder. %({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
 The original environment (clean configuration) can be cloned with the following git terminal commands:\vspace{0.1cm}
 
 \hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description}
 
 \hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_driver}
 
-\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_moveit\_config}\vspace{0.1cm}
+\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_moveit\_config}\vspace{0.2cm}
 
-Each command copies a so called \gls{ros} package which initially are created by the \texttt{catkin\_create\_pkg} command. A "package" is simply the name convention for a chunk of software. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep}. This ought to make it easier to share and reuse code. The code developed in this thesis obeys to some extend the \gls{rep}s but exceptions may occur. 
+Each command copies a so called \gls{ros} package which initially are created by the \texttt{catkin\_create\_pkg} command. A "package" is simply the name convention for a chunk of software in \gls{ros}. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep}. This ought to make it easier to share and reuse code. The code developed in this thesis obeys to a large extend the \gls{rep}s but exceptions may occur. 
 
+The three packages used are in that sense:
+\begin{itemize}
+\item \texttt{davinci\_description}
+\item \texttt{davinci\_driver}
+\item \texttt{davinci\_moveit\_config}
+\end{itemize}
 The development branch, i.e. the result of the work undertaken in this project, can be cloned as:
 
 \hspace{0cm} \texttt{\$ git clone <URL> ---branch develop} \ \ \ {\color{RoyalBlue}{\textit{\# Clone all three packages}}}
 
-After the workspace is created (call it \texttt{daVinci\_ws}) and the packages are cloned, the overall code structure should look like the tree structure found below:
+
+To build the entire environment, open a terminal, navigate to the root of the workspace (\texttt{daVinci\_ws/}) and type:
+
+\hspace{1cm} \texttt{\$ catkin\_make}
+
+This connects all executables and the environment should hereafter be ready for use.
+
+After the workspace is created (called \texttt{daVinci\_ws}), the packages are cloned and the environment is build, the overall code structure should look like the tree structure found below:
 
 \vspace{0.5cm}
 
@@ -33,6 +65,23 @@ After the workspace is created (call it \texttt{daVinci\_ws}) and the packages a
 \end{tikzpicture}
   
 \vspace{0.2cm}
+
+Each package has a similar structure. While the content may vary, they always have a file called \texttt{package.xml} and \texttt{CMakeLists.txt} and often the below showed structure:
+
+%\begin{tikzpicture}[scale=1]
+\hspace{2.5cm}
+\Tree [.\text{package $m$} \color{ForestGreen}{\texttt{CMakeLists.txt}} \color{ForestGreen}{\texttt{package.xml}} [.\color{blue}{\texttt{config}} $\cdots$ $\cdots$ ]  [.\color{blue}{\texttt{launch}} $\cdots$ $\cdots$  ] [.\color{blue}{\texttt{src}} $\cdots$ $\cdots$ ] $\cdots$ ]
+%\end{tikzpicture}
+\vspace{0.2cm}
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{X X X X}
+\rowcolor{HeaderBlue} 
+ \textbf{\texttt{CMakeLists.txt}} & \textbf{\texttt{package.xml}}& \textbf{launch} & \textbf{Others} \\
+Adding executables,  & .. & .. & Usually folders like \texttt{src}, \texttt{config}, \texttt{include} and similar. They all have the purpose to enhance overview. The name should to some extend be self explaining. \\  \rowcolor{textBlue}
+\end{tabularx}
+	\caption{Brief explanation of the purpose of the most common used folder names in a package.} 
+\label{tab:minmax}
+\end{table}
 
 The package where most of the development in this thesis takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. To give some idea of the content and how the code is structured, the directory tree on the following page is provided. It shows merely the "interesting files" seen from a developers point of view. In reality, additionally files are present. 
 
@@ -48,7 +97,8 @@ The package where most of the development in this thesis takes place is in the \
   %[.\scriptsize  \texttt{devel/} \text{setup files +}\\\text{libraries etc.} ] 
   ] 
 \end{comment}
-\newpage
+
+%\newpage
 
 %[.\texttt{davinci\_moveit\_config} \texttt{config} \texttt{launch} ] \texttt{davinci\_description} \texttt{davinci\_driver} [.VP [.V is ] \qroof{a simple tree}.NP ] ]
 
@@ -80,24 +130,24 @@ The package where most of the development in this thesis takes place is in the \
 .6 \color{gray}{... all .stl files (used for the 3D model in rviz)}.
 .5 \color{ForestGreen}{package.xml}.
 .5 robots.
-.6 \color{ForestGreen}{remote\_center\_manipulator.xacro}\hspace{0.5cm}\color{gray}{\# rotation matrices for the hand}.
-.6 \color{ForestGreen}{davinci.xacro}\hspace{0.5cm}\color{gray}{\# assembles all xml macros}.
-.6 \color{ForestGreen}{p4\_arm.xacro}\hspace{0.5cm}\color{gray}{\# rotation matrices for the arm}.
+.6 \color{ForestGreen}{remote\_center\_manipulator.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for the hand}.
+.6 \color{ForestGreen}{davinci.xacro}\hspace{0.2cm}\color{gray}{\# assembles all xml macros}.
+.6 \color{ForestGreen}{p4\_arm.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for the arm}.
 .6 instruments.
-.7 \color{ForestGreen}{needle\_driver.xacro}\hspace{0.5cm}\color{gray}{\# rotation matrices for instrument}.
+.7 \color{ForestGreen}{needle\_driver.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for instrument}.
 .4 davinci\_driver. %\DTcomment{\underline{Package:} Interface with the physical robot}.
 .5 \color{ForestGreen}{CMakeLists.txt}.
 .5 \color{ForestGreen}{dstp.json}.
 .5 launch.
 .5 src.  
-.6 \color{ForestGreen}{davinci\_driver.cpp}\hspace{0.5cm}\color{gray}{\# ...}.
-.6 \color{ForestGreen}{ros\_driver.cpp}\hspace{0.5cm}\color{gray}{\# ...}.
-.6 \color{ForestGreen}{sbrio\_driver.cpp}\hspace{0.5cm}\color{gray}{\# ...}.
+.6 \color{ForestGreen}{davinci\_driver.cpp}\hspace{0.2cm}\color{gray}{\# ... TODO }.
+.6 \color{ForestGreen}{ros\_driver.cpp}\hspace{0.2cm}\color{gray}{\# ... TODO }.
+.6 \color{ForestGreen}{sbrio\_driver.cpp}\hspace{0.2cm}\color{gray}{\# ... TODO }.
 .5 srv.
 .6 \color{gray}{... various hard-coded names}.
 .5 config.
-.6 \color{ForestGreen}{davinci\_ip\_adresses.yaml}\hspace{0.5cm}\color{gray}{\# set IP for RIO primary/secondary board}.
-.6 \color{ForestGreen}{p4\_hand\_controller.yaml}\hspace{0.5cm}\color{gray}{\# specify each controllable joint}.
+.6 \color{ForestGreen}{davinci\_ip\_adresses.yaml}\hspace{0.2cm}\color{gray}{\# set IP for RIO primary/secondary board}.
+.6 \color{ForestGreen}{p4\_hand\_controller.yaml}\hspace{0.2cm}\color{gray}{\# specify each controllable joint}.
 .5 include.
 .6 \color{gray}{... header files for davinci\_driver.cpp and sbrio\_driver.cpp}.
 .5 libsjon.
@@ -105,23 +155,24 @@ The package where most of the development in this thesis takes place is in the \
 .4 davinci\_moveit\_config. %\DTcomment{\underline{Package:} Trajectory planning}.
 .5 \color{ForestGreen}{CMakeLists.txt}.
 .5 config.
-.6 \color{ForestGreen}{controllers.yaml}\hspace{0.5cm}\color{gray}{\# specifies each controllable joint}.
-.6 \color{ForestGreen}{davinci.srdf}\hspace{0.5cm}\color{gray}{\# collision states, group states and group specification}.
-.6 \color{ForestGreen}{fake\_controllers.yaml}\hspace{0.5cm}\color{gray}{\# simulation controller specification}.
-.6 \color{ForestGreen}{joint\_limits.yaml}\hspace{0.5cm}\color{gray}{\# Acceleration, velocity and position limits}.
-.6 \color{ForestGreen}{kinematics.yaml}\hspace{0.5cm}\color{gray}{\# Kinematic solver specification}.
-.6 \color{ForestGreen}{ompl\_planning.yaml}\hspace{0.5cm}\color{gray}{\# path planning specification}. 	
+.6 \color{ForestGreen}{controllers.yaml}\hspace{0.2cm}\color{gray}{\# specifies each controllable joint}.
+.6 \color{ForestGreen}{davinci.srdf}\hspace{0.2cm}\color{gray}{\# collision and group specification}.
+.6 \color{ForestGreen}{fake\_controllers.yaml}\hspace{0.2cm}\color{gray}{\# simulation controller specification}.
+.6 \color{ForestGreen}{joint\_limits.yaml}\hspace{0.2cm}\color{gray}{\# Acceleration, velocity and position limits}.
+.6 \color{ForestGreen}{kinematics.yaml}\hspace{0.2cm}\color{gray}{\# Kinematic solver specification}.
+.6 \color{ForestGreen}{ompl\_planning.yaml}\hspace{0.2cm}\color{gray}{\# path planning specification}. 	
 .5 launch.
-.6 \color{ForestGreen}{davinci\_moveit\_controller\_manager.launch.xml}\hspace{0.5cm}\color{gray}{}.
-.6 \color{ForestGreen}{move\_group.launch}\hspace{0.5cm}\color{gray}{\# launch all essential drivers }.
-.6 \color{ForestGreen}{setup\_assistant.launch}\hspace{0.5cm}\color{gray}{\# launch to generate essential moveit files}.
-.6 \color{gray}{... + a number of other launch files controlled by the setup assistant}.
-.5 \color{ForestGreen}{package.xml}\hspace{0.5cm}\color{gray}{\# specification of moveit dependencies}.
+.6 \color{ForestGreen}{davinci\_moveit\_controller\_manager.launch.xml}\hspace{0.2cm}\color{gray}{}.
+.6 \color{ForestGreen}{move\_group.launch}\hspace{0.2cm}\color{gray}{\# launch all essential drivers }.
+.6 \color{ForestGreen}{setup\_assistant.launch}\hspace{0.2cm}\color{gray}{\# launch to generate essential moveit files}.
+.6 \color{gray}{... + other launch files controlled by the setup assistant}.
+.5 \color{ForestGreen}{package.xml}\hspace{0.2cm}\color{gray}{\# specification of moveit dependencies}.
 .5 src.
-.6 \color{ForestGreen}{MoveGroupInterface.cpp}\hspace{0.5cm}\color{gray}{\# main C++ interface}.
+.6 \color{ForestGreen}{MoveGroupInterface.cpp}\hspace{0.2cm}\color{gray}{\# main C++ interface}.
 }
 %\caption{Code structure in the ROS environment}
 \end{figure}
+
 
 %Be very sure to clone all three packages.
 \subsubsection*{Setup of Low Level Control}
@@ -141,13 +192,7 @@ Be sure that the gearing factors are specified as follows:
 \end{table}
 To allow the ROS environment access to the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
 \subsubsection*{ROS}
-To communicate with da Vinci, it is important to execute a few commands in the correct order from the \texttt{surgery-srv.lab.es.aau.dk} computer. It is recommended to work directly on the server in the lab (it provides additional GUI applications such as rviz), but connection to a private laptop can be established through \texttt{ssh}:
-
-%\begin{lstlisting}[style=ubuntu]
-\hspace{1cm} \texttt{\$ ssh <user>@surgery-srv.lab.es.aau.dk}
-%\end{lstlisting}
-
-Every time a new terminal is commenced it is important to source the bash file from the workspace, i.e.:
+It is important to notice that every time a new terminal is commenced it is important to source the bash file from the workspace, i.e.:
 
 \hspace{1cm} \texttt{\$ source devel/setup.bash}
 
@@ -168,6 +213,14 @@ If a 3D GUI interface is desired, open a new terminal and launch:
 \hspace{1cm} \textbf{3.b} \ \ \  \texttt{\$ roslaunch davinci\_bringup visualization.launch} \ \ \ {\color{RoyalBlue}{\textit{\# This opens rviz}}} 
 
 Press the "add" button in \texttt{rviz} and add the "MotionPlanning" option to the panel where start and goal state can be specified. Hereafter, plan and execute the specified goal. This cause the arm of da Vinci to reach out for the specified goal state consisting of five joint angles.
+
+To launch the C++ interface, which allows 3D setpoints (by the KDL inverse kinematic solver) and custom joint specification, open a terminal and type:
+
+\hspace{1cm} \textbf{4} \ \ \  \texttt{\$ rosrun davinci\_moveit\_config MoveGroupInterfaceExecute} \ \ \ {\color{RoyalBlue}{\textit{}}} 
+
+This executes a GUI which provides the following options:
+
+FILL IN!????
 
 \subsubsection*{Useful and Regularly used ROS Commands}
 To build the entire environment, navigate to the root of the workspace and type:
