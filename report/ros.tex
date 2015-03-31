@@ -66,16 +66,12 @@ After the workspace is created (called \texttt{daVinci\_ws}), the packages are c
   
 \vspace{0.2cm}
 
-Each package has a similar structure. While the content may vary, they always have a file called \texttt{package.xml} and \texttt{CMakeLists.txt}, and often the structure shown below.
+Each package has a similar structure. While the content of each package may vary, they always have a file called \texttt{package.xml} and \texttt{CMakeLists.txt}, and often the structure shown below.
 
 %\begin{tikzpicture}[scale=1]
 \hspace{2.5cm}
 \Tree [.\text{package $m$} \color{ForestGreen}{\texttt{CMakeLists.txt}} \color{ForestGreen}{\texttt{package.xml}} [.\color{blue}{\texttt{config}} $\cdots$ $\cdots$ ]  [.\color{blue}{\texttt{launch}} $\cdots$ $\cdots$  ] [.\color{blue}{\texttt{others}} $\cdots$ $\cdots$ ] $\cdots$ ]
 %\end{tikzpicture}
-
-
-
-
 
 
 
@@ -116,7 +112,7 @@ Before elaborating on the significance of these folders and files, it is to some
         %edge [bend right] node[right] {0.2} (1)
         ;
 \end{tikzpicture}
-\caption{Coherence between rosnodes and rostopics. A topic is the communication channel between two or more ROS nodes. Two often used terms in this context are to publish/subscribe to a topic. To "publish" means to send a message from a topic and one can decode the message by "subscribing" to a topic.}
+\caption{Coherence between rosnodes and rostopics. A node is simply a process that performs some computation/algorithm and a topic is the communication channel between two or more ROS nodes. Two often used terms in this context are to publish/subscribe to a topic. To "publish" means to send a message from a topic and one can decode the message by "subscribing" to a topic.}
 \label{ros:node_etc}
 \end{figure}
 With a basic understanding of ROS nodes and topics, the generic content of the two required files (\texttt{CMakeLists.txt} and \texttt{package.xml}) and the often used \texttt{launch} folder can be elaborated in \autoref{tab:eleb}. Other folders and files like \texttt{src}, \texttt{config}, \texttt{include} and similar are indeed also often used. They all have the purpose to enhance overview. The name should to some extend be self explaining, e.g. the \texttt{config} folder includes configuration files for the da-Vinci robot, the \texttt{src} folder often includes C++ files used for algorithms designed for specific purposes etc.
@@ -219,7 +215,7 @@ Be sure that the gearing factors are specified as follows:
 \begin{table}[H]
 \begin{tabularx}{\textwidth}{X X X X X X X}
 \rowcolor{HeaderBlue} 
-\scriptsize \textbf{Intrument Jaw Left} &\scriptsize  \textbf{Intrument Jaw Right} &\scriptsize  \textbf{Intrument Jaw Pitch} &\scriptsize  \textbf{Instrument Pitch} &\scriptsize  \textbf{Instrument Roll} & \scriptsize   \textbf{Hand Pitch} &  \scriptsize\textbf{Hand Roll}\\
+\scriptsize \textbf{Intrument Jaw Left} &\scriptsize  \textbf{Intrument Jaw Right} &\scriptsize  \textbf{Intrument Pitch} &\scriptsize  \textbf{Instrument Roll} &\scriptsize  \textbf{Instrument Slide} & \scriptsize   \textbf{Hand Pitch} &  \scriptsize\textbf{Hand Roll}\\
 12 & 12 & 12.4 & 7.5 & 1340 & 200 & 200\\
 \end{tabularx}
 	\caption{Measured gearing factors. Gearing factors are measured such that $\pi$/4 from \gls{ros} corresponds to 45 degrees on the real robot.}
@@ -231,7 +227,7 @@ It is important to notice that every time a new terminal is commenced it is impo
 
 \hspace{1cm} \texttt{\$ source devel/setup.bash}
 
-It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. The following list of commands must be executed from the root of the workspace. Open a terminal an run:
+The following list of commands must be executed from the root of the workspace. It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. Open a terminal and run:
 
 \hspace{1cm} \textbf{1.} \ \ \ \texttt{\$ roscore} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running in the terminal}}}
 
@@ -282,6 +278,31 @@ To create a \gls{urdf} file from the present xacro files, type the below command
 To run the setup assistant, open a terminal, navigate to the root of the workspace and type:
 
 \hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config setup\_assistant.launch} \ \ \ {\color{RoyalBlue}{\textit{\# GUI is launched}}} 
+
+A GUI offering eight setup options will now be present. Load the current \texttt{davinci\_moveit\_config} package as it is shown in \autoref{fig:setup_assistant_init}. The content of the eight options will be explained in the below itemize as it is important that all options are configured correctly for the kinematic solver to work correctly.
+\begin{enumerate}
+\item \textbf{Start:} It is possible to specify a new configuration package. This should only be necessary to do once. Since the \texttt{davinci\_moveit\_config} package is cloned from the development branch, it is sufficient to edit the existing package by pressing the associated button while the path to \texttt{davinci\_moveit\_config} is specified correctly.
+\item \textbf{Self Collision:}
+This list is auto-generated from the associated xacro files specified in the \texttt{davinci\_} \texttt{description} package (from where a URDF file is generated and initially fed to the setup assistant). The default mode of operation disable collisions between adjacent links, links that can not physically collide, links that are always in collision and links that are in collision in the start-up mode. This is to enhance processing time \citep{bib:setup_assistant}. It is certainly possible to disable/enable collision between links as needed, though the default operation is used.	
+\item \textbf{Virtual Joints:} It is here the robot is attached to the physical world by use of a virtual frame. Make sure the table is filled as shown:
+\begin{table}[H]
+\hspace{1cm}\begin{tabular}{l|l|l|l}
+\textbf{Virtual Joint Name} & \textbf{Child Link}  & \textbf{Parent Frame}  & \textbf{Type}   \\
+\hline
+ \texttt{virtual\_joint} & \texttt{base\_link}  & \texttt{world}  &  \texttt{fixed} \\
+\end{tabular}
+\end{table}
+\item \textbf{Planning Groups:} It is from here possible to describe the joints of the \texttt{p4\_arm} of da-Vinci. The Orocos \gls{kdl} kinematic solver seems to be dependent of at least six \gls{dof} (six active joints). It  
+\item \textbf{Robot Poses:}
+\item \textbf{End Effectors:}
+\item \textbf{Passive Joints:}
+\item \textbf{Configuration Files:}
+\end{enumerate}
+\begin{figure}[H]
+	\includegraphics[scale=0.45]{setup_assistant}
+	\caption{Welcome screen by the moveit setup assistant}
+	\label{fig:setup_assistant_init}
+\end{figure}
 
 Files that needs to be created/modified manually when the setup assistant is launched:
 \begin{itemize}
