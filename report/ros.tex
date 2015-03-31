@@ -282,6 +282,11 @@ To run the setup assistant, open a terminal, navigate to the root of the workspa
 A GUI offering eight setup options will now be present. Load the current \texttt{davinci\_moveit\_config} package as it is shown in \autoref{fig:setup_assistant_init}. The content of the eight options will be explained in the below itemize as it is important that all options are configured correctly for the kinematic solver to work correctly.
 \begin{enumerate}
 \item \textbf{Start:} It is possible to specify a new configuration package. This should only be necessary to do once. Since the \texttt{davinci\_moveit\_config} package is cloned from the development branch, it is sufficient to edit the existing package by pressing the associated button while the path to \texttt{davinci\_moveit\_config} is specified correctly.
+\begin{figure}[H]
+	\includegraphics[scale=0.48]{setup_assistant}
+	\caption{Welcome screen by the moveit setup assistant}
+	\label{fig:setup_assistant_init}
+\end{figure}
 \item \textbf{Self Collision:}
 This list is auto-generated from the associated xacro files specified in the \texttt{davinci\_} \texttt{description} package (from where a URDF file is generated and initially fed to the setup assistant). The default mode of operation disable collisions between adjacent links, links that can not physically collide, links that are always in collision and links that are in collision in the start-up mode. This is to enhance processing time \citep{bib:setup_assistant}. It is certainly possible to disable/enable collision between links as needed, though the default operation is used.	
 \item \textbf{Virtual Joints:} It is here the robot is attached to the physical world by use of a virtual frame. Make sure the table is filled as shown:
@@ -292,24 +297,74 @@ This list is auto-generated from the associated xacro files specified in the \te
  \texttt{virtual\_joint} & \texttt{base\_link}  & \texttt{world}  &  \texttt{fixed} \\
 \end{tabular}
 \end{table}
-\item \textbf{Planning Groups:} It is from here possible to describe the joints of the \texttt{p4\_arm} of da-Vinci. The Orocos \gls{kdl} kinematic solver seems to be dependent of at least six \gls{dof} (six active joints). It  
-\item \textbf{Robot Poses:}
-\item \textbf{End Effectors:}
-\item \textbf{Passive Joints:}
-\item \textbf{Configuration Files:}
-\end{enumerate}
+\item \textbf{Planning Groups:} It is from here possible to describe the joints of the \texttt{p4\_arm} of da-Vinci. The Orocos \gls{kdl} kinematic solver seems to be dependent of at least six \gls{dof} (six active joints). It is possible to describe the arm by means of either joints, links or as a chain. It is chosen to describe the arm as joints. Be sure that a group \texttt{"gripper"} is added with the following kinematic specifications:
+\begin{itemize}
+\item Kinematic Solver: \texttt{kdl\_kinematic\_plugin/KDLKinematicPlugin}
+\item Kin. Search Resolution: 0.005 (default)
+\item Kin. Search Timeout (sec): 0.005 (default)
+\item Kin. Solver Attempts: 3 (default)
+\end{itemize}
+It is furthermore important that it has the following joints specified:
+\renewcommand*\DTstylecomment{\rmfamily\color{gray}\textsc}
+\renewcommand*\DTstyle{\ttfamily\textcolor{black}} 
 \begin{figure}[H]
-	\includegraphics[scale=0.45]{setup_assistant}
-	\caption{Welcome screen by the moveit setup assistant}
-	\label{fig:setup_assistant_init}
+\dirtree{%
+.1 \textbf{\texttt{gripper}}. 
+.2 joints.
+.3 p4\_instrument\_slide - Prismatic.
+.3 p4\_instrument\_roll - Revolute.
+.3 p4\_hand\_pitch - Revolute.
+.3 p4\_hand\_roll - Revolute.
+.3 p4\_rcm\_instrument\_holder\_upper\_bar\_joint - Revolute.
+.3 p4\_rcm\_upper\_bar\_base\_joint - Revolute.
+.3 p4\_instrument\_jaw\_right - Revolute.
+.2 Links \hspace{1cm}\color{gray}{\# Leave this empty}.
+.2 Chain \hspace{1cm}\color{gray}{\# Leave this empty}.
+.2 Subgroups \hspace{0.2cm}\color{gray}{\# Leave this empty}.
+}
 \end{figure}
-
-Files that needs to be created/modified manually when the setup assistant is launched:
+This ensures that the group \texttt{gripper} can operate with six \gls{dof}. It is 
+\item \textbf{Robot Poses:} It is from here possible to specify standard positions for the arm. The code developed during this thesis utilized a pose for an initial positions, hence be sure that a pose named \texttt{ready} is present under the group \texttt{gripper}. All joint states should be set to zero for this pose.
+\item \textbf{End Effectors:} The end-effector is specified as shown:
+\begin{table}[H]
+\hspace{1cm}\begin{tabular}{l|l|l|l}
+\textbf{End-Effector Name} & \textbf{Group Name}  & \textbf{Parent Link}  & \textbf{Parent Group}   \\
+\hline
+ \texttt{Gripper} & \texttt{gripper}  & \texttt{base\_link}  &  \texttt{--leave this empty--} \\
+\end{tabular}
+\end{table}
+\item \textbf{Passive Joints:} A list of all joints will be available. It is important to specify the passive joints such that the \texttt{davinci\_moveit\_config} package know which joints are controllable. The table below shows how is must look:
+\begin{table}[H]
+\hspace{1cm}\begin{tabular}{l|l}
+\textbf{Active joints} & \textbf{Passive Joints} \\
+\hline
+ \texttt{p4\_arm\_elevation} & \texttt{p4\_arm\_elevation} \\
+  \texttt{p4\_arm\_yaw1} & \texttt{p4\_arm\_yaw1} \\
+   \texttt{p4\_arm\_yaw2} & \texttt{p4\_arm\_yaw2} \\
+    \texttt{p4\_arm\_yaw3} & \texttt{p4\_arm\_yaw3} \\
+     \texttt{p4\_arm\_roll1} & \texttt{p4\_arm\_roll1} \\
+      \texttt{p4\_arm\_yaw4} & \texttt{p4\_arm\_yaw4} \\
+       \texttt{p4\_hand\_roll} & \texttt{p4\_rcm\_instrument\_holder\_upper\_bar\_joint} \\
+        \texttt{p4\_hand\_pitch} & \texttt{p4\_rcm\_instrument\_bar\_joint} \\
+          \texttt{p4\_rcm\_upper\_bar\_base\_joint} &  \\
+   \texttt{p4\_rcm\_instrument\_holder\_upper\_bar\_joint} & \\
+    \texttt{p4\_instrument\_slide} & \\
+     \texttt{p4\_instrument\_roll} &  \\
+      \texttt{p4\_instrument\_pitch} & \\
+       \texttt{p4\_instrument\_jaw\_left} & \\
+        \texttt{p4\_instrument\_jaw\_right} & \\
+\end{tabular}
+\end{table}
+\item \textbf{Configuration Files:} The package will be generated from here by pressing the associated button. It is important to manually check out the files that should be generated. It is important to either recopy the below listed files to the package again or leave them apart from the setup assistant.
 \begin{itemize}
 	\item \texttt{src/davinci\_moveit\_config/launch/davinci\_moveit\_controller\_manager.launch}
 	\item \texttt{src/davinci\_moveit\_config/config/controllers.yaml}
+	\item \texttt{CMakeLists.txt}
+	\item \texttt{package.xml}
 \end{itemize}
-
+It is finally of great significance to modify the \texttt{p4\_hand\_controller.yaml} file in the \texttt{davinci\_driver} package to include the correct joints. This should be taken care of when the development branch is cloned.
+\end{enumerate}
+%Files that needs to be created/modified manually when the setup assistant is launched:
 \subsection*{Useful Debugging Commands}
 To check which files are recently modified, open a terminal and run:
 
