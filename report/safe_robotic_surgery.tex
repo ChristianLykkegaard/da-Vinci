@@ -22,7 +22,7 @@ Sequence of tasks for dynamic surface point tracking
 
 It is desired at the end of the project to perform a trajectory following task with the robot arm (not only simulations or visualization through the ROS tool Rviz), and for that a tissue phantom must be procured, which allows for multiple tests with cutting tools.
 
-\section{Safety Precautions for Automated Surgery Control}
+\section{Safety Precautions for Automated Surgery Control}\label{sec:safety-def}
 A crucial matter when dealing with those topics within robotic surgeries feature necessary conditions to guarantee the patient safety and to avert patient trauma \citep{bib:safety}.
 
 
@@ -82,5 +82,63 @@ with the safety aspect from the CBF)   \\
 
 If the system always moves very slowly, acceleration may be ignored and maybe dyamics could be ignored altogether, only leaving the evolution of kinematics in the function $f(x)$.
 
-\section{Control Barrier Functions}
-The control of the safety problem can be carried out by inspiration of ordinary CLFs (Control Lyapunov Functions) \citep{bib:org_control}
+\section{1-Dimensional Controller Design for Safety}
+The design of a safe controller features the property that a supplied control signal ensures compliance of the definition described in \autoref{sec:safety-def}.
+
+A one-dimensional simple case is analysed at first. The approach adopted constitute the movement of instrument slide, see \autoref{fig:lol}.
+
+\begin{figure}[H]
+\center
+--- NICE FIGURE OF INSTRUMENT SLIDE ---
+\caption{nice figure}
+\label{fig:lol}
+\end{figure}
+
+A barrier certificate function can be constructed from the definitions, i.e.:
+\begin{flalign}
+& B(x) \leq 0 \kk  \forall \hspace{0.3cm} x \in \mathcal{X}_0  \label{cer1}\\
+& B(x) > 0  \kk  \forall \hspace{0.3cm} x \in \mathcal{X}_u \label{cer2} \\
+& L_f(B(x)) \leq 0 \kk  \forall \hspace{0.3cm} x \in \mathcal{X} \label{cer3}
+\end{flalign}
+\vspace{-0.8cm}
+\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+Where  & & \\
+\gls{bar} is the barrier function & [$\cdot$] \\ 
+\end{longtable}
+\vspace*{-0.2cm}
+Based on \citep{bib:artstein}, which founded \gls{clf}s, a \gls{cbf} can be created \citep{bib:org_control}. With a system $\dot{x}=f(x)+g(x)u$, a \gls{cbf} exist if the below constraints are fulfilled:
+\begin{flalign}
+& x\in \mathcal{X}_u \hspace{0.3cm} \Rightarrow \hspace{0.3cm} B(x) > 0  \label{req1} \\
+& L_gB(x) = 0 \hspace{0.3cm} \Rightarrow \hspace{0.3cm} L_fB(x) < 0 \label{req2} \\
+& \{ x \in \mathcal{X} | B(x) \leq 0 \} \neq \emptyset \label{req3}
+\end{flalign}
+\vspace{-0.8cm}
+\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+Where  & & \\
+$L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $\frac{\partial B(x)}{\partial x}f(x)$ & [$\cdot$] \\ 
+$L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{\partial B(x)}{\partial x}g(x)$ & [$\cdot$] 
+\end{longtable}
+\vspace*{-0.2cm}
+Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design a unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
+\subsubsection{Modelling of Slide Movement}
+Modelling is not a focus point in this thesis. Consequently, merely a simple model of the slide movement is used. It may be approximated to a linear first order system with a dominating time constant \gls{taus}: 
+\begin{flalign*}
+& Y(s) = \dfrac{1}{\tau_s s + 1}U(s) =  \dfrac{1/\tau_s}{s + 1/\tau_s}\,U(s) = (s+1/\tau_s)^{-1}\,1/\tau_s\,U(s) \kk  \overset{\overset{Y(s)=(C(sI-A)^{-1}B+D)U(s)}{\longrightarrow}}{\scriptsize \text{compare}}  \\ 
+& \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{f_s(x)} + \underbrace{\tau_s^{-1}}_{g_s(x)} u
+\end{flalign*}
+Thus the system matrix $A$ and the input matrix $B$ can be seen easily. For the sake of generalization, they are named $f_s$ and $g_s$, i.e.:
+\begin{flalign*}
+f_s(x) = -\tau^{-1}x \kk \wedge \kk g_s(x) = \tau_s^{-1}
+\end{flalign*}
+
+The time constant $\tau_s$ can be measured to ???. 
+\subsubsection{Construction of Simple CBF}
+To illustrate the usefulness of \gls{cbf}s, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visual and physical verify the method.
+
+A parabola is introduced as CBF. 
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.5]{parabel_1.pdf}
+\caption{nice figure}
+\label{fig:lol}
+\end{figure}
