@@ -121,9 +121,15 @@ $L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\
 \vspace*{-0.2cm}
 Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design a unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
 \subsubsection{Modelling of Slide Movement}
-Modelling is not a focus point in this thesis. Consequently, merely a simple model of the slide movement is used. It may be approximated to a linear first order system with a dominating time constant \gls{taus}: 
+To obtain a model, a step response will be performed on the slide movement. The slide position can be measured by publishing the joint state angle in \gls{ros}. 
+
+\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
+
+///// FIGURE 
+
+It is clear that this is a second order system with complex roots, however for initial simplicity and because modelling is not a focus point in this thesis, merely a simple model of the slide movement is used. It may (with some good will) be approximated to a linear first order system with a dominating time constant \gls{taus}: 
 \begin{flalign*}
-& Y(s) = \dfrac{1}{\tau_s s + 1}U(s) =  \dfrac{1/\tau_s}{s + 1/\tau_s}\,U(s) = (s+1/\tau_s)^{-1}\,1/\tau_s\,U(s) \kk  \overset{\overset{Y(s)=(C(sI-A)^{-1}B+D)U(s)}{\longrightarrow}}{\scriptsize \text{compare}}  \\ 
+& Y(s) = \dfrac{1}{\tau_s s + 1}U(s) =  \dfrac{1/\tau_s}{s + 1/\tau_s}\,U(s) = (s+1/\tau_s)^{-1}\,1/\tau_s\,U(s) \kk  \overset{\overset{Y(s)=(C(sI-A)^{-1}B+D)U(s)}{\longrightarrow}}{\scriptsize \text{compare to obtain SS form}}  \\ 
 & \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{f_s(x)} + \underbrace{\tau_s^{-1}}_{g_s(x)} u
 \end{flalign*}
 Thus the system matrix $A$ and the input matrix $B$ can be seen easily. For the sake of generalization, they are named $f_s$ and $g_s$, i.e.:
@@ -131,7 +137,12 @@ Thus the system matrix $A$ and the input matrix $B$ can be seen easily. For the 
 f_s(x) = -\tau^{-1}x \kk \wedge \kk g_s(x) = \tau_s^{-1}
 \end{flalign*}
 
-The time constant $\tau_s$ can be measured to ???. 
+
+
+The time constant $\tau_s$ can be measured by means of the matlab script found in ??? to:
+\begin{flalign*}
+\tau_s = 420\, \text{ms}
+\end{flalign*} 
 \subsubsection{Construction of Simple CBF}
 To illustrate the usefulness of \gls{cbf}s, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visual and physical verify the method.
 
