@@ -121,27 +121,25 @@ $L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\
 Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design a unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
 \section{1-Dimensional Controller Design for Safety}
 The slide movement is visualized in \autoref{fig:slidefig} and an overview of terms used in this section is found in \autoref{fig:safe:overview}.
-\begin{figure}[!htb]
+\begin{figure}[H]
     \centering
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=0.7\linewidth]{slidemovefigure.pdf}
+        \includegraphics[width=0.73\linewidth]{slidemovefigure.pdf}
         \caption{Illustration of slide movement.}
         \label{fig:slidefig}
     \end{minipage}%
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=0.48\linewidth]{slide_overview.pdf}
-        \caption{Case study.}
+        \includegraphics[width=0.7\linewidth]{slide_overview.pdf}
+        \caption{Boundaries used in this section.}
         \label{fig:safe:overview}
     \end{minipage}
 \end{figure}
-
-To obtain a model, a step response will be performed on the slide movement. The slide position can be measured by publishing the joint state angle in \gls{ros}. The experiment is described in further details in \autoref{app:meas}.
-
+A system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
 \subsubsection{Modelling of Slide Movement}
-To model the system, a step is added to the system. The step response is plotted in \autoref{fig:stepresponseslide}. Measurement log is found in \autoref{app:meas}.
+ To obtain a model, a step response will be performed on the slide movement. The slide position can be measured by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. To model the system, a step is added to the system. The step response is plotted in \autoref{fig:stepresponseslide}.
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.5]{step_slide.eps}
@@ -168,8 +166,8 @@ Consider the state intervals defined in \autoref{tab:intervals}.
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{X X X X X}
 \rowcolor{HeaderBlue} 
-$\mathcal{X}_G$ & $\mathcal{X}_S$  & $\mathcal{X}_u$ & $\bar{\mathcal{X}}_u$ & $\mathcal{X}_0$ \\
-$x \in [-\Psi_\text{lim}:\Psi_\text{lim}]$ & $x \in [\Psi_s:\Psi_\text{lim}]$  & $x \in [\Psi_h:\Psi_\text{lim}] $ & $ x \in [-\Psi_\text{lim}:\Psi_h] $ & $x \in [-\Psi_\text{lim}:\Psi_h]$  \\
+$\mathcal{X}_G$ & $\mathcal{X}_u^c$  & $\mathcal{X}_u$ & $\mathcal{X}_u^c$ & $\mathcal{X}_0$ \\
+$x \in [\Psi_\text{lim-}:\Psi_\text{lim+}]$ & $x \in [\Psi_s:\Psi_\text{lim+}]$  & $x \in [\Psi_h:\Psi_\text{lim+}] $ & $ x \in [\Psi_\text{lim-}:\Psi_h] $ & $x \in [\Psi_\text{lim-}:\Psi_h]$  \\
 \end{tabularx}
 \caption{Global state intervals where: $\Psi_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Psi_s$ is a soft limit denoting a transition area and $\Psi_h$ is a hard limit where a trajectory at all cost can not cross.}
 \label{tab:intervals}
@@ -212,7 +210,7 @@ Three equations with three unknowns can be outlined to fulfil the initial demand
  \begin{aligned}
 a\,\Psi_h^2 + b\,\Psi_h + c = 0 \\
 a\,(-\Psi_\text{lim})^2 + b\,(-\Psi_\text{lim})^2 + c = 0 \\
-a\left( \frac{-\Psi_\text{lim}+\Psi_h}{2}\right)x^2 + b\left(\frac{-\Psi_\text{lim}+\Psi_h}{2}\right) + c = - 0.025 
+a\left( \frac{-\Psi_\text{lim}+\Psi_h}{2}\right)^2 + b\left(\frac{-\Psi_\text{lim}+\Psi_h}{2}\right) + c = - 0.025 
 \end{aligned}
 \mm \right\}
  \qquad \begin{matrix}
@@ -223,18 +221,23 @@ The interval where $B(x)$ is invalid can thereby be found from \autoref{eq:inter
 \begin{flalign*}
 B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250:0]
 \end{flalign*}
-This is indifferent as $\mathcal{X}_S  \notin [-\Psi_\text{lim}+d_t:\Psi_s]$. Thus the barrier function is plotted in \autoref{fig:barrierfunction}
+This is indifferent as $\mathcal{X}_u^c  \notin [\Psi_\text{lim-}+d_t:\Psi_s]$. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.5]{parabel_1.eps}
-\caption{Barrier function along with the $\mathcal{X}_u$ and $\bar{\mathcal{X}_u}$. Plot details and MATLAB script can be found in ????}
+\caption{Barrier function along with the $\mathcal{X}_u$ and $\mathcal{X}_u^c$. Plot details and MATLAB script can be found in ????}
 \label{fig:barrierfunction}
 \end{figure}
-
-
-\newpage
 \subsection{Controller Design}
-As indicated, the controller designed for safety $k_0$ does not necessarily have to be active before the slide position is within some distance $d_t$ (determined by a parameter $\epsilon$) of a hard boundary $\Psi_h$. This crossing line shall be denoted as a soft boundary $\Psi_s$. See ??? for an overview of these parameters. This does indeed suggest for a divided control law \citep{bib:org_control}. Consider the control law below:
+A control laws is now introduced:
+\begin{flalign*}
+u(x) =
+\begin{cases}
+	\bar{N}\,x_\text{ref} - K\,x \kk &\text{if $x \in [\Psi_{s-}:\Psi_{s+}]$}\\
+	 k_0(x)  \kk &\text{if $x \in [\Psi_{s+}:\Psi_{h+}] \mm \wedge \mm x \in [\Psi_{h-}:\Psi_{s-}]$}
+\end{cases}
+\end{flalign*}
+This can be refined with a parameter $\sigma(x)$ such that the shift between the two control laws is not instantaneous \citep{bib:org_control}. Consider the control law below:
 \begin{flalign*}
 u(x) = \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
 \end{flalign*}
@@ -244,17 +247,35 @@ Where  & & \\
 $u(x)$ is a control signal where safety is ensured  & [$\cdot$] \\
 $\tilde{u}(x)$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx$ & [$\cdot$] \\ 
 $k_0(x)$ is a control law that guarantees safety & [$\cdot$] \\ 
-$\sigma(x)$ is a parameter that founds a linear combination of the two controllers & [$\cdot$] 
+$\sigma(x)$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
-The system performs a pure textbook example of a linear state space controller when $\sigma(x) = 0$, thus no safety aspects are considered as the system is within the boundary $\Psi_s$. When $\sigma(x) = 1$ the trajectory has had direct impact with the hard boundary $\Psi_h$ and the system performs with a 100\,\% dedication to $k_0$. This causes the trajectory to oppose its current target and redirect to a safe place in the state space.
-
+The control law is thereby a linear combination of two controllers. It is noted that:
+\begin{flalign*}
+\sigma(x) = 
+\begin{cases}
+0 \mm &\Rightarrow \mm \text{Pure control by pole placement} \\
+1 \mm &\Rightarrow \mm \text{Pure control for safety} \\
+]0:1[ \mm &\Rightarrow \mm \text{A linear combination of the two $u(x)$ and $\tilde{u}(x)$}
+\end{cases}
+\end{flalign*}
+A block diagram is depicted in \autoref{fig:controlsystem}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=1]{control_system.pdf}
-	\caption{nice figure}
+	\caption{Block diagram of the control system for slide position.}
 	\label{fig:controlsystem}
 \end{figure}
+
+\newpage
+As indicated, the controller designed for safety $k_0$ does not necessarily have to be active before the slide position is within some distance $d_t$ (determined by a parameter $\epsilon$) of a hard boundary $\Psi_h$. This crossing line shall be denoted as a soft boundary $\Psi_s$. See ??? for an overview of these parameters. 
+
+
+
+
+The system performs a pure textbook example of a linear state space controller when $\sigma(x) = 0$, thus no safety aspects are considered as the system is within the boundary $\Psi_s$. When $\sigma(x) = 1$ the trajectory has had direct impact with the hard boundary $\Psi_h$ and the system performs with a 100\,\% dedication to $k_0$. This causes the trajectory to oppose its current target and redirect to a safe place in the state space.
+
+
 
 
 
