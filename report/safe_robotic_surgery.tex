@@ -247,7 +247,8 @@ Where  & & \\
 $u(x)$ is a control signal where safety is ensured  & [$\cdot$] \\
 $\tilde{u}(x)$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx$ & [$\cdot$] \\ 
 $k_0(x)$ is a control law that guarantees safety & [$\cdot$] \\ 
-$\sigma(x)$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] 
+$\sigma(x)$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
+$K$ is a constant feedback matrix in $\mathbb{R}^{1 \times 1}$ & [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
 The control law is thereby a linear combination of two controllers. It is noted that:
@@ -256,7 +257,7 @@ The control law is thereby a linear combination of two controllers. It is noted 
 \begin{cases}
 0 \mm &\Rightarrow \mm \text{Pure control by pole placement} \\
 1 \mm &\Rightarrow \mm \text{Pure control for safety} \\
-]0:1[ \mm &\Rightarrow \mm \text{A linear combination of the two $u(x)$ and $\tilde{u}(x)$}
+]0:1[ \mm &\Rightarrow \mm \text{A linear combination of the two control signals $u(x)$ and $\tilde{u}(x)$}
 \end{cases}
 \end{flalign*}
 A block diagram is depicted in \autoref{fig:controlsystem}.
@@ -266,7 +267,16 @@ A block diagram is depicted in \autoref{fig:controlsystem}.
 	\caption{Block diagram of the control system for slide position.}
 	\label{fig:controlsystem}
 \end{figure}
+The control law ensuring safety can be found as \citep{bib:org_control}:
+\begin{flalign*}
+k_0(x) = \begin{cases}
+-\dfrac{L_fB(x)+ \sqrt{(L_fB(x))^2 + \kappa^2(L_gB(x))^TL_gB(x)}}{(L_gB(x))^TL_gB(x)}L_gB(x) &\text{if} \mm L_gB(x) \neq 0 \\
+0  &\text{if} \mm L_gB(x) = 0
+\end{cases}
+\end{flalign*}
+Which indeed ensures safety for the closed loop system $\dot{x} = f_s(x)+g_s(x)k_0(x)$. Note that:
 
+... ....
 \newpage
 As indicated, the controller designed for safety $k_0$ does not necessarily have to be active before the slide position is within some distance $d_t$ (determined by a parameter $\epsilon$) of a hard boundary $\Psi_h$. This crossing line shall be denoted as a soft boundary $\Psi_s$. See ??? for an overview of these parameters. 
 
