@@ -189,11 +189,54 @@ L_{f_{cl}}B(x) = L_fB(x) + L_gB(x)\cdot 0 = L_fB(x)
 \end{flalign*}
 As $L_fB(x)$ is constructed such that $L_gB(x) = 0 \hspace{0.15cm} \Rightarrow \hspace{0.15cm} L_fB(x) < 0 $. 
 \subsection{Construction of $K$ and $\bar{N}$}
-No constraints to the constant feedback matrix $K$ will be outlined except stability. It will therefore be determined from the pole placement method such that:
+The system is approximated to a linear system on the form $\dot{x}=Ax+Bu$, thus pole placement can be used. No constraints to the constant feedback matrix $K$ will be outlined except stability. It will therefore be determined from the pole placement method where a closed loop pole that is ten times faster than the open loop pole will be placed. Ackermann's formula can be used \citep{bib:acker}:
+\begin{enumerate}
+\item Identify the desired closed loop polynomial on as $A_{cl}(s) = s^n + a_{n-1}s^{n-1}  +  \cdots + a_ {c1}s + a_{c0}$: 
 \begin{flalign*}
-p_d = 10\cdot \text{eig}(A) \kk \text{where \mm $A = -\tau_s^{-1}$}
+A_{cl}(s) = s + 10\,\tau^{-1}
 \end{flalign*}
-Ackermann's formula can be used \citep{bib:acker}.
-
-
+\item Identify the open loop polynomial as $A_{cl}(s) = s^n + a_{c(n-1)}s^{n-1} +  \cdots + a_1s + a_0$: 
+\begin{flalign*}
+A_{ol}(s) = \lambda + \tau^{-1}
+\end{flalign*}
+\item Compute the feedback matrix on controllable canonical form:
+\begin{flalign*}
+ \bar{K}^T = \begin{bmatrix}
+ \bar{k_1} \\
+ \vdots \\
+ \bar{k_n}
+ \end{bmatrix} = \begin{bmatrix}
+ a_{c0} - a_0 \\
+ \vdots \\
+ a_{c(n-1)} - a_{n-1}
+ \end{bmatrix} \kk \Rightarrow  \kk \bar{K}^T = 10\,\tau^{-1} - \tau^{-1} = 9\,\tau^{-1}
+\end{flalign*}
+\item Compute the similarity transform $Q$ recursively as:\\ 
+\begin{minipage}[t]{0.3\textwidth}
+\begin{flalign*}
+&Q = \begin{bmatrix}
+q_1 & q_2 & \cdots & q_n
+\end{bmatrix} \\
+&\text{where:}\\
+&\kk q_n = B \\
+&\kk q_{j-1} = A\,q_j + a_{j-1}B\\
+{\color{white}{white}}\hspace{-0.5cm}
+\end{flalign*}
+\end{minipage}
+\begin{minipage}[t]{0.1\textwidth}
+\begin{flalign*}
+\Rightarrow
+\end{flalign*}
+\end{minipage}
+\begin{minipage}[t]{0.2\textwidth}
+\begin{flalign*}
+Q = \tau^{-1}
+\end{flalign*}
+\end{minipage}
+\item Compute the feedback matrix as:
+\begin{flalign*}
+K = \bar{K}\,Q^{-1} = 9\,\tau^{-1}\dfrac{1}{\tau^{-1}} = 9
+\end{flalign*}
+\end{enumerate}
+The other constant feedback matrix, $\bar{N}$, can be computed as:
 
