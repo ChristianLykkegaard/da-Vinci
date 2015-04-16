@@ -17,12 +17,12 @@ The setup is depicted in \autoref{fig:test:slide:pos}.
 \label{fig:test:slide:pos}
 \end{figure}
 \begin{itemize}
-\item Configure the ROS environment as described in \autoref{app:ros}, i.e. make sure all low level controllers are running, that \texttt{roscore}, the \texttt{davinci\_driver} and the \texttt{moveit\_group} interface is running.
+\item Configure the ROS environment as described in \autoref{app:ros}, i.e. make sure all low level controllers are running, that \texttt{roscore}, the \texttt{davinci\_driver} and the \texttt{moveit\_group} interface are running.
 \end{itemize}
 At this point, three terminals should be running. Now, open two additional terminals and prepare both by typing:
 \begin{itemize}
 \item \texttt{ssh <user name>surgery-srv.lab.es.aau.dk} 
-\item \texttt{cd <path to root of workspace>}
+\item \texttt{cd <path\_to\_ root\_of\_workspace>}
 \item \texttt{source devel/setup.bash}.
 \end{itemize}
 \subsection*{First Terminal}
@@ -40,7 +40,7 @@ Press 'i' to run IK test
 \end{lstlisting}
 Type \textbf{j} + \textbf{enter} to enter custom joint angle mode. It is by default at its zero position for all joint angles. Type 0.005 for slide position and zero for the remaining angles.
 \subsection*{Second Terminal}
-By subscribing to the \texttt{joint\_state} topic (\texttt{rostopic echo joint\_states}), all information about the current states can be fetched from the sensors, i.e. the potentiometers that measure the angles. An example of this is shown below.
+By subscribing to the \texttt{joint\_state} topic (\texttt{rostopic echo joint\_states}), all information about the current states can be fetched from the sensors, i.e. the potentiometers that measure all joint angles. An example of this is shown below.
 \begin{lstlisting}[style=DOS]
 ---
 header: 
