@@ -1,4 +1,4 @@
-
+\glsreset{clf}\glsreset{cbf}
 Based on \citep{bib:artstein}, which founded \gls{clf}s, a \gls{cbf} can be created \citep{bib:org_control}. With a system $\dot{x}=f(x)+g(x)u$, a \gls{cbf} exist if the below constraints are fulfilled:
 \begin{flalign}
 & x\in \mathcal{X}_u \hspace{0.3cm} \Rightarrow \hspace{0.3cm} B(x) > 0  \label{req1} \\
@@ -12,8 +12,8 @@ $L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $\
 $L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{\partial B(x)}{\partial x}g(x)$ & [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
-Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design a unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
-\section{1-Dimensional Controller Design for Safety}
+Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design an unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
+\section{Safe Controller for Instrument Slide}
 The slide movement is visualized in \autoref{fig:slidefig} and an overview of terms used in this section is found in \autoref{fig:safe:overview}.
 \begin{figure}[H]
     \centering
@@ -32,7 +32,7 @@ The slide movement is visualized in \autoref{fig:slidefig} and an overview of te
 \end{figure}
 A system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
-\subsubsection{Modelling of Slide Movement}
+\section{Modelling of Slide Movement}
  To obtain a model, a step response will be performed on the slide movement. The slide position can be measured by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. To model the system, a step is added to the system. The step response is plotted in \autoref{fig:stepresponseslide}.
 \begin{figure}[H]
 \center
@@ -53,7 +53,7 @@ A suitable time constant $\tau_s$ can be read from \autoref{fig:stepresponseslid
 \begin{flalign*}
 \tau_s = 55\, \text{ms}
 \end{flalign*} 
-\subsubsection{Construction of CBF}
+\section{Construction of CBF}
 To illustrate the usefulness of \gls{cbf}s, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
 
 Consider the state intervals defined in \autoref{tab:intervals}.
@@ -104,7 +104,7 @@ Three equations with three unknowns can be outlined to fulfil the initial demand
  \begin{aligned}
 a\,\Psi_h^2 + b\,\Psi_h + c = 0 \\
 a\,(-\Psi_\text{lim})^2 + b\,(-\Psi_\text{lim})^2 + c = 0 \\
-a\left( \frac{-\Psi_\text{lim}+\Psi_h}{2}\right)^2 + b\left(\frac{-\Psi_\text{lim}+\Psi_h}{2}\right) + c = - 0.025 
+a\left( \frac{-\Psi_\text{lim}+\Psi_h}{2}\right)^2 + b\left(\frac{-\Psi_\text{lim}+\Psi_h}{2}\right) + c = \underbrace{-0.025}_\text{any constant $<0$} 
 \end{aligned}
 \mm \right\}
  \qquad \begin{matrix}
@@ -122,7 +122,7 @@ This is indifferent as $\mathcal{X}_u^c  \notin [\Psi_\text{lim-}+d_t:\Psi_s]$. 
 \caption{Barrier function along with the $\mathcal{X}_u$ and $\mathcal{X}_u^c$. Plot details and MATLAB script can be found in ????}
 \label{fig:barrierfunction}
 \end{figure}
-\subsection{Controller Design}
+\section{Controller Design}
 A control laws is now introduced:
 \begin{flalign*}
 u(x) =
@@ -149,8 +149,8 @@ The control law is thereby a linear combination of two controllers. It is noted 
 \begin{flalign*}
 \sigma(x) = 
 \begin{cases}
-0 \mm &\Rightarrow \mm \text{Pure control by pole placement} \\
-1 \mm &\Rightarrow \mm \text{Pure control for safety} \\
+0 \mm &\Rightarrow \mm \text{Pure control by pole placement, i.e. $u(x) = \tilde{u}(x) =  \bar{N}\cdot x_\text{ref}-Kx$ } \\
+1 \mm &\Rightarrow \mm \text{Pure control for safety i.e. $u(x) = k_0(x)$ } \\
 ]0:1[ \mm &\Rightarrow \mm \text{A linear combination of the two control signals $u(x)$ and $\tilde{u}(x)$}
 \end{cases}
 \end{flalign*}
@@ -161,26 +161,39 @@ A block diagram is depicted in \autoref{fig:controlsystem}.
 	\caption{Block diagram of the control system for slide position.}
 	\label{fig:controlsystem}
 \end{figure}
+\subsection{Construction of $k_0$}
 The control law ensuring safety can be found as \citep{bib:org_control}:
-\begin{flalign*}
+\begin{flalign}
 k_0(x) = \begin{cases}
 -\dfrac{L_fB(x)+ \sqrt{(L_fB(x))^2 + \kappa^2(L_gB(x))^TL_gB(x)}}{(L_gB(x))^TL_gB(x)}L_gB(x) &\text{if} \mm L_gB(x) \neq 0 \\
 0  &\text{if} \mm L_gB(x) = 0
 \end{cases}
+\label{eq:control_law}
+\end{flalign}
+$\kappa$ is a design variable. High values of $\kappa$ implies increased aggressiveness. \Autoref{eq:control_law} ensures indeed safety for the closed loop system $\dot{x} = f_s(x)+g_s(x)k_0(x)$. This is easily proven as:
+\begin{flalign*}
+L_{f_{cl}}B(x) = L_fB(x) + L_gB(x)k_0(x)
 \end{flalign*}
-Which indeed ensures safety for the closed loop system $\dot{x} = f_s(x)+g_s(x)k_0(x)$. Note that:
+For $L_gB(x) \neq 0:$
+\begin{flalign*}
+L_{f_{cl}}B(x) &= L_fB(x) + L_gB(x) \left( -\dfrac{L_fB(x)+ \sqrt{(L_fB(x))^2 + \kappa^2(L_gB(x))^TL_gB(x)}}{(L_gB(x))^TL_gB(x)}L_gB(x) \right)  \\
+&= L_fB(x) - (L_gB(x))^TL_gB(x) \dfrac{L_fB(x) - \sqrt{(L_fB(x))^2 + \kappa^2(L_gB(x))^TL_gB(x)}}{(L_gB(x))^TL_gB(x)}   \\ 
+&= L_fB(x) - L_fB(x) - \sqrt{(L_fB(x))^2 + \kappa^2(L_gB(x))^TL_gB(x)} \\
+&= - \sqrt{(L_fB(x))^2 + \kappa^2(L_gB(x))^TL_gB(x)} \mm \leq 0 \mm \forall \mm x
+\end{flalign*}
+As all terms within the square root are squared, no imaginary numbers occur, as a result $L_{f_{cl}}B(x) \leq 0$ 
 
-... ....
-\newpage
-As indicated, the controller designed for safety $k_0$ does not necessarily have to be active before the slide position is within some distance $d_t$ (determined by a parameter $\epsilon$) of a hard boundary $\Psi_h$. This crossing line shall be denoted as a soft boundary $\Psi_s$. See ??? for an overview of these parameters. 
-
-
-
-
-The system performs a pure textbook example of a linear state space controller when $\sigma(x) = 0$, thus no safety aspects are considered as the system is within the boundary $\Psi_s$. When $\sigma(x) = 1$ the trajectory has had direct impact with the hard boundary $\Psi_h$ and the system performs with a 100\,\% dedication to $k_0$. This causes the trajectory to oppose its current target and redirect to a safe place in the state space.
-
-
-
+According to \autoref{eq:control_law}, when $L_gB(x) = 0$:
+\begin{flalign*}
+L_{f_{cl}}B(x) = L_fB(x) + L_gB(x)\cdot 0 = L_fB(x)
+\end{flalign*}
+As $L_fB(x)$ is constructed such that $L_gB(x) = 0 \hspace{0.15cm} \Rightarrow \hspace{0.15cm} L_fB(x) < 0 $. 
+\subsection{Construction of $K$ and $\bar{N}$}
+No constraints to the constant feedback matrix $K$ will be outlined except stability. It will therefore be determined from the pole placement method such that:
+\begin{flalign*}
+p_d = 10\cdot \text{eig}(A) \kk \text{where \mm $A = -\tau_s^{-1}$}
+\end{flalign*}
+Ackermann's formula can be used \citep{bib:acker}.
 
 
 
