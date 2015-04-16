@@ -8,8 +8,9 @@ Based on \citep{bib:artstein}, which founded \gls{clf}s, a \gls{cbf} can be crea
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
 Where  & & \\
-$L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $\frac{\partial B(x)}{\partial x}f(x)$ & [$\cdot$] \\ 
-$L_f(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{\partial B(x)}{\partial x}g(x)$ & [$\cdot$] 
+$B(x)$ is a control barrier function & [$\cdot$] \\ 
+$L_fB(x)$ is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $\frac{\partial B(x)}{\partial x}f(x)$ & [$\cdot$] \\ 
+$L_fB(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{\partial B(x)}{\partial x}g(x)$ & [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
 Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design an unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
@@ -58,21 +59,21 @@ To illustrate the usefulness of \gls{cbf}s, a palpable example hereof will be cr
 
 Consider the state intervals defined in \autoref{tab:intervals}.
 \begin{table}[H]
-	\begin{tabularx}{\textwidth}{X X X X X}
+	\begin{tabularx}{\textwidth}{X X X }
 \rowcolor{HeaderBlue} 
-$\mathcal{X}_G$ & $\mathcal{X}_u^c$  & $\mathcal{X}_u$ & $\mathcal{X}_u^c$ & $\mathcal{X}_0$ \\
-$x \in [\Psi_\text{lim-}:\Psi_\text{lim+}]$ & $x \in [\Psi_s:\Psi_\text{lim+}]$  & $x \in [\Psi_h:\Psi_\text{lim+}] $ & $ x \in [\Psi_\text{lim-}:\Psi_h] $ & $x \in [\Psi_\text{lim-}:\Psi_h]$  \\
+$\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ \\
+$x \in \{[\Lambda_{s+}:\Lambda_\text{lim+}],[\Lambda_\text{lim-}:\Lambda_{s-}]\}$  & $x \in \{[\Lambda_{h+}:\Lambda_\text{lim+}],[\Lambda_\text{lim-}:\Lambda_{h-}]\} $ & $x \in \{[\Lambda_{s+}:\Lambda_{lim+}],[\Lambda_\text{lim-}:\Lambda_{s-}]\}$  \\
 \end{tabularx}
-\caption{Global state intervals where: $\Psi_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Psi_s$ is a soft limit denoting a transition area and $\Psi_h$ is a hard limit where a trajectory at all cost can not cross.}
+\caption{Global state intervals where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition area and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-}:\Lambda_{s+}]$ is safe thus any control law can be used in that area.}
 \label{tab:intervals}
 \end{table}
 A parabola is now introduced as \gls{cbf}. A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
 \begin{flalign*}
 B(x) = ax^2+bx+c \kk \Rightarrow \kk L_fB(x) = \dfrac{d}{dx}B(x)f_s(x) = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx
 \end{flalign*}
-\Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_fB(x)<0$ in the area $x \in [\Psi_s:\Psi_h]$ is therefore indeed sufficient. Analysis of $L_fB(x)$ shall reveal when $L_fB(x)>0$, i.e. to ensure the demand below:
+\Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_fB(x)<0$ in the area $x \in [\Lambda_s:\Lambda_h]$ is therefore indeed sufficient. Analysis of $L_fB(x)$ shall reveal when $L_fB(x)>0$, i.e. to ensure the demand below:
 \begin{flalign*}
-L_fB(x) \ngtr 0\hspace{0.3cm}\forall\hspace{0.3cm} x \in [\Psi_s:\Psi_h]
+L_fB(x) \ngtr 0\hspace{0.3cm}\forall\hspace{0.3cm} x \in [\Lambda_s:\Lambda_h]
 \end{flalign*}
 Thus the analysis is performed:
 \begin{flalign}
@@ -102,9 +103,9 @@ Three equations with three unknowns can be outlined to fulfil the initial demand
 \begin{flalign*}
  \left.
  \begin{aligned}
-a\,\Psi_h^2 + b\,\Psi_h + c = 0 \\
-a\,(-\Psi_\text{lim})^2 + b\,(-\Psi_\text{lim})^2 + c = 0 \\
-a\left( \frac{-\Psi_\text{lim}+\Psi_h}{2}\right)^2 + b\left(\frac{-\Psi_\text{lim}+\Psi_h}{2}\right) + c = \underbrace{-0.025}_\text{any constant $<0$} 
+a\,\Lambda_h^2 + b\,\Lambda_h + c = 0 \\
+a\,(-\Lambda_\text{lim})^2 + b\,(-\Lambda_\text{lim})^2 + c = 0 \\
+a\left( \frac{-\Lambda_\text{lim}+\Lambda_h}{2}\right)^2 + b\left(\frac{-\Lambda_\text{lim}+\Lambda_h}{2}\right) + c = \underbrace{-0.025}_\text{any constant $<0$} 
 \end{aligned}
 \mm \right\}
  \qquad \begin{matrix}
@@ -115,7 +116,7 @@ The interval where $B(x)$ is invalid can thereby be found from \autoref{eq:inter
 \begin{flalign*}
 B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250:0]
 \end{flalign*}
-This is indifferent as $\mathcal{X}_u^c  \notin [\Psi_\text{lim-}+d_t:\Psi_s]$. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
+This is indifferent as $\mathcal{X}  \notin [\Lambda_{s-}:\Lambda_{s+}]$. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.5]{parabel_1.pdf}
@@ -127,8 +128,8 @@ A control laws is now introduced:
 \begin{flalign*}
 u(x) =
 \begin{cases}
-	\bar{N}\,x_\text{ref} - K\,x \kk &\text{if $x \in [\Psi_{s-}:\Psi_{s+}]$}\\
-	 k_0(x)  \kk &\text{if $x \in [\Psi_{s+}:\Psi_{h+}] \mm \wedge \mm x \in [\Psi_{h-}:\Psi_{s-}]$}
+	\bar{N}\,x_\text{ref} - K\,x \kk &\text{if \mm $x \in [\Lambda_{s-}:\Lambda_{s+}]$}\\
+	 k_0(x)  \kk &\text{if \mm $x \in [\Lambda_{s+}:\Lambda_{h+}] \mm \wedge \mm x \in [\Lambda_{h-}:\Lambda_{s-}]$}
 \end{cases}
 \end{flalign*}
 This can be refined with a parameter $\sigma(x)$ such that the shift between the two control laws is not instantaneous \citep{bib:org_control}. Consider the control law below:
@@ -158,7 +159,7 @@ A block diagram is depicted in \autoref{fig:controlsystem}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=1]{control_system.pdf}
-	\caption{Block diagram of the control system for slide position.}
+	\caption{Block diagram of the control system for slide position. MATLAB implementation is found in \autoref{app:slide_implement_1}.}
 	\label{fig:controlsystem}
 \end{figure}
 \subsection{Construction of $k_0$}
@@ -199,7 +200,7 @@ A_{cl}(s) = s + 10\,\tau^{-1}
 \begin{flalign*}
 A_{ol}(s) = \lambda + \tau^{-1}
 \end{flalign*}
-\item Compute the feedback matrix on controllable canonical form:
+\item Compute the feedback matrix in controllable canonical form:
 \begin{flalign*}
  \bar{K}^T = \begin{bmatrix}
  \bar{k_1} \\
@@ -238,5 +239,8 @@ Q = \tau^{-1}
 K = \bar{K}\,Q^{-1} = 9\,\tau^{-1}\dfrac{1}{\tau^{-1}} = 9
 \end{flalign*}
 \end{enumerate}
-The other constant feedback matrix, $\bar{N}$, can be computed as:
-
+The constant feedback matrix, $\bar{N}$, can be computed as \citep{bib:Nbar}:
+\begin{flalign*}
+\bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 10
+\end{flalign*}
+\section{Simulation results}

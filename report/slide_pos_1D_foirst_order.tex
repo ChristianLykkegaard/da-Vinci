@@ -1,0 +1,217 @@
+\begin{lstlisting}[language=matlab]
+clear ; clc; close all;
+format long;
+
+n = 1;
+a = 16/9;
+b = 4/45;
+c = -2/225; 
+parMin = -0.0250;
+
+%--- Define Constants ---%
+scrsz = get(groot,'ScreenSize'); % [left bottom width height]
+infinity = 10^4;   
+tau = 0.055; % time constant
+a_sys = -1/tau; % pole for z
+b_sys = 1/tau; % sine wave frequency
+g = 1/tau;
+kappa = 0.001;
+gamma1 = 1/2;
+gamma2 = 1;
+
+%--- Find epsilon ---%
+x_epsilon = 0.04; % find epsilon from desired soft limit
+epsilon = a*x_epsilon^2 + b*x_epsilon + c;
+syms x0
+softlims = solve(a*x0^2 + b*x0 + c == epsilon);
+epsilon = abs(epsilon);
+
+x(1,1) = 0.02; % initial state;
+XREF = [0.07 -0.05 -0.11 0.045 0.01];
+xref = XREF(1); % ref
+
+sys = ss(a_sys,b_sys,eye(n),0);
+K = acker(a_sys,b_sys,[10*eig(sys.a)]);
+Nbar = -inv(sys.c*inv(sys.a-sys.b*K)*sys.b);
+
+fprintf('initial state: %.2f\n', x(1,1));
+f = 1000; 
+Ts = 1/f;
+N = 0.5;
+fprintf('Simulation time: %d seconds\n', N)
+i = (0:Ts:N);
+z = linspace(-round(length(i)/200), round(length(i)/200), 10^4);
+
+utilde = zeros(round(length(i)),1);
+Rplot(1) = 1;
+
+for R = 1:length(i)
+  if R == round(length(i)/5)*1
+      xref = XREF(2);
+      Rplot(2) = R;
+  elseif R == round(length(i)/5)*2
+      xref = XREF(3);
+      Rplot(3) = R;
+  elseif R == round(length(i)/5)*3
+      xref = XREF(4);
+      Rplot(4) = R;
+  elseif R == round(length(i)/5)*4
+      xref = XREF(5);
+      Rplot(5) = R;
+  end
+
+  if (a*(x(R,1)).^2 + b*(x(R,1)) + c) <= -epsilon
+      sigma = 0;
+  elseif ((a*(x(R,1)).^2 + b*(x(R,1)) + c) > -epsilon) && ...
+         ((a*(x(R,1)).^2 + b*(x(R,1)) + c) <  0)
+      sigma = -2*((a*(x(R,1)).^2 + b*(x(R,1)) + c)/epsilon).^3 - ...
+              3.*((a*(x(R,1)).^2 + b*(x(R,1)) + c)/epsilon ).^2 + 1;
+      fprintf('smoothing..\n');
+  else
+      sigma = 1;
+  end
+  
+  if mod(R,1000) == 1
+      if R ~= 1
+          fprintf('iter = %d of %d\n', R-1, length(i)-1);
+      else
+          fprintf('iter = %d of %d\n', R, length(i)-1);
+      end
+  end
+  
+  %--- Calculate Lie derivatives ---%
+  LfB(R,1) = (2*(a)*(x(R,1)) +(b))*((a_sys)*x(R,1));
+  LgB(R,1) = (2*(a)*(x(R,1)) +(b))*(b_sys);
+  
+  %-- Find controller by pole placement --%
+  utilde(R,1) = xref*Nbar - K*x(R,1);
+
+  %--- Find safe controller ---%
+  threshold = 0.0000001;
+  if abs(LgB(R,1)) >= threshold
+      if 0
+         pre = exp(-1./(abs(LgB(R,1)) - gamma1)) ./ (...
+         exp(-1./(abs(LgB(R,1)) - gamma1)) + exp(-1./(gamma2 - abs(LgB(R,1)))) ...    
+         );
+      else 
+          pre = 1;
+      end
+      k0(R,1) = -pre.*((LfB(R,1) + sqrt(LfB(R,1)*LfB(R,1) ...
+          + kappa^2*(LgB(R,1))'*LgB(R,1)))/(LgB(R,1)'*LgB(R,1)))*LgB(R,1);
+      kplot(R,1) = k0(R,1);
+  else
+      k0(R,1) = 0;
+      kplot(R,1) = k0(R,1);
+  end 
+  
+  u0(R,1) = sigma*k0(R,1)+(1-sigma)*utilde(R,1);
+  
+  %--- Forward Euler ---%
+  xdot = a_sys*x(R,1) + u0(R,1)*b_sys;
+  x(R+1,1) = xdot*Ts + x(R,1);
+  x(R,2) = sigma;
+end
+
+%%% Plot Lf*B(x) and Lg*B(x) %%%
+fprintf('plotting LfB and LgB..\n')
+validate1 = 1;
+validate2 = 1;
+figure('Position',[scrsz(1) scrsz(4) scrsz(3)/3 scrsz(4)/3])
+hold on
+for k = 1:1:length(i)
+   if LfB(k,1) > 0
+       plot(k,LfB(k,1),'-*r')
+       validate1 = 0;
+   else
+       plot(k,LfB(k,1),'-*b')
+   end
+   if (LgB(k,1) == 0) && (LfB >= 0) && (sigma > 0)
+       plot(k,LgB(k,1),'-*m')
+       validate2 = 0;
+   else
+       plot(k,LgB(k,1),'-*g')
+   end
+   %--- Plot closed loop criteria ---%  
+end
+if validate1 == 0
+    fprintf('\nWARNING: LfB > 0\n');
+end
+if validate2 == 0
+    fprintf('\nWARNING: Definition 6 equation 7 is violated\n');
+end
+if (validate2) == 1
+    fprintf('CBF is valid!\n');
+end
+fig = gcf;
+fig.Name = 'LfB and LgB';
+hold off;
+
+%%% Barrier limits %%%
+barrier_1_x = [-0.1  -0.1];
+barrier_y = [-infinity infinity];
+barrier_2_x = [-0.05  -0.05];
+bar = a.*z.^2 + b.*z + c;
+    
+%%% Hard limits %%%
+slide_lim_1_x = [-0.1 -0.1];
+slide_lim_2_x = [ 0.1  0.1];
+slide_lim_y = [-infinity infinity]; 
+
+%%% Plot Barrier function %%%
+fprintf('plotting barrier function..\n')
+figure('Position',[scrsz(1) scrsz(4)/10 scrsz(3)/3 scrsz(4)/3])
+h0 = plot(z,bar,'-b', 'linewidth',1);
+h0.DisplayName = 'barrier function';
+hold on;
+h1 = plot([-infinity infinity],[0 0],'--k', 'linewidth', 1);
+h1.DisplayName = 'zero line';
+h2 = plot(slide_lim_1_x, slide_lim_y, '-r', slide_lim_2_x, slide_lim_y, '-r');
+h2(1).DisplayName = 'slide limits';
+plot(x(:,1),zeros(size(x)), 'xy')
+plot(x(end,1),0, 'xk')
+plot([x(end,1) x(end,1)], [-infinity infinity], '-.r')
+axis([-0.5 0.5 -0.02 0.02]);
+grid off;
+legend([h0, h1, h2(1)],...
+        h0.DisplayName, h1.DisplayName, h2(1).DisplayName,...
+       'Location', 'NorthEast');
+fig = gcf;
+fig.Name = 'Overview';
+hold off;
+
+%--- Plot control signal ---%
+fprintf('plotting control signals..\n')
+figure('Position',[scrsz(1)*scrsz(4)/1.5 scrsz(4) scrsz(3)/5 scrsz(4)/2.8])
+plot(linspace(0,length(i),length(u0(:,1))), u0(:,1),'-*b');
+fig = gcf;
+fig.Name = 'control signal';
+hold off
+
+%--- Plot state trajectory with boundaries ---%
+fprintf('plotting states..\n')
+figure('Position',[scrsz(1)*scrsz(4)*1.1 scrsz(4)/10 scrsz(3)/3 scrsz(4)/3])
+hold on
+plot(linspace(0,length(i),length(x(:,1))), x(:,1),'-b','linewidth',1);
+plot(linspace(0,length(i),length(x(:,1))), x(:,2)./10,'-','Color',...
+    [0/255,255/255,0/255],'linewidth',1);
+plot([0 length(i)], [-0.1 -0.1],'-r')
+plot([0 length(i)], [softlims(1) softlims(1)],'-.r')
+plot([0 length(i)], [-0.1 -0.1],':k')
+Rplot(length(XREF) + 1) = length(i);
+for j = 1:length(XREF)
+    plot([Rplot(j) Rplot(j+1)],[XREF(j) XREF(j)],'-k', 'linewidth',1);
+    plot(Rplot(j), XREF(j), '*k');
+end
+plot([0 length(i)], [softlims(2) softlims(2)],'-.r')
+plot([0 length(i)], [0.05 0.05],'-r')
+plot([0 length(i)], [0.1 0.1],':k')
+legend('slide position','\sigma(x)\cdot0.1','hard limit','soft limit',...
+    'physical limit','reference level')
+ax = gca;
+ax.YLim = [-0.12 0.12];
+ax.XLim = [0 length(i)];
+fig = gcf;
+fig.Name = 'states';
+hold off
+fprintf('Done!\n')
+\end{lstlisting}
