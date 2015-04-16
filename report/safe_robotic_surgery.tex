@@ -36,7 +36,7 @@ A system model is required before any controller design may be initiated.
  To obtain a model, a step response will be performed on the slide movement. The slide position can be measured by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. To model the system, a step is added to the system. The step response is plotted in \autoref{fig:stepresponseslide}.
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.5]{step_slide.eps}
+\includegraphics[scale=0.5]{step_slide.pdf}
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}}
 \label{fig:stepresponseslide}
 \end{figure}
@@ -118,7 +118,7 @@ B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250:0]
 This is indifferent as $\mathcal{X}_u^c  \notin [\Psi_\text{lim-}+d_t:\Psi_s]$. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.5]{parabel_1.eps}
+\includegraphics[scale=0.5]{parabel_1.pdf}
 \caption{Barrier function along with the $\mathcal{X}_u$ and $\mathcal{X}_u^c$. Plot details and MATLAB script can be found in ????}
 \label{fig:barrierfunction}
 \end{figure}
