@@ -260,9 +260,9 @@ To build the entire environment, navigate to the root of the workspace and type:
 
 The current joint position is per default broadcasted to the topic \texttt{joint\_states}. To subscribe to this topic, open a terminal and type:
 
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states} \ \ \ {\color{RoyalBlue}{\textit{\# read various state information from terminal output}}} 
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states} \ \ \ {\color{RoyalBlue}{\textit{\# read all state information from terminal output}}} 
 
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states/position[$n$]} \ \ \  {\color{RoyalBlue}{\textit{\# read joint state angle from the $n^\text{th}$ joint state}}} 
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states/position[$n$]} \ \ \  {\color{RoyalBlue}{\textit{\# read the $n^\text{th}$ joint state}}} 
 
 Obtain a list of the used kinematic solvers, open a terminal and type:
 
@@ -271,6 +271,10 @@ Obtain a list of the used kinematic solvers, open a terminal and type:
 view to all active topics:
 
 \hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic list} \ \ \ {\color{RoyalBlue}{\textit{\# read topics from terminal}}} 
+
+Similar, see all active nodes as: 
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosnode list} \ \ \ {\color{RoyalBlue}{\textit{\# read nodes from terminal}}} 
 
 To create a \gls{urdf} file from the present xacro files, type the below command from the root of the workspace:
 
