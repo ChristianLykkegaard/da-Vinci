@@ -192,11 +192,11 @@ As $L_fB(x)$ is constructed such that $L_gB(x) = 0 \hspace{0.15cm} \Rightarrow \
 \subsection{Construction of $K$ and $\bar{N}$}
 The system is approximated to a linear system on the form $\dot{x}=Ax+Bu$, thus pole placement can be used. No constraints to the constant feedback matrix $K$ will be outlined except stability. It will therefore be determined from the pole placement method where a closed loop pole that is ten times faster than the open loop pole will be placed. Ackermann's formula can be used \citep{bib:acker}:
 \begin{enumerate}
-\item Identify the desired closed loop polynomial on as $A_{cl}(s) = s^n + a_{n-1}s^{n-1}  +  \cdots + a_ {c1}s + a_{c0}$: 
+\item Identify the desired closed loop polynomial as $A_{cl}(s) = s^n + a_{c(n-1)}s^{n-1}  +  \cdots + a_ {c1}s + a_{c0}$: 
 \begin{flalign*}
 A_{cl}(s) = s + 10\,\tau^{-1}
 \end{flalign*}
-\item Identify the open loop polynomial as $A_{cl}(s) = s^n + a_{c(n-1)}s^{n-1} +  \cdots + a_1s + a_0$: 
+\item Identify the open loop polynomial as $A_{ol}(s) = s^n + a_{n-1}s^{n-1} +  \cdots + a_1s + a_0$: 
 \begin{flalign*}
 A_{ol}(s) = \lambda + \tau^{-1}
 \end{flalign*}
