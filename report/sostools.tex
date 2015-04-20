@@ -1,0 +1,92 @@
+This appendix serves as a short introduction to the Matlab toolbox SOStools in the scope of searching for a barrier certificate for a specific closed-loop system $f_{cl}(x)$.
+
+\section{Download and Install SOStools}
+SOStools is a free third-party Matlab toolbox developed by engineering departments of four major universities. A zip file of the toolbox can be downloaded from 
+
+\hspace{1cm} {\color{blue}{\textit{http://www.cds.caltech.edu/sostools}}}
+
+also containing a user guide \citep{bib:sostools_manual} to sum of squares problems and how to formulate a problem to solve it with the toolbox, along with a set of demos. 
+
+SOStools takes as input the \gls{sos} program formulation, recasts it as a \gls{sdp} problem, calls \gls{sdp} solvers, and recasts the solution to the \gls{sdp} problem into the solution to the \gls{sos} problem. This means that the toolbox requires that an \gls{sdp} solver toolbox is installed, e.g. the SeDuMi (Self-Dual-Minimization) solver, which can be downoaded from
+
+\hspace{1cm} {\color{blue}{\textit{http://sedumi.ie.lehigh.edu/downloads}}}
+
+\section{Defining an SOS Program}
+As described in \citep{bib:sostools_manual}, an SOS program is initialized by declaring the independent variables as \texttt{syms} or \texttt{pvar} and optionally scalar decision variables as \texttt{syms}, and initializing an SOS program with the command \texttt{sosprogram} (in the below, grey denotes optional inputs)
+
+\hspace*{1cm} \texttt{>> syms x1 decvar;}\\
+\hspace*{1cm} \texttt{>> prog = sosprogram(x1\textcolor{grey}{,decvar});}
+
+Now an SOS program called \texttt{prog} with the independent variable \texttt{x1} and the decision variable \texttt{decvar} has been initialized. An SOS variable \texttt{S} is added to the program by defining the monomial vector \texttt{Z} and calling the function \texttt{sossosvar}
+
+\hspace*{1cm} \texttt{>> Z = monomials(x1,degrees);}\\
+\hspace*{1cm} \texttt{>> [prog,S] = sossosvar(prog,Z);}
+
+where \texttt{degrees} is the degrees of variables desired in the monomial; \texttt{[2 4]} would in this case give that \verb|Z = [x1^2; x1^4]| while \texttt{degrees = 0:2} would result in \verb|Z = [1; x1; x1^2]|. Declaring an SOS polynomial is done similarly to declaring an SOS variable
+
+\hspace*{1cm} \texttt{>> Zp = monomials(x1,degrees);}\\
+\hspace*{1cm} \texttt{>> [prog,P] = sospolyvar(prog,Zp);}
+
+When all the necessary SOS variables and polynomials are defined, equalities ($=0$) and inequalities ($\geq 0$) can be defined for the program
+
+\hspace*{1cm} \texttt{>> prog = soseq(prog,P-S);}\\
+\hspace*{1cm} \texttt{>> prog = sosineq(prog,-diff(P,x1)-S);}
+
+WHen all variables and constraints are input to the program, the solver is called with \texttt{sossolve}, which will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the \texttt{sosgetsol}
+
+\hspace*{1cm} \texttt{>> prog = sossolve(prog);}\\
+\hspace*{1cm} \texttt{>> getB = sosgetsol(prog,P)}
+
+
+%SeDuMi 1.3 by AdvOL, 2005-2008 and Jos F. Sturm, 1998-2003.
+%Alg = 2: xz-corrector, Adaptive Step-Differentiation, theta = 0.250, beta = 0.500
+%Put 5 free variables in a quadratic cone
+%eqs m = 180, order n = 71, dim = 935, blocks = 8
+%nnz(A) = 746 + 0, nnz(ADA) = 12522, nnz(L) = 6351
+%it :     b*y       gap    delta  rate   t/tP*  t/tD*   feas cg cg  prec
+%0 :            4.95E-01 0.000
+%1 :   0.00E+00 1.37E-01 0.000 0.2775 0.9000 0.9000   1.00  1  0  1.4E+00
+%2 :   0.00E+00 4.05E-02 0.000 0.2945 0.9000 0.9000   1.00  1  1  4.0E-01
+%3 :   0.00E+00 1.11E-02 0.000 0.2736 0.9000 0.9000   1.00  1  1  1.1E-01
+%4 :   0.00E+00 2.96E-03 0.000 0.2675 0.9000 0.9000   1.00  1  1  2.9E-02
+%5 :   0.00E+00 9.17E-04 0.000 0.3096 0.9000 0.9000   1.00  1  1  9.1E-03
+%6 :   0.00E+00 3.18E-04 0.000 0.3470 0.9107 0.9000   1.00  1  1  2.9E-03
+%7 :   0.00E+00 7.91E-05 0.000 0.2486 0.8202 0.9000   1.00  1  1  7.4E-04
+%8 :   0.00E+00 1.99E-05 0.000 0.2522 0.9000 0.9047   1.00  1  1  2.0E-04
+%9 :   0.00E+00 6.61E-06 0.000 0.3314 0.7727 0.9000   1.00  1  2  6.7E-05
+%10 :   0.00E+00 2.00E-06 0.000 0.3029 0.9000 0.9043   1.00  2  2  2.1E-05
+%11 :   0.00E+00 7.15E-07 0.000 0.3573 0.8589 0.9000   1.00  1  3  7.3E-06
+%12 :   0.00E+00 2.33E-07 0.000 0.3257 0.9000 0.9025   1.00  6  7  2.4E-06
+%13 :   0.00E+00 8.28E-08 0.000 0.3554 0.8725 0.9000   1.00  8  9  8.5E-07
+%14 :   0.00E+00 2.69E-08 0.000 0.3247 0.9000 0.9050   1.00 12 15  2.9E-07
+%15 :   0.00E+00 9.41E-09 0.000 0.3499 0.9000 0.9000   1.00 19 19  9.9E-08
+%16 :   0.00E+00 3.31E-09 0.000 0.3516 0.9020 0.9000   1.00 21 22  3.4E-08
+%17 :   0.00E+00 1.15E-09 0.000 0.3468 0.9017 0.9000   1.00 25 24  1.1E-08
+%18 :   0.00E+00 3.91E-10 0.000 0.3411 0.9007 0.9000   1.00 36 39  3.9E-09
+%
+%iter seconds digits       c*x               b*y
+%18      0.9   Inf  0.0000000000e+00  0.0000000000e+00
+%|Ax-b| =   4.6e-09, [Ay-c]_+ =   6.8E-10, |x|=  6.3e+00, |y|=  1.4e+01
+%
+%Detailed timing (sec)
+%Pre          IPM          Post
+%1.200E-02    4.640E-01    7.001E-03    
+%Max-norms: ||b||=0, ||c|| = 0,
+%Cholesky |add|=3, |skip| = 5, ||L.L|| = 1.03727e+08.
+%
+%Residual norm: 4.6491e-09
+%
+%iter: 18
+%feasratio: 1.0000
+%pinf: 0
+%dinf: 0
+%numerr: 0
+%timing: [0.0120 0.4640 0.0070]
+%wallsec: 0.4830
+%cpusec: 0.9219
+
+
+
+
+\section{Search for a Barrier Certificate with SOStools}
+how to define sets and monomials and solve for B!!
