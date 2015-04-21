@@ -1,5 +1,6 @@
 \glsreset{clf}\glsreset{cbf}
 Based on \citep{bib:artstein}, which founded \gls{clf}s, a \gls{cbf} can be created \citep{bib:org_control}. With a system $\dot{x}=f(x)+g(x)u$, a \gls{cbf} exist if the below constraints are fulfilled:
+\begin{exa}
 \begin{flalign}
 & x\in \mathcal{X}_u \hspace{0.3cm} \Rightarrow \hspace{0.3cm} B(x) > 0  \label{req1} \\
 & L_gB(x) = 0 \hspace{0.3cm} \Rightarrow \hspace{0.3cm} L_fB(x) < 0 \label{req2} \\
@@ -13,8 +14,9 @@ $L_fB(x)$ is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $
 $L_fB(x)$ is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{\partial B(x)}{\partial x}g(x)$ & [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
+\end{exa}
 Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design an unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
-\section{Safe Controller for Instrument Slide}
+\subsection{Overview}
 The slide movement is visualized in \autoref{fig:slidefig} and an overview of terms used in this section is found in \autoref{fig:safe:overview}.
 \begin{figure}[H]
     \centering
@@ -85,7 +87,7 @@ The model can unambiguous be approximated from the rise time $t_r$, settling tim
 &\begin{bmatrix}
 \dot{x}_2(t)\\\dot{x}_1(t)
 \end{bmatrix} = \begin{bmatrix}
--2\zeta \omega_n & \omega_n^2 \\
+-2\zeta \omega_n & -\omega_n^2 \\
 1 & 0 
 \end{bmatrix}\begin{bmatrix}
 x_2(t) \\ x_1(t)
@@ -101,7 +103,7 @@ x_2(t) \\ x_1(t)
 Thus:
 \begin{flalign*}
 A = \begin{bmatrix}
--2\zeta \omega_n & \omega_n^2 \\
+-2\zeta \omega_n & -\omega_n^2 \\
 1 & 0 
 \end{bmatrix} \kk \wedge \kk B = \begin{bmatrix}
 1 \\ 0
@@ -110,7 +112,7 @@ A = \begin{bmatrix}
 \end{bmatrix} \kk \wedge \kk D = 0
 \end{flalign*}
 Which completes the second order model.
-\section{Construction of CBF based on 1D Model}
+\section{Construction of CBF}
 To illustrate the usefulness of \gls{cbf}s, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
 
 Consider the state intervals defined in \autoref{tab:intervals}.
@@ -123,9 +125,10 @@ $x \in \{[\Lambda_{s+}:\Lambda_\text{lim+}],[\Lambda_\text{lim-}:\Lambda_{s-}]\}
 \caption{Global state intervals where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition area and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-}:\Lambda_{s+}]$ is safe thus any control law can be used in that area.}
 \label{tab:intervals}
 \end{table}
+\subsection{Construction of CBF based on 1D model}
 A parabola is now introduced as \gls{cbf}. A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
 \begin{flalign*}
-B(x) = ax^2+bx+c \kk \Rightarrow \kk L_fB(x) = \dfrac{d}{dx}B(x)f_s(x) = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx
+B(x) = ax^2+bx+c \kk \Rightarrow \kk L_fB(x) = \dfrac{d}{dx}B(x)f(x) = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx
 \end{flalign*}
 \Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_fB(x)<0$ in the area $x \in [\Lambda_s:\Lambda_h]$ is therefore indeed sufficient. Analysis of $L_fB(x)$ shall reveal when $L_fB(x)>0$, i.e. to ensure the demand below:
 \begin{flalign*}
@@ -184,8 +187,9 @@ This is indifferent as $\mathcal{X}  \notin [\Lambda_{s-}:\Lambda_{s+}]$. Thus t
  L_gB(x) = (2ax+b)B = 2ax\tau^{-1} + b\tau^{-1} = 0 \kk \Leftrightarrow \kk 2ax = -b \kk \Leftrightarrow \kk x = \dfrac{-b}{2a}
  \end{flalign*} 
  This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
-\section{Controller Design for One Dimensional Model}
-A control laws is now introduced:
+ \subsection{Construction of CBF based on 2D model}
+\section{Controller Design}
+A control law is now introduced:
 \begin{flalign*}
 u(x) =
 \begin{cases}
@@ -193,19 +197,21 @@ u(x) =
 	 k_0(x)  \kk &\text{if \mm $x \in [\Lambda_{s+}:\Lambda_{h+}] \mm \wedge \mm x \in [\Lambda_{h-}:\Lambda_{s-}]$}
 \end{cases}
 \end{flalign*}
-This can be implemented by the control law below:
+This can be combined by the control law below which is a linear combination of the two controllers.
 \begin{flalign*}
-u(x) = \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
+u(x) &= \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) \\
+ &= \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
 \end{flalign*}
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
 Where  & & \\
-$u(x)$ is a control signal where safety is ensured  & [$\cdot$] \\
-$\tilde{u}(x)$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx$ & [$\cdot$] \\ 
-$k_0(x)$ is a control law that guarantees safety & [$\cdot$] \\ 
-$\sigma(x)$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
-$K$ is a constant feedback matrix in $\mathbb{R}^{1 \times 1}$ & [$\cdot$] \\
-$\bar{N}$ is a constant to ensure unity gain from reference to output & [$\cdot$] 
+$u(x) \in \mathbb{R}^{1 \times 1} $ is a control signal where safety is ensured  & [$\cdot$] \\
+$\tilde{u}(x) \in \mathbb{R}^{1 \times 1}$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx $ & [$\cdot$] \\ 
+$k_0(x) \in \mathbb{R}^{1 \times 1}$ is a control law that guarantees safety & [$\cdot$] \\ 
+$\sigma(x) \in \mathbb{R}^{1 \times 1}$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
+$K \in \mathbb{R}^{1 \times 1}$ is a constant feedback matrix in $\mathbb{R}^{1 \times 1}$ & [$\cdot$] \\
+$\bar{N} \in \mathbb{R}^{1 \times 1}$ is a constant to ensure unity gain from reference to output & [$\cdot$] \\
+$x \in \mathbb{R}^{1 \times 1}$ is the state vector& [m] 
 \end{longtable}
 \vspace*{-0.2cm}
 The control law is thereby a linear combination of two controllers. It is noted that:
@@ -216,7 +222,7 @@ The control law is thereby a linear combination of two controllers. It is noted 
 1 \mm &\Rightarrow \mm \text{Pure control for safety i.e. $u(x) = k_0(x)$ }
 \end{cases}
 \end{flalign*}
-The interval between 0 and 1 can be refined such that the transition between the two control laws is not instantaneous. This smoothing can be performed with a continuous approximation of the unit step of $B(x)$ by introducing a variable $\epsilon>0$ \citep{bib:org_control}:
+The interval between 0 and 1 can be refined such that the transition between the two control laws is not instantaneous. This smoothing can be performed with a continuous approximation of the unit step of $B(x)$ by introducing a scalar $\epsilon>0$ \citep{bib:org_control}:
 \begin{flalign*}
 \sigma(x) = 
 \begin{cases}
@@ -229,11 +235,11 @@ The variable $\epsilon$ can be determined from:
 \begin{flalign*}
 \epsilon = |B(\Lambda_{s+})| = |B(\Lambda_{s-})| = 0.00249
 \end{flalign*}
-This is a need way to incorporate the transition between $\Lambda_s$ and $\Lambda_h$ because $k_0(x)$ kicks in slowly when the trajectory exceeds $\Lambda_s$. \Autoref{fig:epsilon_plot} illustrates how $\epsilon$ and $B(x)$ os connected.
+This is a need way to incorporate the transition between $\Lambda_s$ and $\Lambda_h$ because $k_0(x)$ kicks in slowly when the trajectory exceeds $\Lambda_s$. \Autoref{fig:epsilon_plot} illustrates how $\epsilon$ and $B(x)$ is connected.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.55]{epsilon_plot.eps}
-	\caption{Connection between $\epsilon$ and CBF.}
+	\caption{Connection between $\epsilon$ and CBF. MATLAB script and plot details can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_epsilon/plot\_epsilon\_slide\_1d.m}}
 	\label{fig:epsilon_plot}
 \end{figure}
 %
@@ -246,7 +252,7 @@ A block diagram is depicted in \autoref{fig:controlsystem}.
 	\caption{Block diagram of the control system for slide position. MATLAB implementation is found in \autoref{app:slide_implement_1}.}
 	\label{fig:controlsystem}
 \end{figure}
-\subsection{Construction of $k_0$}
+\subsection*{Uniform Construction of $k_0$}
 The control law ensuring safety can be found as \citep{bib:org_control}:
 \begin{flalign}
 k_0(x) = \begin{cases}
@@ -273,7 +279,7 @@ According to \autoref{eq:control_law}, when $L_gB(x) = 0$:
 L_{f_{cl}}B(x) = L_fB(x) + L_gB(x)\cdot 0 = L_fB(x)
 \end{flalign*}
 As $L_fB(x)$ is constructed such that $L_gB(x) = 0 \hspace{0.15cm} \Rightarrow \hspace{0.15cm} L_fB(x) < 0 $. 
-\subsection{Construction of $K$ and $\bar{N}$}
+\subsection{Construction of $K$ and $\bar{N}$ based on 1D Model}
 The system is approximated to a linear system on the form $\dot{x}=Ax+Bu$, thus pole placement can be used. No constraints to the constant feedback matrix $K$ will be outlined except stability. It will therefore be determined from the pole placement method where a closed loop pole that is ten times faster than the open loop pole will be placed. Ackermann's formula can be used \citep{bib:acker}:
 \begin{enumerate}
 \item Identify the desired closed loop polynomial as $A_{cl}(s) = s^n + a_{c(n-1)}s^{n-1}  +  \cdots + a_ {c1}s + a_{c0}$: 
@@ -286,7 +292,7 @@ A_{ol}(s) = \lambda + \tau^{-1}
 \end{flalign*}
 \item Compute the feedback matrix in controllable canonical form:
 \begin{flalign*}
- \bar{K}^T = \begin{bmatrix}
+ \bar{K}^T = \begin{bmatrix}   
  \bar{k_1} \\
  \vdots \\
  \bar{k_n}
@@ -327,5 +333,44 @@ The constant feedback matrix, $\bar{N}$, can be computed as \citep{bib:Nbar}:
 \begin{flalign*}
 \bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 10
 \end{flalign*}
-\section{Results from 1D Model}
+\subsection{Construction of $K$ and $\bar{N}$ based on 2D Model}
+\section{MATLAB Results}
+The results based on the implemented controller found in
+\subsection{MATLAB Results based on 1D Model}
+The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.5]{trajectory_slide.eps}
+	\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler with a sampling rate of $1\,$kHz. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position founds an equilibrium at some arbitrary state.}
+	\label{fig:trajectory1}
+\end{figure}
+Varying $\kappa$ increases the aggressivity of the safety controller and can create fluctuations in the transition area if the sampling area is too low. Likewise $\sigma(x)$ will fluctuate along with an increased $\kappa$. One must be careful when increasing $\kappa$ when the sampling rate is relatively low. %The effect of increasing $\kappa$ ten times is shown in \autoref{fig:trajectory2}.
+%\begin{figure}[H]
+%	\center
+%		\includegraphics[scale=0.5]{trajectory_slide_kappa_10.eps}
+%	\caption{State trajectory for slide position for $\kappa=10$ based on same control law and model as \autoref{fig:trajectory1}. It is seen how the safety controller is more aggressive.}
+%	\label{fig:trajectory2}
+%\end{figure}
 
+To verify that \autoref{req2} is fulfilled in the simulation, the Lie derivatives are plotted in \autoref{fig:lie1}.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.5]{Lie_slide_1d.eps}
+	\caption{Lie derivatives of the CBF along the vector fields $f(x) = Ax$ and $g(x)=B$. It is seen that $L_gfB(x) \neq 0 \,\, \forall x \neq \frac{-b}{2a}$ which essentially fulfils \autoref{req2}.}
+	\label{fig:lie1}
+\end{figure}
+It is from \autoref{fig:lie1} seen that $L_gB(x) \neq 0 \,\, \forall x \neq -b/(2a)$ which essentially fulfils \autoref{req2}. Indeed, even if the entire range $[\Lambda_{h-}:\Lambda_{h+}]$ belongs to $\mathcal{X}$, the chosen CBF would have been valid because the only place where $L_gB(x) = 0$ is at the critical point. Note also that the Lie derivatives are independent of the scalar $\kappa$.
+For the record, the control signal is plotted in \autoref{fig:control1}.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.5]{control_slide_1.eps}
+	\caption{Control signal for $\kappa=1$. It is seen how the controller counteracts the large difference in setpoints given and in that way ensures safety. It is seen that when the absolute value of the setpoints are increased then $u(x)$ increases accordingly. The plot is ideal as no saturation constraints are given.}
+	\label{fig:control1}
+\end{figure}
+It is seen from \autoref{fig:control1} how the control signal reacts instantaneously and quite aggressive when $\Lambda_s$ is exceeded to counteract the large difference in setpoints given. It is also noted how the controller eventually settles smootly even when setpoints are given in the interval $[-\infty:\Lambda_{s-}]$ and $[\Lambda_{s+}:\infty]$. However, as the setpoints approaches $\pm \infty$, the sampling rate must also converge towards infinity. This is obviously not a realistic scenario as the slide movement is physically constrained.
+\subsection{MATLAB Results based on 1D Model}
+
+\section{Implementation on the Da Vinci Robot}
+\subsection{Implementation on the Da Vinci Robot based on 1D Model}
+
+\subsection{Implementation on the Da Vinci Robot based on 2D Model}
