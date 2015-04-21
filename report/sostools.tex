@@ -14,10 +14,10 @@ SOStools takes as input the \gls{sos} program formulation, recasts it as a \gls{
 \section{Defining an SOS Program}
 As described in \citep{bib:sostools_manual}, an SOS program is initialized by declaring the independent variables as \texttt{syms} or \texttt{pvar} and optionally scalar decision variables as \texttt{syms}, and initializing an SOS program with the command \texttt{sosprogram} (in the below, grey denotes optional inputs)
 
-\hspace*{1cm} \texttt{>> syms x1 decvar;}\\
-\hspace*{1cm} \texttt{>> prog = sosprogram(x1\textcolor{grey}{,decvar});}
+\hspace*{1cm} \texttt{>> syms x1 dvar;}\\
+\hspace*{1cm} \texttt{>> prog = sosprogram(x1\textcolor{grey}{,dvar});}
 
-Now an SOS program called \texttt{prog} with the independent variable \texttt{x1} and the decision variable \texttt{decvar} has been initialized. An SOS variable \texttt{S} is added to the program by defining the monomial vector \texttt{Z} and calling the function \texttt{sossosvar}
+Now an SOS program called \texttt{prog} with the independent variable \texttt{x1} and the decision variable \texttt{dvar} has been initialized. An SOS variable \texttt{S} is added to the program by defining the monomial vector \texttt{Z} and calling the function \texttt{sossosvar}
 
 \hspace*{1cm} \texttt{>> Z = monomials(x1,degrees);}\\
 \hspace*{1cm} \texttt{>> [prog,S] = sossosvar(prog,Z);}
@@ -27,7 +27,7 @@ where \texttt{degrees} is the degrees of variables desired in the monomial; \tex
 \hspace*{1cm} \texttt{>> Zp = monomials(x1,degrees);}\\
 \hspace*{1cm} \texttt{>> [prog,P] = sospolyvar(prog,Zp);}
 
-When all the necessary SOS variables and polynomials are defined, equalities ($=0$) and inequalities ($\geq 0$) can be defined for the program
+When all the necessary SOS variables and polynomials are defined, equalities (expression $=0$) and inequalities (expression $\geq 0$) can be defined for the program
 
 \hspace*{1cm} \texttt{>> prog = soseq(prog,P-S);}\\
 \hspace*{1cm} \texttt{>> prog = sosineq(prog,-diff(P,x1)-S);}
@@ -85,8 +85,132 @@ WHen all variables and constraints are input to the program, the solver is calle
 %wallsec: 0.4830
 %cpusec: 0.9219
 
-
+If no solution could be found, the degree (and thereby complexity) of some SOS variables or polynomials may be increased through their monomials, which may yield a solution to the SOS problem.
 
 
 \section{Search for a Barrier Certificate with SOStools}
-how to define sets and monomials and solve for B!!
+In the search for a barrier certificate for a given system, the above commands are used to define the polynomial $B(x)$ such that it will satisfy \autoref{eq:barrier_constraints}, restated here for convenience:
+\begin{subequations}\label{eq:barrier_constraints_app}
+	\begin{flalign}
+		B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0  \label{cer1_app}\\
+		B(x) &> 0  \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \label{cer2_app} \\
+		L_{f_{cl}}B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \label{cer3_app}
+	\end{flalign}
+\end{subequations}
+
+First the open-loop state space system is defined, and a controller is found according to pole placement or another preferred method. Now declare the state space variables as \verb|syms| or \verb|pvar|, initialize the SOS program with the system states and write the closed-loop system equation $f_{cl}$ with the symbolic state vector.
+
+For the system defined, make a function $g$ that is positive in the region that will be defined as $\mathcal{X}$ i.e. has its zero level set at the desired border of the region. Make an SOS variable $q$ from a monomial vector in the state variables of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible). Finally declare $B$ as an SOS polynomial with a monomial vector of appropriate degree and set up the SOS inequality according to Putinar's Positivstellensatz in \autoref{eq:sos_barrier}, restated here for convenience:
+\begin{subequations}\label{eq:sos_barrier_app}
+\begin{align}
+h &= q_0+\sum _{j=1}^{m}q_jg_j \label{eq:putinar1_app} \\
+q_0 &= h - \sum _{j=1}^{m}q_jg_j \label{eq:putinar2_app}
+%\qquad \qquad \overset{\text{on } \mathbb{K}}{\Longrightarrow}\\
+%0 &\leq h - \sum _{j=1}^{m}q_jg_j \label{eq:putinar3_app}
+\end{align}
+\end{subequations} 	
+The SOS variables $q$ are nonnegative per definition, and as seen from \autoref{eq:putinar1_app} $h$ is positive on $\mathbb{K}$ as defined by $g$ being positive in the region $\mathbb{K}$. Outside $\mathbb{K}$ $g$ is negative, and hence the the sign of $h$ cannot be determined outside $\mathbb{K}$. Rearranging to \autoref{eq:putinar2_app}, however, the right-hand expression will always be nonnegative due to the SOS equality. Hence the \verb|sosineq| can be written as the right-hand side of \autoref{eq:putinar2_app}. 
+
+In the case of defining $\mathcal{X}$ according to \autoref{cer3_app}, the polynomial $h$ can be written as $-\partial B/\partial x \, f_{cl}$.
+Similar procedures are followed when defining $\mathcal{X}_0$ and $\mathcal{X}_u$: make one or more functions $g$ that is positive in the region $\mathcal{X}_0$, make SOS variable(s) $q$ of appropriate degree, and define the SOS inequality according to \autoref{eq:putinar2_app}, with $h=-B$ according to \autoref{cer1_app}; and identically make function(s) $g$ that are positive on $\mathcal{X}_u$, and define the SOS inequality \autoref{eq:putinar2_app} with $h=B$ according to \autoref{cer2_app}. The combination of \autoref{eq:barrier_constraints_app} with \autoref{eq:putinar2_app} can be summarized as:
+\begin{subequations}\label{eq:barrier_constraints_putinar_app}
+\begin{flalign}
+-B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0 \qquad\qquad \rightarrow& 
+	-B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 && \label{cer1_putinar_app}\\
+B(x) &> 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \qquad\qquad \rightarrow& 
+	B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 &&\label{cer2_putinar_app} \\
+-L_{f_{cl}}B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \qquad\qquad \rightarrow& 
+	-L_{f_{cl}}B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 && \label{cer3_putinar_app}
+\end{flalign}
+\end{subequations}
+Note that the inequality is on positivity in \autoref{cer2_app} whereas it is on nonnegativity in \autoref{cer2_putinar_app}. This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level.
+
+\subsection{Example of Barrier Certificate Search with SOSTOOLS}
+This section presents an elaborate example of a state in $\mathbb{R}^3$ controlling a 1D first order system robot $x_1$ corresponding to the slide joint being the only degree of freedom, with a reference to follow the sine movement of a beating heart $x_2$. First the system is defined, and a controller is designed with pole placement.
+\begin{lstlisting}[language=matlab]
+% Define state-space system with x1 = robot position, x2 = heart position, x3 = heart velocity
+tau = 1; % time constant for the robot slide
+a = -1/tau;
+Hz = 1; % frequency of the heart beat
+b = 2*Hz;
+A = [a   0  0; % robot tool position
+     0   0  b; % heart surface point position: sine wave
+     0 -b   0]; % heart surface point velocity
+B = [1/tau 0 0]';
+C = [1 0 0]; % the output is the robot tool position
+poles = -10; % controller speed
+k = place(A(1,1),B(1,1),poles);
+K = [k 0 0]; % controller for robot tool position
+\end{lstlisting}
+Then the symbolic state variables are declared for the SOS program, and the program is initialized.
+\begin{lstlisting}[language=matlab]
+% Declare state variables
+pvar x1 x2 x3
+vars = [x1 x2 x3]';
+
+% Initialize the sum of squares program
+prog = sosprogram(vars);
+\end{lstlisting}
+The reference for the robot position is generated as the 1D heart position, taking into account the system gain $\bar{N}$, and the closed-loop system equation is written as a function of the sybolic state. %\textcolor{red}{Something is wrong with the reference..?}
+\begin{lstlisting}[language=matlab]
+% Reference signal for robot position: the heart position
+Nbar = -inv(C*inv(A-B*K)*B);
+ref = x2 * Nbar;
+
+% Vector field dx/dt = fx (closed loop)
+fx = A*vars + B*(ref-k*vars);
+\end{lstlisting}
+For ease of defining the (1D) function $g$ that is positive on an interval [$p_1\,\,\, p_2$], a parabola function is used.
+\begin{lstlisting}[language=matlab]
+function [a,b,c] = parabola(p1,p2)
+	a = -1;
+	b = a*(p1^2-p2^2)/(p2-p1);
+	c = -a*p1^2-b*p1;
+end
+\end{lstlisting}
+Now the region $\mathcal{X}$ can easily be defined for the slide region $\pm0.1$\,m using the Lie derivative inequality in \autoref{cer3_app}. 
+\begin{lstlisting}[language=matlab]
+% Define space X in R^n
+[a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1]
+gX = a*x1^2+b*x1+c;
+zX = monomials(vars,0:2);
+[prog,qX] = sossosvar(prog,zX);
+zB = monomials(x1,0:4);
+[prog,Bx] = sospolyvar(prog,zB);
+prog = sosineq(prog,-diff(Bx,x1)*fx-gX*qX);
+\end{lstlisting}
+Similarly, the region $\mathcal{X}_u$ can be defined as the surface of the heart, i.e. for the 1D case the robot tool is in the unsafe region if it is below the surface of the heart (if $x_2>x_1$), using the inequality on $B(x)$ in \autoref{cer2_app}.
+%Additionally a physical amplitude constraint for the heart of 2\,cm is included in the definition of $\mathcal{X}_u$.
+\begin{lstlisting}[language=matlab]
+% Define space Xu in X
+gXu = (x2-x1);
+zXu = monomials(vars,0:1);
+[prog,qXu] = sossosvar(prog,zXu);
+prog = sosineq(prog,B-gXu*qXu);
+\end{lstlisting}
+%: intersection of the regions where tool has penetrated heart surface, and heart surface amplitude constrained to 2cm
+%gXu2 = 0.02^2 - x2^2; 
+%zXu2 = monomials(vars,0:1);
+%[prog,qXu2] = sossosvar(prog,zXu2);
+%prog = sosineq(prog,B-gXu*qXu-gXu2*qXu2);
+And finally the region $\mathcal{X}_0$ is defined as an area above the sine amplitude of the heart, in this case within slide positions 5-7\,cm, using the SOS inequality \autoref{cer1_app}. 
+\textcolor{red}{Careful, the amplitude of the sine is not anywhere in the equations, maybe there should be a constraint on the maximum value of x2 or x3? where?}
+\begin{lstlisting}[language=matlab]
+% Define space X0 in X
+[a,b,c] = parabola(0.05,0.07);
+gX0 = a*x1^2+b*x1+c;
+zX0 = monomials(vars,0:2);
+[prog,qX0] = sossosvar(prog,zX0);
+prog = sosineq(prog,-Bx-gX0*qX0);
+\end{lstlisting}
+With all three areas defined according to \autoref{eq:barrier_constraints_app}, the program is ready to be solved. If a solution is found, an overview of the solution accuracy is printed in the Matlab terminal as the residual norm, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \verb|sosgetsol|.
+\begin{lstlisting}[language=matlab]
+% Solve for B
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bx)
+\end{lstlisting}
+For this particular program, the solution barrier certificate is found to be
+\begin{equation}
+B(x) = 1.3177e\text{-}8\cdot x_1^4 - 9.6184e\text{-}9\cdot x_1^3 + 1.5544e\text{-}9\cdot x_1^2 + 2.3274e\text{-}10\cdot x_1 
++ 3.9002e\text{-}11
+\end{equation}
