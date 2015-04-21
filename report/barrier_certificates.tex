@@ -62,8 +62,8 @@ Here \gls{phi} denote the trajectory of the system with initial state $x_0\in \m
 \label{def_safety}
 %\end{exa}
 
-
-A closed-loop system is safe if a barrier certificate can be constructed as a function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following constraints:
+\begin{exa}[Barrier Certificate]	
+A closed-loop system is safe if a barrier certificate can be constructed as a function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following constraints \citep{bib:org_control}:
 \begin{subequations}\label{eq:barrier_constraints}
 \begin{flalign}
 B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0  \label{cer1}\\
@@ -71,7 +71,9 @@ B(x) &> 0  \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \label{cer2} \\
 L_{f_{cl}}B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \label{cer3}
 \end{flalign}
 \end{subequations}
-Where \gls{lie}$(x)$ is the Lie derivative of \gls{bar} along the trajectory of $f(x)$. As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function:
+Where \gls{lie}$(x)$ is the Lie derivative of \gls{bar} along the trajectory of $f(x)$. 
+\end{exa}
+As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function:
 \begin{equation}
 \dot{x}  = f(x) = \frac{\partial x}{\partial t} \qquad
 \left\{ \begin{array}{r l l}
@@ -80,9 +82,9 @@ L_fB(x) \hspace*{-2mm}&= \tfrac{\partial B(x)}{\partial x} f(x) \hspace*{-2mm}&=
 \end{array} \right. \label{eq:dBdt_dVdt}
 \end{equation}
 
-From \autoref{eq:barrier_constraints} it can be seen that the function $B(x)$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(x)/dx$ must have the opposite sign of the state derivative $dx/dt$ for any state within the region $\mathcal{X}$ where $B(x)$ is defined. Furthermore from \autoref{eq:dBdt_dVdt} it is deduced that a controller incorporating the barrier certificate in its design will ensure stability if $B(x)\rightarrow \infty$ for $x\rightarrow \pm\infty$.
+From \autoref{eq:barrier_constraints} it can be seen that the function $B(x)$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(x)/dx$ must have the opposite sign of the state derivative $dx/dt$ for any state within the region $\mathcal{X}$ where $B(x)$ is defined. Furthermore from \autoref{eq:dBdt_dVdt} it is deduced that a controller incorporating the barrier certificate in its design will ensure stability if $B(x)$ has a finite minimum value (for $\mathcal{X}=\mathbb{R}^n$ this entails that $B(x)\rightarrow \infty$ for $x\rightarrow \pm\infty$).
 
-Two approaches are used in the following: in \autoref{chap:cbf} the barrier certificate is constructed by hand, and a guaranteed safe controller is constructed according to the method in \cite{bib:org_control} and used in combination with a standard state space controller, while in \autoref{chap:putinar} a standard state space controller is constructed and its safety is then validated by constructing a barrier certificate using Putinar's Positivstellensatz.
+Two approaches are used in the following: in \autoref{chap:cbf} the barrier certificate is constructed by hand, and a guaranteed safe controller is designed according to the method in \citep{bib:org_control} and used in combination with a standard state space controller, while in \autoref{chap:putinar} a standard state space controller is designed and its safety is then validated by the construction of a barrier certificate using Putinar's Positivstellensatz.
 
 
 
