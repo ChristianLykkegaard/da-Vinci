@@ -34,27 +34,83 @@ The slide movement is visualized in \autoref{fig:slidefig} and an overview of te
 A system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
 \section{Modelling of Slide Movement}
- To obtain a model, a step response will be performed on the slide movement. The slide position can be measured by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. To model the system, a step is added to the system. The step response is plotted in \autoref{fig:stepresponseslide}.
+To obtain a model of the slide movement, the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. The result is plotted in \autoref{fig:stepresponseslide}. 
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.5]{step_slide.pdf}
-\caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}}
+\includegraphics[scale=0.5]{step_slide.eps}
+\caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}. The experiment is described in \autoref{app:meas}.}
 \label{fig:stepresponseslide}
 \end{figure}
-It is clear that this could be well approximated with an underdamped second order model (complex roots), however for initial simplicity and because modelling is not a focus point in this thesis, merely a simple model of the slide movement is used (it shall later be approximated to a second order model). Therefore, with some good will, it is approximated to a linear first order system with a dominating time constant \gls{taus}: 
+The system can clearly be well approximated with an underdamped second order model, however, for initial simplicity, merely a simple model of the slide movement is used. It shall later be approximated with as a second order system. This introduces a number of other challenges which is the reason for initial simplicity.
+\subsection{One Dimensional Model based on Position}
+The system can be approximated to a linear first order system with a dominating time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide}:
+\begin{flalign*}
+\tau_s = 110\, \text{ms}
+\end{flalign*} 
+A linear system can be outlined as:
 \begin{flalign*}
 & Y(s) = \dfrac{1}{\tau_s s + 1}U(s) =  \dfrac{1/\tau_s}{s + 1/\tau_s}\,U(s) = (s+1/\tau_s)^{-1}\,1/\tau_s\,U(s) \kk  \overset{\overset{Y(s)=(C(sI-A)^{-1}B+D)U(s)}{\longrightarrow}}{\scriptsize \text{compare to obtain SS form}}  \\ 
-& \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{f_s(x)} + \underbrace{\tau_s^{-1}}_{g_s(x)} u
+& \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{Ax} + \underbrace{\tau_s^{-1}}_{B} u
 \end{flalign*}
-Thus the system matrix $A$ and the input matrix $B$ can be seen easily. For the sake of generalization, they are named $f_s$ and $g_s$, i.e.:
+The system matrix $A$ and the input matrix $B$ can be read from the above equation:
 \begin{flalign*}
-f_s(x) = -\tau^{-1}x \kk \wedge \kk g_s(x) = \tau_s^{-1}
+A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 0 \kk \wedge \kk D = 0
 \end{flalign*}
-A suitable time constant $\tau_s$ can be read from \autoref{fig:stepresponseslide} to:
+Which completes the first order approximation.
+\subsection{Two Dimensional Model based on Position and Velocity}
+The second order approximation is based on the form:
+\begin{flalign}
+\dfrac{Y(s)}{U(s)} = \dfrac{\omega_n^2}{s^2 + 2\zeta \omega_n s + \omega_n^2}
+\label{eq:2order}
+\end{flalign}\\
+\vspace{-0.8cm}
+\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+Where  & & \\
+$Y(s)$ is the output in the Laplace domain  & [m] \\
+$U(s)$ is the input in the Laplace domain  & [m] \\
+$\omega_n$ is the natural frequency of the system & [rad/s] \\
+$\zeta$ is the damping coefficient  & [$\cdot$] \\
+$s$ is the Laplace operator  & [rad/s] 
+\end{longtable}
+\vspace*{-0.2cm}
+The model can unambiguous be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured with the purpose to find $\omega_n$ and $\zeta$:
 \begin{flalign*}
-\tau_s = 55\, \text{ms}
-\end{flalign*} 
-\section{Construction of CBF}
+\omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{1}{17 \cdot 0.320}\log(0.05) = 0.55
+\end{flalign*}
+\Autoref{eq:2order} can be transferred to state space form:
+\begin{flalign*}
+&Y(s)s^2 + 2\zeta \omega_n Y(s) s + \omega_n^2 Y(s) - \omega_n^2 U(s)  = 0 \\
+&\ddot{y}(t) + 2\zeta \omega_n \dot{y}(t) + \omega_n^2 y(t) - \omega_n^2 u(t) = 0 \\
+&\text{choose $y(t) = x_1(t) = \text{position} \kk \Rightarrow \kk \dot{x}_1(t) = x_2(t)$} \\
+&\begin{bmatrix}
+\dot{x}_2(t)\\\dot{x}_1(t)
+\end{bmatrix} = \begin{bmatrix}
+-2\zeta \omega_n & \omega_n^2 \\
+1 & 0 
+\end{bmatrix}\begin{bmatrix}
+x_2(t) \\ x_1(t)
+\end{bmatrix} + \begin{bmatrix}
+1\\0
+\end{bmatrix}u(t) \\
+&\hspace{0.65cm}y(t) = \begin{bmatrix}
+0 & \omega_n^2
+\end{bmatrix}\begin{bmatrix}
+x_2(t) \\ x_1(t)
+\end{bmatrix}
+\end{flalign*}
+Thus:
+\begin{flalign*}
+A = \begin{bmatrix}
+-2\zeta \omega_n & \omega_n^2 \\
+1 & 0 
+\end{bmatrix} \kk \wedge \kk B = \begin{bmatrix}
+1 \\ 0
+\end{bmatrix} \kk \wedge \kk C = \begin{bmatrix}
+0 & \omega_n^2
+\end{bmatrix} \kk \wedge \kk D = 0
+\end{flalign*}
+Which completes the second order model.
+\section{Construction of CBF based on 1D Model}
 To illustrate the usefulness of \gls{cbf}s, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
 
 Consider the state intervals defined in \autoref{tab:intervals}.
@@ -73,7 +129,7 @@ B(x) = ax^2+bx+c \kk \Rightarrow \kk L_fB(x) = \dfrac{d}{dx}B(x)f_s(x) = (2ax+b)
 \end{flalign*}
 \Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_fB(x)<0$ in the area $x \in [\Lambda_s:\Lambda_h]$ is therefore indeed sufficient. Analysis of $L_fB(x)$ shall reveal when $L_fB(x)>0$, i.e. to ensure the demand below:
 \begin{flalign*}
-L_fB(x) \ngtr 0\hspace{0.3cm}\forall\hspace{0.3cm} x \in [\Lambda_s:\Lambda_h]
+L_fB(x) \ngeq 0\hspace{0.3cm}\forall\hspace{0.3cm} x \in [\Lambda_s:\Lambda_h]
 \end{flalign*}
 Thus the analysis is performed:
 \begin{flalign}
@@ -84,7 +140,7 @@ The coefficients $a$ and $b$ must be found. By studying $x>0$ it can from \autor
 \begin{flalign*}
 \forall \mm \{ a > 0 \mm  \wedge \mm b > 0 \} \mm \Rightarrow \mm L_fB(x) < 0 \mm \forall \mm  x > 0
 \end{flalign*}
-The scenario changes when $x<0$. Preserving that $a>0$ and $b>0$, the analysis below put forth constraints to the x.
+The scenario changes when $x<0$. Preserving that $a>0$ and $b>0$, the analysis below put forth constraints to $x$.
 \begin{flalign}
 &L_fB(x) = 0 \kk \Leftrightarrow \kk  -2\tau^{-1}ax^2-\tau^{-1}bx = 0 \nonumber
  \\  &-2ax^2-bx = 0 \mm \Rightarrow \mm x = 
@@ -94,12 +150,12 @@ The scenario changes when $x<0$. Preserving that $a>0$ and $b>0$, the analysis b
 \end{cases}
 \label{eq:interval1}
 \end{flalign}
-Thus, $B(x)$ is not a valid barrier function within the interval:
+Thus, if $L_gB(x) = 0$, then $B(x)$ is not a valid barrier function within the interval:
 \begin{flalign}
 B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in \left[ \frac{-b}{2a}:0 \right] \mm \text{if} \mm L_gB(x) = 0
 \label{eq:interval}
 \end{flalign}
-Three equations with three unknowns can be outlined to fulfil the initial demand in figure ??.
+Three equations with three unknowns can be outlined to fulfil the initial demand in \autoref{fig:safe:overview}.
 \begin{flalign*}
  \left.
  \begin{aligned}
@@ -114,16 +170,21 @@ a\left( \frac{-\Lambda_\text{lim}+\Lambda_h}{2}\right)^2 + b\left(\frac{-\Lambda
 \end{flalign*}
 The interval where $B(x)$ is invalid can thereby be found from \autoref{eq:interval}:
 \begin{flalign*}
-B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250:0]
+B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250:0] \kk \text{if} \mm L_gB(x) = 0
 \end{flalign*}
 This is indifferent as $\mathcal{X}  \notin [\Lambda_{s-}:\Lambda_{s+}]$. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.5]{parabel_1.pdf}
-\caption{Barrier function along with the $\mathcal{X}_u$ and $\mathcal{X}_u^c$. Plot details and MATLAB script can be found in ????}
-\label{fig:barrierfunction}
+	\includegraphics[scale=0.5]{parabel_1.eps}
+	\caption{Barrier function along with the $\mathcal{X}_u$ and $\mathcal{X}_u^c$. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_parabola/plot\_parabola.m}}
+	\label{fig:barrierfunction}
 \end{figure}
-\section{Controller Design}
+\underline{Note:} The above analysis ensures safety regardless of $L_gB(x) = 0$ at all time except when $L_gB(x)=0$ which merely takes place at the critical point, i.e.:
+\begin{flalign*}
+ L_gB(x) = (2ax+b)B = 2ax\tau^{-1} + b\tau^{-1} = 0 \kk \Leftrightarrow \kk 2ax = -b \kk \Leftrightarrow \kk x = \dfrac{-b}{2a}
+ \end{flalign*} 
+ This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
+\section{Controller Design for One Dimensional Model}
 A control laws is now introduced:
 \begin{flalign*}
 u(x) =
@@ -132,7 +193,7 @@ u(x) =
 	 k_0(x)  \kk &\text{if \mm $x \in [\Lambda_{s+}:\Lambda_{h+}] \mm \wedge \mm x \in [\Lambda_{h-}:\Lambda_{s-}]$}
 \end{cases}
 \end{flalign*}
-This can be refined with a parameter $\sigma(x)$ such that the shift between the two control laws is not instantaneous \citep{bib:org_control}. Consider the control law below:
+This can be implemented by the control law below:
 \begin{flalign*}
 u(x) = \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
 \end{flalign*}
@@ -143,7 +204,8 @@ $u(x)$ is a control signal where safety is ensured  & [$\cdot$] \\
 $\tilde{u}(x)$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx$ & [$\cdot$] \\ 
 $k_0(x)$ is a control law that guarantees safety & [$\cdot$] \\ 
 $\sigma(x)$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
-$K$ is a constant feedback matrix in $\mathbb{R}^{1 \times 1}$ & [$\cdot$] 
+$K$ is a constant feedback matrix in $\mathbb{R}^{1 \times 1}$ & [$\cdot$] \\
+$\bar{N}$ is a constant to ensure unity gain from reference to output & [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
 The control law is thereby a linear combination of two controllers. It is noted that:
@@ -151,10 +213,32 @@ The control law is thereby a linear combination of two controllers. It is noted 
 \sigma(x) = 
 \begin{cases}
 0 \mm &\Rightarrow \mm \text{Pure control by pole placement, i.e. $u(x) = \tilde{u}(x) =  \bar{N}\cdot x_\text{ref}-Kx$ } \\
-1 \mm &\Rightarrow \mm \text{Pure control for safety i.e. $u(x) = k_0(x)$ } \\
-]0:1[ \mm &\Rightarrow \mm \text{A linear combination of the two control signals $u(x)$ and $\tilde{u}(x)$}
+1 \mm &\Rightarrow \mm \text{Pure control for safety i.e. $u(x) = k_0(x)$ }
 \end{cases}
 \end{flalign*}
+The interval between 0 and 1 can be refined such that the transition between the two control laws is not instantaneous. This smoothing can be performed with a continuous approximation of the unit step of $B(x)$ by introducing a variable $\epsilon>0$ \citep{bib:org_control}:
+\begin{flalign*}
+\sigma(x) = 
+\begin{cases}
+0 & \text{if} \mm B(x) \leq -\epsilon \\
+-2  \left( \dfrac{B(x)}{\epsilon} \right)^3 - 3\left( \dfrac{B(x)}{\epsilon} \right)^2 +1 \kk &\text{if} \mm B(x) \in (-\epsilon,0) \\
+1  &\text{if} \mm B(x) \geq 0
+\end{cases}
+\end{flalign*} 
+The variable $\epsilon$ can be determined from:
+\begin{flalign*}
+\epsilon = |B(\Lambda_{s+})| = |B(\Lambda_{s-})| = 0.00249
+\end{flalign*}
+This is a need way to incorporate the transition between $\Lambda_s$ and $\Lambda_h$ because $k_0(x)$ kicks in slowly when the trajectory exceeds $\Lambda_s$. \Autoref{fig:epsilon_plot} illustrates how $\epsilon$ and $B(x)$ os connected.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.55]{epsilon_plot.eps}
+	\caption{Connection between $\epsilon$ and CBF.}
+	\label{fig:epsilon_plot}
+\end{figure}
+%
+%
+% 
 A block diagram is depicted in \autoref{fig:controlsystem}.
 \begin{figure}[H]
 	\center
@@ -171,7 +255,7 @@ k_0(x) = \begin{cases}
 \end{cases}
 \label{eq:control_law}
 \end{flalign}
-$\kappa$ is a design variable. High values of $\kappa$ implies increased aggressiveness. \Autoref{eq:control_law} ensures indeed safety for the closed loop system $\dot{x} = f_s(x)+g_s(x)k_0(x)$. This is easily proven as:
+$\kappa$ is a design variable. High values of $\kappa$ implies increased aggressiveness. \Autoref{eq:control_law} ensures indeed safety for the closed loop system $\dot{x} = f(x)+g(x)k_0(x)$. This is easily proven as:
 \begin{flalign*}
 L_{f_{cl}}B(x) = L_fB(x) + L_gB(x)k_0(x)
 \end{flalign*}
@@ -243,4 +327,5 @@ The constant feedback matrix, $\bar{N}$, can be computed as \citep{bib:Nbar}:
 \begin{flalign*}
 \bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 10
 \end{flalign*}
-\section{Simulation results}
+\section{Results from 1D Model}
+
