@@ -167,3 +167,29 @@ and in the case that $f$ is negative
 
 
 Sum of squares: require that the 
+
+\begin{lstlisting}[language=matlab]
+% Define state-space system with x1 = robot position, x2 = heart position, x3 = heart velocity
+tau = 1; % time constant for the robot slide
+a = -1/tau;
+Hz = 1; % frequency of the heart beat
+b = 2*Hz;
+A = [a   0  0; % robot tool position
+0   0  b; % heart surface point position: sine wave
+0 -b   0]; % heart surface point velocity
+B = [1/tau 0 0]';
+C = [1 0 0]; % the output is the robot tool position
+poles = -10; % controller speed
+k = place(A(1,1),B(1,1),poles);
+K = [k 0 0]; % controller for robot tool position
+
+% Reference signal for robot position: the heart position
+Nbar = -inv(C*inv(A-B*K)*B);
+ref = x2 * Nbar;
+\end{lstlisting}
+
+Similarly, the region $\mathcal{X}_u$ can be defined as the surface of the heart, i.e. for the 1D case the robot tool is in the unsafe region if it is below the surface of the heart (if $x_2>x_1$), using the inequality on $B(x)$ in \autoref{cer2_app}.
+%Additionally a physical amplitude constraint for the heart of 2\,cm is included in the definition of $\mathcal{X}_u$.
+
+And finally the region $\mathcal{X}_0$ is defined as an area above the sine amplitude of the heart, in this case within slide positions 5-7\,cm, using the SOS inequality \autoref{cer1_app}. 
+\textcolor{red}{Careful, the amplitude of the sine is not anywhere in the equations, maybe there should be a constraint on the maximum value of x2 or x3? where?}

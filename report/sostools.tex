@@ -126,41 +126,29 @@ B(x) &> 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \qquad\qquad \rightarrow
 Note that the inequality is on positivity in \autoref{cer2_app} whereas it is on nonnegativity in \autoref{cer2_putinar_app}. This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level.
 
 \subsection{Example of Barrier Certificate Search with SOSTOOLS}
-This section presents an elaborate example of a state in $\mathbb{R}^3$ controlling a 1D first order system robot $x_1$ corresponding to the slide joint being the only degree of freedom, with a reference to follow the sine movement of a beating heart $x_2$. First the system is defined, and a controller is designed with pole placement.
+This section presents an elaborate example of a state in $\mathbb{R}$ controlling a 1D first order system robot $x_1$ corresponding to the slide joint being the only degree of freedom. First the system is defined, and a controller is designed with pole placement.
 \begin{lstlisting}[language=matlab]
-% Define state-space system with x1 = robot position, x2 = heart position, x3 = heart velocity
-tau = 1; % time constant for the robot slide
-a = -1/tau;
-Hz = 1; % frequency of the heart beat
-b = 2*Hz;
-A = [a   0  0; % robot tool position
-     0   0  b; % heart surface point position: sine wave
-     0 -b   0]; % heart surface point velocity
-B = [1/tau 0 0]';
-C = [1 0 0]; % the output is the robot tool position
-poles = -10; % controller speed
-k = place(A(1,1),B(1,1),poles);
-K = [k 0 0]; % controller for robot tool position
+% Define state-space system with x1 = robot position
+tau = 0.11; % time constant for the robot slide
+A = -1/tau;
+B = 1/tau;
+k = place(A,B,[-10*1/tau]);
 \end{lstlisting}
 Then the symbolic state variables are declared for the SOS program, and the program is initialized.
 \begin{lstlisting}[language=matlab]
 % Declare state variables
-pvar x1 x2 x3
-vars = [x1 x2 x3]';
+pvar x1
 
 % Initialize the sum of squares program
-prog = sosprogram(vars);
+prog = sosprogram(x1);
 \end{lstlisting}
-The reference for the robot position is generated as the 1D heart position, taking into account the system gain $\bar{N}$, and the closed-loop system equation is written as a function of the sybolic state. %\textcolor{red}{Something is wrong with the reference..?}
+%The reference for the robot position is generated as the 1D heart position, taking into account the system gain $\bar{N}$, and the closed-loop system equation is written as a function of the sybolic state. %\textcolor{red}{Something is wrong with the reference..?}
+The vector field or derivative of the state can now be defined in terms on the symbolic state variable.
 \begin{lstlisting}[language=matlab]
-% Reference signal for robot position: the heart position
-Nbar = -inv(C*inv(A-B*K)*B);
-ref = x2 * Nbar;
-
 % Vector field dx/dt = fx (closed loop)
-fx = A*vars + B*(ref-k*vars);
+fx = (A-B*k)*x1;
 \end{lstlisting}
-For ease of defining the (1D) function $g$ that is positive on an interval [$p_1\,\,\, p_2$], a parabola function is used.
+For ease of defining a (1D) function $g$ that is positive on an interval [$p_1\,\,\, p_2$], a parabola function is used.
 \begin{lstlisting}[language=matlab]
 function [a,b,c] = parabola(p1,p2)
 	a = -1;
@@ -168,7 +156,7 @@ function [a,b,c] = parabola(p1,p2)
 	c = -a*p1^2-b*p1;
 end
 \end{lstlisting}
-Now the region $\mathcal{X}$ can easily be defined for the slide region $\pm0.1$\,m using the Lie derivative inequality in \autoref{cer3_app}. 
+Now the region $\mathcal{X}$ can be defined for the slide region $\pm0.1$\,m using the Lie derivative inequality in \autoref{cer3_app}. The monomial degrees for $f$ and $B(x)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x)$ that is 4.
 \begin{lstlisting}[language=matlab]
 % Define space X in R^n
 [a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1]
@@ -179,29 +167,23 @@ zB = monomials(x1,0:4);
 [prog,Bx] = sospolyvar(prog,zB);
 prog = sosineq(prog,-diff(Bx,x1)*fx-gX*qX);
 \end{lstlisting}
-Similarly, the region $\mathcal{X}_u$ can be defined as the surface of the heart, i.e. for the 1D case the robot tool is in the unsafe region if it is below the surface of the heart (if $x_2>x_1$), using the inequality on $B(x)$ in \autoref{cer2_app}.
-%Additionally a physical amplitude constraint for the heart of 2\,cm is included in the definition of $\mathcal{X}_u$.
+Similarly, the region $\mathcal{X}_u$ is defined as the area between slide positions 5-10\,cm.
 \begin{lstlisting}[language=matlab]
 % Define space Xu in X
-gXu = (x2-x1);
-zXu = monomials(vars,0:1);
-[prog,qXu] = sossosvar(prog,zXu);
-prog = sosineq(prog,B-gXu*qXu);
+[a,b,c]=parabola(0.05,0.1);
+gXu = a*x1^2+b*x1+c;
+zXu = monomials(x1,0:2);
+[prog,fXu] = sossosvar(prog,zXu);
+prog = sosineq(prog,Bx-gXu*fXu);
 \end{lstlisting}
-%: intersection of the regions where tool has penetrated heart surface, and heart surface amplitude constrained to 2cm
-%gXu2 = 0.02^2 - x2^2; 
-%zXu2 = monomials(vars,0:1);
-%[prog,qXu2] = sossosvar(prog,zXu2);
-%prog = sosineq(prog,B-gXu*qXu-gXu2*qXu2);
-And finally the region $\mathcal{X}_0$ is defined as an area above the sine amplitude of the heart, in this case within slide positions 5-7\,cm, using the SOS inequality \autoref{cer1_app}. 
-\textcolor{red}{Careful, the amplitude of the sine is not anywhere in the equations, maybe there should be a constraint on the maximum value of x2 or x3? where?}
+And finally the region $\mathcal{X}_0$ is defined as $\mathcal{X}\setminus\mathcal{X}_u$.
 \begin{lstlisting}[language=matlab]
 % Define space X0 in X
-[a,b,c] = parabola(0.05,0.07);
+[a,b,c] = parabola(-0.1,0.05);
 gX0 = a*x1^2+b*x1+c;
-zX0 = monomials(vars,0:2);
-[prog,qX0] = sossosvar(prog,zX0);
-prog = sosineq(prog,-Bx-gX0*qX0);
+zX0 = monomials(x1,0:2);
+[prog,fX0] = sossosvar(prog,zX0);
+prog = sosineq(prog,-Bx-gX0*fX0);
 \end{lstlisting}
 With all three areas defined according to \autoref{eq:barrier_constraints_app}, the program is ready to be solved. If a solution is found, an overview of the solution accuracy is printed in the Matlab terminal as the residual norm, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \verb|sosgetsol|.
 \begin{lstlisting}[language=matlab]
@@ -211,6 +193,14 @@ getB = sosgetsol(prog,Bx)
 \end{lstlisting}
 For this particular program, the solution barrier certificate is found to be
 \begin{equation}
-B(x) = 1.3177e\text{-}8\cdot x_1^4 - 9.6184e\text{-}9\cdot x_1^3 + 1.5544e\text{-}9\cdot x_1^2 + 2.3274e\text{-}10\cdot x_1 
-+ 3.9002e\text{-}11
+B(x) = 0.016168\cdot x_1^4 + 0.0064892\cdot x_1^3 + 0.00072547\cdot x_1^2 + 6.5473e\text{-}8\cdot x_1 - 2.7291e\text{-}6
 \end{equation}
+and is depicted in \autoref{fig:barrier_1storder_staticlim}.
+
+\begin{figure}[htbp]
+\hspace*{-12mm}
+\includegraphics[width=1.1\textwidth]{1stordersys_staticlimits.pdf}
+\caption{A barrier certificate is found with SOSTOOLS that complies with the requirements in \autoref{eq:barrier_constraints_app}: it is positive on $\mathcal{X}_u=\{x_1\in [0.05\,\,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1\,\,0.05]\}$, and its Lie derivative is nonpositive on $\mathcal{X}=\{x_1\in [-0.1\,\,0.1]\}$.}
+\label{fig:barrier_1storder_staticlim}
+\end{figure}
+
