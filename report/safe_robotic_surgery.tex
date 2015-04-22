@@ -45,7 +45,7 @@ To obtain a model of the slide movement, the step response will be measured.  Th
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}. The experiment is described in \autoref{app:meas}.}
 \label{fig:stepresponseslide}
 \end{figure}
-The system can clearly be well approximated with an underdamped second order model, however, for initial simplicity, merely a simple model of the slide movement is used. It shall, however, also be approximated with as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be references as:
+The system can clearly be well approximated with an underdamped second order model, however, for initial simplicity, merely a simple model of the slide movement is used. It shall, however, also be approximated with as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referenced as:
 \begin{itemize}
 \item One dimensional (1D) model
 \item Two dimensional (2D) model
@@ -62,7 +62,7 @@ A linear system can be outlined as:
 \end{flalign*}
 The system matrix $A$ and the input matrix $B$ can be read from the above equation:
 \begin{flalign*}
-A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 0 \kk \wedge \kk D = 0
+A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 1 \kk \wedge \kk D = 0
 \end{flalign*}
 Which completes the first order approximation.
 \subsection{Two Dimensional Model based on Position and Velocity}
@@ -106,6 +106,15 @@ x_2(t) \\ x_1(t)
 x_2(t) \\ x_1(t)
 \end{bmatrix}
 \end{flalign*}
+\vspace{-0.6cm}
+\begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+Where  & & \\
+$x_1(t)$ is the position (attenuated by $\omega_n^2$) & [m] \\
+$x_2(t) = \dot{x}_1(t)$ is the velocity  & [m/s] \\
+$y(t)$ is the output (slide position)  & [m] \\
+$u(t)$ is the control input  & [$\cdot$]
+\end{longtable}
+\vspace*{-0.2cm}
 Thus:
 \begin{flalign*}
 A = \begin{bmatrix}
