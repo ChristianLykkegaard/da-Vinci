@@ -91,19 +91,19 @@ The model can unambiguous be approximated from the rise time $t_r$, settling tim
 &\ddot{y}(t) + 2\zeta \omega_n \dot{y}(t) + \omega_n^2 y(t) - \omega_n^2 u(t) = 0 \\
 &\text{choose $y(t) = x_1(t) = \text{position} \kk \Rightarrow \kk \dot{x}_1(t) = x_2(t)$} \\
 &\begin{bmatrix}
-\dot{x}_2(t)\\\dot{x}_1(t)
+\dot{x}_1(t)\\\dot{x}_2(t)
 \end{bmatrix} = \begin{bmatrix}
--2\zeta \omega_n & -\omega_n^2 \\
-1 & 0 
+0 & 1\\
+-2\zeta \omega_n & -\omega_n^2  
 \end{bmatrix}\begin{bmatrix}
-x_2(t) \\ x_1(t)
+x_1(t) \\ x_2(t)
 \end{bmatrix} + \begin{bmatrix}
-1\\0
+0\\\omega_n^2
 \end{bmatrix}u(t) \\
 &\hspace{0.65cm}y(t) = \begin{bmatrix}
-0 & \omega_n^2
+0 & 1
 \end{bmatrix}\begin{bmatrix}
-x_2(t) \\ x_1(t)
+x_1(t) \\ x_2(t)
 \end{bmatrix}
 \end{flalign*}
 \vspace{-0.6cm}
@@ -142,9 +142,9 @@ $x \in \{[\Lambda_{s+}:\Lambda_\text{lim+}],[\Lambda_\text{lim-}:\Lambda_{s-}]\}
 \end{table}
 \subsection{Construction of CBF based on 1D model}
 A parabola is now introduced as \gls{cbf}. A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
-\begin{flalign*}
-B(x) = ax^2+bx+c \kk \Rightarrow \kk L_fB(x) = \dfrac{d}{dx}B(x)f(x) = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx
-\end{flalign*}
+\begin{flalign}
+B(x) &= ax^2+bx+c \label{eq:cbf1} \kk \Rightarrow \\ L_fB(x) &= \dfrac{d}{dx}B(x)f(x) = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx \nonumber
+\end{flalign}
 \Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_fB(x)<0$ in the area $x \in [\Lambda_s:\Lambda_h]$ is therefore indeed sufficient. Analysis of $L_fB(x)$ shall reveal when $L_fB(x)>0$, i.e. to ensure the demand below:
 \begin{flalign*}
 L_fB(x) \ngeq 0\hspace{0.3cm}\forall\hspace{0.3cm} x \in [\Lambda_s:\Lambda_h]
@@ -202,7 +202,36 @@ This is indifferent as $\mathcal{X}  \notin [\Lambda_{s-}:\Lambda_{s+}]$. Thus t
  L_gB(x) = (2ax+b)B = 2ax\tau^{-1} + b\tau^{-1} = 0 \kk \Leftrightarrow \kk 2ax = -b \kk \Leftrightarrow \kk x = \dfrac{-b}{2a}
  \end{flalign*} 
  This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
- \subsection{Construction of CBF based on 2D model}
+\subsection{Construction of CBF based on 2D model}
+Consider now $L_gB(x)$ for the same \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(x)$ is a function of position only, such that the CBF is:
+\begin{flalign*}
+B(x_1) = a\,x_1^2+ b\,x_1 + c
+\end{flalign*}
+Thus:
+\begin{flalign*}
+L_gB(x_1) = \dfrac{\partial B(x_1)}{\partial x}g(x) \Bigm|_{g(x)=B} =  
+\begin{bmatrix}
+\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
+\end{bmatrix}\begin{bmatrix}
+0 \\ \omega_n^2
+\end{bmatrix} = 0 
+\end{flalign*}
+This put forth the requirement that $L_fB(x)<0$. Accordingly:
+\begin{flalign*}
+L_fB(x_1) &= \dfrac{\partial B(x_1)}{\partial x}f(x) \Bigm|_{f(x)=Ax} = 
+\begin{bmatrix}
+\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 \\
+-2\zeta\omega_n & \omega_n^2
+\end{bmatrix} \begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix} \\
+&= \dfrac{\partial B(x_1)}{\partial x_1} x_1 - \dfrac{\partial B(x_1)}{\partial x_2}2\zeta \omega_n x_1 - \dfrac{\partial B(x_1)}{\partial x_2} \omega_n^2 x_2 \\
+&= 2ax_1x_2 - x_2
+\end{flalign*}
+Note that the velocity appears in both terms. As the velocity can be both decreasing and increasing for all positions, this demand is impossible to fulfil with the chosen barrier function and therefore invalid. A solution can be to include the velocity in the barrier function. 
 \section{Controller Design}
 A control law is now introduced:
 \begin{flalign*}
@@ -355,8 +384,8 @@ The results based on the implemented controller found in \autoref{app:slide_impl
 The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.5]{trajectory_slide.eps}
-	\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler with a sampling rate of $1\,$kHz. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position founds an equilibrium at some arbitrary state.}
+		\includegraphics[scale=0.55]{trajectory_slide.eps}
+	\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler with a sampling rate of $1\,$kHz. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position finds its equilibrium at some arbitrary state.}
 	\label{fig:trajectory1}
 \end{figure}
 Varying $\kappa$ increases the aggressivity of the safety controller and can create fluctuations in the transition area if the sampling area is too low. Likewise $\sigma(x)$ will fluctuate along with an increased $\kappa$. One must be careful when increasing $\kappa$ when the sampling rate is relatively low. %The effect of increasing $\kappa$ ten times is shown in \autoref{fig:trajectory2}.
@@ -370,7 +399,7 @@ Varying $\kappa$ increases the aggressivity of the safety controller and can cre
 To verify that \autoref{req2} is fulfilled in the simulation, the Lie derivatives are plotted in \autoref{fig:lie1}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.5]{Lie_slide_1d.eps}
+		\includegraphics[scale=0.55]{Lie_slide_1d.eps}
 	\caption{Lie derivatives of the CBF along the vector fields $f(x) = Ax$ and $g(x)=B$. It is seen that $L_gfB(x) \neq 0 \,\, \forall x \neq \frac{-b}{2a}$ which essentially fulfils \autoref{req2}.}
 	\label{fig:lie1}
 \end{figure}
@@ -378,12 +407,12 @@ It is from \autoref{fig:lie1} seen that $L_gB(x) \neq 0 \,\, \forall x \neq -b/(
 For the record, the control signal is plotted in \autoref{fig:control1}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.5]{control_slide_1.eps}
+		\includegraphics[scale=0.55]{control_slide_1.eps}
 	\caption{Control signal for $\kappa=1$. It is seen how the controller counteracts the large difference in setpoints given and in that way ensures safety. It is seen that when the absolute value of the setpoints are increased then $u(x)$ increases accordingly. The plot is ideal as no saturation constraints are given.}
 	\label{fig:control1}
 \end{figure}
 It is seen from \autoref{fig:control1} how the control signal reacts instantaneously and quite aggressive when $\Lambda_s$ is exceeded to counteract the large difference in setpoints given. It is also noted how the controller eventually settles smootly even when setpoints are given in the interval $[-\infty:\Lambda_{s-}]$ and $[\Lambda_{s+}:\infty]$. However, as the setpoints approaches $\pm \infty$, the sampling rate must also converge towards infinity. This is obviously not a realistic scenario as the slide movement is physically constrained.
-\subsection{MATLAB Results based on 1D Model}
+\subsection{MATLAB Results based on 2D Model}
 
 \section{Implementation on the Da Vinci Robot}
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}
