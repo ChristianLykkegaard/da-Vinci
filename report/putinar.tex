@@ -168,8 +168,10 @@ however, the right-hand expression will always be nonnegative due to the SOS equ
 Note that the inequality is on positivity in \autoref{cer2} whereas it is on nonnegativity in \autoref{cer2_putinar}. This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level. 
 
 The problem of finding a barrier certificate $B(x)$ with the toolbox SOSTOOLS is now a matter of for each region $\mathcal{X}$, $\mathcal{X}_u$, $\mathcal{X}_0$:
+\vspace*{-2mm}
 \begin{itemize}
 %\itemsep-1.3mm
+\itemsep-0.7mm
 \item Define one or more polynomials $g_j$ that are positive in the region to be defined and negative outside. Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries.
 \item Declare SOS variables $q_j$ of sufficiently large monomial degree.
 \item Declare the polynomial $B(x)$ of sufficiently large monomial degree. Note that each expression in the inequalities of \autoref{eq:barrier_constraints_putinar} must have even degrees in the leading and trailing terms in order for the equality in \autoref{eq:putinar_sos} to hold.
@@ -179,7 +181,7 @@ The problem of finding a barrier certificate $B(x)$ with the toolbox SOSTOOLS is
 
 
 
-
+The following chapters present the safety verification of first- and second order systems in 1D and 3D with static and dynamic boundaries. The same systems are used for the analysis as in \autoref{part:cbf}, and to the extent it is possible, also the same (pole placement design) controllers are tested. \textcolor{red}{Correct this when the chapters are written!!!}
 
  
 	

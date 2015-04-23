@@ -2,6 +2,8 @@ First the open-loop state space system is defined, and a controller is found acc
 
 For the system defined, make a function $g$ that is positive in the region that will be defined as $\mathcal{X}$ i.e. has its zero level set at the desired border of the region. Make an SOS variable $q$ from a monomial vector in the state variables of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible). Finally declare $B$ as an SOS polynomial with a monomial vector of appropriate degree and set up the SOS inequality according to Putinar's Positivstellensatz in
 
+
+\section{Safety Verification of First Order System}
 \begin{lstlisting}[language=matlab]
 % Define state-space system with x1 = robot position, x2 = heart position, x3 = heart velocity
 tau = 1; % time constant for the robot slide
@@ -27,3 +29,5 @@ Similarly, the region $\mathcal{X}_u$ can be defined as the surface of the heart
 
 And finally the region $\mathcal{X}_0$ is defined as an area above the sine amplitude of the heart, in this case within slide positions 5-7\,cm, using the SOS inequality \autoref{cer1_app}. 
 \textcolor{red}{Careful, the amplitude of the sine is not anywhere in the equations, maybe there should be a constraint on the maximum value of x2 or x3? where?}
+
+\section{Safety Verification of Second Order System}
