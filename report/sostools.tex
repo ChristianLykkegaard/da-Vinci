@@ -1,17 +1,21 @@
-This appendix serves as a short introduction to the Matlab toolbox SOStools in the scope of searching for a barrier certificate for a specific closed-loop system $f_{cl}(x)$.
+This appendix serves as a short introduction to the Matlab toolbox SOSTOOLS in the scope of searching for a barrier certificate for a specific closed-loop system $f_{cl}(x)$.
 
-\section{Download and Install SOStools}
-SOStools is a free third-party Matlab toolbox developed by engineering departments of four major universities. A zip file of the toolbox can be downloaded from 
+\section{Download and Install SOSTOOLS}
+\vspace*{-3mm}
+SOSTOOLS is a free third-party Matlab toolbox developed by engineering departments of four major universities. A zip file of the toolbox can be downloaded from 
 
 \hspace{1cm} {\color{blue}{\textit{http://www.cds.caltech.edu/sostools}}}
 
-also containing a user guide \citep{bib:sostools_manual} to sum of squares problems and how to formulate a problem to solve it with the toolbox, along with a set of demos. 
+also containing a user guide \citep{bib:sostools_manual} to sum of squares (SOS) problems and how to formulate a problem to solve it with the toolbox, along with a set of demos. 
 
-SOStools takes as input the \gls{sos} program formulation, recasts it as a \gls{sdp} problem, calls \gls{sdp} solvers, and recasts the solution to the \gls{sdp} problem into the solution to the \gls{sos} problem. This means that the toolbox requires that an \gls{sdp} solver toolbox is installed, e.g. the SeDuMi (Self-Dual-Minimization) solver, which can be downoaded from
+SOSTOOLS takes as input the \gls{sos} program formulation, recasts it as a \gls{sdp} problem, calls \gls{sdp} solvers, and recasts the solution to the \gls{sdp} problem into the solution to the \gls{sos} problem. This means that the toolbox requires that an \gls{sdp} solver toolbox is installed, e.g. the SeDuMi (Self-Dual-Minimization) solver, which can be downoaded from
 
 \hspace{1cm} {\color{blue}{\textit{http://sedumi.ie.lehigh.edu/downloads}}}
 
+The toolboxes are activated in Matlab by adding the downloaded unzipped folders to the Matlab path.
+
 \section{Defining an SOS Program}
+\vspace*{-3mm}
 As described in \citep{bib:sostools_manual}, an SOS program is initialized by declaring the independent variables as \texttt{syms} or \texttt{pvar} and optionally scalar decision variables as \texttt{syms}, and initializing an SOS program with the command \texttt{sosprogram} (in the below, grey denotes optional inputs)
 
 \hspace*{1cm} \texttt{>> syms x1 dvar;}\\
@@ -88,7 +92,7 @@ WHen all variables and constraints are input to the program, the solver is calle
 If no solution could be found, the degree (and thereby complexity) of some SOS variables or polynomials may be increased through their monomials, which may yield a solution to the SOS problem.
 
 
-\section{Search for a Barrier Certificate with SOStools}
+\section{Search for a Barrier Certificate with SOSTOOLS}
 In the search for a barrier certificate for a given system, the above commands are used to define the polynomial $B(x)$ such that it will satisfy \autoref{eq:barrier_constraints}, restated here for convenience:
 \begin{subequations}\label{eq:barrier_constraints_app}
 	\begin{flalign}
@@ -100,30 +104,32 @@ In the search for a barrier certificate for a given system, the above commands a
 
 First the open-loop state space system is defined, and a controller is found according to pole placement or another preferred method. Now declare the state space variables as \verb|syms| or \verb|pvar|, initialize the SOS program with the system states and write the closed-loop system equation $f_{cl}$ with the symbolic state vector.
 
-For the system defined, make a function $g$ that is positive in the region that will be defined as $\mathcal{X}$ i.e. has its zero level set at the desired border of the region. Make an SOS variable $q$ from a monomial vector in the state variables of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible). Finally declare $B$ as an SOS polynomial with a monomial vector of appropriate degree and set up the SOS inequality according to Putinar's Positivstellensatz in \autoref{eq:sos_barrier}, restated here for convenience:
-\begin{subequations}\label{eq:sos_barrier_app}
+For the system defined, make a function $g$ that is positive in the region that will be defined as $\mathcal{X}$ i.e. has its zero level set at the desired border of the region. Make an SOS variable $q$ from a monomial vector in the state variables of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible). Finally declare $B$ as an SOS polynomial with a monomial vector of appropriate degree and set up the SOS inequality according to Putinar's Positivstellensatz in \autoref{eq:putinar_sos}, restated here for convenience:
+%\begin{subequations}\label{eq:sos_barrier_app}
 \begin{align}
-h &= q_0+\sum _{j=1}^{m}q_jg_j \label{eq:putinar1_app} \\
+%h &= q_0+\sum _{j=1}^{m}q_jg_j \label{eq:putinar1_app} \\
 q_0 &= h - \sum _{j=1}^{m}q_jg_j \label{eq:putinar2_app}
 %\qquad \qquad \overset{\text{on } \mathbb{K}}{\Longrightarrow}\\
 %0 &\leq h - \sum _{j=1}^{m}q_jg_j \label{eq:putinar3_app}
 \end{align}
-\end{subequations} 	
-The SOS variables $q$ are nonnegative per definition, and as seen from \autoref{eq:putinar1_app} $h$ is positive on $\mathbb{K}$ as defined by $g$ being positive in the region $\mathbb{K}$. Outside $\mathbb{K}$ $g$ is negative, and hence the the sign of $h$ cannot be determined outside $\mathbb{K}$. Rearranging to \autoref{eq:putinar2_app}, however, the right-hand expression will always be nonnegative due to the SOS equality. Hence the \verb|sosineq| can be written as the right-hand side of \autoref{eq:putinar2_app}. 
+%\end{subequations} 	
+%The SOS variables $q$ are nonnegative per definition, and as seen from \autoref{eq:putinar1_app} $h$ is positive on $\mathbb{K}$ as defined by $g$ being positive in the region $\mathbb{K}$. Outside $\mathbb{K}$ $g$ is negative, and hence the the sign of $h$ cannot be determined outside $\mathbb{K}$. Rearranging to \autoref{eq:putinar2_app}, however, the right-hand expression will always be nonnegative due to the SOS equality. 
+Cf. the nonnegativity of an \gls{sos} polynomial ($q_0$), the \verb|sosineq| can be written as the right-hand side of \autoref{eq:putinar2_app}. 
 
 In the case of defining $\mathcal{X}$ according to \autoref{cer3_app}, the polynomial $h$ can be written as $-\partial B/\partial x \, f_{cl}$.
-Similar procedures are followed when defining $\mathcal{X}_0$ and $\mathcal{X}_u$: make one or more functions $g$ that is positive in the region $\mathcal{X}_0$, make SOS variable(s) $q$ of appropriate degree, and define the SOS inequality according to \autoref{eq:putinar2_app}, with $h=-B$ according to \autoref{cer1_app}; and identically make function(s) $g$ that are positive on $\mathcal{X}_u$, and define the SOS inequality \autoref{eq:putinar2_app} with $h=B$ according to \autoref{cer2_app}. The combination of \autoref{eq:barrier_constraints_app} with \autoref{eq:putinar2_app} can be summarized as:
+Similar procedures are followed when defining $\mathcal{X}_0$ and $\mathcal{X}_u$: make one or more functions $g$ that is positive in the region $\mathcal{X}_0$, make SOS variable(s) $q$ of appropriate degree, and define the SOS inequality according to \autoref{eq:putinar2_app}, with $h=-B$ according to \autoref{cer1_app}; and identically make function(s) $g$ that are positive on $\mathcal{X}_u$, and define the SOS inequality \autoref{eq:putinar2_app} with $h=B$ according to \autoref{cer2_app}. The combination of \autoref{eq:barrier_constraints_app} with \autoref{eq:putinar2_app} is summarized in \autoref{eq:barrier_constraints_putinar} and restated here for convenience:
 \begin{subequations}\label{eq:barrier_constraints_putinar_app}
 \begin{flalign}
 -B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0 \qquad\qquad \rightarrow& 
 	-B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 && \label{cer1_putinar_app}\\
 B(x) &> 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \qquad\qquad \rightarrow& 
 	B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 &&\label{cer2_putinar_app} \\
--L_{f_{cl}}B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \qquad\qquad \rightarrow& 
+-L_{f_{cl}}B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \,\qquad\qquad \rightarrow& 
 	-L_{f_{cl}}B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 && \label{cer3_putinar_app}
 \end{flalign}
 \end{subequations}
-Note that the inequality is on positivity in \autoref{cer2_app} whereas it is on nonnegativity in \autoref{cer2_putinar_app}. This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level.
+%Note that the inequality is on positivity in \autoref{cer2_app} whereas it is on nonnegativity in \autoref{cer2_putinar_app}. This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level.
+With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate, if any certificate exists for the given system $f_{cl}(x)$.
 
 \subsection{Example of Barrier Certificate Search with SOSTOOLS}
 This section presents an elaborate example of a state in $\mathbb{R}$ controlling a 1D first order system robot $x_1$ corresponding to the slide joint being the only degree of freedom. First the system is defined, and a controller is designed with pole placement.
