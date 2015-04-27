@@ -1,16 +1,40 @@
-In this and the following chapters, barrier certificates are attempted to be constructed by use of Putinar's Positivstellensatz \autoref{def:putinar} with the Matlab toolbox SOSTOOLS (see \autoref{app:sostools} for a short introduction to the toolbox). In this chapter the first and second order systems depicted in \autoref{fig:stepresponseslide} are considered, with a static reference on the position.
+In this and the following chapters, barrier certificates are attempted to be constructed by use of Putinar's Positivstellensatz in \autoref{def:putinar} with the Matlab toolbox SOSTOOLS (see \autoref{app:sostools} for a short introduction to the toolbox). In this chapter the first and second order systems depicted in \autoref{fig:stepresponseslide} are considered with a static reference on the position.
 
 
 
 
 \section{Safety Verification of First Order System}
-First a linear open-loop state space system is defined according to the measurement of a step on the robot slide in \autoref{eq:1storder_1D_ss}
+First a linear open-loop state space system is defined according to the measurement of a step on the robot slide, showing a time constant $\tau=110$\,ms, giving the closed-loop system in \autoref{eq:1storder_1D_ss}:
 \begin{equation}
 \dot{x} = Ax+Bu = Ax+B(\bar{N}x_{ref}-Kx) = %-\tau^{-1}x+\tau^{-1}u=
--\tau^{-1}x+\tau^{-1}(\bar{N}x_{ref}-Kx), \qquad\qquad \tau=110\,\text{ms}
+-\tau^{-1}x+\tau^{-1}(\bar{N}x_{ref}-Kx)
 \label{eq:1D_1storder}
 \end{equation} 
-and a controller $K$ is found according to pole placement as described in \autoref{sec:K_Nbar_1D_1storder}, i.e. for the first order 1D system in \autoref{eq:1D_1storder} a controller that is 10 times faster than the system will be $K=9$.
+which can be recast as the augmented state-space system
+\begin{equation}
+\dot{x}=
+\dot{\begin{bmatrix}
+	x_1\\x_{ref}
+	\end{bmatrix}} =
+\begin{bmatrix}
+A-BK&B\bar{N}\\0&0
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_{ref}
+\end{bmatrix}
+= f_{cl}(x)
+\end{equation}
+with no dynamics on the reference. A controller $K$ is found according to pole placement as described in \autoref{sec:K_Nbar_1D_1storder}, i.e. for the first order 1D system in \autoref{eq:1D_1storder} a controller that is 10 times faster than the system will be $K=9$. Similarly the system scaling factor $\bar{N}$ is determined according to the method described in \autoref{sec:K_Nbar_1D_1storder} as $\bar{N}=10$.
+The independent state variables are defined and the SOS program initialized as described in \autoref{sec:app_sostools_barrier_search}.
+
+Now the $g_j$ functions in \autoref{eq:barrier_constraints_putinar} are constructed according to \autoref{fig:safe:overview}:
+\begin{itemize}
+%\itemsep-1.3mm
+\itemsep-0.7mm
+\item The set $\mathcal{X}$ is defined by constructing a (second order polynomial) function $g_{1}(x_1)\geq 0 \in [\Lambda_{\text{lim}-},\Lambda_{\text{lim}+}]= [-0.1,0.1]$\,m, delimiting the region of possible robot tool positions, and another function $g_2(x_{ref})\geq 0 \in [\Lambda_{h-}+\Delta,\Lambda_{h+}-\Delta]=[-0.1+\Delta,0.05-\Delta]$\,m, delimiting the region of allowable reference positions 
+\end{itemize}
+
+.\newline 
 
 Now declare the state space variables as \verb|syms| or \verb|pvar|, initialize the SOS program with the system states and write the closed-loop system equation $f_{cl}$ with the symbolic state vector.
 

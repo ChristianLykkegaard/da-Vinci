@@ -157,15 +157,15 @@ q_0 = h - \sum _{j=1}^{m}q_jg_j \label{eq:putinar_sos}
 however, the right-hand expression will always be nonnegative due to the SOS equality. Using the Matlab toolbox SOSTOOLS (see \autoref{app:sostools} for an introduction to the toolbox syntax), it is possible to solve for the unknown $h$ with a number of inequalities: expression $\geq 0$ on each set $\mathbb{K}$. Referring to the requirements for a barrier certificate in \autoref{def:barrier_certificate}, these inequalities can be set up as
 \begin{subequations}\label{eq:barrier_constraints_putinar}
 \begin{flalign}
-	-B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0 \qquad\qquad \rightarrow& 
+	-B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0 \qquad\qquad \longrightarrow& 
 	-B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 && \label{cer1_putinar}\\
-	B(x) &> 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \qquad\qquad \rightarrow& 
-	B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 &&\label{cer2_putinar} \\
-	-L_{f_{cl}}B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \qquad\qquad\, \rightarrow& 
+	B(x) &> 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \qquad\quad\, \overset{B(x) \geq \epsilon > 0}{\longrightarrow}& 
+	B(x)-\epsilon - \sum _{j=1}^{m}q_jg_j &\geq 0 &&\label{cer2_putinar} \\
+	-L_{f_{cl}}B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \qquad\qquad\, \longrightarrow& 
 	-L_{f_{cl}}B(x) - \sum _{j=1}^{m}q_jg_j &\geq 0 && \label{cer3_putinar}
 \end{flalign}
 \end{subequations}
-Note that the inequality is on positivity in \autoref{cer2} whereas it is on nonnegativity in \autoref{cer2_putinar}. This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level. 
+Note that the inequality is on positivity in \autoref{cer2} whereas it is on nonnegativity in \autoref{cer2_putinar}. By introducing an arbitrarily small $\epsilon>0$ the positivity constraint can be cast as the nonnegativity constraint in the (rightmost) SOS inequality of \autoref{cer2_putinar}. %This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level. 
 
 The problem of finding a barrier certificate $B(x)$ with the toolbox SOSTOOLS is now a matter of for each region $\mathcal{X}$, $\mathcal{X}_u$, $\mathcal{X}_0$:
 \vspace*{-2mm}
