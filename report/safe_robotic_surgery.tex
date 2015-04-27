@@ -81,7 +81,7 @@ $\zeta$ is the damping coefficient  & [$\cdot$] \\
 $s$ is the Laplace operator  & [rad/s] 
 \end{longtable}
 \vspace*{-0.2cm}
-The model can unambiguous be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured with the purpose to find $\omega_n$ and $\zeta$:
+The model can unambiguous be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured (conservatively) with the purpose to find $\omega_n$ and $\zeta$:
 \begin{flalign*}
 \omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
@@ -101,7 +101,7 @@ x_1(t) \\ x_2(t)
 0\\\omega_n^2
 \end{bmatrix}u(t) \\
 &\hspace{0.65cm}y(t) = \begin{bmatrix}
-0 & 1
+1 & 0
 \end{bmatrix}\begin{bmatrix}
 x_1(t) \\ x_2(t)
 \end{bmatrix}
@@ -118,12 +118,12 @@ $u(t)$ is the control input  & [$\cdot$]
 Thus:
 \begin{flalign*}
 A = \begin{bmatrix}
--2\zeta \omega_n & -\omega_n^2 \\
-1 & 0 
+0 & 1\\
+-2\zeta \omega_n & -\omega_n^2  
 \end{bmatrix} \kk \wedge \kk B = \begin{bmatrix}
-1 \\ 0
+0 \\ \omega_n^2
 \end{bmatrix} \kk \wedge \kk C = \begin{bmatrix}
-0 & \omega_n^2
+1 & 0
 \end{bmatrix} \kk \wedge \kk D = 0
 \end{flalign*}
 Which completes the second order model.

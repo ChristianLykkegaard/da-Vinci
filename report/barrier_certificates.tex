@@ -1,14 +1,15 @@
 A crucial matter when designing a controller for automated operation of robotic surgery tools is the necessity of guaranteed patient safety. The system has to not only be able to prevent the surgery tool from entering certain regions, e.g. penetrating the wall of the heart or cutting an artery, but to guarantee that this cannot happen under any circumstances.
 
-Casting the controller design problem as an optimization problem with constraints, such as e.g. \gls{mpc}, could in principle guarantee that the tool would not enter a predefined area, but a hard constraint would fail to follow the dynamics of a moving area boundary such as a beating heart.
+Casting the controller design problem as an optimization problem with constraints, such as e.g. \gls{mpc}, could in principle guarantee that the tool would not enter a predefined area. However, most solvers such as the MATLAB plugin \texttt{cvx} requires convexity in the performance function and its constraints to be able to find a global minimum. Furthermore, \gls{mpc} is mostly used in systems with slow dynamics such as thermal systems due to heavy computations and numerous iterations. Additionally, the feasibility of the optimization problem is not very transparent and it is well known that \texttt{cvx} is very likely to crash due to infeasibility.
+%, but a hard constraint would fail to follow the dynamics of a moving area boundary such as a beating heart. 
+
 Another and very elegant and computationally sound approach to the safe controller analysis and design problem is the use of barrier certificates, which provide a formal proof of safe operation \citep{bib:safety}. This chapter describes the requirements for the construction of barrier certificates along with notation used in relation to these.
-
+%
 %dealing with those topics within robotic surgeries feature necessary conditions to guarantee the patient safety and to avert patient trauma .
-
-
-
-
-
+%
+%
+%
+%
 \section{Constraints for a Barrier Certificate}\label{sec:safety-def}
 
 When a barrier certificate can be found for a (closed-loop) dynamical system, the controller is guaranteed to be safe. A general state-space representation of an $n$-dimensional non-linear system is considered:
@@ -62,8 +63,8 @@ Here \gls{phi} denote the trajectory of the system with initial state $x_0\in \m
 \label{def_safety}
 %\end{exa}
 
-\begin{exa}[Barrier Certificate]\label{def:barrier_certificate}	
-A closed-loop system is safe if a barrier certificate can be constructed as a function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following constraints \citep{bib:org_control}:
+\begin{exa}[Barrier Certificate]	
+A closed-loop system is safe if a barrier certificate can be constructed as a function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following constraints and $B(x) \in C^1(\mathcal{X})$ \citep{bib:org_control}:
 \begin{subequations}\label{eq:barrier_constraints}
 \begin{flalign}
 B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0  \label{cer1}\\
