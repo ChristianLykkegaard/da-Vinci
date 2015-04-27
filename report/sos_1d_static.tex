@@ -1,28 +1,22 @@
-First the open-loop state space system is defined, and a controller is found according to pole placement or another preferred method. Now declare the state space variables as \verb|syms| or \verb|pvar|, initialize the SOS program with the system states and write the closed-loop system equation $f_{cl}$ with the symbolic state vector.
+In this and the following chapters, barrier certificates are attempted to be constructed by use of Putinar's Positivstellensatz \autoref{def:putinar} with the Matlab toolbox SOSTOOLS (see \autoref{app:sostools} for a short introduction to the toolbox). In this chapter the first and second order systems depicted in \autoref{fig:stepresponseslide} are considered, with a static reference on the position.
+
+
+
+
+\section{Safety Verification of First Order System}
+First a linear open-loop state space system is defined according to the measurement of a step on the robot slide in \autoref{eq:1storder_1D_ss}
+\begin{equation}
+\dot{x} = Ax+Bu = Ax+B(\bar{N}x_{ref}-Kx) = %-\tau^{-1}x+\tau^{-1}u=
+-\tau^{-1}x+\tau^{-1}(\bar{N}x_{ref}-Kx), \qquad\qquad \tau=110\,\text{ms}
+\label{eq:1D_1storder}
+\end{equation} 
+and a controller $K$ is found according to pole placement as described in \autoref{sec:K_Nbar_1D_1storder}, i.e. for the first order 1D system in \autoref{eq:1D_1storder} a controller that is 10 times faster than the system will be $K=9$.
+
+Now declare the state space variables as \verb|syms| or \verb|pvar|, initialize the SOS program with the system states and write the closed-loop system equation $f_{cl}$ with the symbolic state vector.
 
 For the system defined, make a function $g$ that is positive in the region that will be defined as $\mathcal{X}$ i.e. has its zero level set at the desired border of the region. Make an SOS variable $q$ from a monomial vector in the state variables of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible). Finally declare $B$ as an SOS polynomial with a monomial vector of appropriate degree and set up the SOS inequality according to Putinar's Positivstellensatz in
 
 
-\section{Safety Verification of First Order System}
-\begin{lstlisting}[language=matlab]
-% Define state-space system with x1 = robot position, x2 = heart position, x3 = heart velocity
-tau = 1; % time constant for the robot slide
-a = -1/tau;
-Hz = 1; % frequency of the heart beat
-b = 2*Hz;
-A = [a   0  0; % robot tool position
-0   0  b; % heart surface point position: sine wave
-0 -b   0]; % heart surface point velocity
-B = [1/tau 0 0]';
-C = [1 0 0]; % the output is the robot tool position
-poles = -10; % controller speed
-k = place(A(1,1),B(1,1),poles);
-K = [k 0 0]; % controller for robot tool position
-
-% Reference signal for robot position: the heart position
-Nbar = -inv(C*inv(A-B*K)*B);
-ref = x2 * Nbar;
-\end{lstlisting}
 
 Similarly, the region $\mathcal{X}_u$ can be defined as the surface of the heart, i.e. for the 1D case the robot tool is in the unsafe region if it is below the surface of the heart (if $x_2>x_1$), using the inequality on $B(x)$ in \autoref{cer2_app}.
 %Additionally a physical amplitude constraint for the heart of 2\,cm is included in the definition of $\mathcal{X}_u$.
@@ -31,3 +25,4 @@ And finally the region $\mathcal{X}_0$ is defined as an area above the sine ampl
 \textcolor{red}{Careful, the amplitude of the sine is not anywhere in the equations, maybe there should be a constraint on the maximum value of x2 or x3? where?}
 
 \section{Safety Verification of Second Order System}
+2nd order model in \autoref{eq:2ndorder_1D_ss}, determine K and Nbar in \autoref{sec:K_Nbar_1D_2ndorder} \textcolor{red}{Not written yet}
