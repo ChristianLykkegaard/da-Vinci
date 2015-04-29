@@ -364,6 +364,17 @@ basicstyle=\ttfamily\scriptsize,
 	sensitive=false, morecomment=[l]{\#} % Ingen farver p kommentare
 }
 
+\lstdefinelanguage{xml} {              % Definition af Arduino-language
+	morekeywords={name, type, xyz, rpy, link, lower, upper},
+	keywordstyle=\color[RGB]{120,150,200},classoffset=3, %blue
+	morekeywords={joint, origin, parent, child, axis, limit},
+	keywordstyle=\color[RGB]{120,200,120},classoffset=3, %green
+	%   sensitive=false, morecomment=[l]{\%}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
+	comment=[l][\color{matlab-color}]{\%},%morecomment=[s]{'}{'} % Ingen farver p kommentare
+	%	 morecomment=[s][\color{matlab-color2}]{'}{'}
+	%	keywordstyle=\color[RGB]{34,139,34},classoffset=3,
+}
+
 % Eksempler
 \usepackage{framed}%
 %%\usepackage{amsmath}

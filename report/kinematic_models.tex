@@ -35,9 +35,9 @@ A sequence of rotations, transforming the vector $^cv$ given in the $\Psi_c$ fra
 \end{equation}
 
 The translation of the origin from the coordinate system $\Psi_a$ to $\Psi_b$ can be described by the position vector $^a_bp$, which is a vector given in the $\Psi_a$ coordinate frame.
-The relative configuration of two coordinate frames is their relative position and orientation, which can be expressed expressed by a homogeneous matrix
+The relative configuration of two coordinate frames is their relative position and orientation, which can be expressed expressed by a homogeneous transformation matrix
 \begin{equation}
-^a_bH = 
+^a_bT = 
 \begin{bmatrix}
 ^a_bR & ^a_bp\\
 0 & 1
@@ -45,7 +45,7 @@ The relative configuration of two coordinate frames is their relative position a
 \end{equation}
 The inverse of a configuration matrix is
 \begin{equation}
-^a_bH^{-1} = 
+^a_bT^{-1} = 
 \begin{bmatrix}
 ^a_bR^T & -^a_bR^T\,\,^a_bp\\
 0 & 1
@@ -53,13 +53,13 @@ The inverse of a configuration matrix is
 \end{equation}
 A sequence of configurations is implemented as
 \begin{equation}
-^a_nH =\,\, ^a_bH \,\, ^b_cH \,\,...\,\, ^m_nH = 
+^a_nT =\,\, ^a_bT \,\, ^b_cT \,\,...\,\, ^m_nT = 
 \begin{bmatrix}
 ^a_bR \,\, ^b_cR \,\,...\,\, ^l_mR \,\,^m_nR & ^a_bp + ^a_bR \,\, ^b_cp + ... + (^a_bR\,\, ^b_cR \,\,...\,\, ^l_mR \,\, ^m_np )\\
 0 & 1
 \end{bmatrix}
 \end{equation}
-where each matrix $H$ is a function of a rotation angle $\theta$ and a translation distance, which may be functions of time.
+where each matrix $T$ is a function of a rotation angle $\theta$ and a translation distance, which may be functions of time.
 
 
 \section{Existing Kinematics for the AAU da Vinci Robot}
@@ -109,7 +109,7 @@ The position and orientation of the $i$th coordinate frame is given as a transfo
 
 I.e. according to \autoref{tab:xacro_param}, the transformation between frame 1 and 2 is given as:
 \begin{equation}
-^1_2H = 
+^1_2T = 
 \begin{bmatrix}
 R_z(\pi/2)R_x(\pi)R_z(\theta_2^*) & p_2\\
 0 & 1
@@ -344,7 +344,7 @@ Using this convention, all transformations between frames can be written on the 
 \begin{equation}
 \hspace*{-2mm}
 \small
-^{i-1}_i H = %H_{rot\,z,\theta_i} H_{trans\,z,d_i} H_{trans\,x,a_i} H_{rot\,x,\alpha_i} =
+^{i-1}_i T = %T_{rot\,z,\theta_i} T_{trans\,z,d_i} T_{trans\,x,a_i} T_{rot\,x,\alpha_i} =
 \begin{bmatrix}
 R_z(\theta_i) & \begin{bmatrix}0\\ 0\\ d_i\end{bmatrix}\\
 0 & 1
@@ -512,5 +512,113 @@ $|\,^0_{14} p|$ & 216.08 & 207
 %%% STATE5
 
 
-\section{Defining da Vinci Kinematics for Active Joints}
-As the kinematics described via the \texttt{xacro} files implement translations first, and then RPY rotations (extrinsic roll pitch yaw rotation)
+\section{Defining da Vinci Kinematics for Active Joints}\label{sec:app_activejoints_kinematics}
+As the kinematics described via the \texttt{xacro} files implement translations first, and then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation), the DH convention cannot be implemented directly in the robot kinematics through the joint description in the \texttt{xacro} files. Furthermore, the convention here is that each frame (joint) is fixed in its child link, and not in its parent link as in the DH convention.
+
+A compromise is made, defining a new set of frames for the \texttt{xacro} kinematics, adhering to the \gls{dh} constraint that each free rotation/translation is about/along the local $z$-axis. Furthermore, for convenience of the inverse kinematics solver, the two passive joints mimicking the hand pitch movement are removed from the kinematic chain, also removing a series of links (marked with grey in \autoref{fig:p4_hand_compromise_frames}). For convenience of placing the hand roll and pitch frames in the pivot point, a virtual link is inserted in the \texttt{xacro} file after each of these two joints. 
+
+Transformation matrices describing the kinematics of the \texttt{xacro} files are written on the form
+\begin{equation}
+\hspace*{-2mm}
+\small
+^{i-1}_i T =
+\begin{bmatrix}
+R_z(\text{yaw})R_y(\text{pitch})R_x(\text{roll}) & \begin{bmatrix}a_i\\ b_i\\ d_i\end{bmatrix}\\
+0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+R_z(\theta_i^*) & \begin{bmatrix}0\\ 0\\ d_i^* \end{bmatrix}\\
+0 & 1
+\end{bmatrix}
+\label{eq:xacro_transformation}
+\end{equation}
+where the transformation described in $^{i-1}_i T$ is implemented in joint $i$ in the \texttt{xacro} file  as (for joint 8)
+\begin{lstlisting}[language=xml]
+  <joint name="p4_hand_pitch"  type="revolute">
+  <origin
+  		xyz="0 0 0"
+  		rpy="1.5708 0 0" />
+  <parent link="rcm_vitual0" />
+  <child link="rcm_vitual1" />
+  <axis xyz="0 0 1" />
+  ...
+  </joint>
+\end{lstlisting}
+The measures for all translations and rotations are displayed in \autoref{tab:compromise_param}.
+
+\vspace{2mm}
+\begin{table}[htbp]
+\small
+\centering
+\begin{tabular}{r | rrr | ccc | c l}\hline
+ & \multicolumn{3}{c|}{fixed translation  [m]} & \multicolumn{3}{c|}{fixed rotation [rad]} & freedom & \\
+frame  & $a$ ($x$)  & $b$ ($y$)  & $d$ ($z$)  & roll  & pitch & yaw & $\theta^*$ or $d^*$ & joint name\\\hline
+1 & 0 & 0 & 0.998 & 0 & 0 & 0 & $d_1^*$ & \texttt{elevation}\\
+2 & 0.198 & 0 & 0 & 0 & 0 & 0 & $\theta_2^*$ & \texttt{arm\_yaw1} \\
+3 & 0.582 & 0 & 0 & 0 & 0 & 0 & $\theta_3^*$ & \texttt{arm\_yaw2} \\
+4 & 0.435 & 0 & 0 & 0 & 0 & 0 & $\theta_4^*$ & \texttt{arm\_yaw3} \\
+5 & 0 & 0 & 0 & 0 & $\pi/2$ & 0 & $\theta_5^*$ & \texttt{arm\_roll1} \\
+6 & 0 & 0 & 0.412 & 0 & $-\pi/2$ & 0 & $\theta_6^*$ & \texttt{arm\_yaw4} \\
+7 & 0.482 & 0 & 0.047 & 0 & $\pi/2$ & 0 & $\theta_7^*$ & \texttt{hand\_roll} \\
+8 & 0 & 0 & 0 & $\pi/2$ & 0 & 0 & $\theta_8^*$ & \texttt{hand\_pitch} \\
+9 & 0.097 & 0 & 0 & 0 & $-\pi/2$ &  0 & $d_9^*$ & \texttt{instrument\_slide} \\
+10 & 0 & 0 & 0 & 0 & 0 & 0 & $\theta_{10}^*$ & \texttt{instrument\_roll} \\
+11 & 0 & 0 & 0 & 0 & $\pi/2$ & 0 & $\theta_{11}^*$ & \texttt{instrument\_pitch} \\
+12L & 0.009 & 0 & 0 & $-\pi/2$ & 0 & 0 & $\theta_{12L}^*$ & \texttt{instrument\_jaw\_left} \\
+12R & 0.009 & 0 & 0 & $-\pi/2$ & 0 & 0 & $\theta_{12R}^*$ & \texttt{instrument\_jaw\_right} \\
+	\end{tabular}
+	\caption{Fixed translations and rotations implemented via \texttt{xacro} as described in \autoref{eq:xacro_transformation}, followed by a free rotation or translation about the (new) $z$-axis.}
+	\label{tab:compromise_param}
+\end{table}
+
+
+
+\begin{figure}[htbp]
+	\vspace*{-10mm}
+	\hspace{-10mm}
+	\subbottom[Coordinate frames for the joints on the robot arm.]{\includegraphics[width=1.1\textwidth]{p4_arm_compromise_frames.pdf}\label{fig:p4_arm_compromise_frames}}%
+	\vspace{5mm}\\
+	\hspace*{-15mm}
+	\subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.15\textwidth]{p4_hand_compromise_frames.pdf}\label{fig:p4_hand_compromise_frames}}%
+	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{12}$ defined according to the compromise between the \gls{dh} convention and the \texttt{xacro} convention.}
+	\label{fig:robot_compromise_frames}
+\end{figure}
+
+\subsection{Testing Active Joint Kinematics in Matlab}
+As for the previous sets of coordinate frames, the transformations are tested in Matlab to check the conformity with the two other kinematic chains.
+
+\begin{lstlisting}[language=matlab]
+%% Coordinate frames defined as a compromise between DH and the xacro syntax, excluding passive joints
+% parameters: distances [m], and rotations [rad]
+a = [0 0.198 0.582 0.435 0 0 0.482 0 0.097 0 0 0.009 0.009];
+d = [0.998 0 0 0 0 0.412 0.047 0 0 0 0 0 0];
+roll = [0 0 0 0 0 0 0 pi/2 0 0 0 -pi/2 -pi/2];
+pitch = [0 0 0 0 pi/2 -pi/2 pi/2 0 -pi/2 0 pi/2 0 0];
+
+% Variables (signs are included as long as state comes from old frame convention)
+d_free = [d1 0 0 0 0 0 0 0 -d11 0 0 0 0];
+theta_free = [0 -th2 -th3 -th4 -th5 th6 th7 th8 0 th12 -th13 th14L -th14R];
+
+% Transformation matrices (forward kinematics)
+for i = 1:length(a)
+	fixed = [rot(2,pitch(i))*rot(1,roll(i)) [a(i) 0 d(i)]'; zeros(1,3) 1];
+	free = [rot(3,theta_free(i)) [0 0 d_free(i)]'; zeros(1,3) 1];
+	Trans(:,:,i) = fixed*free;
+end
+\end{lstlisting}
+
+The new frame transformations result in a set of calculated distances corresponding relatively well to the measured distances, as seen in \autoref{tab:compromise_distances}.
+
+\begin{table}[htbp]
+	\centering
+\begin{tabular}{l | r r r r}\hline
+state as in & table \ref{tab:state0} & table \ref{tab:state5} & table \ref{tab:state6} & table \ref{tab:state7}\\\hline
+calculated distance & 2.31\,m & 2.38\,m & 1.85\,m & 2.17\,m\\
+measured distance & 2.29\,m & 2.41\,m & 1.89\,m & 2.07\,m\\
+\end{tabular}
+\caption{Calculated and measured distances between origin of the inertial and the tool tip frames, when using the the active joint kinematics for the calculations.}
+\label{tab:compromise_distances}
+\end{table}
+
+
+
