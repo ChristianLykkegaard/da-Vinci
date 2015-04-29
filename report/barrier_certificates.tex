@@ -64,7 +64,7 @@ Here \gls{phi} denote the trajectory of the system with initial state $x_0\in \m
 %\end{exa}
 
 \begin{exa}[Barrier Certificate]\label{def:barrier_certificate}	
-A closed-loop system is safe if a barrier certificate can be constructed as a function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following constraints and $B(x) \in C^1(\mathcal{X})$ \citep{bib:org_control}:
+A closed-loop system is safe if a barrier certificate can be constructed as a function $B(x):\mathcal{X} \rightarrow \mathbb{R}$, $B(x) \in C^1(\mathcal{X})$ adhering to the following constraints  \citep{bib:org_control,bib:barrier_prajna}:
 \begin{subequations}\label{eq:barrier_constraints}
 \begin{flalign}
 B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0  \label{cer1}\\
@@ -85,7 +85,7 @@ L_fB(x) \hspace*{-2mm}&= \tfrac{\partial B(x)}{\partial x} f(x) \hspace*{-2mm}&=
 
 From \autoref{eq:barrier_constraints} it can be seen that the function $B(x)$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(x)/dx$ must have the opposite sign of the state derivative $dx/dt$ for any state within the region $\mathcal{X}$ where $B(x)$ is defined. Furthermore from \autoref{eq:dBdt_dVdt} it is deduced that a controller incorporating the barrier certificate in its design will ensure stability if $B(x)$ has a finite minimum value (for $\mathcal{X}=\mathbb{R}^n$ this entails that $B(x)\rightarrow \infty$ for $x\rightarrow \pm\infty$).
 
-Two approaches are used in the following: in \autoref{chap:cbf} the barrier certificate is constructed by hand, and a guaranteed safe controller is designed according to the method in \citep{bib:org_control} and used in combination with a standard state space controller, while in \autoref{chap:putinar} a standard state space controller is designed and its safety is then validated by the construction of a barrier certificate using Putinar's Positivstellensatz.
+Two approaches are used in the following: in \autoref{chap:cbf} the barrier certificate is constructed by hand, and a guaranteed safe controller is designed according to the method in \citep{bib:org_control} and used in combination with a standard state space controller, while in \autoref{chap:putinar} a standard state space controller is designed and its safety is then validated by the construction of a barrier certificate using Putinar's Positivstellensatz according to \citep{bib:sos_putinar_lasserre}.
 
 
 

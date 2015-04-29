@@ -42,7 +42,14 @@
 \part[Safe Controller Design from Control Barrier Functions]{Safe Controller Design from \\Control Barrier Functions}\chaptermark{Safe Controller Design from Control Barrier Functions}\label{part:cbf}
 \chapter{Controller Design from CBFs}\label{chap:cbf}
 	\input{safe_robotic_surgery}
+\chapter{1D System with Static Boundaries}
 
+\chapter{1D System with Dynamic Boundaries}
+\input{cbf_1d_dynamic}
+\chapter{3D System with Static Boundaries}
+\input{cbf_3d_static}
+\chapter{3D System with Dynamic Boundaries}
+\input{cbf_3d_dynamic}
 
 \part[Controller Safety Verification with Putinar's Positivstellensatz]{Controller Safety Verification with \\Putinar's Positivstellensatz}  % Title in square brackets is what goes in TOC
 \chaptermark{Controller Safety Verification with Putinar's Positivstellensatz} % Running footer, here we do not want a line break
@@ -62,6 +69,8 @@
 \chapter{Conclusion}\label{chap:conclusion}
 \input{conclusion.tex}
 
+\label{totalpage}
+
 \begingroup
 \raggedright
 \clearpage
@@ -72,13 +81,14 @@
 
 \newpage
 
+
 \begin{appendices}
 \appendix
 %\renewcommand{\appendixname}{Appendices}
 \renewcommand{\appendixname}{Appendix}
 \renewcommand{\appendixtocname}{Appendix}
 
-
+\label{appendixbegin}
 
 \chapter{Interfacing da Vinci with ROS}\label{app:ros}
 \input{ros.tex}
@@ -106,4 +116,5 @@
 \section*{$\bullet$ Measurement Files}
 
 \end{appendices}
+\label{appendixend}
 \end{document}

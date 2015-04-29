@@ -186,6 +186,11 @@ section]      %use section level for toc entries
 \appendixtitleon
 
 
+% Enable page count between two labels
+\usepackage{refcount}
+\newcommand{\pagedifference}[2]{%
+\number\numexpr\getpagerefnumber{#2}-\getpagerefnumber{#1}\relax}
+
 
 %  Oversttelse og tegnstning 
 \usepackage{t1enc}											% Hjlper med orddeling ved ,  og .

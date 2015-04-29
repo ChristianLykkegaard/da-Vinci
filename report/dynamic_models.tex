@@ -95,85 +95,85 @@ x_{15} & 0 & x_{16} & 0\\
 The desired position of the robot manipulator can be formulated as the desired transformation (rotation and distance) from the heart (surface point) frame.
 
 
-\section{End-effector Set-Point Generator Based on the Beating Heart Model}
-"The estimated components are then combined to predict future motion of the heart surface. This information, in turn, is used in the design of an explicit controller that stabilizes the relative motion of a surgical tool to a desired distance and orientation with respect to the heart surface."
-
-"We then present a control law that uses the predicted motion to asymptotically stabilize the motion of the surgical tool to a desired distance and orientation with respect to the heart surface."
-
-"To simplify the analysis and allow real-time prediction, we do not take the cause of the motion into consideration, and only consider the kinematics of a local area of interest on the heart surface."
-
-"Fortunately, in this application, we have a reasonably good estimate of the phase and frequency of the two motion components: the respiratory phase and frequency can be obtained from the mechanical ventilator, and the cardiac phase and frequency are detected by an ECG monitor."
-
-"choosing a convenient initial position and orientation for $\Psi_d$, e.g. such that $p^d_h(0)=0$ and $R^0_d(0) = I$
-
-Relative configuration between heart and robot tool $H^h_r$ (with $R^h_r =[r_x, r_y, r_z]$) and error function $J(H^h_r)$
-\begin{equation}
-J(H^h_r) = \underbrace{\tfrac{1}{2}k_p (p^h_r-\Delta r_z)^T(p^h_r-\Delta r_z)}_\text{translational error} + \underbrace{k_x (1-e_x^T r_x) + k_y (1-e_y^T r_y) + k_z (1-e_z^T r_z)}_\text{rotational error}
-\end{equation}
-\begin{tabular}{rl}
-	where &\\
-	$\Delta$ & is the desired relative distance between the tool and the heart\\
-	$E=[e_x,e_y,e_z]$ & is a rotation matrix describing the desired orientation of the tool frame\\
-	$k_p,k_x,k_y,k_z$ & are constant positive parameters\\
-\end{tabular}\\
-
-Then $J$ is equal to zero (has its minimum) only when $p^h_r=\Delta r_z$ (the origin of $\Psi_r$ given in h coordinates is $\Delta$ away from the origin of $\Psi_h$ along the surface normal) and $R^h_r=E$ (frame h and r axes are aligned).
-\begin{align}
-	\dot{J} &= 
-	\begin{bmatrix}
-		k_x \hat{e}_x r_x + k_y \hat{e}_y r_y + k_z \hat{e}_z r_z\\
-		k_p(p^h_r - \Delta r_z)
-	\end{bmatrix}^T
-	\begin{bmatrix}
-		\omega^{h,h}_r \\
-		r^{h,h}_r
-	\end{bmatrix}
-	= (dJ)^T T^{h,h}_r\\
-	\dot{H}^h_r &= 
-	\begin{bmatrix}
-		\hat{\omega}^{h,h}_r r_x & \hat{\omega}^{h,h}_r r_y & \hat{\omega}^{h,h}_r r_z & \hat{\omega}^{h,h}_r p^h_r + v^{h,h}_r\\
-		0 & 0 & 0 & 0
-	\end{bmatrix}\\
-	(\dot{dJ}) &=
-	\begin{bmatrix}
-		-k_x \hat{e}_x \hat{r}_x  - k_y \hat{e}_y \hat{r}_y - k_z \hat{e}_z \hat{r}_z & 0\\
-		-k_p(\hat{p}^h_r - \Delta \hat{r}_z) & k_p I
-	\end{bmatrix}
-	T^{h,h}_r
-\end{align}
-
-The relative velocity of two frames, meaning both the linear and angular velocity, can be concisely expressed as a 4x4 matrix (a twist) $T^{c,a}_b$, that describes the relative velocity of frame b with respect to b expressed in frame c
-\begin{equation}
-T^{c,a}_b = H^c_a \dot{H}^a_b H^b_c
-\end{equation}
-
-"We do not consider specific robot dynamics at this point and only specify the desired inertial acceleration $\dot{T}^{0,0}_r$ of the robot end effector frame $\Psi_r$. Proposed desired acceleration"
-\begin{equation}
-\left(\dot{T}^{0,0}_r\right)_\text{des} = \dot{T}^{0,0}_h - \text{Ad}_{H^0_h} K_1 (\dot{dJ}) + \text{ad}_{T^{0,0}_h} T^{0,h}_r - \text{Ad}_{H^0_h} K_2 (T^{h,h}_r + K_1 dJ)
-\end{equation}
-\begin{tabular}{rl}
-	where & \\
-	$K1, K_2$ & are symmetric and positive definite matrices\\
-	$H^0_h$ & is the estimated configuration of the frame $\Psi_h$ at the area of interest on the heart surface\\
-	$T^{0,0}_h$ & is the estimated velocity of the frame $\Psi_h$ at the area of interest on the heart surface\\
-	$\dot{T}^{0,0}_h$ & is the estimated acceleration of the frame $\Psi_h$ at the area of interest on the heart surface\\
-\end{tabular}\\
-
-This controller drives $T^{h,h}_r$ to $-K_1dJ$ by the gain $K_2$, along the steepest descend of $J$. Asymptotic stability at $J=0$, with Lyapunov function
-\begin{equation}
-V=\kappa_1 J + \tfrac{1}{2} (T^{h,h}_r + K_1dJ)^T K_2^{-1}(T^{h,h}_r + K_1dJ)
-\end{equation}
-\begin{tabular}{rl}
-	where & \\
-	$\kappa_1$ & is a positive constant strictly less than 4 times the smallest singular value of $K_1$, $0<\kappa_1 <4\sigma_\text{min}(K_1)$
-\end{tabular}
-
-Assuming the robot achieves perfect tracking of $\left(\dot{T}^{0,0}_r\right)_\text{des}$, the time derivative of $V$ along the system trajectories is
-\begin{equation}
-\dot{V} = -\left(T^{h,h}_r + (K_1 - \tfrac{\kappa_1}{2}I)dJ\right)^T \left(T^{h,h}_r + (K_1 - \tfrac{\kappa_1}{2}I)dJ\right) - \kappa_1(dJ ^T(K_1 - \tfrac{\kappa_1}{4}I)dJ
-\end{equation}
-\begin{tabular}{rl}
-	where & \\
-	$I$ & is the identity matrix\\
-	$K_1 - \tfrac{\kappa_1}{4}$ & is strictly positive because of the choice of $\kappa_1$\\
-\end{tabular}
+%\section{End-effector Set-Point Generator Based on the Beating Heart Model}
+%"The estimated components are then combined to predict future motion of the heart surface. This information, in turn, is used in the design of an explicit controller that stabilizes the relative motion of a surgical tool to a desired distance and orientation with respect to the heart surface."
+%
+%"We then present a control law that uses the predicted motion to asymptotically stabilize the motion of the surgical tool to a desired distance and orientation with respect to the heart surface."
+%
+%"To simplify the analysis and allow real-time prediction, we do not take the cause of the motion into consideration, and only consider the kinematics of a local area of interest on the heart surface."
+%
+%"Fortunately, in this application, we have a reasonably good estimate of the phase and frequency of the two motion components: the respiratory phase and frequency can be obtained from the mechanical ventilator, and the cardiac phase and frequency are detected by an ECG monitor."
+%
+%"choosing a convenient initial position and orientation for $\Psi_d$, e.g. such that $p^d_h(0)=0$ and $R^0_d(0) = I$
+%
+%Relative configuration between heart and robot tool $H^h_r$ (with $R^h_r =[r_x, r_y, r_z]$) and error function $J(H^h_r)$
+%\begin{equation}
+%J(H^h_r) = \underbrace{\tfrac{1}{2}k_p (p^h_r-\Delta r_z)^T(p^h_r-\Delta r_z)}_\text{translational error} + \underbrace{k_x (1-e_x^T r_x) + k_y (1-e_y^T r_y) + k_z (1-e_z^T r_z)}_\text{rotational error}
+%\end{equation}
+%\begin{tabular}{rl}
+%	where &\\
+%	$\Delta$ & is the desired relative distance between the tool and the heart\\
+%	$E=[e_x,e_y,e_z]$ & is a rotation matrix describing the desired orientation of the tool frame\\
+%	$k_p,k_x,k_y,k_z$ & are constant positive parameters\\
+%\end{tabular}\\
+%
+%Then $J$ is equal to zero (has its minimum) only when $p^h_r=\Delta r_z$ (the origin of $\Psi_r$ given in h coordinates is $\Delta$ away from the origin of $\Psi_h$ along the surface normal) and $R^h_r=E$ (frame h and r axes are aligned).
+%\begin{align}
+%	\dot{J} &= 
+%	\begin{bmatrix}
+%		k_x \hat{e}_x r_x + k_y \hat{e}_y r_y + k_z \hat{e}_z r_z\\
+%		k_p(p^h_r - \Delta r_z)
+%	\end{bmatrix}^T
+%	\begin{bmatrix}
+%		\omega^{h,h}_r \\
+%		r^{h,h}_r
+%	\end{bmatrix}
+%	= (dJ)^T T^{h,h}_r\\
+%	\dot{H}^h_r &= 
+%	\begin{bmatrix}
+%		\hat{\omega}^{h,h}_r r_x & \hat{\omega}^{h,h}_r r_y & \hat{\omega}^{h,h}_r r_z & \hat{\omega}^{h,h}_r p^h_r + v^{h,h}_r\\
+%		0 & 0 & 0 & 0
+%	\end{bmatrix}\\
+%	(\dot{dJ}) &=
+%	\begin{bmatrix}
+%		-k_x \hat{e}_x \hat{r}_x  - k_y \hat{e}_y \hat{r}_y - k_z \hat{e}_z \hat{r}_z & 0\\
+%		-k_p(\hat{p}^h_r - \Delta \hat{r}_z) & k_p I
+%	\end{bmatrix}
+%	T^{h,h}_r
+%\end{align}
+%
+%The relative velocity of two frames, meaning both the linear and angular velocity, can be concisely expressed as a 4x4 matrix (a twist) $T^{c,a}_b$, that describes the relative velocity of frame b with respect to b expressed in frame c
+%\begin{equation}
+%T^{c,a}_b = H^c_a \dot{H}^a_b H^b_c
+%\end{equation}
+%
+%"We do not consider specific robot dynamics at this point and only specify the desired inertial acceleration $\dot{T}^{0,0}_r$ of the robot end effector frame $\Psi_r$. Proposed desired acceleration"
+%\begin{equation}
+%\left(\dot{T}^{0,0}_r\right)_\text{des} = \dot{T}^{0,0}_h - \text{Ad}_{H^0_h} K_1 (\dot{dJ}) + \text{ad}_{T^{0,0}_h} T^{0,h}_r - \text{Ad}_{H^0_h} K_2 (T^{h,h}_r + K_1 dJ)
+%\end{equation}
+%\begin{tabular}{rl}
+%	where & \\
+%	$K1, K_2$ & are symmetric and positive definite matrices\\
+%	$H^0_h$ & is the estimated configuration of the frame $\Psi_h$ at the area of interest on the heart surface\\
+%	$T^{0,0}_h$ & is the estimated velocity of the frame $\Psi_h$ at the area of interest on the heart surface\\
+%	$\dot{T}^{0,0}_h$ & is the estimated acceleration of the frame $\Psi_h$ at the area of interest on the heart surface\\
+%\end{tabular}\\
+%
+%This controller drives $T^{h,h}_r$ to $-K_1dJ$ by the gain $K_2$, along the steepest descend of $J$. Asymptotic stability at $J=0$, with Lyapunov function
+%\begin{equation}
+%V=\kappa_1 J + \tfrac{1}{2} (T^{h,h}_r + K_1dJ)^T K_2^{-1}(T^{h,h}_r + K_1dJ)
+%\end{equation}
+%\begin{tabular}{rl}
+%	where & \\
+%	$\kappa_1$ & is a positive constant strictly less than 4 times the smallest singular value of $K_1$, $0<\kappa_1 <4\sigma_\text{min}(K_1)$
+%\end{tabular}
+%
+%Assuming the robot achieves perfect tracking of $\left(\dot{T}^{0,0}_r\right)_\text{des}$, the time derivative of $V$ along the system trajectories is
+%\begin{equation}
+%\dot{V} = -\left(T^{h,h}_r + (K_1 - \tfrac{\kappa_1}{2}I)dJ\right)^T \left(T^{h,h}_r + (K_1 - \tfrac{\kappa_1}{2}I)dJ\right) - \kappa_1(dJ ^T(K_1 - \tfrac{\kappa_1}{4}I)dJ
+%\end{equation}
+%\begin{tabular}{rl}
+%	where & \\
+%	$I$ & is the identity matrix\\
+%	$K_1 - \tfrac{\kappa_1}{4}$ & is strictly positive because of the choice of $\kappa_1$\\
+%\end{tabular}
