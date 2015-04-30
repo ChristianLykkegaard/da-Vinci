@@ -219,7 +219,56 @@ x_1 \\ x_2
 &= \dfrac{\partial B(x_1)}{\partial x_1} x_1 - \dfrac{\partial B(x_1)}{\partial x_2}2\zeta \omega_n x_1 - \dfrac{\partial B(x_1)}{\partial x_2} \omega_n^2 x_2 \\
 &= 2ax_1x_2 - x_2
 \end{flalign*}
-Note that the velocity appears in both terms. As the velocity can be both decreasing and increasing for all positions, this demand is impossible to fulfil with the chosen barrier function and therefore invalid. A solution can be to include the velocity in the barrier function. 
+Note that the velocity appears in both terms. As the velocity can be both decreasing and increasing for all positions, this demand is impossible to fulfil with the chosen barrier function and therefore invalid. A solution may be to include the velocity in the barrier function. 
+
+Consider the elliptic paraboloid as \gls{cbf}:
+\begin{flalign*}
+B(x_1,x_2) =  \left( \dfrac{(x_1-x_{10})^2}{a^2} + \dfrac{(x_2-x_{20})^2}{b^2} \right) c_1 + c_2
+\end{flalign*}
+The elliptic paraboloid allows constraints in both position and velocity. Safety constraints in velocity are not of any significant importance as such, but they are necessary for $L_gB(x_1,x_2)$ such that it can obtain values different than zero. The Lie derivatives can be calculated as:
+\begin{flalign*}
+L_gB(x_1,x_2) &= \dfrac{\partial B(x_1,x_2)}{\partial x} \cdot \textbf{B} = \begin{bmatrix}
+\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_1}
+\end{bmatrix}  \begin{bmatrix}
+0 \\ \omega_n^2
+\end{bmatrix} \\
+ &= \begin{bmatrix}
+ \dfrac{c(2x_1 + 2x_{10})}{a^2} &  \dfrac{c(2x_2 + 2x_{20})}{b^2}
+\end{bmatrix}  \begin{bmatrix}
+0 \\ \omega_n^2
+\end{bmatrix} = 
+\dfrac{c\omega_n^2(2x_2+2x_{20})}{b^2} \Bigm|_{x_{20}=0} \\
+&= \dfrac{2c\omega_n^2 x_2}{b^2}
+\end{flalign*}
+It is seen that $L_gB(x_1,x_2) \neq 0 \mm \forall x_2 \neq 0$. $L_fB(x_1,x_2)$ is for that reason analysed:
+\begin{flalign*}
+L_fB(x_1,x_2) &= 
+\dfrac{\partial B(x_1,x_2)}{\partial x} f(x)\Big|_{f(x) = \textbf{Ax}} = \begin{bmatrix}
+\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_1}
+\end{bmatrix} \begin{bmatrix}
+0 & 1 \\
+-\omega_n^2 & -2 \zeta \omega_n
+\end{bmatrix} \begin{bmatrix}
+x_1 \\ x_2
+\end{bmatrix} \\
+&= \begin{bmatrix}
+ \dfrac{c(2x_1 + 2x_{10})}{a^2} &  \dfrac{c(2x_2 + 2x_{20})}{b^2}
+\end{bmatrix} \begin{bmatrix}
+x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
+\end{bmatrix} \\
+&= \dfrac{cx_2(2x_1+2x_{10})}{a^2} - c(2x_2-2x_{20})\dfrac{(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \Big|_{x_{20} = 0} \\
+&= x_2 \left( \dfrac{c(2x_1+2x_{10})}{a^2} - \dfrac{2c(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \right)
+\end{flalign*}
+It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_o(x)=0$ which indeed will force the slide movement to its origin and $x_2 \neq 0$ again. For that reason, the \gls{cbf} from ?? is accepted. It is, however, important to keep in mind that this is a dangerous decision.
+
+The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}.
+\begin{figure}[H]
+\center
+	\includegraphics[scale=0.60]{cbf_2d.eps}
+	\caption{CBF for the second order system model. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_cbf\_2d/plot\_cbf\_2d.m}}
+	\label{fig:barrierfunction_2d}
+\end{figure}
+
 \section{Controller Design}
 A control law is now introduced:
 \begin{flalign*}
