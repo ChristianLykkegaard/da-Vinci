@@ -1,30 +1,39 @@
-\newgeometry{left=4.5cm,top=-0.5cm,bottom=2cm,textheight=28cm,includefoot,textwidth=16cm}
+%\newgeometry{left=4.5cm,top=-0.5cm,bottom=2cm,textheight=28cm,includefoot,textwidth=16cm}
 \chapter*{Preface}
-\vspace{-0.5cm}
-The level is a 4$^\text{th}$ semester project rated at 30 ECTS-points within the graduate program in Control and Automation at Aalborg University.
+%\vspace{-0.5cm}
+This report documents the development process of a safe controller for automation of a surgical robot arm with patient safety guaranteed through barrier certificates. %, preventing the robot tool from entering predefined unsafe regions. 
+The access to robot measurement data and opportunity to implement a controller heavily benefits from the previous work carried out on the da Vinci surgical robot in the Control Laboratory at Aalborg University.
+The project is rated at 30 ECTS-points, and the work is conducted by the 4$^\text{th}$ semester group 1032 within the graduate program in Control and Automation at Aalborg University during the spring of 2015.
 
-The target group is supervisors, students and other interested parties at the School of Information and Communication Technology at the The Faculty of Engineering and Science.
+
+%The target group is supervisors, students and other interested parties at the School of Information and Communication Technology at the The Faculty of Engineering and Science.
 
 
-\subsubsection{Reading Guide}
-%\vspace{-0.3cm}
-%The project is structured in three major parts where different aspects of the project is considered in each: 
-%%\vspace{-0.4cm}
-%\begin{itemize}
-%\item \ref{part:part1} System Analysis
-%\item \ref{part:part2} Controller Design
-%\item \ref{part:part3} Discussion 
-%\end{itemize}
+\section*{Reading Guide}
+\vspace*{-2mm}
+The primary focus of this report is to design a controller and a barrier certificate, the certificate guaranteeing the safe control of a surgical robot, as an approach to draw closer to the possibility of implementing automated control tasks by surgical robots. 
+%Controllers and certificates are designed for static as well as dynamic boundaries of unsafe regions, such as e.g. a beating heart.
+After an introduction into surgical robotics and the definition of barrier certificates, the report is structured in three parts, describing two approaches to the design problem and a conclusion to the work
+\vspace*{-2mm}
+\begin{itemize}
+\itemsep-1.4mm
+\item \autoref{part:cbf} Explicit approach: A barrier certificate is constructed and a safe controller is designed according to the method described in \citep{bib:org_control}.
+\item \autoref{part:putinar} Analytic approach: A controller is designed, criteria are constructed for a barrier certificate and  safety is verified by use of Putinar's Positivstellensatz.
+\item \autoref{part:closure} Discussion 
+\end{itemize}
 %\vspace{-0.2cm}
-The System Analysis will be dealing with the basic understanding of the problem and model development and  contains thereby the fundamental necessities used to state a requirement specification, which in the end results in guidelines and instructions for the controller design. The controller design contains design considerations and solutions to the issues discussed. Finally, the discussion part contains a summary, discussion and reflection regarding the obtained solutions.
 
-A Symbol- and Acronym list, which features all acronyms used in the report, is found in the very beginning of the report. In the very end of the main report a bibliography is listed which likewise contains all references used in the report. Books are indicated with author, title, publisher, year and ISBN. Web pages are indicated with author, title and year.
+Symbols, acronyms and a glossary are presented in the nomenclature before the main report.
+A variant of the Harvard referencing is used for citations, with the author and publication year of the source given in square brackets, e.g. [Lasserre 78], and sources listed in the bibliography at the end of the main report. % contains all references used in the report. Books are indicated with author, title, publisher, year and ISBN. Web pages are indicated with author, title and year.
+%Chapters in the main report are numerally numbered while appendices are alphabetically numbered.
+A comprehensive appendix is included after the bibliography, containing introductions to the used software, detailed derivations, measurement logs and source code.
+A digital copy of this report along with cited references, source code and simulation results can be found on the enclosed CD.
 
-Appendices are found after the main report and on an attached CD. The appendices include detailed derivations, source code, a digital version of the report and other materials which are not important for the understanding of the objective of the report.
+%\vspace{-0.5cm}
+\section*{Acknowledgements}
+\vspace*{-2mm}
+The authors wish to thank electronics technologist Simon Jensen for a thorough introduction to the custom made AAU da Vinci hardware and design of a dynamic heart phantom platform; Ph.D. Tobias Leth for guidance in reference frame construction for robot kinematics; and not least Ph.D. Karl Damkj\ae r Hansen for an introduction to the AAU da Vinci robot operative system and help in implementing inverse kinematics.
 
-All figures, tables and equations are referred to by the index of the appropriate chapter followed by a number indicating the number of figure, table or equation in the specific chapter. Thereby they have a unique number which is printed along with its caption (equations have no caption though).
-\vspace{-0.5cm}
-\subsubsection{Acknowledgements}
-\vspace{-0.2cm}
-It is the wish of the authors to express a special appreciation to..
-\restoregeometry % efter denne side bruges de indstillinger der er sat i preamble
+%It is the wish of the authors to express a special appreciation to..
+
+%\restoregeometry % efter denne side bruges de indstillinger der er sat i preamble

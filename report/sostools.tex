@@ -36,7 +36,7 @@ When all the necessary SOS variables and polynomials are defined, equalities (ex
 \hspace*{1cm} \texttt{>> prog = soseq(prog,P-S);}\\
 \hspace*{1cm} \texttt{>> prog = sosineq(prog,-diff(P,x1)-S);}
 
-WHen all variables and constraints are input to the program, the solver is called with \texttt{sossolve}, which will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the \texttt{sosgetsol}
+When all variables and constraints are input to the program, the solver is called with \texttt{sossolve}, which will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the \texttt{sosgetsol}
 
 \hspace*{1cm} \texttt{>> prog = sossolve(prog);}\\
 \hspace*{1cm} \texttt{>> getB = sosgetsol(prog,P)}
