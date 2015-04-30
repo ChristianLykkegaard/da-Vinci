@@ -2,13 +2,33 @@ In \gls{mis}, as opposed to traditional open surgery, only small incisions are m
 One type of \gls{mis} is \gls{laparoscopy}, invented in the beginning of the 20th century \citep{bib:laparoscopy}, where thin metal telescopes (laparoscopes) with specialized surgical tools attached are inserted into the patient through trocars, allowing the surgeon to maneuver the tools in the inflated abdomen guided by visual feedback from a flexible miniature camera (\gls{endoscope}) inserted alongside the surgical tools \citep{bib:fascrs}.
 In the 1980s robotic laparoscopic surgery was introduced as a master-slave system, where the surgeon controls a robot arm holding the surgical tools from a master console, instead of manipulating the instruments manually.
 
+\vspace*{3mm}
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.39\textwidth}
+\subbottom[Manual laparoscopic tools.]{\includegraphics[width=\textwidth]{laparoscopic_instruments_manual_red.jpg}\label{fig:laparoscopic_instruments_manual}}%
+\vspace*{3mm}
+\subbottom[Robotic laparoscopic tools.]{\includegraphics[width=\textwidth]{laparoscopy_20150312_134752.jpg}\label{fig:laparoscopy_20150312_134752}}%
+\end{minipage}
+\hspace*{5mm}
+\begin{minipage}{0.258\textwidth}
+\subbottom[Tool in trocar.]{\includegraphics[width=\textwidth]{laparoscope_20150317_111908_red.jpg}\label{fig:laparoscope_20150317_111908}}%
+\end{minipage}
+\hspace*{5mm}
+\begin{minipage}{0.258\textwidth}
+\subbottom[Endoscope.]{\includegraphics[width=\textwidth]{endoscope_20150430_124054.jpg}\label{fig:endoscope_20150430_124054}}%
+\end{minipage}
+\caption{Laparoscopic tools used in surgery.}
+\label{fig:laparoscopy}
+\end{figure}
+
 \section{Highlights in the Development of Surgical Robotics}
 While the idea of roboticized telemedicine dates back to 1925 \citep{bib:telemed_predict}, the development of telesurgery was founded by the \gls{nasa} in the 1970s \citep{bib:telesurg_history} combining research within virtual reality, robotics and medicine \citep{bib:brown_univ}, and the first robotic surgery procedure was accomplished in 1985 \citep{bib:telesurg_history}, followed by the first laparoscopic robotic surgical procedure in 1987 \citep{bib:brown_univ}.
 The major research within telesurgery was funded by \gls{darpa} in the early 1990s, and two main teleoperation systems were developed from this research: da Vinci (from Intuitive Surgical) and Zeus (from Computer Motion) \citep{bib:telesurg_history}.
 
-The first commercially available surgical robot ROBODOC (from Curexo) was introduced and performed the first robotic joint replacement surgery in 1992, and in 1994 the AESOP (from Computer Motion) was the first robotic system approved by the \gls{fda} for general surgery \citep[p 74]{bib:telesurg_history,bib:surgical_book}.
+%The first commercially available surgical robot ROBODOC (from Curexo) was introduced and performed the first robotic joint replacement surgery in 1992, and in 1994 the AESOP (from Computer Motion) was the first robotic system approved by the \gls{fda} for general surgery \citep[p 74]{bib:telesurg_history,bib:surgical_book}.
 
-In the early 1990s the U.S. Army developed \gls{mash} for loading and teleoperating wounded soldiers in vehicular operating rooms \citep{bib:brown_univ}, and in 1993 the idea for a robotic slave manipulator arm was conceived by Madhani after watching an episode of the tv-show M*A*S*H [SurgRob], and he created the Black Falcon during his work at MIT \citep{bib:black_falcon} later becoming he prototype of the da Vinci arms.
+%In the early 1990s the U.S. Army developed \gls{mash} for loading and teleoperating wounded soldiers in vehicular operating rooms \citep{bib:brown_univ}, and in 1993 the idea for a robotic slave manipulator arm was conceived by Madhani after watching an episode of the tv-show M*A*S*H [SurgRob], and he created the Black Falcon during his work at MIT \citep{bib:black_falcon} later becoming he prototype of the da Vinci arms.
 
 In 1996 the first tests were performed demonstrating the successful use of telementoring and telemanipulation of the endoscope by a surgeon placed several 100 m away from the operating room \citep{bib:telesurg_history}. 
 In the late 1990s \gls{nasa} and \gls{darpa} sponsored research within light-weight and deployable space surgical robotics for remote teleoperation, resulting in two main robotic systems: the Raven (from University of Washington) and M7 (from SRI International) [SurgRob].
@@ -53,6 +73,10 @@ Autonomous procedures are still only implemented for entirely pre-planned motion
 Although several FDA approved robotic surgical systems exist, da Vinci is still the only commercially available system \citep{bib:docatadist,bib:intuitive_monopoly}. The first da Vinci prototype was developed at SRI under contract with the U.S. Army in the late 1980s \citep{bib:mddi,bib:brown_univ}, and in the early 1990s \gls{darpa} invested in the research \citep[p 74]{bib:surgical_book}. The the mid 1990s SRI licensed the manipulator design of Madhani along with many other patents, and in 1995 SRI founded Intuitive Surgical and the focus shifted from battlefield to commercial use in hospitals \citep{bib:intuitive_monopoly}.
 In 1997 the first human trials were performed \citep{bib:intuitive_monopoly} %, in 1999 the first market-ready da Vinci began tests [SurgRob] 
 and the system was first approved by the FDA in 2000 \citep{bib:intuitive_monopoly,bib:brown_univ}. From 2000 until the merger in 2003 Intuitive Surgical and Computer Motion had a number of lengthy patent litigations \citep{bib:intuitive_monopoly,bib:telesurg_history}.
+
+
+%\subbottom[The da Vinci surgical robot.]{\includegraphics[width=\textwidth]{robot_base_frame1.jpg}\label{fig:robot_base_frame}}% 
+
 
 The da Vinci Surgical System still has the predominant market share with more than 3000 units installed worldwide due to being the first-mover in the field and due to their many patents \citep{bib:intuitive_monopoly}, and has only had one serious case of a patient dying after surgery (2002) [SurgRob].
 The expiration of their patents in 2015 and 2016 \citep{bib:intuitive_monopoly} shows promise of many other robotic surgery systems entering the market, as both American, Canadian, European and not least Asian similar systems exist that are considerably cheaper than the da Vinci, and also more lightweight.
