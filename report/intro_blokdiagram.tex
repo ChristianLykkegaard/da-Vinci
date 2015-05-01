@@ -1,7 +1,7 @@
 \section{Focus of this Thesis Work}
 A surgery consists of a series of subtasks, some suited for robotized autonomous execution. Prior work in motion planning and control of subtasks for surgical robots include knot tying, suturing and more advanced statistical learning of subtasks from recording surgeon motions \citep{bib:raven_debride,bib:raven_observ}.
 
-This report presents the work on a guaranteed safe end-effector trajectory control, %. As opposed to the safety control by virtual potential field constraints \citep{bib:dlr_miro}, this work utilizes 
+This report presents the work on a guaranteed safe end-effector setpoint control, %. As opposed to the safety control by virtual potential field constraints \citep{bib:dlr_miro}, this work utilizes 
 utilizing the barrier certificate method where the robot is physically prevented from entering unsafe areas thereby guaranteeing safety \citep{bib:safety}. A short overview of the controller is given in \autoref{sec:project_overview}.
 
 The algorithm is tested on a first generation da Vinci surgical robot, detached from its surgeon controller console and modified to be controllable by automated processes. An overview of the system is given in \autoref{sec:technical_overview}.
@@ -20,8 +20,8 @@ The \gls{rio} boards direct the control signals to a cascaded controller taking 
 
 The NI single board \glspl{rio} concurrently handle most safety precautions and enabling/disabling movement of the arm itself (see \autoref{app:links_joints_3d} and \ref{app:kinematic_model_robot} for an overview of the arm and its kinematics, respectively) through solenoids.
 \begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{overview.pdf}	
+\hspace*{-5mm}
+\includegraphics[width=1.1\textwidth]{overview.pdf}	
 \caption{Overview of the custom made hardware and controllers for the 1st generation da Vinci surgical robot located at Aalborg University's department of Control and Automation.}
 \label{fig:overview}
 \end{figure}
@@ -31,13 +31,22 @@ In order to prevent potential violation of physical joint constraints, stricter 
 
 \subsection{Overview of Thesis Contribution to the AAU da Vinci System}\label{sec:project_overview}
 The focus of this thesis is the highest abstraction layer as seen in the top of \autoref{fig:overview}, i.e. the ROS environment. The purpose of this layer primarily constitutes the implementation of algorithms that require heavy processing and non real-time processing or tasks with loose timing constraints \citep{bib:robot_paper}.
-
-The above pool of stipulations essentially and practically entails the following main topics of this thesis:
+This pool of stipulations essentially and practically entails the following main topics of this thesis:
 \begin{itemize}
 \itemsep-1.3mm
-	\item User input in the form of desired final end-effector (position) setpoints.
-	\item Static trajectory planning from current to final position enforcing safety by means of barrier certificates.
-	\item Dynamic setpoint (position) tracking relative to a point on the surface of a beating heart.
+	\item User input in the form of desired final end-effector (position) setpoints
+	\begin{itemize}
+		\vspace*{-1mm}
+		\item in fixed space
+		\item relative to a point on the surface of a beating heart
+	\end{itemize}
+%	\item Static trajectory planning from current to final position enforcing safety by means of barrier certificates.
+	\item Control of setpoint (position) tracking 
+	\begin{itemize}
+		\vspace*{-1mm}
+		\item with static boundaries for safe and unsafe regions, controller safety guaranteed by barrier certificates
+		\item with dynamic boundaries for safe and unsafe regions,  such as the surface of a beating heart, controller safety guaranteed by barrier certificates
+	\end{itemize}
 \end{itemize}
 
 
