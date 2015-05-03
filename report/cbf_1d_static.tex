@@ -79,7 +79,7 @@ The model can unambiguous be approximated from the rise time $t_r$, settling tim
 \begin{flalign*}
 \omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
-\Autoref{eq:2order} can be transferred to state space form: {\color{green}{RAFAL: Giver den mening ifm barriere funktioner!!!!????? Vi bliver n\o dt til at diskutere det lidt. Vi er is\ae r i tvivl om hvad nul er og hvad det betyder at nul er en position, men nul i barriere certifikater virker som v\ae rende noget vi ikke kan kontrollere..}}
+\Autoref{eq:2order} can be transferred to state space form: {\color{green}{RAFAL: Giver den mening ifm barriere funktioner!!!!????? Vi bliver n\o dt til at diskutere det lidt. Vi er is\ae r i tvivl om hvad nul er og hvad det betyder at nul er en position, hvorimod (?) nul i barriere certifikater virker som v\ae rende noget vi ikke kan kontrollere..}}
 \begin{subequations}
 \begin{flalign}
 &Y(s)s^2 + 2\zeta \omega_n Y(s) s + \omega_n^2 Y(s) - \omega_n^2 U(s)  = 0 \\
@@ -180,7 +180,7 @@ The interval where $B(x)$ is invalid can thereby be found from \autoref{eq:inter
 \begin{flalign*}
 B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250,0] \kk \text{if} \mm L_gB(x) = 0
 \end{flalign*}
-This is indifferent as $\{\mathcal{X} \,\bigcap\, [\Lambda_{s-},\Lambda_{s+}]  \} = \emptyset $. \textcolor{red}{No points about whether LgB is zero on the interval? Refer to below note. Ja, det skal strammes lidt op her} Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
+However, this is indifferent as $\{\mathcal{X} \,\bigcap\, [\Lambda_{s-},\Lambda_{s+}]  \} = \emptyset $. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
 \begin{figure}[H]
 \center
 	\includegraphics[scale=0.5]{parabel_1.eps}
@@ -278,7 +278,7 @@ L_gB(x_1,x_2) &= \dfrac{\partial B(x_1,x_2)}{\partial x} \cdot \textbf{B} = \beg
 0 \\ \omega_n^2
 \end{bmatrix} = 
 \dfrac{c\omega_n^2(2x_2+2x_{20})}{b^2} \Bigm|_{x_{20}=0} \\
-&= \dfrac{2c\omega_n^2 x_2}{b^2}
+&= x_2\dfrac{2c\omega_n^2}{b^2}
 \label{eq:LgB_2}
 \end{flalign}
 It is seen that $L_gB(x_1,x_2) \neq 0 \mm \forall \,\,\, x_2 \neq 0$. $L_fB(x_1,x_2)$ is for that reason analysed:
@@ -301,7 +301,7 @@ x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 &= x_2 \left( \dfrac{c(2x_1+2x_{10})}{a^2} - \dfrac{2c(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \right)
 \label{eq:LfB_2}
 \end{flalign}
-It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again. That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. For that reason, the \gls{cbf} from \autoref{eq:cbf2} is accepted. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
+It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again. That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. Lastly, the velocity will never be truly zero due to the finite resolution, i.e. a finite sampling rate. For these reasons, the \gls{cbf} from \autoref{eq:cbf2} is accepted, well aware that the \gls{cbf} is insufficient,. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
 
 The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}.
 \begin{figure}[H]
@@ -381,7 +381,7 @@ The constant feedback matrix, $\bar{N}$, can be computed as \citep{bib:Nbar}:
 \bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 10
 \label{eq:barm_1}
 \end{flalign}
-\subsubsection*{Merged Control Law}
+%\subsubsection*{Merged Control Law}
 With the Lie derivatives computed as:
 \begin{flalign}
 L_fB(x) = -2\tau^{-1}ax^2-\tau^{-1}bx \kk \wedge \kk L_gB(x) = 2ax\tau^{-1} + b\tau^{-1}
@@ -457,12 +457,20 @@ $K$ is found in \autoref{eq:K_2} &
 \end{tcolorbox}
 This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation will be outlined first. 
 \section{MATLAB Results}
-The results based on the implemented controller found in \autoref{app:slide_implement_1} is described and analysed here. {\color{red}{Udskift alle plots med fs = 1 kHz, det ser fint ud}}
+The results shown in this section are based on the implemented controller found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts\_slide\_controller\_slide\_controller.m}. All plots are made with the following characteristics:
+\begin{itemize}
+\item The sampling rate is set to $f_s = 1\,$kHz (Expected long term sampling rate).
+\item The control signal is limited to $\pm 0.1$\,m (actual limit for slide movement).
+\item The velocity is limited to $\pm$1\,m/s (actual limit for slide movement).
+\item The forward euler method is used to extrapolate the states.
+\item The design parameter $\kappa$ from \autoref{eq:control_law} is set to $\kappa=1$ (neutral).
+\item The simulation time is 5\,s. Various setpoints ought to indicate the behaviour in different regions.
+\end{itemize}
 \subsection{MATLAB Results based on 1D Model}
 The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.55]{trajectory_slide.eps}
+		\includegraphics[scale=0.6]{trajectory_slide.eps}
 	\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler with a sampling rate of $1\,$kHz. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position finds its equilibrium at some arbitrary state.}
 	\label{fig:trajectory1}
 \end{figure}
@@ -494,8 +502,8 @@ It is seen from \autoref{fig:control1} how the control signal reacts instantaneo
 All plots shown in this section is based on the MATLAB implementation found in \autoref{app:slide_implement_1} where the \texttt{model} variable in line 7 is set to the number 2. The state trajectory composing slide position based on the second order model is shown in \autoref{fig:traject2}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.65]{trajectory_slide_second_order_model_kappa_1.eps}
-	\caption{}
+		\includegraphics[scale=0.6]{trajectory_slide_second_order_model_kappa_1.eps}
+	\caption{State trajectory for position based on second order system approximation. It is seen how the boundaries are respected at all time regardless of irresponsible/unsafe setpoints. It is seen how $\sigma(x)$ 	increases when setpoints are given in the unsafe area. AS a result, the control law is a linear combination of the safety controller $u(x) = k_0(x)$ and the linear controller by pole-placement $\tilde{u}(x)$.}
 	\label{fig:traject2}
 \end{figure}
 The state trajectory shown in \autoref{fig:traject2} verifies that the slide position does not exceed its limits even when setpoints are given outside the safe region.
@@ -503,20 +511,20 @@ The state trajectory shown in \autoref{fig:traject2} verifies that the slide pos
 The Lie derivatives are plotted in \autoref{fig:lie2}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.65]{Lie_slide_2d.eps}
-	\caption{}
+		\includegraphics[scale=0.6]{Lie_slide_2d.eps}
+	\caption{Lie derivatives. It is seen how $L_gB(x_1,x_2) = 0 \wedge L_fB(x_1,x_2) = 0$ at the same time which in general is critical but accepted in this specific case as it is caused by $x_2=0$ which implies $u(x)=0 \,\,\, \Rightarrow \,\,\, x_1 \rightarrow 0$ which is safe. {\color{green}{RAFAL: Er det noget lort eller hvad?}}.}
 	\label{fig:lie2}
 \end{figure}
 The constrained control signal is plotted in \autoref{fig:control2}
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.65]{control_signal_2.eps}
-	\caption{Er det ok den hopper og danser så meget?}
+		\includegraphics[scale=0.6]{control_signal_2.eps}
+	\caption{Control signal. It is seen how the it fluctuates heavily when $x_1 \in \Delta_t$ due to the position gradient.}
 	\label{fig:control2}
 \end{figure}
+It is from \autoref{fig:control2} noted how the control signal fluctuates heavily. This is because the position gradient (the velocity) changes sign constantly in the unsafe region as the trajectory seeks to go either one or the other way due to the safety controller and the setpoint given outside the safe region.
 
-{\color{green}{Vi mangler at konkludere p\aa \,\,plottene og vise et par stykker mere, men dette er de vigtigste}}
-
+The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outline safe and unsafe regions.
 \section{Implementation on the Da Vinci Robot}
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}
 

@@ -10,7 +10,7 @@ model = 2; % 0 = both, 1 = first order model, 2 = second order model
 %--- parabola coeficients for position constraints ---%
 a = 16/9; b = 4/45; c = -2/225; 
 %--- elliptic paraboloid  coeficients for position constraints ---%
-x10 = 1/40; x20 = 0; a1 = -3/40; b1 = -10; c1 = 1; c2 = -1
+x10 = 1/40; x20 = 0; a1 = -3/40; b1 = -10; c1 = 1; c2 = -1;
 
 if model == 0
     B = 2;
@@ -73,8 +73,8 @@ XREF = [0.02 0.09 -0.14 -0.02 0.045 0.01]; % simulation setpoints
 %XREF = [0.025 1 0.0 -0.2 0.045 0.01]; % simulation setpoints
 xref = XREF(1); % initial reference
 
-f = 5000; Ts = 1/f; % sampling frequency
-N = 1; % simulation time in seconds
+f = 1000; Ts = 1/f; % sampling frequency
+N = 5; % simulation time in seconds
 fprintf('Simulation time: %d seconds\n', N)
 
 i = (0:Ts:N); % make simulation resolution realistic
@@ -100,9 +100,10 @@ for R = 1:length(i)
       Rplot(6) = R;
   end
   
+  %--- Put physical constraints on the velocity  ---%
   if 1
     if model == 2
-      max_vel = 2;
+      max_vel = 1;
       if x(2,R) > max_vel
           x(2,R) = max_vel;
       elseif x(2,R) < -max_vel
@@ -111,9 +112,8 @@ for R = 1:length(i)
     end
   end
  
-  %--- determine sigma  ---%
-  y(1,R) = sys.c*x(:,R);
-  
+  y(:,R) = sys.C*x(:,R);
+  %--- determine sigma  ---% 
   if model == 1
       if (a*(x(1,R))^2 + b*(x(1,R)) + c) <= -epsilon
           sigma = 0;
@@ -176,6 +176,7 @@ for R = 1:length(i)
   
   u0(1,R) = sigma*k0(1,R)+(1-sigma)*utilde(1,R);
   
+  %--- Put physical constraints on the control signal  ---%
   if 1
     slide_lim = 0.1;
     if u0(1,R) > slide_lim
@@ -184,15 +185,19 @@ for R = 1:length(i)
       u0(1,R) = -slide_lim;
     end
   end
-  
+
   LfclB(1,R) = LfB(1,R) + LgB(1,R).*k0(1,R);
   
-  %--- Forward Euler ---%
+  %--- extrapolate with forward euler ---%
   xdot = sys.a*x(:,R) + u0(1,R)*sys.b;
   x(:,R+1) = xdot*Ts + x(:,R);
   sig(1,R) = sigma;
   
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%    PLOTTING    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %--- plot LfB(x) and LgB(x) ---%
 M = 2.5;
@@ -286,7 +291,7 @@ h_legend = legend({'$u(x),\,\,\,\,  \kappa = 1$'},'Interpreter','latex');
 set(h_legend,'FontSize',14);
 ax = gca;
 fig = gcf;
-%ax.XLim = [0 1000];
+ax.XLim = [0 N*1000];
 fig.Name = 'Control signals';
 xlabel('time [s/1000]')
 ylabel('u(x)')
@@ -354,7 +359,6 @@ plot(linspace(1,length(i),length(i)),LgB(1,:))
 hold off
 legend('LfB','LgB')
 title('LgB and LfB')
-
 
 if model == 2
     figure

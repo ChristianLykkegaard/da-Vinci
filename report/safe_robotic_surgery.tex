@@ -39,13 +39,13 @@ u(x) &= \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) \nonumber \\
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
 Where  & & \\
-$u(x) \in \mathbb{R}^{1 \times 1} $ {\color{red}{TJEK OP!!}} is a control signal where safety is ensured  & [$\cdot$] \\
-$\tilde{u}(x) \in \mathbb{R}^{1 \times 1}$ {\color{red}{TJEK OP!!}} is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx $ & [$\cdot$] \\ 
-$k_0(x) \in \mathbb{R}^{1 \times n}$ {\color{red}{TJEK OP!!}}is a control law that guarantees safety & [$\cdot$] \\ 
-$\sigma(x) \in \mathbb{R}^{1 \times 1}$ {\color{red}{TJEK OP!!}} is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
-$K \in \mathbb{R}^{1 \times n}$ {\color{red}{TJEK OP!!}} is a constant feedback matrix where $n$ is the number of states & [$\cdot$] \\
-$\bar{N} \in \mathbb{R}^{1 \times 1}$ {\color{red}{TJEK OP!!}} is a constant to ensure unity gain from reference to output & [$\cdot$] \\
-$x \in \mathbb{R}^{n \times 1}$ {\color{red}{TJEK OP!!}}is the state vector& [m] 
+$u(x) \in \mathbb{R}^{m \times 1} $is a control signal where safety is ensured  & [$\cdot$] \\
+$\tilde{u}(x) \in \mathbb{R}^{m \times 1}$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx $ & [$\cdot$] \\ 
+$k_0(x) \in \mathbb{R}^{1 \times 1}$ is a control law that guarantees safety & [$\cdot$] \\ 
+$\sigma(x) \in \mathbb{R}^{1 \times 1}$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
+$K \in \mathbb{R}^{m \times n}$ is a constant feedback matrix where $n$ is the number of states & [$\cdot$] \\
+$\bar{N} \in \mathbb{R}^{m \times 1}$ is a constant to ensure unity gain from reference to output & [$\cdot$] \\
+$x \in \mathbb{R}^{n \times 1}$ is the state vector& [$\cdot$] 
 \end{longtable}
 \vspace*{-0.2cm}
 The control law is thereby a linear combination of two controllers. It is noted that:
@@ -73,7 +73,7 @@ A block diagram is depicted in \autoref{fig:controlsystem}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=1]{control_system.pdf}
-	\caption{Block diagram of the control system for slide position. MATLAB implementation is found in \autoref{app:slide_implement_1}. \color{red}{A,B,C matricerne skal skrives generelt i stedet for 1D tilf\ae ldet.}}
+	\caption{Block diagram of the control system for slide position. MATLAB implementation is found in \autoref{app:slide_implement_1}. \color{red}{Fejl: A,B,C matricerne skal skrives generelt i stedet for 1D tilf\ae ldet ($1/\tau$). Derudover skal der ogs\aa \,\, limiters p\aa \,\, for b\aa de hastighed og control signal.}}
 	\label{fig:controlsystem}
 \end{figure}
 \subsection*{Uniform Construction of $k_0$}
