@@ -1,9 +1,9 @@
 A crucial matter when designing a controller for automated operation of robotic surgery tools is the necessity of guaranteed patient safety. The system has to not only be able to prevent the surgery tool from entering certain regions, e.g. penetrating the wall of the heart or cutting an artery, but to guarantee that this cannot happen under any circumstances.
 
-Casting the controller design problem as an optimization problem with constraints, such as e.g. \gls{mpc}, could in principle guarantee that the tool would not enter a predefined area. However, most solvers such as the MATLAB plugin \texttt{cvx} requires convexity in the performance function and its constraints to be able to find a global minimum. Furthermore, \gls{mpc} is mostly used in systems with slow dynamics such as thermal systems due to heavy computations and numerous iterations. Additionally, the feasibility of the optimization problem is not very transparent and it is well known that \texttt{cvx} is very likely to crash due to infeasibility.
+Casting the controller design problem as an optimization problem with constraints, such as \gls{mpc}, could in principle guarantee that the tool would not enter a predefined area. Indeed, \gls{mpc} is a method which is very popular at the higher abstraction layers, such as setpoint control \citep{bib:mpc_simon} {\color{red}{TJEK DATO}} which is the case in this specific study. However, most solvers such as the MATLAB plugin \texttt{cvx} requires convexity in the performance function and its constraints to be able to find a global minimum. This will at best be a lucky special case when illegal spaces are defined. Furthermore, \gls{mpc} is mostly used in systems with slow dynamics such as thermal systems due to heavy computations and numerous iterations {\color{red}{Find kilde..}}. Additionally, the feasibility of the optimization problem is not very transparent and it is well known that \texttt{cvx} is very likely to crash due to infeasibility.
 %, but a hard constraint would fail to follow the dynamics of a moving area boundary such as a beating heart. 
 
-Another and very elegant and computationally sound approach to the safe controller analysis and design problem is the use of barrier certificates, which provide a formal proof of safe operation \citep{bib:safety}. This chapter describes the requirements for the construction of barrier certificates along with notation used in relation to these.
+Another very elegant and computationally efficient approach to the safe controller analysis and design problem is the use of barrier certificates, which provide a formal proof of safe operation \citep{bib:safety}. This chapter describes the requirements for the construction of barrier certificates along with notation used in relation to these.
 %
 %dealing with those topics within robotic surgeries feature necessary conditions to guarantee the patient safety and to avert patient trauma .
 %
@@ -74,6 +74,8 @@ L_{f_{cl}}B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \label{cer3}
 \end{subequations}
 Where \gls{lie}$(x)$ is the Lie derivative of \gls{bar} along the trajectory of $f(x)$. 
 \end{exa}
+Note how the barrier certificate merely requires stability and not asymptotically stability. This is rarely enough when dealing with physical systems, however, mathematically it is sufficient.
+
 As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function:
 \begin{equation}
 \dot{x}  = f(x) = \frac{\partial x}{\partial t} \qquad
@@ -85,7 +87,7 @@ L_fB(x) \hspace*{-2mm}&= \tfrac{\partial B(x)}{\partial x} f(x) \hspace*{-2mm}&=
 
 From \autoref{eq:barrier_constraints} it can be seen that the function $B(x)$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(x)/dx$ must have the opposite sign of the state derivative $dx/dt$ for any state within the region $\mathcal{X}$ where $B(x)$ is defined. Furthermore from \autoref{eq:dBdt_dVdt} it is deduced that a controller incorporating the barrier certificate in its design will ensure stability if $B(x)$ has a finite minimum value (for $\mathcal{X}=\mathbb{R}^n$ this entails that $B(x)\rightarrow \infty$ for $x\rightarrow \pm\infty$).
 
-Two approaches are used in the following: in \autoref{chap:cbf} the barrier certificate is constructed by hand, and a guaranteed safe controller is designed according to the method in \citep{bib:org_control} and used in combination with a standard state space controller, while in \autoref{chap:putinar} a standard state space controller is designed and its safety is then validated by the construction of a barrier certificate using Putinar's Positivstellensatz according to \citep{bib:sos_putinar_lasserre}.
+Two approaches are used in the following. In \autoref{chap:cbf} the barrier certificate is constructed by hand, and a guaranteed safe controller is designed according to the method in \citep{bib:org_control} and used in combination with a linear state space controller by pole placement, while in \autoref{chap:putinar} a similar state space controller is designed and its safety is then validated by the construction of a barrier certificate using Putinar's Positivstellensatz according to \citep{bib:sos_putinar_lasserre}.
 
 
 

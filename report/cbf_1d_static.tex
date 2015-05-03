@@ -5,13 +5,13 @@ The slide movement is visualized in \autoref{fig:slidefig} and an overview of te
     \centering
     \begin{minipage}{.5\textwidth}
         \centering
-        \includegraphics[width=0.73\linewidth]{slidemovefigure.pdf}
+        \includegraphics[width=0.84\linewidth]{slidemovefigure.pdf}
         \caption{Illustration of slide movement.}
         \label{fig:slidefig}
     \end{minipage}%
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=0.7\linewidth]{slide_overview.pdf}
+        \includegraphics[width=0.8\linewidth]{slide_overview.pdf}
         \caption{Boundaries used in this section.}
         \label{fig:safe:overview}
     \end{minipage}
@@ -26,7 +26,7 @@ $x \in \{[\Lambda_{\text{lim}-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{\text{lim}+
 \caption{Global state intervals where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition area and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-},\Lambda_{s+}]$ is safe thus any control law can be used in that area.}
 \label{tab:intervals}
 \end{table}
-At this point, a system model is required before any controller design may be initiated.
+As the control law stated in \autoref{eq:control_law} utilizes Lie derivatives, a system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
 \section{Modelling of Slide Movement}
 To obtain a model of the slide movement, the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. The result is plotted in \autoref{fig:stepresponseslide}. 
@@ -36,13 +36,13 @@ To obtain a model of the slide movement, the step response will be measured.  Th
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}. The experiment is described in \autoref{app:meas}.}
 \label{fig:stepresponseslide}
 \end{figure}
-The system can clearly be well approximated with an underdamped second order model, however, for initial simplicity, merely a simple model of the slide movement is used. It shall, however, also be approximated with as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referenced as:
+The system can clearly be well approximated with an underdamped second order model, however, for initial simplicity, merely a simple first order model of the slide movement is used. It shall, however, also be approximated as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referenced as:
 \begin{itemize}
-\item One dimensional (1D) model of first order system
-\item One dimensional model of second order system
+\item One dimensional (1D) slide movement along the $z-$axis based on \underline{position} only, hence a first order system model.
+\item One dimensional (1D) slide movement along the $z-$axis based on \underline{position and velocity}, hence a second order system model.
 \end{itemize}
-
-\subsection{One Dimensional Model based on Position}
+A first order approximation will be conducted first. 
+\subsection{1D Model based on Position}
 The system can be approximated to a linear first order system with a dominating time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide}:
 \begin{flalign*}
 \tau_s = 110\, \text{ms}
@@ -59,7 +59,7 @@ A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 1 \kk \we
 \end{flalign*}
 Which completes the first order approximation.
 
-\subsection{Two Dimensional Model based on Position and Velocity}
+\subsection{1D Model based on Position and Velocity}
 The second order approximation is based on the form:
 \begin{flalign}
 \dfrac{Y(s)}{U(s)} = \dfrac{\omega_n^2}{s^2 + 2\zeta \omega_n s + \omega_n^2}
@@ -79,7 +79,7 @@ The model can unambiguous be approximated from the rise time $t_r$, settling tim
 \begin{flalign*}
 \omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
-\Autoref{eq:2order} can be transferred to state space form: {\color{green}{RAFAL: Giver den mening ifm barriere funktioner!!!!????? Vi bliver n\o dt til at diskutere den lidt}}
+\Autoref{eq:2order} can be transferred to state space form: {\color{green}{RAFAL: Giver den mening ifm barriere funktioner!!!!????? Vi bliver n\o dt til at diskutere det lidt. Vi er is\ae r i tvivl om hvad nul er og hvad det betyder at nul er en position, men nul i barriere certifikater virker som v\ae rende noget vi ikke kan kontrollere..}}
 \begin{subequations}
 \begin{flalign}
 &Y(s)s^2 + 2\zeta \omega_n Y(s) s + \omega_n^2 Y(s) - \omega_n^2 U(s)  = 0 \\
@@ -301,12 +301,12 @@ x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 &= x_2 \left( \dfrac{c(2x_1+2x_{10})}{a^2} - \dfrac{2c(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \right)
 \label{eq:LfB_2}
 \end{flalign}
-It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again. That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. For that reason, the \gls{cbf} from \autoref{eq:cbf2} is accepted. It is, however, important to keep in mind that this is a dangerous decision.
+It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again. That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. For that reason, the \gls{cbf} from \autoref{eq:cbf2} is accepted. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
 
 The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}.
 \begin{figure}[H]
 \center
-	\includegraphics[scale=0.60]{cbf_2d.eps}
+	\includegraphics[scale=0.65]{cbf_2d.eps}
 	\caption{CBF for the second order system model. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_cbf\_2d/plot\_cbf\_2d.m}}
 	\label{fig:barrierfunction_2d}
 \end{figure}
@@ -381,14 +381,16 @@ The constant feedback matrix, $\bar{N}$, can be computed as \citep{bib:Nbar}:
 \bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 10
 \label{eq:barm_1}
 \end{flalign}
+\subsubsection*{Merged Control Law}
 With the Lie derivatives computed as:
 \begin{flalign}
 L_fB(x) = -2\tau^{-1}ax^2-\tau^{-1}bx \kk \wedge \kk L_gB(x) = 2ax\tau^{-1} + b\tau^{-1}
 \label{eq:lies_1}
 \end{flalign}
-Thus the complete control law can now be determined from \autoref{eq:control_law}:
+The complete control law can be determined from \autoref{eq:control_law}:
+\begin{tcolorbox}
 \begin{flalign*}
-\underline{u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) }
+u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
 \end{flalign*}
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
@@ -399,7 +401,9 @@ $\bar{N}$ is found in \autoref{eq:barm_1} & \\
 $K$ is found in \autoref{eq:K_1} &
 \end{longtable}
 \vspace*{-0.2cm}
-\subsection{Control Design Based on 2nd Order Model}\label{sec:K_Nbar_1D_2ndorder}
+\end{tcolorbox}
+This completes the control design based on a first order system approximation. 
+\subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
 To design the smoothing in the transition area $\Delta_t$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here, i.e $\sigma(x_1)$ from \autoref{eq:smoothness} is a function of position only. {\color{green}{RAFAL: Kan vi godt det?}}:
 \begin{flalign}
 \sigma(x_1) = 
@@ -412,7 +416,7 @@ To design the smoothing in the transition area $\Delta_t$ for the second order a
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
 Where  & & \\
-$B(x_1) = ax_1^2 + bx_1 + c$ as states in \autoref{eq:cbf1} &
+$B(x_1) = ax_1^2 + bx_1 + c$ as it is stated in \autoref{eq:cbf1} &
 \end{longtable}
 \vspace*{-0.2cm}
 The design of $K$ and $\bar{N}$ will follow the exact same procedure as described for the first order model except now $K \in \mathbb{R}^{1 \times 2}$. $\bar{N}$ remains as a scalar. The entire design procedure is therefore not carried through again.  
@@ -424,7 +428,7 @@ However, it is of interest to slow down the system dynamics slightly compared to
 -10.295 +14.765\, j
 \end{cases}
 \end{flalign*}
-The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself.
+The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself. {\color{green}{RAFAL: synes du vi b\o r have h\aa rdere design kriterier?}}
 \begin{flalign}
 K = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
 5.173  &  0.214
@@ -437,8 +441,9 @@ The DC gain can now be corrected with:
 \label{eq:Nbar_2}
 \end{flalign}
 The complete controller is now designed as:
+\begin{tcolorbox}
 \begin{flalign*}
-\underline{u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) }
+u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx)
 \end{flalign*}
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
@@ -449,8 +454,10 @@ $\bar{N}$ is found in \autoref{eq:Nbar_2} & \\
 $K$ is found in \autoref{eq:K_2} &
 \end{longtable}
 \vspace*{-0.2cm}
+\end{tcolorbox}
+This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation will be outlined first. 
 \section{MATLAB Results}
-The results based on the implemented controller found in \autoref{app:slide_implement_1} is described and analysed here.
+The results based on the implemented controller found in \autoref{app:slide_implement_1} is described and analysed here. {\color{red}{Udskift alle plots med fs = 1 kHz, det ser fint ud}}
 \subsection{MATLAB Results based on 1D Model}
 The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
 \begin{figure}[H]
