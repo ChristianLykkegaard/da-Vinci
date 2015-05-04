@@ -33,7 +33,7 @@ u(x) =
 	 k_0(x)  \kk &\text{if} \mm x \in \,\, \text{\gls{Tfancy}}
 \end{cases}
 \end{flalign*}
-This can be combined as a linear combination, determined by the parameter \gls{sigma}, of the two controllers \citep{bib:org_control}:
+This can be combined as a linear combination, determined by a parameter \gls{sigma}, of the two controllers \citep{bib:org_control}. This ensures that the switch between the two controllers occurs in a smooth manner and less fluctuations will disrupt the trajectory. 
 \begin{flalign}
 u(x) &= \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) \nonumber \\
  &= \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) \label{eq:control_law}
@@ -44,7 +44,7 @@ Where  & & \\
 $u(x) \in \mathbb{R}^{m \times 1} $is a control signal where safety is ensured  & [$\cdot$] \\
 $\tilde{u}(x) \in \mathbb{R}^{m \times 1}$ is a control signal to the linear state space system such that $\tilde{u}=\bar{N}\cdot x_\text{ref}-Kx $ & [$\cdot$] \\ 
 $k_0(x) \in \mathbb{R}^{1 \times 1}$ is a control law that guarantees safety & [$\cdot$] \\ 
-$\sigma(x) \in \mathbb{R}^{1 \times 1}$ is a parameter that founds a linear combination between the two control inputs & [$\cdot$] \\ 
+$\sigma(x) \in \mathbb{R}^{1 \times 1}$ such that $0 \leq \sigma(x) \leq 1$ is a parameter that founds a linear combination between the two controllers & [$\cdot$] \\ 
 $K \in \mathbb{R}^{m \times n}$ is a constant feedback matrix where $n$ is the number of states & [$\cdot$] \\
 $\bar{N} \in \mathbb{R}^{m \times 1}$ is a constant to ensure unity gain from reference to output & [$\cdot$] \\
 $x \in \mathbb{R}^{n \times 1}$ is the state vector& [$\cdot$] 
