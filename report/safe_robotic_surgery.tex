@@ -33,7 +33,7 @@ u(x) =
 	 k_0(x)  \kk &\text{if} \mm x \in \,\, \text{\gls{Tfancy}}
 \end{cases}
 \end{flalign*}
-This can be combined by the control law below which is a linear combination of the two controllers \citep{bib:org_control}:
+This can be combined as a linear combination, determined by the parameter \gls{sigma}, of the two controllers \citep{bib:org_control}:
 \begin{flalign}
 u(x) &= \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) \nonumber \\
  &= \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) \label{eq:control_law}
