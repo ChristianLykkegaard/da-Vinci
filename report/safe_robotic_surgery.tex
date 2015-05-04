@@ -4,7 +4,7 @@ This chapter ought to lay the basics of all shared control theory applied in the
 Based on \citep{bib:artstein}, who founded \glspl{clf}, a \gls{cbf} can be created \citep{bib:org_control}. 
 \begin{exa}[Control Barrier Function]
 Given a system $\dot{x}=f(x)+g(x)u$, a \gls{cbf} exists if the below constraints are fulfilled:
-\begin{subequations}
+\begin{subequations}\label{eq:reqs}
 \begin{flalign}
 x\in \mathcal{X}_u \hspace{0.3cm} &\Rightarrow \hspace{0.3cm} B(x) > 0  \label{req1} \\
 L_gB(x) = 0 \hspace{0.3cm} &\Rightarrow \hspace{0.3cm} L_fB(x) < 0 \label{req2} \\
@@ -20,15 +20,17 @@ $L_gB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e.
 \end{tabular}
 \vspace*{0.2cm}
 \end{exa}
-Taking a look at \autoref{req1} it states essentially the same as \autoref{cer2}, i.e. the unsafe area exist whenever $B(x)>0$. This makes it possible to design an unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input is with no significance (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
+Note how \autoref{eq:reqs} put forth demands for the open loop system in oppose to \autoref{eq:barrier_constraints} that describes the closed loop system. \Autoref{req1} states essentially the same as \autoref{cer2}, i.e. when $B(x)>0$ the region is unsafe. This makes it possible to design an unsafe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the barrier extremities whenever the input can not be controlled (except for the critical point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
 %
 \section{The Control Law}\label{eq:control_for_safety}
-A control law is now introduced:
+It is convenient to divide the control law in two controllers. A controller that is used in an area close to the unsafe region and a controller used in the safe region. The reason for this divided control law is the old Chinese proverb, \textit{"Do not use a cannon to kill a mosquito"}, thus why not use a simple controller in the safe region
+
+Defining the safe space excluding a small transition space between the safe and non-safe controller as $\mathcal{Y}$ and the transition space as $\mathcal{T}$, a divided control law can be introduced as:
 \begin{flalign*}
 u(x) =
 \begin{cases}
-	\bar{N}\,x_\text{ref} - K\,x \kk &\text{if \mm $x \in [\Lambda_{s-}:\Lambda_{s+}]$}\\
-	 k_0(x)  \kk &\text{if \mm $x \in [\Lambda_{s+}:\Lambda_{h+}] \mm \wedge \mm x \in [\Lambda_{h-}:\Lambda_{s-}]$}
+	\tilde{u}(x) =  \bar{N}\,x_\text{ref} - K\,x \kk &\text{if} \mm x \in \,\, \text{\gls{Yfancy}} \\
+	 k_0(x)  \kk &\text{if} \mm x \in \,\, \text{\gls{Tfancy}}
 \end{cases}
 \end{flalign*}
 This can be combined by the control law below which is a linear combination of the two controllers \citep{bib:org_control}:

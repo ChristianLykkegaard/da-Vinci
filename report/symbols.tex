@@ -13,12 +13,17 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{fcl}{
 name=$f_\text{cl}$,
-description={A potential non-linear function with the closed loop characteristic: $f_{cl}: x \mapsto f(x)+g(x)k(x)$},
+description={A function with the closed loop characteristic: $f_{cl}: x \mapsto f(x)+g(x)k(x)$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{lie}{
 name=$L_fB$,
 description={Lie derivative of $B(x)$ along the vector field $f(x)$, i.e. $L_fB(x)=\frac{\partial B(x)}{\partial x}f(x)$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{lie2}{
+name=$L_gB$,
+description={Lie derivative of $B(x)$ along the vector field $g(x)$, i.e. $L_gB(x)=\frac{\partial B(x)}{\partial x}g(x)$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{T}{
@@ -29,86 +34,106 @@ sort=d, type=symbols, symbol=[s]}
 \newglossaryentry{gammacl}{
 name=$\Gamma_\text{cl}$,
 description={Closep loop control system depended on....},
-sort=g, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{phi}{
 name=$\phi_{X_0}^{\bar{d}}$,
 description={Trajectory initiating from the set of allowed initial conditions with bounded disturbance \gls{dbar}},
-sort=f, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{bar}{
 name=$B(x)$,
 description={Barrier function where $B(x)\,\in\,C^1(X)$},
-sort=f, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{taus}{
-name=$\tau_s$,
-description={Dominating time constant for slide movement},
-sort=f, type=symbols, symbol=[s]}
+name=$\tau$,
+description={Time constant},
+sort=d, type=symbols, symbol=[s]}
 
 \newglossaryentry{X}{
 name=$X$,
 description={The set of all states allowed when safety is considered. It belongs in $X \subseteq \mathbb{R}^n$},
-sort=f, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{X0}{
 name=$X_0$,
 description={The set of all initial states allowed when safety is considered. It belongs in $X_0 \subseteq$ \gls{X}},
-sort=x, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Xu}{
 name=$X_u$,
 description={The set of all unsafe states. It belongs in $X_u \subseteq$ \gls{X}},
-sort=x, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Yfancy}{
+name=$\mathcal{Y}$,
+description={The set of all safe states but excluding the set \gls{Tfancy}},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Tfancy}{
+name=$\mathcal{T}$,
+description={The set of all states in a transition area between the safe and unsafe region},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{lambdai}{
+name=$\Lambda_i$,
+description={Physical boundary where $i=h=\text{hard boundary}\,\, \vee \,\, i= s = \text{soft boundary}$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{lambda}{
+name=$\lambda$,
+description={Eigenvalue},
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{x}{
 name=$x$,
 description={The state variable which is restricted to $x \in \mathbb{R}^n$ where  \gls{n} is the number of states},
-sort=x, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{n}{
 name=$n$,
 description={Number of states in a system},
-sort=n, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{p}{
 name=$p$,
 description={Number of disturbance inputs to a system},
-sort=p, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{m}{
 name=$m$,
 description={Number of inputs to a system},
-sort=m, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{u}{
 name=$u$,
 description={Control input restricted to $u \in \mathbb{R}^m$ where \gls{m} is the number of inputs},
-sort=u, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{t}{
 name=$t$,
 description={Time variable},
-sort=h, type=symbols, symbol=[s]}
+sort=d, type=symbols, symbol=[s]}
 
 \newglossaryentry{f}{
 name=$f$,
-description={A potential non-linear function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$, mostly a system function in a SS system},
-sort=f, type=symbols, symbol=[$\cdot$]}
+description={A function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$, mostly a system function in a SS system},
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{g}{
 name=$g$,
-description={A potential non-linear function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$, mostly an input function in a SS system},
-sort=g, type=symbols, symbol=[$\cdot$]}
+description={A function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$, mostly an input function in a SS system},
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{h}{
 name=$h$,
-description={A potential non-linear function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$, mostly a disturbance function in a SS system},
-sort=h, type=symbols, symbol=[$\cdot$]}
+description={A function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$, mostly a disturbance function in a SS system},
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{k}{
 name=$k$,
 description={Feedback gain with the continuous map $k: \mathbb{R}^n \rightarrow \mathbb{R}^m$},
-sort=k, type=symbols, symbol=[$\cdot$]}
+sort=d, type=symbols, symbol=[$\cdot$]}
 
 %\restoregeometry
