@@ -421,32 +421,16 @@ basicstyle=\ttfamily\scriptsize,
 \usepackage[draft,footnote,nomargin]{fixme}
 
 
-%% \Autoref is for the beginning of the sentence
-%\let\orgautoref\autoref
-%\providecommand{\Autoref}[1]%
-%{%
-%\def\equationautorefname{Equation}%
-%\def\figureautorefname{Figure}%
-%\def\subfigureautorefname{Figure}%
-%\def\chapterautorefname{chapter}%
-%\def\tableautorefname{Table}%
-%\def\sectionautorefname{Sect.}%
-%%\def\appendixautorefname{Appendix}
-%%
-%  \def\footnoteautorefname{footnote}%
-%  \def\itemautorefname{item}%
-%  \def\partautorefname{Part}%
-%  \def\subsectionautorefname{subsection}%
-%  \def\subsubsectionautorefname{subsubsection}%
-%%  \def\paragraphautorefname{paragraph}%
-%%  \def\subparagraphautorefname{subparagraph}%
-%  \def\FancyVerbLineautorefname{line}%
-%%  \def\theoremautorefname{Theorem}%
-%  \def\pageautorefname{page}%
-%%
-%%\def\appendixautorefname{Appendix}
-%\orgautoref{#1}%
-%}
+
+% First, save the current form of `\theequation`, then make autorefinclude parenthesis around equation number
+\let\oldtheequation\theequation
+\makeatletter
+\def\tagform@#1{\maketag@@@{\ignorespaces#1\unskip\@@italiccorr}}
+\renewcommand{\theequation}{(\oldtheequation)}
+\makeatother 
+
+
+
 
 % \Autoref is for the beginning of the sentence
 \let\orgautoref\autoref
@@ -505,7 +489,6 @@ basicstyle=\ttfamily\scriptsize,
 \def\exaautorefname{definition}%
 \orgautoref{#1}%
 }
-
 
 
 
