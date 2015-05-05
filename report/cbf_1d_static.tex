@@ -70,8 +70,8 @@ The second order approximation is based on the form:
 Where  & & \\
 $Y(s)$ is the output in the Laplace domain  & [m] \\
 $U(s)$ is the input in the Laplace domain  & [m] \\
-$\omega_n$ is the natural frequency of the system & [rad/s] \\
-$\zeta$ is the damping coefficient  & [$\cdot$] \\
+\gls{omegan} is the natural frequency of the system & [rad/s] \\
+\gls{zeta} is the damping coefficient  & [$\cdot$] \\
 $s$ is the Laplace operator  & [rad/s] 
 \end{longtable}
 \vspace*{-0.2cm}
@@ -254,7 +254,7 @@ Note that $|x_{2-}|=|x_{2+}|$ to ensure velocity equilibrium in 0\,m/s and note 
  \begin{aligned}
  \dfrac{(\Lambda_{h+}-x_{10})^2}{a_2^2} c_1 + c_2 = 0 \\
  \dfrac{(\Lambda_{h-}-x_{10})^2}{a_2^2} c_1 + c_2 = 0 \\
- \dfrac{\left(\frac{\Lambda_{h-}+\lambda_{h+}}{2}-x_{10}\right)^2}{a_2^2} c_1 + c_2 = 0  = \underbrace{-1.000}_\text{any constant $<0$} \\
+ \dfrac{\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}-x_{10}\right)^2}{a_2^2} c_1 + c_2 = 0  = \underbrace{-1.000}_\text{any constant $<0$} \\
   \dfrac{(4-x_{20})^2}{b_2^2} c_1 + c_2 = 0 \\
  \dfrac{(-4-x_{20})^2}{b_2^2} c_1 + c_2 = 0 \\
  \dfrac{\left(0-x_{20}\right)^2}{b_2^2} c_1 + c_2 = -1  = \underbrace{-1.000}_\text{any constant $<0$}  
@@ -301,7 +301,7 @@ x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 &= x_2 \left( \dfrac{c(2x_1+2x_{10})}{a^2} - \dfrac{2c(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \right)
 \label{eq:LfB_2}
 \end{flalign}
-It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again. That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. Lastly, the velocity will never be truly zero due to the finite resolution, i.e. a finite sampling rate. For these reasons, the \gls{cbf} from \autoref{eq:cbf2} is accepted, well aware that the \gls{cbf} is insufficient,. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
+It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again which is sufficient for the safety controller. %That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. Lastly, the velocity will never be truly zero due to the finite resolution, i.e. a finite sampling rate. For these reasons, the \gls{cbf} from \autoref{eq:cbf2} is accepted, well aware that the \gls{cbf} is insufficient,. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
 
 The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}.
 \begin{figure}[H]
@@ -311,6 +311,28 @@ The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:ba
 	\label{fig:barrierfunction_2d}
 \end{figure}
 It is from \autoref{fig:barrierfunction_2d} seen how the specified regions, i.e. $x_2 \in [x_{2-},x_{2+}]$ and $x_1 \in [\Lambda_{h-},\Lambda_{h+}]$, both fulfils that $B(x_1,x_2)<0$ and thus everything else is unsafe, i.e. $B(x) > 0$. It is also seen that $x_2$ is approximately vertical in the boundaries of $x_1$ when the big numerical difference in the axes are taken into account.
+
+\textbf{\underline{\textit{Remark:}}} The issue caused by $x_2=0$ is not only the case for this specific \gls{cbf} but for many \gls{cbf}s. Take for example another CBF that could fulfil the requirements:
+\begin{flalign*}
+B(x_1,x_2) = \cos (c_3 x_1 + c_4) \cdot \cos (c_5 x_2 + c_6)
+\end{flalign*}
+It turns out that the coefficients $c_3 = 21.00, c_4 = 119.91, c_5 = 0.50, c_6 = 3.15$ induce a CBF with the same properties as the one depicted in \autoref{fig:barrierfunction_2d}. The \gls{cbf} is outlined graphically in \autoref{fig:barrierfunction_example_sinus}.
+\begin{figure}[H]
+\center
+	\includegraphics[scale=0.65]{cbf_example_sinus.eps}
+	\caption{CBF. Example to demonstrate how other CBFs suffer when $x_2 = 0$.}
+	\label{fig:barrierfunction_example_sinus}
+\end{figure}
+Thus $L_gB(x_1,x_2)$ can be found as:
+\begin{flalign*}
+L_gB(x_1,x_2) = -c_5 \omega_n^2 \cos (c_4-c_3 x_1)\sin(c_6 + c_5 x_2)
+\end{flalign*}
+Now note that when $c_6+c_5x_2 = \pi \,\, \Rightarrow \,\, L_gB(x_1,x_2) = 0$ such that when $x_2 \approx 0$ the CBF is again invalid. As $L_gB(x_1,x_2) \neq 0 \,\, \forall \,\, x_2 \approx 0$, requirements for $L_fB(x_1,x_2)$ is necessary. However, taking a look at $L_fB(x_1,x_2)$:
+\begin{flalign*}
+L_fB(x_1,x_2) = 
+c_5\cos (c_4 + c_3 x_1) \sin(c_6+c_5 x_2)(x_2 \omega_n^2 + 2 x_1 \zeta \omega_n) - c3 x_2 \cos(c_6 + c_5 x_2) \sin(c_4 + c_3 x_1)
+\end{flalign*}
+Quickly pose the fact that $L_fB(x_1,x_2 ) \nless 0 \,\, \forall \,\, x_2 \approx 0$ due to the sign alternation caused by the term $c_5\cos(c_4 + c_3 x_1)$ in the boundaries.
 
 \subsection{Control Design based on First Order Model}\label{sec:K_Nbar_1D_1storder}
 The be able to find $k_0(x)$ from \autoref{eq:control_for_safety}, the constant $\epsilon$ used in \autoref{eq:smoothness} must be found. It can be determined from the \gls{cbf} from \autoref{eq:cbf1} such that it complies with the requirements from \autoref{tab:intervals}:
