@@ -1,3 +1,66 @@
+When the vector fields of
+the system are polynomials and the sets in the system description
+are semialgebraic (i.e., described by polynomial equalities
+and inequalities), a tractable computational method called sum
+of squares optimization [32], [33], [38], [39] can be utilized for
+constructing a polynomial barrier certificate, e.g., using the software
+SOSTOOLS [38], [39]. \citep{bib:barrier_prajna} Similar to their nonstochastic counterpart,
+polynomial barrier certificates can be computed using sum of
+squares optimization when the description of the system is polynomial
+and the sets are semialgebraic.
+
+For systems whose vector fields are polynomial and whose
+set descriptions are semialgebraic (i.e., described by polynomial
+equalities and inequalities), a tractable computational method
+for constructing a barrier certificate exists if we also postulate
+the barrier certificate to be polynomial. The method uses sum of
+squares optimization [32], [33], [38], [39]—a convex relaxation
+framework based on sum of squares decompositions of multivariate
+polynomials [43] and semidefinite programming [51].
+A sum of squares (SOS) program is a convex optimization
+problem of the following form:
+Minimize
+subject to
+is SOS for
+where the s are scalar real decision variables, the s are
+given real numbers, and the are given polynomials
+(with fixed coefficients).\citep{bib:barrier_prajna}. Sum of squares programs can be
+solved via semidefinite programming, e.g., using the software
+SOSTOOLS [38], [39] in conjunction with a semidefinite
+programming solver such as SeDuMi [46].
+
+To compute a polynomial barrier certificate for this system,
+real coefficients c1,l...cm,l are used to parameterize sets of
+candidates for the functions Bl(x), for all l in L, in the following
+way: Bl(x)=sumj cj,l bj,l(x)
+where the bj,l(x)s are elements of some finite polynomial basis;
+for example, they could be monomials of degree less than or
+equal to some pre-chosen bound. Then the search for a barrier
+certificate \{Bl(x):l in L\}, or equivalently the values of cj,ls,
+such that the convex conditions in Theorem 6 are satisfied can
+be directly performed by solving a SOS program, as stated in
+the following algorithm. \citep{bib:barrier_prajna} Algorithm 17 (Direct Method): Let the hybrid system and
+the descriptions of ,
+and be given, along with some nonnegative constants
+, for each and .
+- Parameterize s: Fix a degree bound for the barrier
+certificate, and parameterize for all in terms
+of some unknown coefficients s as in (35), by having all
+monomials whose degrees are less than the degree bound
+as the s.
+- Parameterize the multipliers: In a similar way, fix
+some degree bounds and use some other unknown coefficients
+to parameterize polynomial vectors
+of the same dimensions as the corresponding
+s.
+- Compute the coefficients: Choose a small positive
+number . Use SOS optimization to find values of the
+coefficients which make the expressions
+
+matrix Q is positive semidefinite, which implies the existence
+of a sum of squares decomposition for -dB/dx*f(x) (and
+hence its nonnegativity).
+
 Barrier certificates can be used to (in)validate the safety compliance of a controller design by testing if a barrier certificate can be found according to \autoref{eq:barrier_constraints} for the closed-loop system $f_{cl}(x)$. This can be done using Putinar's Positivstellensatz to define the spaces $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ with \gls{sos} polynomials. 
 
 A \gls{sos} polynomial $p\in \Sigma[x]$, where $\Sigma$ denotes the set of \gls{sos} variables and $[x]$ denotes a set of polynomials in $x$, is a polynomial that can be written on the form \citep{bib:sostools}

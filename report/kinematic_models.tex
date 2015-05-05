@@ -513,7 +513,7 @@ $|\,^0_{14} p|$ & 216.08 & 207
 
 
 \section{Defining da Vinci Kinematics for Active Joints}\label{sec:app_activejoints_kinematics}
-As the kinematics described via the \texttt{xacro} files implement translations first, and then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation), the DH convention cannot be implemented directly in the robot kinematics through the joint description in the \texttt{xacro} files. Furthermore, the convention here is that each frame (joint) is fixed in its child link, and not in its parent link as in the DH convention.
+As the kinematics described via the \texttt{xacro} files implement translations first, and then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation), the DH convention cannot be implemented directly in the robot kinematics through the joint description in the \texttt{xacro} files. Furthermore, the convention here is that each frame (joint) is fixed in its child link (corresponding to the fixed rotations preceding the free rotation), and not in its parent link as in the DH convention.
 
 A compromise is made, defining a new set of frames for the \texttt{xacro} kinematics, adhering to the \gls{dh} constraint that each free rotation/translation is about/along the local $z$-axis. Furthermore, for convenience of the inverse kinematics solver, the two passive joints mimicking the hand pitch movement are removed from the kinematic chain, also removing a series of links (marked with grey in \autoref{fig:p4_hand_compromise_frames}). For convenience of placing the hand roll and pitch frames in the pivot point, a virtual link is inserted in the \texttt{xacro} file after each of these two joints. 
 
