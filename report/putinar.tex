@@ -77,7 +77,7 @@ h = q_0+\sum\limits_{j=1}^{m}q_jg_j
 
 
 
-In \autoref{def:putinar} the \gls{sos} variables $q$ are nonnegative per definition and as seen from \autoref{eq:sos_barrier}, and $h$ is positive on $\mathbb{K}$ as defined by $(g_j)_{j=1}^m$ being positive  in the region $\mathbb{K}$. Outside $\mathbb{K}$ one or more $g_j$s are negative, and hence the sign of $h$ cannot be determined outside $\mathbb{K}$.
+In \autoref{def:putinar} the \gls{sos} variables $q$ are nonnegative per definition and as seen from \autoref{eq:sos_barrier} $h$ is positive on $\mathbb{K}$ as defined by $(g_j)_{j=1}^m$ being positive  in the region $\mathbb{K}$. Outside $\mathbb{K}$ one or more $g_j$s are negative, and hence the sign of $h$ cannot be determined outside $\mathbb{K}$.
 Rearranging \autoref{eq:sos_barrier} to
 \begin{equation}
 q_0 = h - \sum _{j=1}^{m}q_jg_j \label{eq:putinar_sos}
@@ -119,9 +119,10 @@ A polynomial barrier certificate can be constructed using \gls{sos} optimization
 Searching for a barrier certificate in SOSTOOLS require the definition of all of the vaiables and polynomials given by \autoref{eq:barrier_constraints_putinar} as follows:
 
 \renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\bullet$}
 \begin{itemize}
 \itemsep-0.5mm
-\item \textbf{Declare Variables}\\
+\item \textbf{Declare the Variables}\\
 First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{syms} or \texttt{pvar}, and initialize the SOS program with the system states.
 \item \textbf{Define the Vector Field}\\
 The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}$ in terms of the symbolic state vector.
@@ -130,9 +131,9 @@ Declare a monomial vector $Z$ in $x$ (or part of $x$) of sufficiently large degr
 The problem of finding the coefficients for the barrier certificate is now for each region $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ a matter of defining the following:
 \vspace*{-1mm}
 \begin{itemize}
-	\item \textbf{Polynomials $g_j(x)$}\\
+	\item \textbf{Define the Polynomials $g_j(x)$}\\
 	Define one or more polynomials $g_j$ that are positive in the region to be defined and negative outside. Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries. 
-	\item \textbf{SOS Variables $q_j(x)$}\\
+	\item \textbf{Declare the SOS Variables $q_j(x)$}\\
 	Declare monomial vectors $Z_{q_j}$ in $x$ of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible), and parametrize the SOS polynomials (multipliers) $q_j$ with \texttt{sossosvar}.
 	\item \textbf{Set up the Inequality}\\
 	Cf. the nonnegativity of an \gls{sos} polynomial ($q_0$), the \texttt{sosineq} can be written as the right-hand side of \autoref{eq:putinar_sos}: Choose a small positive number $\epsilon$ for defining the region $\mathcal{X}_u$;
@@ -240,7 +241,7 @@ and is depicted in \autoref{fig:barrier_1storder_staticlim}.
 \begin{figure}[htbp]
 	\hspace*{-12mm}
 	\includegraphics[width=1.1\textwidth]{1stordersys_staticlimits.pdf}
-	\caption{A barrier certificate is found with SOSTOOLS that complies with the requirements in \autoref{eq:barrier_constraints}: it is positive on $\mathcal{X}_u=\{x_1\in [0.05\,\,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1\,\,0.05]\}$, and its Lie derivative is nonpositive on $\mathcal{X}=\{x_1\in [-0.1\,\,0.1]\}$.}
+	\caption{A barrier certificate is found with SOSTOOLS that complies with the requirements in \autoref{eq:barrier_constraints}: it is positive on $\mathcal{X}_u=\{x_1\in [0.05,\,\,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,\,\,0.05]\}$, and its Lie derivative is nonpositive on $\mathcal{X}=\{x_1\in [-0.1,\,\,0.1]\}$.}
 	\label{fig:barrier_1storder_staticlim}
 \end{figure}
 

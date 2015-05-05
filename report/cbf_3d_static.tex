@@ -1,4 +1,4 @@
-This chapter presents the design of a safe controller for the  robotic patient manipulator with a fixed region defined as the unsafe region. Only the controllable part of the robotic patient manipulator is considered, meaning the joints in the robot "hand" and instrument, as displayed in \autoref{fig:robot_hand_unsafe_region}. The controller is designed for and tested on the da Vinci robot comprising the prismatic slide joint as described in \autoref{chap:cbf_1d_static} as well as five independent revolute joints (for a thorough kinematic description of the AAU da Vinci robot see \autoref{app:kinematic_model_robot}).
+This chapter presents the design of a safe controller for the  robotic patient manipulator with a fixed region defined as the unsafe region. Only the controllable part of the robotic patient manipulator is considered, meaning the joints in the robot "hand" and instrument, as displayed in \autoref{fig:robot_hand_unsafe_region}. The controller is designed for and tested on the da Vinci robot comprising the prismatic slide joint as described in \autoref{chap:cbf_1d_static} as well as five independent revolute joints.
 
 \begin{figure}[htbp]
 \centering
@@ -7,6 +7,14 @@ This chapter presents the design of a safe controller for the  robotic patient m
 \label{fig:robot_hand_unsafe_region}
 \end{figure}
 
+Introduce that in order to design a controller first kinematics for the robot is defined in order that we can make this a controller in a Cartesian state-space and not in the joint state-space.
+
+(for a thorough kinematic description of the AAU da Vinci robot see \autoref{app:kinematic_model_robot})
+
+\section{Defining the Kinematics of the AAU da Vinci Robot}
+KINEMATICS: from appendix, introduce frames for each joint, rotation and translation constitutes transformation matrix between frames, summary of what is in appendix C first page. Explain about DH and the difference to the way kinematic transformation is defined in xacro incl code snip. Include figure C4b ad last part of table C7 and mark the mimick joints (maybe also have to include figure C1b and last par of table C1?)
+
+\subsection{Employing Inverse Kinematics for a Controller in 3D Cartesian Space}
 The controller is developed for 3D position and orientation control of the tool tip, and relies on the \gls{kdl} inverse kinematics solver to map from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator, in order to pass the transformed joint position commands to the low level controllers (see \autoref{fig:overview}).
 
 The \gls{ik} \gls{kdl} solver employed in \gls{ros} relies on the kinematic chain from the URDF, which is generated from the \texttt{xacro} link and joint kinematic description as presented in %\autoref{app:kinematic_model_robot}, the model implemented in ROS defined in
