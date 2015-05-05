@@ -16,19 +16,19 @@ The slide movement is visualized in \autoref{fig:slidefig} and an overview of te
         \label{fig:safe:overview}
     \end{minipage}
 \end{figure}
-The boundaries are summed up in \autoref{tab:intervals}.
+The boundaries for the slide position are summed up in \autoref{tab:intervals}.
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{X X X }
 \rowcolor{HeaderBlue} 
 $\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ \\
 $x \in \{[\Lambda_{\text{lim}-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{\text{lim}+}]\}$  & $x \in \{[\Lambda_{\text{lim}-},\Lambda_{h-}],[\Lambda_{h+},\Lambda_{\text{lim}+}]\} $ & $x \in \{[\Lambda_{h-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{h+}]\}$  \\
 \end{tabularx}
-\caption{Global state intervals where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition area and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-},\Lambda_{s+}]$ is safe thus any control law can be used in that area.}
+\caption{Global state intervals for the position where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition line and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-},\Lambda_{s+}] \in \mathcal{Y}$ is safe thus $\tilde{u}(x)$ stated in \autoref{eq:utilde} can be used in this region.}
 \label{tab:intervals}
 \end{table}
 As the control law stated in \autoref{eq:control_law} utilizes Lie derivatives, a system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
-\section{Modelling of Slide Movement}
+\section{Modelling of Slide Movement}\label{sec:model_slide}
 To obtain a model of the slide movement, the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. The result is plotted in \autoref{fig:stepresponseslide}. 
 \begin{figure}[H]
 \center
@@ -36,7 +36,7 @@ To obtain a model of the slide movement, the step response will be measured.  Th
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}. The experiment is described in \autoref{app:meas}.}
 \label{fig:stepresponseslide}
 \end{figure}
-The system can clearly be well approximated with an underdamped second order model, however, for initial simplicity, merely a simple first order model of the slide movement is used. It shall, however, also be approximated as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referenced as:
+The system can clearly be approximated with an underdamped second order model, however, for initial simplicity, merely a simple first order model of the slide movement is used. It shall, however, also be approximated as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referenced as:
 \begin{itemize}
 \item One dimensional (1D) slide movement along the $z-$axis based on \underline{position} only, hence a first order system model.
 \item One dimensional (1D) slide movement along the $z-$axis based on \underline{position and velocity}, hence a second order system model.
@@ -79,7 +79,7 @@ The model can unambiguous be approximated from the rise time $t_r$, settling tim
 \begin{flalign*}
 \omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
-\Autoref{eq:2order} can be transferred to state space form: {\color{green}{RAFAL: Giver den mening ifm barriere funktioner!!!!????? Vi bliver n\o dt til at diskutere det lidt. Vi er is\ae r i tvivl om hvad nul er og hvad det betyder at nul er en position, hvorimod (?) nul i barriere certifikater virker som v\ae rende noget vi ikke kan kontrollere..}}
+\Autoref{eq:2order} can be transferred to state space form: 
 \begin{subequations}
 \begin{flalign}
 &Y(s)s^2 + 2\zeta \omega_n Y(s) s + \omega_n^2 Y(s) - \omega_n^2 U(s)  = 0 \\
@@ -105,13 +105,13 @@ x_1(t) \\ x_2(t)
 \vspace{-0.6cm}
 \begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
 Where  & & \\
-$x_1(t)$ is the position (attenuated by $\omega_n^2$) & [m] \\
+$x_1(t)$ is the position& [m] \\
 $x_2(t) = \dot{x}_1(t)$ is the velocity  & [m/s] \\
 $y(t)$ is the output (slide position)  & [m] \\
 $u(t)$ is the control input  & [$\cdot$]
 \end{longtable}
 \vspace*{-0.2cm}
-Thus:
+Thus the linear system matrices can be outlined as:
 \begin{flalign*}
 A = \begin{bmatrix}
 0 & 1\\
@@ -126,44 +126,35 @@ Which completes the second order model.
 
 \section{Construction of CBF}
 To illustrate the usefulness of \glspl{cbf}, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
-
-Consider the state intervals defined in \autoref{tab:intervals}.
-
-
+%
+%Consider the state intervals defined in \autoref{tab:intervals}.
+%
+%
 \subsection{Construction of CBF based on First Order Model}
-A parabola is now introduced as \gls{cbf}. A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
+In this subsection, the state vector $x \in \mathbb{R}$ consist of the position only. Thus, a parabola is now introduced as \gls{cbf} as it allows an easy way to define $\mathcal{X}_u$ and $\mathcal{X}_0$ from \autoref{tab:intervals}. %A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
 \begin{flalign}
-B(x) &= ax^2+bx+c \label{eq:cbf1} \kk \Rightarrow \\ L_fB(x) &= \dfrac{d}{dx}B(x)f(x) = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx \nonumber
+B(x) &= ax^2+bx+c \label{eq:cbf1} 
 \end{flalign}
-\Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_fB(x)<0 \in \mathcal{X}$ is therefore indeed sufficient. Analysis of $L_fB(x)$ shall reveal when $L_fB(x)>0$, i.e. to ensure the demand below:
-\begin{flalign*}
-L_fB(x) \ngeq 0\hspace{0.3cm}\forall\hspace{0.3cm} x \in [\Lambda_s:\Lambda_h]
-\end{flalign*}
-Thus the analysis is performed:
+This choice implies the $L_fB(x)$ shown below:
 \begin{flalign}
-L_fB(x) < 0 \kk \Leftrightarrow \kk -2\tau^{-1}ax^2-\tau^{-1}bx < 0
-\label{eq:analysis}
+L_fB(x) = \dfrac{d}{dx}B(x)f(x)\Bigm|_{f(x)=Ax}  = (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx \nonumber
 \end{flalign}
-The coefficients $a$ and $b$ must be found. By studying $x>0$ it can from \autoref{eq:analysis} be seen that:
+\Autoref{req2} put forth the demand that $L_fB(x)<0$ when $L_gB(x) = 0$ as the input in that case will be insignificant. Ensuring that $L_gB(x) \neq 0 \in \mathcal{X}$ is therefore indeed sufficient. Analysis of $L_gB(x)$ shall reveal when $L_fB(x)>0$. Thus the equation below is analysed:
 \begin{flalign*}
-\forall \mm \{ a > 0 \mm  \wedge \mm b > 0 \} \mm \Rightarrow \mm L_fB(x) < 0 \mm \forall \mm  x > 0
+L_gB(x) \Bigm|_{g(x)=B} = ( 2ax^2 + b ) \cdot \tau^{-1} = 0 \kk \Rightarrow \kk x = \dfrac{-b}{2a}
 \end{flalign*}
-The scenario changes when $x<0$. Preserving that $a>0$ and $b>0$, the analysis below put forth constraints to $x$.
+Which indeed is the critical point for a one dimensional parabola. Thus if $L_fB(x) \leq 0 \,\,\, \forall \, x = \frac{-b}{2a}$ the \gls{cbf} is valid. Thereby, $L_fB(x) = 0$ is analysed:
 \begin{flalign}
 &L_fB(x) = 0 \kk \Leftrightarrow \kk  -2\tau^{-1}ax^2-\tau^{-1}bx = 0 \nonumber
  \\  &-2ax^2-bx = 0 \mm \Rightarrow \mm x = 
 \begin{cases}
   \frac{-b}{2a} \\
-   0,             
+   0   
 \end{cases}
 \label{eq:interval1}
 \end{flalign}
-Thus, if $L_gB(x) = 0$, then $B(x)$ is not a valid barrier function within the interval:
-\begin{flalign}
-B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in \left[ \tfrac{-b}{2a},0 \right] \mm \text{if} \mm L_gB(x) = 0
-\label{eq:interval}
-\end{flalign}
-Three equations with three unknowns can be outlined to fulfil the initial demand in \autoref{fig:safe:overview}.
+Hence the \gls{cbf} is valid for all choices of $a,b$. The scalar $c$ must be less than zero to comply with \autoref{req3}.
+At this point in time, three equations with three unknowns can be outlined to fulfil the initial demand in \autoref{fig:safe:overview}.
 \begin{flalign*}
  \left.
  \begin{aligned}
@@ -176,14 +167,15 @@ a\left( \frac{\Lambda_{h-}+\Lambda_{h+}}{2}\right)^2 + b\left(\frac{\Lambda_{h-}
  a &= \,\,\,\,\,\,\,\,1.7778 \\ b &= \,\,\,\,\,\,\,\,0.0889 \\ c &= -0.0089
  \end{matrix}
 \end{flalign*}
-The interval where $B(x)$ is invalid can thereby be found from \autoref{eq:interval}:
-\begin{flalign*}
-B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250,0] \kk \text{if} \mm L_gB(x) = 0
-\end{flalign*}
-However, this is indifferent as $\{\mathcal{X} \,\bigcap\, [\Lambda_{s-},\Lambda_{s+}]  \} = \emptyset $. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
+%The interval where $B(x)$ is invalid can thereby be found from \autoref{eq:interval}:
+%\begin{flalign*}
+%B(x) \hspace{0.15cm} \text{invalid:} \mm  x \in [-0.0250,0] \kk \text{if} \mm L_gB(x) = 0
+%\end{flalign*}
+%However, this is indifferent as $\{\mathcal{X} \,\bigcap\, [\Lambda_{s-},\Lambda_{s+}]  \} = \emptyset $. Thus the barrier function is a valid \gls{cbf}. It is plotted in \autoref{fig:barrierfunction}
+The \gls{cbf} is plotted in \autoref{fig:barrierfunction} from where it is seen that the demands from \autoref{tab:intervals} is fulfilled.
 \begin{figure}[H]
 \center
-	\includegraphics[scale=0.5]{parabel_1.eps}
+	\includegraphics[scale=0.63]{parabel_1.eps}
 	\caption{Barrier function along with the $\mathcal{X}_u$ and $\mathcal{X}_u^c$. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_parabola/plot\_parabola.m}}
 	\label{fig:barrierfunction}
 \end{figure}
@@ -199,18 +191,18 @@ B(x_1) = a\,x_1^2+ b\,x_1 + c
 \end{flalign*}
 Thus:
 \begin{flalign*}
-L_gB(x_1) = \dfrac{\partial B(x_1)}{\partial x}g(x) \Bigm|_{g(x)=B} =  
+L_gB(x_1) = \dfrac{\partial B(x)}{\partial x}g(x) \Bigm|_{g(x)=B} =  
 \begin{bmatrix}
-\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
+\dfrac{\partial B(x)}{\partial x_1} & \dfrac{\partial B(x)}{\partial x_2} 
 \end{bmatrix}\begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} = 0 
 \end{flalign*}
-This put forth the requirement that $L_fB(x)<0$. Accordingly:
+This put forth the requirement that $L_fB(x)<0\,\,\, \forall \, x$. Accordingly:
 \begin{flalign}
-L_fB(x_1) &= \dfrac{\partial B(x_1)}{\partial x}f(x) \Bigm|_{f(x)=Ax} = 
+L_fB(x) &= \dfrac{\partial B(x)}{\partial x}f(x) \Bigm|_{f(x)=Ax} = 
 \begin{bmatrix}
-\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
+\dfrac{\partial B(x)}{\partial x_1} & \dfrac{\partial B(x)}{\partial x_2} 
 \end{bmatrix}
 \begin{bmatrix}
 1 & 0 \\
@@ -218,7 +210,7 @@ L_fB(x_1) &= \dfrac{\partial B(x_1)}{\partial x}f(x) \Bigm|_{f(x)=Ax} =
 \end{bmatrix} \begin{bmatrix}
 x_1 \\ x_2
 \end{bmatrix} \nonumber \\
-&= \dfrac{\partial B(x_1)}{\partial x_1} x_1 - \dfrac{\partial B(x_1)}{\partial x_2}2\zeta \omega_n x_1 - \dfrac{\partial B(x_1)}{\partial x_2} \omega_n^2 x_2 \nonumber \\
+&= \dfrac{\partial B(x)}{\partial x_1} x_1 - \dfrac{\partial B(x)}{\partial x_2}2\zeta \omega_n x_1 - \dfrac{\partial B(x)}{\partial x_2} \omega_n^2 x_2 \nonumber \\
 &= 2ax_1x_2 - x_2
 \label{eq:2d_x1}
 \end{flalign}
@@ -245,10 +237,10 @@ $c_2$ is a constant that dictate the offset in $B(\textbf{x})$ axis & [$\cdot$]
 The elliptic paraboloid allows constraints in both position and velocity. Safety constraints in velocity are not of any significant importance as such, but they are necessary for $L_gB(x_1,x_2)$ such that it can obtain values different than zero in oppose to \autoref{eq:2d_x1}. To ensure that the position demands from \autoref{tab:intervals} are still fulfilled and to ensure that the position demands are fulfilled for all possible velocities (constrained by the slide movements physical limits), the below values are chosen:
 \begin{flalign*}
 x_{10} &= \dfrac{\Lambda_{h-}+\Lambda_{h+}}{2} = -1/40 \\
-x_{2-} &= -4 \kk \text{denotion of the lowest value where $B(0,x_2)=0$} \\
-x_{2+} &= 4 \kk \text{denotion of the highest value where $B(0,x_2)=0$} 
+\Lambda_{x2-} &= -4 \kk \text{denotion of the lowest value where $B(0,x_2)=0$} \\
+\Lambda_{x2+} &= 4 \kk \text{denotion of the highest value where $B(0,x_2)=0$} 
 \end{flalign*}
-Note that $|x_{2-}|=|x_{2+}|$ to ensure velocity equilibrium in 0\,m/s and note that the velocity outermost points are determined far bigger than the robots physical limits to ensure $\mathcal{X}_0 \notin \mathcal{X}_u $. Six equations with six unknowns can be outlined with the below numerical values.
+Note that $|\Lambda_{x2-}|=|\Lambda_{x2+}|$ to ensure velocity equilibrium in 0\,m/s and note that the velocity outermost points are determined far bigger than the robots physical limits to ensure $\mathcal{X}_0 \notin \mathcal{X}_u $. Six equations with six unknowns can be outlined with the below numerical values.
 \begin{flalign*}
  \left.
  \begin{aligned}
@@ -310,9 +302,9 @@ The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:ba
 	\caption{CBF for the second order system model. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_cbf\_2d/plot\_cbf\_2d.m}}
 	\label{fig:barrierfunction_2d}
 \end{figure}
-It is from \autoref{fig:barrierfunction_2d} seen how the specified regions, i.e. $x_2 \in [x_{2-},x_{2+}]$ and $x_1 \in [\Lambda_{h-},\Lambda_{h+}]$, both fulfils that $B(x_1,x_2)<0$ and thus everything else is unsafe, i.e. $B(x) > 0$. It is also seen that $x_2$ is approximately vertical in the boundaries of $x_1$ when the big numerical difference in the axes are taken into account.
+It is from \autoref{fig:barrierfunction_2d} seen how the specified regions, i.e. $x_2 \in [\Lambda_{x2-},\Lambda_{x2+}]$ and $x_1 \in [\Lambda_{h-},\Lambda_{h+}]$, both fulfils that $B(x_1,x_2)<0$ and thus everything else is unsafe, i.e. $B(x) > 0$. It is also seen that $x_2$ is approximately vertical in the boundaries of $x_1$ when the big numerical difference in the axes are taken into account.
 
-\textbf{\underline{\textit{Remark:}}} The issue caused by $x_2=0$ is not only the case for this specific \gls{cbf} but for many \gls{cbf}s. Take for example another CBF that could fulfil the requirements:
+\textbf{\underline{\textit{Remark:}}} The issue caused by $x_2=0$ is not only the case for this specific \gls{cbf} but for many \gls{cbf}s. Take for example another CBF that could fulfil the position requirements from \autoref{tab:intervals}:
 \begin{flalign*}
 B(x_1,x_2) = \cos (c_3 x_1 + c_4) \cdot \cos (c_5 x_2 + c_6)
 \end{flalign*}
@@ -327,7 +319,8 @@ Thus $L_gB(x_1,x_2)$ can be found as:
 \begin{flalign*}
 L_gB(x_1,x_2) = -c_5 \omega_n^2 \cos (c_4-c_3 x_1)\sin(c_6 + c_5 x_2)
 \end{flalign*}
-Now note that when $c_6+c_5x_2 = \pi \,\, \Rightarrow \,\, L_gB(x_1,x_2) = 0$ such that when $x_2 \approx 0$ the CBF is again invalid. As $L_gB(x_1,x_2) \neq 0 \,\, \forall \,\, x_2 \approx 0$, requirements for $L_fB(x_1,x_2)$ is necessary. However, taking a look at $L_fB(x_1,x_2)$:
+Now note that when $c_6+c_5x_2 = \pi \,\, \Rightarrow \,\, L_gB(x_1,x_2) = 0$ such that $x_2 \approx 0$ implies the requirement that $L_fB(x_1,x_2) < 0 \,\,\, \forall \, x_2 \approx 0$. % As $L_gB(x_1,x_2) \neq 0 \,\, \forall \,\, x_2 \approx 0$, requirements for $L_fB(x_1,x_2)$ is necessary. 
+However, taking a look at $L_fB(x_1,x_2)$:
 \begin{flalign*}
 L_fB(x_1,x_2) = 
 c_5\cos (c_4 + c_3 x_1) \sin(c_6+c_5 x_2)(x_2 \omega_n^2 + 2 x_1 \zeta \omega_n) - c3 x_2 \cos(c_6 + c_5 x_2) \sin(c_4 + c_3 x_1)
@@ -426,13 +419,13 @@ $K$ is found in \autoref{eq:K_1} &
 \end{tcolorbox}
 This completes the control design based on a first order system approximation. 
 \subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
-To design the smoothing in the transition area $\Delta_t$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here, i.e $\sigma(x_1)$ from \autoref{eq:smoothness} is a function of position only. {\color{green}{RAFAL: Kan vi godt det?}}:
+To design the smoothing in the transition area $\Delta_t$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here, i.e $\sigma(x_1)$ from \autoref{eq:smoothness} is a function of position only. {\color{red}{Overvej om kriteriet skal v\ae re h\aa rdere??}}
 \begin{flalign}
-\sigma(x_1) = 
+\sigma(x) = 
 \begin{cases}
-0 & \text{if} \mm B(x_1) \leq -\epsilon \\
--2  \left( \dfrac{B(x_1)}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
-1  &\text{if} \mm B(x_1) \geq 0
+0 & \text{if} \mm B(x) \leq -\epsilon \\
+-2  \left( \dfrac{B(x}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
+1  &\text{if} \mm B(x) \geq 0
 \end{cases}
 \end{flalign} 
 \vspace{-0.8cm}
@@ -450,7 +443,7 @@ However, it is of interest to slow down the system dynamics slightly compared to
 -10.295 +14.765\, j
 \end{cases}
 \end{flalign*}
-The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself. {\color{green}{RAFAL: synes du vi b\o r have h\aa rdere design kriterier?}}
+The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself.
 \begin{flalign}
 K = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
 5.173  &  0.214
@@ -478,17 +471,20 @@ $K$ is found in \autoref{eq:K_2} &
 \vspace*{-0.2cm}
 \end{tcolorbox}
 This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation will be outlined first. 
+\vspace{-0.3cm}
 \section{MATLAB Results}
 The results shown in this section are based on the implemented controller found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts\_slide\_controller\_slide\_controller.m}. All plots are made with the following characteristics:
 \begin{itemize}
-\item The sampling rate is set to $f_s = 1\,$kHz (Expected long term sampling rate).
+\item The sampling rate is set to $f_s = 1\,$kHz (Expected sampling rate in the long run).
 \item The control signal is limited to $\pm 0.1$\,m (actual limit for slide movement).
 \item The velocity is limited to $\pm$1\,m/s (actual limit for slide movement).
 \item The forward euler method is used to extrapolate the states.
 \item The design parameter $\kappa$ from \autoref{eq:control_law} is set to $\kappa=1$ (neutral).
 \item The simulation time is 5\,s. Various setpoints ought to indicate the behaviour in different regions.
 \end{itemize}
-\subsection{MATLAB Results based on 1D Model}
+The \texttt{model} variable in line 7 in \autoref{app:slide_implement_1} is set to the number 1 for the first order model and 2 for the second order model. 
+\vspace{-0.3cm}
+\subsection{MATLAB Results based on First Order Model}
 The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
 \begin{figure}[H]
 	\center
@@ -520,8 +516,9 @@ For the record, the control signal is plotted in \autoref{fig:control1}.
 	\label{fig:control1}
 \end{figure}
 It is seen from \autoref{fig:control1} how the control signal reacts instantaneously and quite aggressive when $\Lambda_s$ is exceeded to counteract the large difference in setpoints given. It is also noted how the controller eventually settles smootly even when setpoints are given in the interval $[-\infty:\Lambda_{s-}]$ and $[\Lambda_{s+}:\infty]$. However, as the setpoints approaches $\pm \infty$, the sampling rate must also converge towards infinity. This is obviously not a realistic scenario as the slide movement is physically constrained.
-\subsection{MATLAB Results based on 2D Model}
-All plots shown in this section is based on the MATLAB implementation found in \autoref{app:slide_implement_1} where the \texttt{model} variable in line 7 is set to the number 2. The state trajectory composing slide position based on the second order model is shown in \autoref{fig:traject2}.
+\vspace{-0.3cm}
+\subsection{MATLAB Results based on Second Order Model}
+The state trajectory composing slide position based on the second order model is shown in \autoref{fig:traject2}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.6]{trajectory_slide_second_order_model_kappa_1.eps}
@@ -534,7 +531,7 @@ The Lie derivatives are plotted in \autoref{fig:lie2}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.6]{Lie_slide_2d.eps}
-	\caption{Lie derivatives. It is seen how $L_gB(x_1,x_2) = 0 \wedge L_fB(x_1,x_2) = 0$ at the same time which in general is critical but accepted in this specific case as it is caused by $x_2=0$ which implies $u(x)=0 \,\,\, \Rightarrow \,\,\, x_1 \rightarrow 0$ which is safe. {\color{green}{RAFAL: Er det noget lort eller hvad?}}.}
+	\caption{Lie derivatives. It is seen how $L_gB(x_1,x_2) = 0 \wedge L_fB(x_1,x_2) = 0$ at the same time which in general is critical but accepted in this specific case as it is caused by $x_2=0$ which implies $u(x)=0 \,\,\, \Rightarrow \,\,\, x_1 \rightarrow 0$ which is safe.}
 	\label{fig:lie2}
 \end{figure}
 The constrained control signal is plotted in \autoref{fig:control2}
