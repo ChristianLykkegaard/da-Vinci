@@ -5,7 +5,7 @@ Casting the controller design problem as an optimization problem with constraint
 Furthermore, \gls{mpc} is mostly used in systems with slow dynamics, i.e. dynamics where the time constant is measured in seconds or even minutes \citep{bib:mpc_slow}. This is obviously due to heavy online computations and numerous iterations. Systems containing these time constants are usually thermal systems and not mechanical systems. Additionally, the feasibility of the optimization problem is not very transparent and it is well known that \texttt{cvx} is very likely to crash due to infeasibility.
 %, but a hard constraint would fail to follow the dynamics of a moving area boundary such as a beating heart. 
 
-Another very elegant and computationally efficient approach to the safe controller analysis and design problem is the use of barrier certificates, which provide a formal proof of safe operation in infinite time horizon \citep{bib:barrier_prajna,bib:safety}. This chapter describes the requirements for the construction of barrier certificates along with notation used in relation to these.
+Another very elegant and computationally efficient approach to the safe controller analysis and design problem is the use of barrier certificates, which provide a formal proof of safe operation in infinite time horizon \citep{bib:prajna_framework,bib:safety}. This chapter describes the requirements for the construction of barrier certificates along with notation used in relation to these.
 %
 
 
@@ -31,7 +31,7 @@ where &  \\
 \end{tabular}\\
 
 Consider a subspace of the state-space $\mathcal{X}\subseteq\mathbb{R}^n$ defining e.g. the physically feasible states for the system in \autoref{eq:general_statespace}. Within this region $\mathcal{X}$, define the two non-intersecting subspaces $\mathcal{X}_u\subset\mathcal{X}$ and $\mathcal{X}_0\subseteq\mathcal{X}$, defining an unsafe  and a safe region, respectively. The unsafe region contains the states which the trajectory of the system must never enter, e.g. for a surgical robot this space could be the collection of veins and organs near the operation site, for which perforation is prohibited. The safe region contains all the states which the trajectory of the system is allowed to and may be required to enter, e.g. the operation site and a region for entering the area in the abdomen.
-Now safety of a closed-loop control system is given according to \citep{bib:safety,bib:barrier_prajna} as:
+Now safety of a closed-loop control system is given according to \citep{bib:safety,bib:prajna_framework} as:
 %\begin{exa}
 
 \begin{exa}[Safety of a System]\label{def:safety}
@@ -72,7 +72,7 @@ A graphical interpretation of \autoref{eq:defsafety} is shown in \autoref{fig:de
 
 Disturbances are not considered in the scope of this project, and hence $d\in D$ is considered to be zero in the remainder of this thesis.
 
-For the system in \autoref{eq:general_statespace} safety can be guaranteed if a barrier certificate for the system exists. A barrier certificate is defined as a function of the system state, satisfying a set of inequalities, entailing that its zero level set in the state space forms a barrier between the safe set of initial states $\mathcal{X}_0$ and the unsafe set $\mathcal{X}_u$, thereby certifying system safety \citep{bib:barrier_prajna}.
+For the system in \autoref{eq:general_statespace} safety can be guaranteed if a barrier certificate for the system exists. A barrier certificate is defined as a function of the system state, satisfying a set of inequalities, entailing that its zero level set in the state space forms a barrier between the safe set of initial states $\mathcal{X}_0$ and the unsafe set $\mathcal{X}_u$, thereby certifying system safety \citep{bib:prajna_framework}.
 
 
 If a barrier certificate can be defined, safety can be guaranteed for the closed-loop system in the region $\mathcal{X}$, with unsafe region $\mathcal{X}_u$, defined by positive values of the barrier function, and (safe) initial region $\mathcal{X}_0$, defined by non-positive values of the barrier function. In the below the notation $L_{f_{cl}}B(x)$ denotes the Lie derivative of \gls{bar} along the vector field of the closed-loop system $f_{cl}(x)$, corresponding to the time derivative of the barrier function i.e.
@@ -83,7 +83,7 @@ L_{f_{cl}}B(x)=\frac{dB(x)}{dx}f_{cl}(x)=\frac{dB(x)}{dx}\frac{dx(t)}{dt}=\frac{
 Requiring that the time derivative of the barrier function must be nonpositive on the entire set $\mathcal{X}$ (see \autoref{def:barrier_certificate}) corresponds to the value of the barrier function decreasing over time, hence seeking the minimum of the (convex) barrier certificate. Requiring the trajectory of the state to start within the safe set $\mathcal{X}_0$ this means that the trajectory will never cross the zero level set and enter the unsafe set $\mathcal{X}_u$, as this set only contains values of the barrier function larger than the initial value.
 
 \begin{exa}[Barrier Certificate]\label{def:barrier_certificate}	
-If a barrier certificate can be constructed as a continuous and differentiable function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following inequalities  \citep{bib:barrier_prajna}:
+If a barrier certificate can be constructed as a continuous and differentiable function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following inequalities  \citep{bib:prajna_framework}:
 \begin{subequations}\label{eq:barrier_constraints}
 \begin{flalign}
 B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0  \label{cer1}\\
