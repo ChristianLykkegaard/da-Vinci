@@ -62,7 +62,7 @@ A sequence of configurations is implemented as
 where each matrix $T$ is a function of a rotation angle $\theta$ and a translation distance, which may be functions of time.
 
 
-\section{Existing Kinematics for the AAU da Vinci Robot}
+\section{Existing Kinematics for the AAU da Vinci Robot}\label{sec:existing_kinematics}
 The position of the end-effector (the tip of the instrument) given in an inertial frame can be described as a sequence of joint rotations of the robot and the instrument, and translation from the inertial origin via the fixed-length links and the slide of the instrument.
 
 A coordinate frame is defined for each degree of freedom, with origin on the axis of rotation. A set of coordinate frames and transformation matrices between the frames are given according to the \gls{ros} \texttt{xacro} files \texttt{tower}, \texttt{p4\_arm}, \texttt{remote\_center\_manipulator} and \texttt{needle\_driver}.
@@ -74,7 +74,7 @@ A coordinate frame is defined for each degree of freedom, with origin on the axi
 \vspace{5mm}\\
 \hspace*{-15mm}
 \subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.15\textwidth]{p4_hand_xacro_frames.pdf}\label{fig:p4_hand_xacro_frames}}%
-\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{14}$ according to the \gls{ros} \texttt{xacro} files.}
+\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_1$, ..., $\Psi_{14}$ according to the \gls{ros} \texttt{xacro} files.}
 \label{fig:robot_xacro_frames}
 \end{figure}
 
@@ -327,7 +327,7 @@ $|\,^0_{14} p|$ & 217.15 & 207
 
 
 %\vspace*{-3mm}
-\section{Defining Kinematics According to Denavit-Hartenberg Convention}
+\section{Defining Kinematics According to Denavit-Hartenberg Convention}\label{sec:denavit_hartenberg}
 \vspace{-2mm}
 In order to simplify calculations, the robot coordinate frame convention \gls{dh} is adapted, and a new set of coordinate frames and transformation matrices are established. According to the \gls{dh} convention a frame is placed such that
 \begin{itemize}
@@ -372,7 +372,7 @@ The placement of coordinate frames according to the \gls{dh} convention is shown
 	\vspace{5mm}\\
 	\hspace*{-15mm}
 	\subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.15\textwidth]{p4_hand_DH_frames.pdf}\label{fig:p4_hand_DH_frames}}%
-	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{14}$ defined according to the \gls{dh} convention.}
+	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_1$, ..., $\Psi_{14}$ defined according to the \gls{dh} convention.}
 	\label{fig:robot_DH_frames}
 \end{figure}
 
@@ -580,7 +580,7 @@ frame  & $a$ ($x$)  & $b$ ($y$)  & $d$ ($z$)  & roll  & pitch & yaw & $\theta^*$
 	\vspace{5mm}\\
 	\hspace*{-15mm}
 	\subbottom[Coordinate frames for the joints on the robot hand and instrument.]{\includegraphics[width=1.15\textwidth]{p4_hand_compromise_frames.pdf}\label{fig:p4_hand_compromise_frames}}%
-	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_b$, $\Psi_1$, ..., $\Psi_{12}$ defined according to the compromise between the \gls{dh} convention and the \texttt{xacro} convention.}
+	\caption{Orientation and position of coordinate frames $\Psi_0$, $\Psi_1$, ..., $\Psi_{12}$ defined according to the compromise between the \gls{dh} convention and the \texttt{xacro} convention.}
 	\label{fig:robot_compromise_frames}
 \end{figure}
 
