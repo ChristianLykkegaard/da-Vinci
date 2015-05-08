@@ -122,12 +122,12 @@ Searching for a barrier certificate in SOSTOOLS require the definition of all of
 \renewcommand{\labelitemiii}{$\bullet$}
 \begin{itemize}
 \itemsep-0.5mm
-\item \textbf{Declare the Variables}\\
-First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{syms} or \texttt{pvar}, and initialize the SOS program with the system states.
+\item \textbf{Initialize the Program}\\
+First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{syms} or \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
 \item \textbf{Define the Vector Field}\\
 The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}$ in terms of the symbolic state vector.
 \item \textbf{Set up the Constraints on the Polynomial Barrier Certificate}\\
-Declare a monomial vector $Z$ in $x$ (or part of $x$) of sufficiently large degree, and parametrize the polynomial $B(x)$ as a function of $Z$ with \texttt{sospolyvar}.  
+Declare a monomial vector $Z_B$ in $x$ (or part of $x$) of sufficiently large degree, and parametrize the polynomial $B(x)$ as a function of $Z_B$ with \texttt{sospolyvar}.  
 The problem of finding the coefficients for the barrier certificate is now for each region $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ a matter of defining the following:
 \vspace*{-1mm}
 \begin{itemize}
@@ -145,7 +145,7 @@ The problem of finding the coefficients for the barrier certificate is now for e
 	Note that each expression in the inequalities of \autoref{eq:barrier_constraints_putinar} must have even degrees in the leading and trailing terms in order for the equality in \autoref{eq:putinar_sos} to hold.
 \end{itemize}
 \item \textbf{Solve the SOS Program}\\
-With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Otherwise it can be concluded that safety cannot be guaranteed of the closed-loop system under scrutiny. 
+With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Otherwise it can be concluded that safety cannot be guaranteed of the closed-loop system under scrutiny. 
 \end{itemize}
 
 
@@ -173,7 +173,7 @@ This section presents an example of a state $x\in\mathbb{R}$ controlling a 1D fi
 tau = 0.11; % time constant for the robot slide
 A = -1/tau;
 B = 1/tau;
-k = place(A,B,[-10*1/tau]);
+K = place(A,B,[-10*1/tau]);
 \end{lstlisting}
 Then the symbolic state variables are declared for the SOS program, and the program is initialized.
 \begin{lstlisting}[language=matlab]
@@ -187,7 +187,7 @@ prog = sosprogram(x1);
 The vector field or derivative of the state can now be defined in terms on the symbolic state variable.
 \begin{lstlisting}[language=matlab]
 % Vector field dx/dt = fx (closed loop)
-fx = (A-B*k)*x1;
+fx = (A-B*K)*x1;
 \end{lstlisting}
 For ease of defining a (1D) function $g$ that is positive on an interval [$p_1\,\,\, p_2$], a parabola function is used.
 \begin{lstlisting}[language=matlab]

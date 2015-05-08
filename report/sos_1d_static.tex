@@ -12,7 +12,7 @@ First a linear open-loop state space system is defined according to the measurem
 \end{equation} 
 which can be recast as the augmented state-space system
 \begin{equation}
-\dot{x}=
+\dot{\tilde{x}}=
 \dot{\begin{bmatrix}
 	x_1\\x_{ref}
 	\end{bmatrix}} =
@@ -23,29 +23,193 @@ A-BK&B\bar{N}\\0&0
 x_1\\x_{ref}
 \end{bmatrix}
 = f_{cl}(x)
+\label{eq:xtilde_1storder_1D}
 \end{equation}
 with no dynamics on the reference. A controller $K$ is found according to pole placement as described in \autoref{sec:K_Nbar_1D_1storder}, i.e. for the first order 1D system in \autoref{eq:1D_1storder} a controller that is 10 times faster than the system will be $K=9$. Similarly the system scaling factor $\bar{N}$ is determined according to the method described in \autoref{sec:K_Nbar_1D_1storder} as $\bar{N}=10$.
 The independent state variables are defined and the SOS program initialized as described in \autoref{sec:app_sostools_barrier_search}.
 
-Now the $g_j$ functions in \autoref{eq:barrier_constraints_putinar} are constructed according to \autoref{fig:safe:overview}:
-\begin{itemize}
-%\itemsep-1.3mm
-\itemsep-0.7mm
-\item The set $\mathcal{X}$ is defined by constructing a (second order polynomial) function $g_{1}(x_1)\geq 0 \in [\Lambda_{\text{lim}-},\Lambda_{\text{lim}+}]= [-0.1,0.1]$\,m, delimiting the region of possible robot tool positions, and another function $g_2(x_{ref})\geq 0 \in [\Lambda_{h-}+\Delta,\Lambda_{h+}-\Delta]=[-0.1+\Delta,0.05-\Delta]$\,m, delimiting the region of allowable reference positions 
-\end{itemize}
+%Now the $g_j$ functions in \autoref{eq:barrier_constraints_putinar} are constructed according to \autoref{fig:safe:overview}:
+%\begin{itemize}
+%%\itemsep-1.3mm
+%\itemsep-0.7mm
+%\item The set $\mathcal{X}$ is defined by constructing a (second order polynomial) function $g_{1}(x_1)\geq 0 \in [\Lambda_{\text{lim}-},\Lambda_{\text{lim}+}]= [-0.1,0.1]$\,m, delimiting the region of possible robot tool positions, and another function $g_2(x_{ref})\geq 0 \in [\Lambda_{h-}+\Delta,\Lambda_{h+}-\Delta]=[-0.1+\Delta,0.05-\Delta]$\,m, delimiting the region of allowable reference positions 
+%\end{itemize}
 
+The linear first order system from \autoref{eq:1storder_1D_ss} is defined with the same pole placement controller and thereby system gain as in \autoref{eq:K_1} and \ref{eq:barm_1}, and the same regions/intervals assigned for $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ as given in \autoref{fig:safe:overview} - see \autoref{fig:intervals_for_sos}.
+\begin{lstlisting}[language=matlab]
+% 1D system WITH STATIC REFERENCE
+clear all; clc; 
 
-%Now declare the state space variables as \verb|syms| or \verb|pvar|, initialize the SOS program with the system states and write the closed-loop system equation $f_{cl}$ with the symbolic state vector.
-%
-%For the system defined, make a function $g$ that is positive in the region that will be defined as $\mathcal{X}$ i.e. has its zero level set at the desired border of the region. Make an SOS variable $q$ from a monomial vector in the state variables of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible). Finally declare $B$ as an SOS polynomial with a monomial vector of appropriate degree and set up the SOS inequality according to Putinar's Positivstellensatz in
-%
-%
-%
-%Similarly, the region $\mathcal{X}_u$ can be defined as the surface of the heart, i.e. for the 1D case the robot tool is in the unsafe region if it is below the surface of the heart (if $x_2>x_1$), using the inequality on $B(x)$ in \autoref{cer2_app}.
-%%Additionally a physical amplitude constraint for the heart of 2\,cm is included in the definition of $\mathcal{X}_u$.
-%
-%And finally the region $\mathcal{X}_0$ is defined as an area above the sine amplitude of the heart, in this case within slide positions 5-7\,cm, using the SOS inequality \autoref{cer1_app}. 
-%\textcolor{red}{Careful, the amplitude of the sine is not anywhere in the equations, maybe there should be a constraint on the maximum value of x2 or x3? where?}
-%
-%\section{Safety Verification of Second Order System}
-%2nd order model in \autoref{eq:2ndorder_1D_ss}, determine K and Nbar in \autoref{sec:K_Nbar_1D_2ndorder} \textcolor{red}{Not written yet}
+% Time constant from measurement
+tau = 0.11;
+% State-space matrices from first order open-loop system
+A = -1/tau;
+B = 1/tau;
+% Setpoint controller that is xx times faster than the system
+xx = 10;
+K = place(A,B,[xx*A]);
+
+C = 1;
+D = 0;
+Acl = A-B*K;
+sysol = ss(A,B,C,D);
+syscl = ss(Acl,B,C,D);
+
+% Internal gain in the system for compensation of the reference
+Nbar = -inv(C*inv(A-B*K)*B+D);
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+Xmax = 0.1;
+Xmin = -0.1;
+Xumax = Xmax;
+Xumin = 0.05;
+X0max = Xumin;
+X0min = Xmin;
+\end{lstlisting}
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.6\textwidth]{intervals_for_sos.pdf}
+\caption{Intervals for the 1D case study, where the solid black line represents the interval $\mathcal{X}=\{x_1\in [-0.1, 0.1]\}$, and the interval $\mathcal{X}_0$ defines the interval where $B(x)\leq 0$, while $\mathcal{X}_u$ defines the interval where $B(x)>0$, separated from the zero level set by the small distance $\epsilon$. The interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$ is the interval of positions from which a reference can be taken $x_{ref}\in\mathcal{X}_{0\Delta}$. This interval is slightly smaller than the safe initial set $\mathcal{X}_0$, separated from the zero level set of $B(x)$ by the small distance $\Delta$.}
+\label{fig:intervals_for_sos}
+\end{figure}
+
+The small $\epsilon>0$ from \autoref{cer2_putinar} is defined "as small as possible", and another small $\Delta>0$ is introduced in order to be test for validity of a controller with references within the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$ with a distance of at least $\Delta$ to the zero level set of $B(x)$, see \autoref{fig:intervals_for_sos}.
+\begin{lstlisting}[language=matlab]
+% Distance reference should keep to the unsafe region
+delta = 0.001;
+
+% Distance which the unsafe region is allowed to deviate from the desired zero level set specified by the g(x) defining Xu
+epsilon = 0.00001;
+\end{lstlisting}
+The SOS program is initialized with the augmented state $\tilde{x}$ and thereby vector field as defined in \autoref{eq:xtilde_1storder_1D}. 
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Control Barrier Function Search for 1D system WITH STATIC REFERENCE
+pvar x1 xref
+xtilde = [x1; xref];
+
+% =============================================
+% First, initialize the sum of squares program
+prog = sosprogram(xtilde);
+
+% =============================================
+% Vector field dt/dx = fx (closed loop)
+fx = [A-B*K B*Nbar; 0 0]*xtilde;
+\end{lstlisting}
+The polynomial $B(x)$ is declared in as small degree "as possible". If any odd-order functions $g_j$ exist, $B(x)$'s leading term should be of an even degree higher than the uneven degree of the leading term of that $g_jq_j$. \textcolor{red}{It is considered that $B(x)$ should only be a function of the position and not of the reference, as the controller is considered as a static position setpoint controller for one single reference, and the program then tests the set of controllers, each with a setpoint within the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$, for safety.}
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Declare polynomial degree of barrier function (FUNCTION OF BOTH X1 AND XREF?)
+zB = monomials(x1,0:4);
+[prog,Bar] = sospolyvar(prog,zB);
+\end{lstlisting}
+As $B(x)$ should be valid for the set $\mathcal{X}$, $\mathcal{X}$ is defined by $g_1(x_1)$ being positive on the slide interval, \textcolor{red}{and simultaneously $g_2(x_{ref})$ being positive on the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$.} See \autoref{fig:intervals_for_sos} and \ref{fig:1D_static_gfunctions}.
+
+\begin{figure}[htbp]
+	\hspace*{-5mm}
+\subbottom[The $g(x_1)$ functions defining the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$.]{\includegraphics[width=0.55\textwidth]{1stordersys_staticlimits_g.pdf}\label{fig:1stordersys_staticlimits_g}}%
+\hspace{-2mm}
+\subbottom[The function $g(x_{ref})$ also used to define $\mathcal{X}$.]{\includegraphics[width=0.55\textwidth]{1stordersys_staticlimits_gref.pdf}\label{fig:1stordersys_staticlimits_gref}}%
+\caption{The functions $g$ used to define the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ by the interval in which they are positive, i.e. $\mathcal{X}_u$ is defined by the interval where $g_{X_u}(x_1)$ is positive in \autoref{fig:1stordersys_staticlimits_g}. In the definition of the set $\mathcal{X}$, corresponding to the space where the barrier certificate is valid, also a function $g$ of the reference/setpoint is used. This means that the barrier certificate is valid for all controllers with setpoint within the interval where $g(x_{ref})$ is positive.}
+\label{fig:1D_static_gfunctions}
+\end{figure}
+
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Define space X in Rn
+
+% Define g1(x1) to be positive on the region that we want X to encompass
+[a,b,c]=parabola(Xmin,Xmax); % get coefficients for parabola
+gX1 = a*x1^2+b*x1+c;
+
+% Declare SOS polynomials q1(xtilde) in the full state (CHOICE OF DEGREEE?)
+zX1 = monomials(xtilde,0:2); 
+[prog,qX1] = sossosvar(prog,zX1);
+
+% With g2(xref) define X only on the interval of allowed references
+[a,b,c]=parabola(X0min+delta,X0max-delta);
+gX2 = a*xref^2+b*xref+c;
+
+% Declare SOS polynomials q2(xtilde) (CHOICE OF DEGREE?)
+zX2 = monomials(xtilde,0:2);
+[prog,qX2] = sossosvar(prog,zX2);
+
+% Setup SOS inequality according to Putinar's Positivstellensatz
+prog = sosineq(prog,-[diff(Bar,x1) diff(Bar,xref)]*fx-gX1*qX1-gX2*qX2);
+\end{lstlisting}
+The unsafe set is defined as the interval where the position $x_1$ takes values between 5 and 10\,cm, see \autoref{fig:intervals_for_sos} and \ref{fig:1D_static_gfunctions}. \textcolor{red}{It is not clear whether also the reference should be part of the definition of $\mathcal{X}_u$ (with a $g_2(x_{ref})$ positive on the same interval as $g_1(x_1)$), it has been tested both with and without, but there is no clear indication from the results that is should or should not be included.}
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Define space Xu in X
+
+% Define g1(x1) to be positive on the region that we want Xu to encompass
+[a,b,c]=parabola(Xumin,Xumax);
+gXu1 = a*x1^2+b*x1+c;
+
+% Declare SOS polynomials q1(xtilde) in the full state (CHOICE OF DEGREEE?)
+zXu1 = monomials(xtilde,0:3);
+[prog,qXu1] = sossosvar(prog,zXu1);
+
+% With g2(xref) define Xu outside the interval of allowed references
+[a,b,c]=parabola(Xumin,Xumax);
+gXu2 = a*xref^2+b*xref+c;
+
+% Declare SOS polynomials q2(xtilde) (CHOICE OF DEGREE?)
+zXu2 = monomials(xtilde,0:3);
+[prog,qXu2] = sossosvar(prog,zXu2);
+
+% Setup SOS inequality according to Putinar's Positivstellensatz
+prog = sosineq(prog,Bar-epsilon-gXu1*qXu1);%-gXu2*qXu2);
+\end{lstlisting}
+\textcolor{red}{The same is the case for the definition of $\mathcal{X}_0$; it is defined as the safe position region, and it has been tested with and without the requirement of references in the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$.}
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Define space X0 in X
+
+% Define g1(x1) to be positive on the region that we want X0 to encompass
+[a,b,c]=parabola(X0min,X0max);
+gX01 = a*x1^2+b*x1+c;
+
+% Declare SOS polynomials q1(xtilde) in the full state (CHOICE OF DEGREEE?)
+zX01 = monomials(xtilde,0:4);
+[prog,qX01] = sossosvar(prog,zX01);
+
+% With g2(xref) define X0 only on the interval of allowed references
+[a,b,c]=parabola(X0min+delta,X0max-delta);
+gX02 = a*xref^2+b*xref+c;
+
+% Declare SOS polynomials q2(xtilde) (CHOICE OF DEGREE?)
+zX02 = monomials(xtilde,0:3);
+[prog,qX02] = sossosvar(prog,zX02);
+
+% Setup SOS inequality according to Putinar's Positivstellensatz
+prog = sosineq(prog,-Bar-gX01*qX01);%-gX02*qX02);
+\end{lstlisting}
+In most cases the solution found has a leading term coefficient of order between -4 and -2, but very often the value of $B(x)$ is either positive or negative on the entire interval [-0.1,0.1]. \textcolor{red}{Strangely, in all tested combinations, $L_{f_{cl}}B(x)$ is positive-valued on an interval approximately [-0.02,0]. This and the fact that the zero level set of the barrier in no case is in $x=0.05$ makes it seem like we still haven't formulated the problem correctly in terms of the SOS description. We could use a little help to see what we do wrong.} 
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Solve for B
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bar)
+
+dBdx = [diff(getB,x1) diff(getB,xref)]
+
+% =============================================
+% Plot B and LfclB
+figure
+subplot(1,2,1);
+Bx = plotB(getB,[Xmin,Xmax],0);
+subplot(1,2,2);
+LfclB = plotLfclB(dBdx,A,B,C,D,K,Nbar,[Xmin,Xmax]);
+\end{lstlisting}
+
+\textcolor{red}{It has been tried tweaking the constants $\epsilon$ and $\Delta$ as well as testing with all the monomial degrees $Z_B$, $Z_{X1}$, $Z_{X2}$, $Z_{u1}$, ($Z_{u2}$), $Z_{01}$, ($Z_{02}$), in degrees 0:2, 0:3, 0:4, and in/excluding the constraints from $x_{ref}$ on $\mathcal{X}_u$ an $\mathcal{X}_0$, but in no case $B(x)$ attains a shape that remotely reflects the requirements (on $x_1$) for $\mathcal{X}_u$ an $\mathcal{X}_0$.}
+
+\begin{figure}[H]
+\subbottom[]{\includegraphics[width=0.5\textwidth]{barrier1.pdf}}%
+\subbottom[]{\includegraphics[width=0.5\textwidth]{barrier2.pdf}}%
+\hspace{1mm}
+\subbottom[]{\includegraphics[width=0.5\textwidth]{barrier3.pdf}}%
+\subbottom[]{\includegraphics[width=0.5\textwidth]{barrier4.pdf}}%
+\caption{Examples of generated barrier functions with different combinations of monomial degrees.}
+\end{figure}
