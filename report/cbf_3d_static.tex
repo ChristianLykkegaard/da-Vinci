@@ -213,7 +213,17 @@ B(x,y,z) = -\left(  \left(\frac{x-c_x}{r_x}\right)^2 + \left(\frac{y-c_y}{r_y}\r
 where&\\
 $[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid\\
 $[r_x\,\, r_y\,\, r_z]$ & is the length of the semi-axes of the ellipsoid\\
-\end{tabular}
+\end{tabular}\\
+
+An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, with $c= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $r=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$, the red ellipsoid enclosing the unsafe region $\mathcal{X}_u$, the one level set shown in black. Note that the function $-B(x,y,z)$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
+
+\begin{figure}[htbp]
+\centering
+\hspace*{-15mm}
+\includegraphics[width=0.7\textwidth]{zerolevelset_3d.pdf}
+\caption{Red marks the zero level set (and black marks the one level set, indicating that the ellipsoid encloses the region $\mathcal{X}_u$).}
+\label{fig:zerolevelset_3d}
+\end{figure}
 
 
 \section{Modelling of Robot Hand Movement}
