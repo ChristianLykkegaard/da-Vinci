@@ -1,6 +1,6 @@
 %\newgeometry{left=4.5cm,top=-0.5cm,bottom=2cm,textheight=28cm,includefoot,textwidth=16cm}
 \chapter*{Preface}
-%\vspace{-0.5cm}
+\vspace*{-2mm}
 This report documents the development process of a safe controller for automation of a surgical robot arm with patient safety guaranteed through barrier certificates. %, preventing the robot tool from entering predefined unsafe regions. 
 The access to robot measurement data and opportunity to implement a controller heavily benefits from the previous work carried out on the da Vinci surgical robot in the Control Laboratory at Aalborg University.
 The project is rated at 30 ECTS-points, and the work is conducted by the 4$^\text{th}$ semester group 1032 within the graduate program in Control and Automation at Aalborg University during the spring of 2015.
@@ -8,20 +8,20 @@ The project is rated at 30 ECTS-points, and the work is conducted by the 4$^\tex
 
 %The target group is supervisors, students and other interested parties at the School of Information and Communication Technology at the The Faculty of Engineering and Science.
 
-
+\vspace*{-2mm}
 \section*{Reading Guide}
 \vspace*{-2mm}
 The primary focus of this report is to design a controller and a barrier certificate, the certificate guaranteeing the safe control of a surgical robot, as an approach to draw closer to the possibility of implementing automated control tasks by surgical robots. 
 %Controllers and certificates are designed for static as well as dynamic boundaries of unsafe regions, such as e.g. a beating heart.
 After an introduction into surgical robotics and the definition of barrier certificates, the report is structured in three parts, describing two approaches to the design problem and a conclusion to the work
-\vspace*{-2mm}
+\vspace*{-3mm}
 \begin{itemize}
 \itemsep-1.4mm
 \item \autoref{part:cbf} Explicit approach: A barrier certificate is constructed and a safe controller is designed according to the method described in \citep{bib:org_control}.
 \item \autoref{part:putinar} Analytic approach: A controller is designed, criteria are constructed for a barrier certificate and  safety is verified by use of Putinar's Positivstellensatz.
 \item \autoref{part:closure} Discussion 
 \end{itemize}
-%\vspace{-0.2cm}
+\vspace*{-2mm}
 
 Symbols, acronyms and a glossary are presented in the nomenclature before the main report.
 A variant of the Harvard referencing is used for citations, with the author and publication year of the source given in square brackets, e.g. [Lasserre 78], and sources listed in the bibliography at the end of the main report. % contains all references used in the report. Books are indicated with author, title, publisher, year and ISBN. Web pages are indicated with author, title and year.
@@ -29,10 +29,10 @@ A variant of the Harvard referencing is used for citations, with the author and 
 A comprehensive appendix is included after the bibliography, containing introductions to the used software, detailed derivations, measurement logs and source code.
 A digital copy of this report along with cited references, source code and simulation results can be found on the enclosed CD.
 
-%\vspace{-0.5cm}
+\vspace*{-2mm}
 \section*{Acknowledgements}
 \vspace*{-2mm}
-The authors wish to thank electronics technologist Simon Jensen for a thorough introduction to the custom made AAU da Vinci hardware and design of a dynamic heart phantom platform; Ph.D. Tobias Leth for guidance in reference frame construction for robot kinematics; and not least Ph.D. Karl Damkj\ae r Hansen for an introduction to the AAU da Vinci robot operative system and help in implementing inverse kinematics.
+The authors wish to thank electronics technologist Simon Jensen for a thorough introduction to the custom made AAU da Vinci hardware and design of a dynamic heart phantom platform; Ph.D. Tobias Leth for guidance in reference frame construction for robot kinematics; and  Ph.D. Karl Damkj\ae r Hansen for an introduction to the AAU da Vinci robot operative system and help in implementing inverse kinematics. Last but not least we wish to thank chief surgeon at Aalborg University Hospital Johan Poulsen for \textcolor{red}{husk at skrive om interview og overvær af operation med robotten}
 
 %It is the wish of the authors to express a special appreciation to..
 
