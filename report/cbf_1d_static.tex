@@ -265,12 +265,12 @@ L_gB(x_1,x_2) &= \dfrac{\partial B(x_1,x_2)}{\partial x} \cdot \textbf{B} = \beg
 0 \\ \omega_n^2
 \end{bmatrix} \\
  &= \begin{bmatrix}
- \dfrac{c(2x_1 + 2x_{10})}{a^2} &  \dfrac{c(2x_2 + 2x_{20})}{b^2}
+ \dfrac{c_1(2x_1 + 2x_{10})}{a_2^2} &  \dfrac{c_1(2x_2 + 2x_{20})}{b_2^2}
 \end{bmatrix}  \begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} = 
-\dfrac{c\omega_n^2(2x_2+2x_{20})}{b^2} \Bigm|_{x_{20}=0} \\
-&= x_2\dfrac{2c\omega_n^2}{b^2}
+\dfrac{c_1\omega_n^2(2x_2+2x_{20})}{b_2^2} \Bigm|_{x_{20}=0} \\
+&= x_2\dfrac{2c_1\omega_n^2}{b_2^2}
 \label{eq:LgB_2}
 \end{flalign}
 It is seen that $L_gB(x_1,x_2) \neq 0 \mm \forall \,\,\, x_2 \neq 0$. $L_fB(x_1,x_2)$ is for that reason analysed:
@@ -289,8 +289,8 @@ x_1 \\ x_2
 \end{bmatrix} \begin{bmatrix}
 x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 \end{bmatrix} \\
-&= \dfrac{cx_2(2x_1+2x_{10})}{a^2} - c(2x_2-2x_{20})\dfrac{(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \Big|_{x_{20} = 0} \\
-&= x_2 \left( \dfrac{c(2x_1+2x_{10})}{a^2} - \dfrac{2c(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b^2} \right)
+&= \dfrac{c_1x_2(2x_1+2x_{10})}{a_2^2} - c_1(2x_2-2x_{20})\dfrac{(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b_2^2} \Big|_{x_{20} = 0} \\
+&= x_2 \left( \dfrac{c_1(2x_1+2x_{10})}{a_2^2} - \dfrac{2c_1(x_1\omega_n^2+2x_2\zeta \omega_n^2)}{b_2^2} \right)
 \label{eq:LfB_2}
 \end{flalign}
 It is noted that $L_fB(x_1,x_2) = 0 \mm \forall \,\,\, x_2 = 0$ which implies stability but not asymptotically stability. That is in general not good for physical systems and does neither fulfil \autoref{req2}. However, an engineering reflection and decision is taken at this point. Note that $x_2$ is nothing but the velocity and when $x_2 = 0$ the slide movement is steady. Thus $k_0(x)=0$ which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. It implies hereafter $x_2 \neq 0$ again which is sufficient for the safety controller. %That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. Lastly, the velocity will never be truly zero due to the finite resolution, i.e. a finite sampling rate. For these reasons, the \gls{cbf} from \autoref{eq:cbf2} is accepted, well aware that the \gls{cbf} is insufficient,. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
@@ -537,7 +537,7 @@ The Lie derivatives are plotted in \autoref{fig:lie2}.
 The constrained control signal is plotted in \autoref{fig:control2}
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.6]{control_signal_2.eps}
+		\includegraphics[scale=0.55]{control_signal_2.eps}
 	\caption{Control signal. It is seen how the it fluctuates heavily when $x_1 \in \Delta_t$ due to the position gradient.}
 	\label{fig:control2}
 \end{figure}
@@ -545,6 +545,13 @@ It is from \autoref{fig:control2} noted how the control signal fluctuates heavil
 
 The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outline safe and unsafe regions.
 \section{Implementation on the Da Vinci Robot}
+See \autoref{fig:traj_meas_1} for measured state trajectory with controllers calculated from a first order system approximation.
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.6]{trajectory_slide_meas_2.eps}
+	\caption{Measured position trajectory based on controller gains from first order system approximation.}
+	\label{fig:traj_meas_1}
+\end{figure}
 
 \subsection{Implementation on the Da Vinci Robot based on 2D Model}
