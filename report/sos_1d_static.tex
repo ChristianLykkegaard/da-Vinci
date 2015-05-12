@@ -213,3 +213,188 @@ LfclB = plotLfclB(dBdx,A,B,C,D,K,Nbar,[Xmin,Xmax]);
 \subbottom[]{\includegraphics[width=0.5\textwidth]{barrier4.pdf}}%
 \caption{Examples of generated barrier functions with different combinations of monomial degrees.}
 \end{figure}
+
+\newpage
+\section{New tests with SOSTOOLS}
+Different definitions of the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ are tested, presented in \autoref{fig:intervals_for_sos1}, \ref{fig:intervals_for_sos2} and \ref{fig:intervals_for_sos3}, with varying monomial degrees, and barrier dependency (on $x_1$ alone or on both $x_1$ and $x_{ref}$).
+
+Testing with $\Delta=1$e-4 and $\epsilon=1$e-10. All inequalities are set up as in \autoref{eq:barrier_constraints_putinar}.
+
+Tried to change unit of state from [m] to [cm] (i.e. multiplied limits with scaling factor):
+\begin{lstlisting}[language=matlab]
+% scaling factor = 1 for [meter], or 100 for [cm]
+scaling = 100;
+
+% Distance reference should keep to the unsafe region
+delta = 1e-4*scaling;
+
+% Distance which the unsafe region is allowed to deviate from the desired zero
+% level set specified by the g(x) defining Xu
+epsilon = 1e-10*scaling;
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+Xmax = 0.1*scaling;
+Xmin = -0.1*scaling;
+Xumax = Xmax;
+Xumin = 0.05*scaling;
+X0max = Xumin-delta;
+X0min = Xmin;
+\end{lstlisting}
+but this gives more or less the same solution, change is leading coefficient increased by an order of degree.
+
+\subsection{Case 1}\label{case1}
+\begin{figure}[htbp]
+\centering\includegraphics[width=\textwidth]{intervals_for_sos1.pdf}
+\caption{Only the set $\mathcal{X}$ is defined by both $x_1$ and $x_{ref}$, while $\mathcal{X}_0$ and $\mathcal{X}_u$ are independent of $x_{ref}$.}
+\label{fig:intervals_for_sos1}
+\end{figure}
+
+With sets defined as in \autoref{fig:intervals_for_sos1}:
+\begin{align}
+\mathcal{X} &= \begin{bmatrix} -0.1 & 0.1\end{bmatrix} \times \begin{bmatrix} -0.1 & 0.05-\Delta\end{bmatrix}\\
+\mathcal{X}_u &= \begin{bmatrix} 0.05 & 0.1\end{bmatrix} \times \mathbb{R}\\
+\mathcal{X}_0 &= \begin{bmatrix} -0.1 & 0.05-\Delta\end{bmatrix} \times \mathbb{R}
+\end{align}
+
+Letting $B(x_1,x_{ref})$, degree 0:4, gives solution with \texttt{feasratio=1}, while \texttt{numerr=1} in every case (however \texttt{res.norm=8e-7}) and leading term coefficient 1e-4. Plot of $B(x)$ looks "okay" (looks like function of equally much both states). Changing to $B(x_1)$ gives more or less the same except leading term coefficient 3e-9.
+
+In the figures datatips are marking (as close as possible) the zero level set.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde1.pdf}
+\caption{(\Autoref{case1}) Test with $B(x_1,x_{ref})$ of degree 0:2, and maximum monomial degrees $q_{X1}=2$, $q_{X2}=3$, $q_{Xu}=2$, $q_{X0}=4$. Not really a solution: \texttt{feasratio=0.6399}, \texttt{numerr=0}, \texttt{res.norm=4e-9} but leading term coefficient 1e-7.}
+\label{fig:Bxtilde1}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde2.pdf}
+\caption{(\Autoref{case1}) Same as in \autoref{fig:Bxtilde1} but with all monomial degrees 0:2. Not really a solution: \texttt{feasratio=0.9712}, \texttt{numerr=0}, \texttt{res.norm=1e-9} but leading term coefficient 2e-9.}
+\label{fig:Bxtilde2}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde3.pdf}
+\caption{(\Autoref{case1}) Same as in \autoref{fig:Bxtilde2} but with $B(x)$ monomial degree 0:4. Not really a solution: \texttt{feasratio=0.9992}, \texttt{numerr=0}, \texttt{res.norm=2e-7} but leading term coefficient 6e-8.}
+\label{fig:Bxtilde3}
+\end{figure}
+
+\newpage
+\subsection{Case 2}\label{case2}
+\begin{figure}[htbp]
+\centering\includegraphics[width=\textwidth]{intervals_for_sos2.pdf}
+\caption{All three sets are defined by both $x_1$ and $x_{ref}$, both defined in the same intervals (of the z-axis, corresponding to the slide axis).}
+\label{fig:intervals_for_sos2}
+\end{figure}
+
+With sets defined as in \autoref{fig:intervals_for_sos2}:
+\begin{align}
+	\mathcal{X} &= \begin{bmatrix} -0.1 & 0.1\end{bmatrix} \times \begin{bmatrix} -0.1 & 0.1\end{bmatrix}\\
+	\mathcal{X}_u &= \begin{bmatrix} 0.05 & 0.1\end{bmatrix} \times \begin{bmatrix} 0.05 & 0.1\end{bmatrix}\\
+	\mathcal{X}_0 &= \begin{bmatrix} -0.1 & 0.05-\Delta\end{bmatrix} \times \begin{bmatrix} -0.1 & 0.05-\Delta\end{bmatrix}
+\end{align}
+
+With this definition of the sets, the barrier certificate must be a function of both states: $B(x_1,x_{ref})$. Degree of barrier function tested with 0:2 and 0:4. Yields \texttt{feasratio=1}, \texttt{res.norm=8e-9}, leading coefficients approx 4e-4. However, plot reveals that $B(x)$ looks like it is "almost only" a function of $x_{ref}$ and not $x_1$ -- \textcolor{red}{why???}
+
+Tried to test with the barrier certificate only a function of the robot position: $B(x_1)$: no solution (leding term coefficient 8e-9).
+
+In general for all tests in this case \texttt{feasratio}$\approx 1$, while \texttt{numerr=1} in every case (however \texttt{res.norm} is in general of degree 1e-6 to 1e-9). Also blots of $B(x)$ all looks like it is "much more a function of" $x_{ref}$ than $x_1$, even when monomial degrees for $q$ polynomial-coefficients for $g(x_1)$ functions are set to be larger than those for the $g(x_{ref})$ functions.
+
+%Examples in the figures below.
+
+%\begin{figure}[h]
+%\centering\includegraphics[width=0.7\textwidth]{Bxtilde4.pdf}
+%\caption{(\Autoref{case2}) $B(x_1,x_{ref})$ of degree 0:4, all other monomials of degree 0:2. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=8e-8}, leading term coefficient 4e-5.}
+%\label{fig:Bxtilde4}
+%\end{figure}
+%\newpage
+\subsection{Case 3}\label{case3}
+\begin{figure}[htbp]
+\centering\includegraphics[width=\textwidth]{intervals_for_sos3.pdf}
+\caption{All three sets are defined by both $x_1$ and $x_{ref}$, both defined in the same intervals except for $\mathcal{X}_0$ which has a smaller interval of allowed values.}
+\label{fig:intervals_for_sos3}
+\end{figure}
+
+With sets defined as in \autoref{fig:intervals_for_sos1}:
+\begin{align}
+	\mathcal{X} &= \begin{bmatrix} -0.1 & 0.1\end{bmatrix} \times \begin{bmatrix} -0.1 & 0.1\end{bmatrix}\\
+	\mathcal{X}_u &= \begin{bmatrix} 0.05 & 0.1\end{bmatrix} \times \begin{bmatrix} 0.05 & 0.1\end{bmatrix}\\
+	\mathcal{X}_0 &= \begin{bmatrix} -0.1 & 0.05-\Delta\end{bmatrix} \times \begin{bmatrix} -0.1+\Delta & 0.05-2\Delta\end{bmatrix}
+\end{align}
+
+Results are much the same as for case 2, generally \texttt{feasratio}$\approx 1$, while \texttt{numerr=1} in every case (however \texttt{res.norm} is in general of degree 1e-6 to 1e-9).
+
+As seen from the figures below, again $B(x)$ looks like it is "mostly a function of" $x_{ref}$ and not so much $x_1$ (???)
+
+\begin{figure}[h]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde5.pdf}
+\caption{(\Autoref{case3}) $B(x_1,x_{ref})$ of degree 0:4, all other monomials of degree 0:2. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=1e-7}, leading term coefficient 9e-5.}
+\label{fig:Bxtilde5}
+\end{figure}
+
+\begin{figure}[h]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde6.pdf}
+\caption{(\Autoref{case3}) $B(x_1,x_{ref})$ of degree 0:4, all other monomials of degree 0:4. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=3e-6}, leading term coefficient 1e-3.}
+\label{fig:Bxtilde6}
+\end{figure}
+
+\begin{figure}[h]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde7.pdf}
+\caption{(\Autoref{case3}) $B(x_1,x_{ref})$ of degree 0:4,  monomials [used for $q$s multiplied with $g(x_1)$s] of degree 0:4 while monomials [used for $q$s multiplied with $g(x_{ref})$s] are of degree 0:2, to try to "weight" the $g(x_1)$ functions higher. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=1e-6}, leading term coefficient 8e-4.}
+\label{fig:Bxtilde7}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde9.pdf}
+\caption{(\Autoref{case3}) Same as in \autoref{fig:Btilde7}, now increased monomial degrees [used for $q$s multiplied with $g(x_1)$s] to 0:5. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=5e-6}, leading term coefficient 1e-2.}
+\label{fig:Bxtilde9}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde10.pdf}
+	\caption{(\Autoref{case3}) Same as in \autoref{fig:Bxtilde9}, now increased monomial degrees [used for $q$s multiplied with $g(x_1)$s] to 0:6. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=3e-6}, leading term coefficient 4e-2.}
+	\label{fig:Bxtilde10}
+\end{figure}
+
+\begin{figure}[H]
+	\centering\includegraphics[width=0.7\textwidth]{Bxtilde11.pdf}
+	\caption{(\Autoref{case3}) Same as in \autoref{fig:Bxtilde10}, now with all monomial degrees 0:6. \texttt{feasratio=0.9989}, \texttt{numerr=1}, \texttt{res.norm=1e-5}, leading term coefficient 6e-2.}
+	\label{fig:Bxtilde11}
+\end{figure}
+
+\begin{figure}[H]
+	\centering\includegraphics[width=0.7\textwidth]{Bxtilde12.pdf}
+	\caption{(\Autoref{case3}) Same as in \autoref{fig:Bxtilde11}, changed unit back from [cm] to [m] i.e. changed scaling to 1. \texttt{feasratio=1}, \texttt{numerr=0} \textcolor{red}{notice!}, \texttt{res.norm=1e-9}, leading term coefficient 5e-4. Looks like ONLY a function of $x_{ref}$ \textcolor{red}{why??}}
+	\label{fig:Bxtilde12}
+\end{figure}
+
+\begin{figure}[H]
+	\centering\includegraphics[width=0.7\textwidth]{Bxtilde13.pdf}
+	\caption{(\Autoref{case3}) Same as in \autoref{fig:Bxtilde11}, changed unit  to [mm] i.e. changed scaling to 1000. \texttt{feasratio=1.0001}, \texttt{numerr=1}, \texttt{res.norm=4e-6}, leading term coefficient 1e-2.}
+	\label{fig:Bxtilde13}
+\end{figure}
+
+
+
+
+
+\newpage
+\subsection{Case 4}\label{case4}
+\begin{figure}[htbp]
+\centering\includegraphics[width=\textwidth]{intervals_for_sos4.pdf}
+\caption{All three sets are defined by both $x_1$ and $x_{ref}$, both defined in the same intervals. Now $\mathcal{X}_0$ is slightly smaller than in the previous cases.}
+\label{fig:intervals_for_sos4}
+\end{figure}
+
+With sets defined as in \autoref{fig:intervals_for_sos1}:
+\begin{align}
+\mathcal{X} &= \begin{bmatrix} -0.1 & 0.1\end{bmatrix} \times \begin{bmatrix} -0.1 & 0.1\end{bmatrix}\\
+\mathcal{X}_u &= \begin{bmatrix} 0.05 & 0.1\end{bmatrix} \times \begin{bmatrix} 0.05 & 0.1\end{bmatrix}\\
+\mathcal{X}_0 &=\begin{bmatrix} -0.1+\Delta & 0.05-2\Delta\end{bmatrix} \times \begin{bmatrix} -0.1+\Delta & 0.05-2\Delta\end{bmatrix}
+\end{align}
+
+
+\begin{figure}[h]
+\centering\includegraphics[width=0.7\textwidth]{Bxtilde8.pdf}
+\caption{(\Autoref{case4}) $B(x_1,x_{ref})$ of degree 0:4,  monomials [used for $q$s multiplied with $g(x_1)$s] of degree 0:4 while monomials [used for $q$s multiplied with $g(x_{ref})$s] are of degree 0:2, to try to "weight" the $g(x_1)$ functions higher. \texttt{feasratio=1}, \texttt{numerr=1}, \texttt{res.norm=1e-6}, leading term coefficient 8e-4. \textcolor{red}{Exactly the same as without the $\Delta$-restriction on $\mathcal{X}_0$ with $x_1$.}}
+\label{fig:Bxtilde8}
+\end{figure}
