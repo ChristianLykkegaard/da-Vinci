@@ -77,7 +77,7 @@ $s$ is the Laplace operator  & [rad/s]
 \vspace*{-0.2cm}
 The model can unambiguous be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured (conservatively) with the purpose to find $\omega_n$ and $\zeta$:
 \begin{flalign*}
-\omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{1}{17 \cdot 0.320}\log(0.05) = 0.55
+\omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{-1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{-1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
 \Autoref{eq:2order} can be transferred to state space form: 
 \begin{subequations}
@@ -545,11 +545,30 @@ It is from \autoref{fig:control2} noted how the control signal fluctuates heavil
 
 The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outline safe and unsafe regions.
 \section{Implementation on the Da Vinci Robot}
-See \autoref{fig:traj_meas_1} for measured state trajectory with controllers calculated from a first order system approximation.
+The implementation constitutes the below listed bullet points:
+\begin{itemize}
+\item The controller will be implemented in C++. \textbf{Reason:} Along with Python, C++ is the two ROS compatible standards. The reason to use C++ over Python is to optimize the speed performance. Furthermore, it is the general opinion among ROS experts that C++ is more useful in robot simulations and development and lastly, the already exiting code at the Robotic Surgery Group - Aalborg University, is by far mostly developed in C++ . However, Python as a scripting language, may be more user friendly, easier to get started with and in many cases more readable.
+\item Real-time signal processing to ensure fixed sample rates. \textbf{Reason:} The observer matrices are built upon fixed sampling rates and for that reason it is crucial to comply with a fixed sample rate.
+\item Algorithm development to connect these two bullet points.
+\end{itemize}
+The controller is implemented at the highest abstraction layer, i.e. the ROS environment depicted in \autoref{fig:overview}. While ROS runs on most Linux laptops, it is not ROS itself that put fort limitations for real time signal processing, neither is it the potentiometers that measures the angle. The bottleneck is caused by the TCP/IP communication channel which according to Assistant Engineer Simon Jensen is limited to 100\,Hz. For that reason, the maximum execution time $c_{p,\text{max}}$ is:
+\begin{flalign*}
+c_{p,\text{max}} = \dfrac{1}{100\,\text{Hz}} = 10\,\text{ms}
+\end{flalign*}
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}
+The execution time is first validated as it is essential for the controller to complete successfully.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.6]{trajectory_slide_meas_2.eps}
+		\includegraphics[scale=0.6]{execution_time_2_order.eps}
+	\caption{Execution time for second order system approximation.}
+	\label{fig:exe_2}
+\end{figure}
+It is from \autoref{fig:exe_2} seen that the real time part is completed within the allowed 10\,ms (100\,Hz).
+
+See \autoref{fig:traj_meas_1} for measured state trajectory with controllers calculated from a first order system approximation.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.6]{meas_trajectory_2_order.eps}
 	\caption{Measured position trajectory based on controller gains from first order system approximation.}
 	\label{fig:traj_meas_1}
 \end{figure}
