@@ -22,12 +22,7 @@ A kinematic description of an object requires defining a right-handed coordinate
 \begin{bmatrix}
 ^j_iR & ^j_ip\\
 0 & 1
-\end{bmatrix}, \qquad
-^j_iT^{-1} = 
-\begin{bmatrix}
-^j_iR^T & -^j_iR^T\,\,^j_ip\\
-0 & 1
-\end{bmatrix},
+\end{bmatrix}, \label{eq:kin_transformation}
 \qquad \text{where} \qquad
 ^j_ip = 
 \begin{bmatrix}
@@ -63,7 +58,7 @@ and the simplest rotation matrices $R$ are rotations about a single axis, which 
 
 For the robotic patient manipulator comprising a number of links, coordinate frames are defined for each degree of freedom, i.e. placed in each joint such that one of the frame axes is the axis of free rotation or translation. The kinematic chain is now the sequence of alternate links and joints starting from the link fixed in inertial space and ending at the tip of the robotic tool. The link preceding a joint is its parent link, while the link succeeding it is its child link. The transformation between any two frames is given as the product of the transformation matrices in the kinematic chain between them. An example of a sequence of transformations can be seen in \autoref{app:kinematic_model_robot}.
 
-For the resolution of frame definitions it is desired to adapt the  robot coordinate frame convention \gls{dh}, where free rotation/translation always takes place around/along the local $z$ axis. The \gls{dh} convention is preferred because it describes transformations between two successive frames in the kinematic chain on a succinct and standard form 
+For the resolution of frame definitions it is preferred to adapt the  robot coordinate frame convention \gls{dh} because it is one of the most widespread kinematic descriptions in the robot kinematics community, and because it describes transformations between two successive frames in the kinematic chain on a succinct and standardized form
 \begin{equation}
 \hspace*{-2mm}
 \small
@@ -78,7 +73,7 @@ R_x(\alpha_i) & \begin{bmatrix}a_i\\ 0\\ 0\end{bmatrix}\\
 \end{bmatrix}
 \label{eq:dh}
 \end{equation}
-In the \gls{dh} convention each frame is fixed with respect to its parent link, and its $z$-axis is aligned with the actuation axis of its child link. As seen from \autoref{eq:dh} the free rotation/translation about/along the $z$-axis is implemented (intrinsically) before the fixed rotation/translation about/along the (new) $x$-axis. For more details on the \gls{dh} convention and robot frames defined according to is, see \autoref{sec:denavit_hartenberg}.
+In the \gls{dh} kinematic description each frame is fixed with respect to its parent link, and its $z$-axis is aligned with the actuation axis of its child link. The free rotation/translation always taking place around/along the local $z$ axis, and as seen from \autoref{eq:dh} any fixed or free rotation/translation about/along the $z$-axis is implemented (intrinsically) before any fixed rotation/translation about/along the (new) $x$-axis. For more details on the \gls{dh} convention and robot frames defined according to is, see \autoref{sec:denavit_hartenberg}.
 
 %\begin{itemize}
 %	\itemsep-1.3mm 
@@ -88,7 +83,7 @@ In the \gls{dh} convention each frame is fixed with respect to its parent link, 
 %	\item parameter $\alpha_i$ is the angle from $z_{i-1}$ to $z_i$ about $x_i$
 %\end{itemize}
 
-In the robot description in \gls{ros}, however, the kinematics are described in the \texttt{xacro} on the form
+In the robot description in \gls{ros}, however, the kinematics are described in the \texttt{xacro} files on the form
 \begin{equation}
 \hspace*{-2mm}
 \small
@@ -98,12 +93,12 @@ R_z(\text{yaw})R_y(\text{pitch})R_x(\text{roll}) & \begin{bmatrix}a_i\\ b_i\\ d_
 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-R_z(\theta_i^*) & \begin{bmatrix}0\\ 0\\ d_i^* \end{bmatrix}\\
+R_z(\theta_i^*)R_y(\beta_i^*)R_x(\alpha_i^*) & \begin{bmatrix}a_i^*\\ b_i^*\\ d_i^* \end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \label{eq:xacro_transformation_chapter}
 \end{equation}
-Here fixed translations are implemented first, then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation). Furthermore, the convention here is that each frame (joint) is fixed in its child link (corresponding to the fixed rotations preceding the free rotation), and not in its parent link as in the DH convention. The transformation  $^{i-1}_{\phantom{-1}i} T$ is implemented in joint $i$ in the \texttt{xacro} file  as (for joint 8)
+Here fixed translations are implemented first, then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation), and finally the free rotation or translation (denoted by $^*$ in \autoref{eq:xacro_transformation_chapter}) about/along one of the rotated axes. Furthermore, the convention here is that each frame (joint) is fixed in its child link (corresponding to the fixed rotations preceding the free rotation), and not in its parent link as in the DH convention. The transformation  $^{i-1}_{\phantom{-1}i} T$ is implemented in joint $i$ in the \texttt{xacro} file  as (for joint 8)
 \begin{lstlisting}[language=xml]
 <joint name="p4_hand_pitch"  type="revolute">
 <origin
@@ -154,13 +149,17 @@ A compromise is made, defining a new set of frames for the da Vinci kinematics, 
 	\label{tab:xacro_param_short}
 \end{table}
 
+
+
 \begin{figure}[htbp]
-	\centering
-	\subbottom[Old robot hand kinematics including mimick joints, parameters given in table \ref{tab:old_kin_short}.]{\includegraphics[width=1.15\textwidth]{p4_hand_xacro_frames_chapter.pdf}\label{fig:p4_hand_xacro_frames_chapter}}%
+\hspace*{-15mm}
+\begin{minipage}{1.15\textwidth}
+	\subbottom[Old robot hand kinematics including mimick joints, parameters given in table \ref{tab:old_kin_short}.]{\includegraphics[width=\textwidth]{p4_hand_xacro_frames_chapter.pdf}\label{fig:p4_hand_xacro_frames_chapter}}%
 	\vspace*{5mm}
-	\subbottom[New robot hand kinematics excluding mimick joints, parameters given in table \ref{tab:new_kin_short}.]{\includegraphics[width=1.15\textwidth]{p4_hand_compromise_frames_chapter.pdf}\label{fig:p4_hand_compromise_frames_chapter}}%
+	\subbottom[New robot hand kinematics excluding mimick joints, parameters given in table \ref{tab:new_kin_short}.]{\includegraphics[width=\textwidth]{p4_hand_compromise_frames_chapter.pdf}\label{fig:p4_hand_compromise_frames_chapter}}%
 	\caption{Orientation and position of coordinate frames $\Psi_7$, $\Psi_8$, etc. corresponding to the controllable joints of the robotic patient manipulator.  For convenience of placing the hand roll and pitch frames in the pivot point in the new kinematic description in \autoref{fig:p4_hand_compromise_frames_chapter}, a virtual link is inserted in the \texttt{xacro} file after each of these two joints.}
 	\label{fig:robot_hand_kinematics}
+\end{minipage}
 \end{figure}
 
 
@@ -176,9 +175,33 @@ For more details on the old and new kinematic descriptions implemented in \gls{r
 
 
 \subsection{Employing Inverse Kinematics for a Controller in 3D Cartesian Space}
-The controller is developed for 3D position and orientation control of the tool tip, and relies on the \gls{kdl} inverse kinematics solver to map from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator, in order to pass the transformed joint position commands to the low level controllers (see \autoref{fig:overview}).
+The controller presented in this chapter is developed for 3D position and orientation control of the tool tip, and hence relies on the use of inverse kinematics for the (ambiguous) mapping from 3D Cartesian space to 6D joint space. The inverse of the kinematic transformation matrix presented in \autoref{eq:kin_transformation} is
+\begin{equation}
+^j_iT^{-1} = 
+\begin{bmatrix}
+^j_iR^T & -^j_iR^T\,\,^j_ip\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+With the sequence of transformations from frame $k$ to frame $i$ being represented by the transformation matrix $^k_i T$, the inverse transformation, from frame $i$ to frame $k$, is then its matrix inverse $^k_i T^{-1}$
+\begin{equation}
+^k_iT = ^k_jT \,\, ^j_iT =
+\begin{bmatrix}
+^k_jR \,\, ^j_iR & ^k_jp+^k_jR \,\, ^j_ip\\
+0 & 1
+\end{bmatrix}
+\qquad \Leftrightarrow \qquad
+^k_iT^{-1} = 
+\begin{bmatrix}
+^j_iR^T\,\, ^k_jR^T & -\,^j_iR^T\,\, ^k_jR^T\,\,^k_jp -\, ^j_iR^T\,\, ^j_ip\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+A mapping from six to three degrees of freedom is a surjective map, i.e. several elements in the 6D domain may map to the same element in the 3D co-domain. However the inverse map from 3D to 6D is neither injective nor surjective, as each element in the 3D domain can map to several elements in the 6D co-domain, and hence the mapping requires a decision of the "best" map.
 
-The \gls{ik} \gls{kdl} solver employed in \gls{ros} relies on the kinematic chain from the URDF, which is generated from the \texttt{xacro} link and joint kinematic description as presented in %\autoref{app:kinematic_model_robot}, the model implemented in ROS defined in
+In practice this mapping from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator is handled by the \gls{kdl} inverse kinematics solver. Then the transformed joint position commands are passed to the low level controllers (see \autoref{fig:overview}).
+
+The \gls{ik} \gls{kdl} solver employed in \gls{ros} utilizes the kinematic chain from the URDF, which is generated from the \texttt{xacro} link and joint kinematic description as presented in %\autoref{app:kinematic_model_robot}, the model implemented in ROS defined in
 \autoref{sec:app_activejoints_kinematics}. From this chain (\texttt{my\_chain} in the below example) a \gls{fk} position solver is created along with an \gls{ik} velocity solver in order to define the \gls{ik} position solver:
 
 \begin{lstlisting}[language=xml]

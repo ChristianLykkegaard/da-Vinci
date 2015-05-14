@@ -105,8 +105,8 @@ Furthermore from \autoref{cer3} it is deduced that a controller incorporating th
 
 \subsubsection{Nexus to Lyapunov Functions}
 \vspace*{-3mm}
-As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function $V(x)$
-\vspace*{-2mm}
+As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function $V(x)$, a Lyapunov candidate function for a stable system given by
+\vspace*{-5mm}
 %\begin{equation}
 %\dot{x}  = f(x) = \frac{d x}{d t} \qquad
 %\left\{ \begin{array}{r l l}
@@ -116,9 +116,14 @@ As it can be seen from \autoref{eq:barrier_constraints} the definition of a barr
 %\end{equation}
 \begin{subequations}\label{eq:lyap}
 \begin{align}
-V(x) &\geq 0\\
-\dot{V}(x) &\leq 0
+V(x) &> 0 \kk \forall x \in \mathbb{R}\setminus\{0\}\\
+\dot{V}(x) &\leq 0 \label{eq:lyap_stable}
 \end{align}	
+and for a system with an asymptotically stable equilibrium in $x=0$, \autoref{eq:lyap_stable} is replaced by
+\vspace*{-2mm}
+\begin{equation}
+\dot{V}(x) < 0 \kk \forall x \in \mathbb{R}\setminus\{0\}
+\end{equation}
 \end{subequations}
 As such a barrier certificate can be seen as an offset Lyapunov function with negative values in the safe region. The stable focus may also be offset from $x=0$. However, a barrier function may also take other (non-convex) forms. 
 
