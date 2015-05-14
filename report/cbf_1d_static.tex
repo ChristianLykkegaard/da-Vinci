@@ -470,12 +470,13 @@ $K$ is found in \autoref{eq:K_2} &
 \end{longtable}
 \vspace*{-0.2cm}
 \end{tcolorbox}
-This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation will be outlined first. 
+This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation is outlined first. 
 \vspace{-0.3cm}
 \section{MATLAB Results}\label{sec:matlab-results-slide-safety}
+\vspace{-0.2cm}
 The results shown in this section are based on the implemented controller found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts\_slide\_controller\_slide\_controller.m}. All plots are made with the following characteristics:
 \begin{itemize}
-\item The sampling rate is set to $f_s = 1\,$kHz (Expected sampling rate in the long run).
+\item The sampling rate is tested with both $f_s = 2\,$kHz (expected sampling rate in the long run) and $f_s = 100\,$Hz (current limitation of the sample rate caused by the TCP/IP communication channel).
 \item The control signal is limited to $\pm 0.1$\,m (actual limit for slide movement).
 \item The velocity is limited to $\pm$1\,m/s (actual limit for slide movement).
 \item The forward euler method is used to extrapolate the states.
@@ -508,16 +509,17 @@ To verify that \autoref{req2} is fulfilled in the simulation, the Lie derivative
 	\label{fig:lie1}
 \end{figure}
 It is from \autoref{fig:lie1} seen that $L_gB(x) \neq 0 \,\, \forall x \neq -b/(2a)$ which essentially fulfils \autoref{req2}. Indeed, even if the entire range $[\Lambda_{h-}:\Lambda_{h+}]$ belongs to $\mathcal{X}$, the chosen CBF would have been valid because the only place where $L_gB(x) = 0$ is at the critical point. Note also that the Lie derivatives are independent of the scalar $\kappa$.
-For the record, the control signal is plotted in \autoref{fig:control1}.
-\begin{figure}[H]
-	\center
-		\includegraphics[scale=0.55]{control_slide_1.eps}
-	\caption{Control signal for $\kappa=1$. It is seen how the controller counteracts the large difference in setpoints given and in that way ensures safety. It is seen that when the absolute value of the setpoints are increased then $u(x)$ increases accordingly. The plot is ideal as no saturation constraints are given.}
-	\label{fig:control1}
-\end{figure}
-It is seen from \autoref{fig:control1} how the control signal reacts instantaneously and quite aggressive when $\Lambda_s$ is exceeded to counteract the large difference in setpoints given. It is also noted how the controller eventually settles smootly even when setpoints are given in the interval $[-\infty:\Lambda_{s-}]$ and $[\Lambda_{s+}:\infty]$. However, as the setpoints approaches $\pm \infty$, the sampling rate must also converge towards infinity. This is obviously not a realistic scenario as the slide movement is physically constrained.
+%For the record, the control signal is plotted in \autoref{fig:control1}.
+%\begin{figure}[H]
+%	\center
+%		\includegraphics[scale=0.55]{control_slide_1.eps}
+%	\caption{Control signal for $\kappa=1$. It is seen how the controller counteracts the large difference in setpoints given and in that way ensures safety. It is seen that when the absolute value of the setpoints are increased then $u(x)$ increases accordingly. The plot is ideal as no saturation constraints are given.}
+%	\label{fig:control1}
+%\end{figure}
+%It is seen from \autoref{fig:control1} how the control signal reacts instantaneously and quite aggressive when $\Lambda_s$ is exceeded to counteract the large difference in setpoints given. It is also noted how the controller eventually settles smootly even when setpoints are given in the interval $[-\infty:\Lambda_{s-}]$ and $[\Lambda_{s+}:\infty]$. However, as the setpoints approaches $\pm \infty$, the sampling rate must also converge towards infinity. This is obviously not a realistic scenario as the slide movement is physically constrained.
 \vspace{-0.3cm}
 \subsection{MATLAB Results based on Second Order Model}\label{subsec:matlab-resutls-2-order}
+\vspace{-0.2cm}
 The state trajectory composing slide position based on the second order model is shown in \autoref{fig:traject2}.
 \begin{figure}[H]
 	\center
@@ -534,20 +536,20 @@ The Lie derivatives are plotted in \autoref{fig:lie2}.
 	\caption{Lie derivatives. It is seen how $L_gB(x_1,x_2) = 0 \wedge L_fB(x_1,x_2) = 0$ at the same time which in general is critical but accepted in this specific case as it is caused by $x_2=0$ which implies $u(x)=0 \,\,\, \Rightarrow \,\,\, x_1 \rightarrow 0$ which is safe.}
 	\label{fig:lie2}
 \end{figure}
-The constrained control signal is plotted in \autoref{fig:control2}
-\begin{figure}[H]
-	\center
-		\includegraphics[scale=0.5]{control_signal_2.eps}
-	\caption{Control signal. It is seen how the it fluctuates heavily when $x_1 \in \Delta_t$ due to the position gradient.}
-	\label{fig:control2}
-\end{figure}
-It is from \autoref{fig:control2} noted how the control signal fluctuates heavily. This is because the position gradient (the velocity) changes sign constantly in the unsafe region as the trajectory seeks to go either one or the other way due to the safety controller and the setpoint given outside the safe region.
+%The constrained control signal is plotted in \autoref{fig:control2}
+%\begin{figure}[H]
+%	\center
+%		\includegraphics[scale=0.5]{control_signal_2.eps}
+%	\caption{Control signal. It is seen how the it fluctuates heavily when $x_1 \in \Delta_t$ due to the position gradient.}
+%	\label{fig:control2}
+%\end{figure}
+%It is from \autoref{fig:control2} noted how the control signal fluctuates heavily. This is because the position gradient (the velocity) changes sign constantly in the unsafe region as the trajectory seeks to go either one or the other way due to the safety controller and the setpoint given outside the safe region.
 
-The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outline safe and unsafe regions.
+The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outlined safe and unsafe regions.
 \section{Implementation on the Da Vinci Robot}\label{sec:davinci-implementation}
 The implementation constitutes the below listed bullet points:
 \begin{itemize}
-\item The controller will be implemented in C++. \textbf{Reason:} Along with Python, C++ is the two ROS compatible standards. The reason to use C++ over Python is to optimize the speed performance. Furthermore, it is the general opinion among ROS experts (such as Postdoc Karl Damkj\ae r Hansen and others) that C++ is more useful in robot simulations and development and lastly, the already exiting code at the Robotic Surgery Group - Aalborg University, is by far mostly developed in C++. However, Python as a scripting language, may be more user friendly, easier to get started with and in many cases more readable.
+\item The controller will be implemented in C++. \textbf{Reason:} Along with Python, C++ is \underline{the} ROS compatible standard. The reason to use C++ over Python is to optimize speed performance. Furthermore, it is the general opinion among ROS experts (such as Postdoc Karl Damkj\ae r Hansen and others) that C++ is more useful in robot simulations and development and lastly, the already existing code at the Robotic Surgery Group - Aalborg University, is by far mostly developed in C++. However, Python as a scripting language, may be more user friendly, easier to get started with and in many cases more readable.
 \item Real-time signal processing to ensure fixed sample rates. \textbf{Reason:} The observer matrices are built upon fixed sampling rates and for that reason it is crucial to comply with a fixed sample rate.
 \item Algorithm development to connect these two bullet points.
 \end{itemize}
@@ -555,34 +557,71 @@ The controller is implemented at the highest abstraction layer, i.e. the ROS env
 \begin{flalign*}
 c_{p,\text{max}} = \dfrac{1}{100\,\text{Hz}} = 10\,\text{ms}
 \end{flalign*}
-The algorithm is depicted in \autoref{fig:slide_safery_algorithm}.
+The main algorithm is depicted in \autoref{fig:slide_safery_algorithm}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.7]{flowchart_safety_controller.pdf}
 	\caption{Algorithm for slide safety controller.}
 	\label{fig:slide_safery_algorithm}
 \end{figure}
-The source code associated with the algorithm from \autoref{fig:slide_safery_algorithm} can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032}.
+The source code associated with the algorithm from \autoref{fig:slide_safery_algorithm} can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032} (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}).
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}\label{subsec:implement-davinci-1d}
-\subsection{Implementation on the Da Vinci Robot based on 2D Model}\label{subsec-implement-2dmodel}
-All plots and measurement in this subsection can be reconstructed by running the MATLAB script \texttt{plot\_data} found in \autoref{app:cd} in the folder \texttt{measurements/slide\_safety\_controller/2D\_2nd\_order}.
+All plots and measurement in this subsection can be reconstructed by running the MATLAB script \texttt{plot\_data} found in \autoref{app:cd} in the folder \texttt{measurements/slide\_safety\_controller/1D\_1st\_order}. The execution time is validated first as it is essential for the controller to complete successfully. A plot measuring the execution time for each iteration is shown in \autoref{fig:exe_1}.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.6]{execution_time_1_order.eps}
+	\caption{Execution time for the first order system approximation. It is seen that the controller never exceed at computation time of 150\,$\mu$s.}
+	\label{fig:exe_1}
+\end{figure}
+It is from \autoref{fig:exe_1} seen that $c_p < c_{p,\text{max}}$ and the real-time part is therefore verified.
 
-The execution time is validated first as it is essential for the controller to complete successfully.
+The measured state trajectory is plotted in \autoref{fig:traj_meas_1}.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.65]{trajectory_slide_meas_1.eps}
+	\caption{Measured position trajectory based on the first order approximation.}
+    \label{fig:traj_meas_1}
+\end{figure}
+It is from \autoref{fig:traj_meas_1} seen how the controller ensures that $x \in \mathcal{X}_u^c \ \ \forall \, x$. The poor system approximation is also revealed as the trajectory has an overshoot which was not included in the simulation found in \autoref{fig:trajectory1}. This is however not surprisingly as the first order approximation was created to simplify the control barrier function and to avoid the observer design as an initial approach. A consequence of the overshoot is seen when setpoints very close to $\Lambda_{s+}$ are given. The slide movement starts to oscillate which is caused by $\sigma(x)$. This is obviously not a good thing, but nevertheless the intended outcome when $x \in \mathcal{T}$. Additionally, it is seen how $\sigma(x)$ forces the position below its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x_1 > x_\text{ref}$ when $x \in \mathcal{T}$. This is indeed the effect of $\sigma(x)$. It is finally seen that the safety controller is fully functional for both $\mathbb{R}^-$ and $\mathbb{R}^+$.
+
+The Lie derivatives are calculated based on the measured position. The result is seen in \autoref{fig:meas_lie_1}
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.65]{meas_lie_1.eps}
+	\caption{Calculated Lie derivatives based on measured position for the first order system approximation. }
+    \label{fig:meas_lie_1}
+\end{figure}
+It is seen that the Lie derivatives from \autoref{fig:meas_lie_1} are very similar to the theoretical lie derivatives from \autoref{fig:lie1}.
+%%%%%%%%%%%%
+%%%%%%%%%%%%
+%%%%%%%%%%%%
+%%%%%%%%%%%%
+\subsection{Implementation on the Da Vinci Robot based on 2D Model}\label{subsec-implement-2dmodel}
+All plots and measurement in this subsection can be reconstructed by running the MATLAB script \texttt{plot\_data} found in \autoref{app:cd} in the folder \texttt{measurements/slide\_safety\_controller/2D\_2nd\_order}. Again, the execution time is validated first. A plot measuring the execution time for each iteration is shown in \autoref{fig:exe_1}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.6]{execution_time_2_order.eps}
 	\caption{Execution time for second order system approximation. It is seen that the controller never exceed at computation time of 200\,$\mu$s.}
 	\label{fig:exe_2}
 \end{figure}
-It is from \autoref{fig:exe_2} seen that the real time part is completed within the allowed 10\,ms (100\,Hz).
+It is from \autoref{fig:exe_2} seen that the real time part is completed within the allowed 10\,ms (100\,Hz). Note that the execution time is slightly higher than in \autoref{fig:exe_1} because the velocity is estimated with the observer.
 
 The measured state trajectory is plotted in \autoref{fig:traj_meas_1}.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.65]{meas_trajectory_2_order.eps}
 	\caption{Measured position trajectory based on the second order approximation.}
-    \label{fig:traj_meas_1}
+    \label{fig:traj_meas_2}
 \end{figure}
-It is from \autoref{fig:traj_meas_1} seen how the overshoot is eliminated. This was indeed the main purpose of the development of a controller based on a second order approximation. Also, note how it is possible to give setpoints close to the the set $\mathcal{T}$ and still avoid oscillations caused by $\sigma(x)\neq 0$. This is a big advantage when a doctor need to operate close to unsafe regions. Finally, it is seen how $\sigma(x)$ 
+It is from \autoref{fig:traj_meas_2} seen how the overshoot is eliminated. This was indeed the main purpose of the development of a controller based on a second order approximation. Also, note how it is possible to give setpoints close to the the set $\mathcal{T}$ and still avoid oscillations caused by $\sigma(x)\neq 0$. This is a big advantage when a doctor needs to operate close to an unsafe regions. Finally, just as in \autoref{fig:traj_meas_1}, it is seen how $\sigma(x)$ forces the position below its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x_1 > x_\text{ref}$ when $x \in \mathcal{T}$. This is indeed the effect of $\sigma(x)$.
+
+The Lie derivatives are calculated based on the measured position and the estimated velocity. The result is seen in \autoref{fig:meas_lie_2}
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.65]{meas_lie_2.eps}
+	\caption{Calculated Lie derivatives based on measured position and estimated velocity for the second order system approximation. }
+    \label{fig:meas_lie_2}
+\end{figure}
+It is seen that the Lie derivatives from \autoref{fig:meas_lie_2} are quite different that from \autoref{fig:lie2}. This is due to an imprecise estimation of the estimated velocity.
 \subsection{Conclusion for Slide Safety Controller}\label{subsec:conclusion-slide-safety}
 
