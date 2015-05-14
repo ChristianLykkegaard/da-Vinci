@@ -562,23 +562,27 @@ The algorithm is depicted in \autoref{fig:slide_safery_algorithm}.
 	\caption{Algorithm for slide safety controller.}
 	\label{fig:slide_safery_algorithm}
 \end{figure}
-The source code associated with the algorithm from \autoref{fig:slide_safery_algorithm} can be found in \autoref{app:slide_implement_2}.
+The source code associated with the algorithm from \autoref{fig:slide_safery_algorithm} can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032}.
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}\label{subsec:implement-davinci-1d}
-The execution time is first validated as it is essential for the controller to complete successfully.
+\subsection{Implementation on the Da Vinci Robot based on 2D Model}\label{subsec-implement-2dmodel}
+All plots and measurement in this subsection can be reconstructed by running the MATLAB script \texttt{plot\_data} found in \autoref{app:cd} in the folder \texttt{measurements/slide\_safety\_controller/2D\_2nd\_order}.
+
+The execution time is validated first as it is essential for the controller to complete successfully.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.6]{execution_time_2_order.eps}
-	\caption{Execution time for second order system approximation.}
+	\caption{Execution time for second order system approximation. It is seen that the controller never exceed at computation time of 200\,$\mu$s.}
 	\label{fig:exe_2}
 \end{figure}
 It is from \autoref{fig:exe_2} seen that the real time part is completed within the allowed 10\,ms (100\,Hz).
 
-See \autoref{fig:traj_meas_1} for measured state trajectory with controllers calculated from a first order system approximation.
+The measured state trajectory is plotted in \autoref{fig:traj_meas_1}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.6]{meas_trajectory_2_order.eps}
-	\caption{Measured position trajectory based on controller gains from first order system approximation.}
-	\label{fig:traj_meas_1}
+		\includegraphics[scale=0.65]{meas_trajectory_2_order.eps}
+	\caption{Measured position trajectory based on the second order approximation.}
+    \label{fig:traj_meas_1}
 \end{figure}
+It is from \autoref{fig:traj_meas_1} seen how the overshoot is eliminated. This was indeed the main purpose of the development of a controller based on a second order approximation. Also, note how it is possible to give setpoints close to the the set $\mathcal{T}$ and still avoid oscillations caused by $\sigma(x)\neq 0$. This is a big advantage when a doctor need to operate close to unsafe regions. Finally, it is seen how $\sigma(x)$ 
+\subsection{Conclusion for Slide Safety Controller}\label{subsec:conclusion-slide-safety}
 
-\subsection{Implementation on the Da Vinci Robot based on 2D Model}\label{subsec-implement-2dmodel}

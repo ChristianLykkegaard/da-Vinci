@@ -51,8 +51,8 @@ $x \in \mathbb{R}^{n}$ is the state vector& [$\cdot$]
 \vspace*{-0.2cm}
 The two controllers can be combined as a linear combination determined by a parameter \gls{sigma} \citep{bib:org_control}. This ensures that the switch between the two controllers occurs with less fluctuations. 
 \begin{flalign}
-u(x,\tilde{u}) &= \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) \nonumber \\
- &= \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) \label{eq:control_law}
+u(x,\tilde{u}) &= \sigma(x)k_0(x)+(1-\sigma(x))\tilde{u}(x) \label{eq:control_law}
+% &= \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) \label{eq:control_law}
 \end{flalign}
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
@@ -101,9 +101,9 @@ k_0(x) = \begin{cases}
 -\dfrac{L_fB(x)+ \sqrt{(L_fB(x))^2 + \kappa^2L_gB(x)(L_gB(x))^T}}{L_gB(x)(L_gB(x))^T}(L_gB(x))^T &\text{if} \mm L_gB(x) \neq 0 \\
 0  &\text{if} \mm L_gB(x) = 0
 \end{cases}
-\label{eq:control_law}
+\label{eq:control_law_safety}
 \end{flalign}
-Where $\kappa$ is a design variable. High values of $\kappa$ implies increased aggressiveness. \Autoref{eq:control_law} indeed ensures safety for the closed loop system $\dot{x} = f(x)+g(x)k_0(x)$. This is easily proven as:
+Where $\kappa$ is a design variable. High values of $\kappa$ implies increased aggressiveness. \Autoref{eq:control_law_safety} indeed ensures safety for the closed loop system $\dot{x} = f(x)+g(x)k_0(x)$. This is easily proven as:
 \begin{flalign*}
 L_{f_{cl}}B(x) = L_fB(x) + L_gB(x)k_0(x)
 \end{flalign*}
