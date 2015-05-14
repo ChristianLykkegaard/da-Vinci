@@ -537,7 +537,7 @@ The Lie derivatives are plotted in \autoref{fig:lie2}.
 The constrained control signal is plotted in \autoref{fig:control2}
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.55]{control_signal_2.eps}
+		\includegraphics[scale=0.5]{control_signal_2.eps}
 	\caption{Control signal. It is seen how the it fluctuates heavily when $x_1 \in \Delta_t$ due to the position gradient.}
 	\label{fig:control2}
 \end{figure}
@@ -547,14 +547,22 @@ The shown plots concludes the MATLAB simulation. The MATLAB implementation shows
 \section{Implementation on the Da Vinci Robot}
 The implementation constitutes the below listed bullet points:
 \begin{itemize}
-\item The controller will be implemented in C++. \textbf{Reason:} Along with Python, C++ is the two ROS compatible standards. The reason to use C++ over Python is to optimize the speed performance. Furthermore, it is the general opinion among ROS experts that C++ is more useful in robot simulations and development and lastly, the already exiting code at the Robotic Surgery Group - Aalborg University, is by far mostly developed in C++ . However, Python as a scripting language, may be more user friendly, easier to get started with and in many cases more readable.
+\item The controller will be implemented in C++. \textbf{Reason:} Along with Python, C++ is the two ROS compatible standards. The reason to use C++ over Python is to optimize the speed performance. Furthermore, it is the general opinion among ROS experts (such as Postdoc Karl Damkj\ae r Hansen and others) that C++ is more useful in robot simulations and development and lastly, the already exiting code at the Robotic Surgery Group - Aalborg University, is by far mostly developed in C++. However, Python as a scripting language, may be more user friendly, easier to get started with and in many cases more readable.
 \item Real-time signal processing to ensure fixed sample rates. \textbf{Reason:} The observer matrices are built upon fixed sampling rates and for that reason it is crucial to comply with a fixed sample rate.
 \item Algorithm development to connect these two bullet points.
 \end{itemize}
-The controller is implemented at the highest abstraction layer, i.e. the ROS environment depicted in \autoref{fig:overview}. While ROS runs on most Linux laptops, it is not ROS itself that put fort limitations for real time signal processing, neither is it the potentiometers that measures the angle. The bottleneck is caused by the TCP/IP communication channel which according to Assistant Engineer Simon Jensen is limited to 100\,Hz. For that reason, the maximum execution time $c_{p,\text{max}}$ is:
+The controller is implemented at the highest abstraction layer, i.e. the ROS environment depicted in \autoref{fig:overview}. While ROS runs on most Linux laptops, it is not ROS itself that put fort limitations for real time signal processing, neither is it the potentiometers that measures the angle. The bottleneck is caused by the TCP/IP communication channel which according to Assistant Engineer Simon Jensen is limited to 100\,Hz. For that reason, the maximum allowed execution time $c_{p,\text{max}}$ is:
 \begin{flalign*}
 c_{p,\text{max}} = \dfrac{1}{100\,\text{Hz}} = 10\,\text{ms}
 \end{flalign*}
+The algorithm is depicted in \autoref{fig:slide_safery_algorithm}.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.7]{flowchart_safety_controller.pdf}
+	\caption{Algorithm for slide safety controller.}
+	\label{fig:slide_safery_algorithm}
+\end{figure}
+The source code associated with the algorithm from \autoref{fig:slide_safery_algorithm} can be found in \autoref{app:slide_implement_2}.
 \subsection{Implementation on the Da Vinci Robot based on 1D Model}
 The execution time is first validated as it is essential for the controller to complete successfully.
 \begin{figure}[H]

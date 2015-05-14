@@ -287,15 +287,41 @@ section]      %use section level for toc entries
 	stringstyle=\color[RGB]{205,154,253}
 }
 
-
+\definecolor{gedit-comment}{rgb}{0,0,1}
+\definecolor{gedit-purple}{rgb}{1,0,1}
+\lstdefinelanguage{gedit} {              % Definition af Arduino-language
+	morekeywords={define, include},
+	keywordstyle=\color[RGB]{132,112,255},classoffset=3, %blue
+	morekeywords={double, int, unsigned, long, char, bool},
+	keywordstyle=\color[RGB]{0,100,0},classoffset=2, %green
+	morekeywords={class, private, public, return, while, if, else, true, false, break, for},
+	keywordstyle=\color[RGB]{178,34,34},classoffset=1, %green
+	%   sensitive=false, morecomment=[l]{\%}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
+	comment=[l][\color{grey}]{//},%morecomment=[s]{'}{'} % Ingen farver p kommentare
+		 morecomment=[s][\color{gedit-comment}]{/*}{*/},
+		 morecomment=[s][\color{gedit-purple}]{"}{"},
+		 morecomment=[s][\color{gedit-purple}]{<stri}{ng>},
+		 morecomment=[s][\color{gedit-purple}]{<vec}{tor>},
+		 morecomment=[s][\color{gedit-purple}]{<iostre}{am>},
+		 morecomment=[s][\color{gedit-purple}]{<stdio}{.h>},
+		 morecomment=[s][\color{gedit-purple}]{<ros/ros}{.h>},
+		 morecomment=[s][\color{gedit-purple}]{<std}{h>},
+		 morecomment=[s][\color{gedit-purple}]{<time}{h>},
+		 morecomment=[s][\color{gedit-purple}]{<sensor}{h>},
+		 morecomment=[s][\color{gedit-purple}]{<math}{h>},
+		 morecomment=[s][\color{gedit-purple}]{<fstream}{>},
+		 morecomment=[s][\color{gedit-purple}]{<Eigen}{Dense>},
+	%	keywordstyle=\color[RGB]{34,139,34},classoffset=3,
+	%stringstyle=\color[RGB]{55,5,155}
+}
 
 \lstdefinelanguage{Arduino} {              % Definition af Arduino-language
-	morekeywords={pinMode, digitalWrite, begin, analogRead, delay, delayMicroseconds, if, println, print, for, int, float, char, volatile, micros, do, return, analogReference, analogWrite},
-		keywordstyle=\color[RGB]{204,102,0},classoffset=2,
+	morekeywords={include,define},
+		keywordstyle=\color[RGB]{160,32,240},classoffset=2,
 	morekeywords={OUTPUT, HIGH, LOW, INPUT, DEFAULT},
 		keywordstyle=\color[RGB]{0,102,153},classoffset=1,
 	morekeywords={=, \&, <, >, +, -, *, /, ., ||},
-		keywordstyle=\color[RGB]{0,0,0},classoffset=0,
+		keywordstyle=\color[RGB]{0,1,0},classoffset=0,
 	morekeywords={loop, setup, serial, while, void, double, unsigned, long, int, float, uint_8},
 		keywordstyle=\color[RGB]{204,102,0},classoffset=0,
 	sensitive=false, morecomment=[l]{//}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
@@ -364,7 +390,7 @@ basicstyle=\ttfamily\scriptsize,
 %		
 	sensitive=false, morecomment=[l]{\#} % Ingen farver p kommentare
 }
-
+\definecolor{matlab-color5}{rgb}{0.21,0.091,0.608}
 \lstdefinelanguage{xml} {              % Definition af Arduino-language
 	morekeywords={name, type, xyz, rpy, link, lower, upper, KDL, 100, 1e-6, getNrOfJoints, CartToJnt, std, cout, cin, ChainFkSolverPos_recursive, ChainIkSolverVel_pinv, ChainIkSolverPos_NR, JntArray, Vector, Frame, endl},
 	keywordstyle=\color[RGB]{120,150,200},classoffset=3, %blue
@@ -374,9 +400,9 @@ basicstyle=\ttfamily\scriptsize,
 	keywordstyle=\color[RGB]{170,50,80},classoffset=3, %red
 	%   sensitive=false, morecomment=[l]{\%}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
 	comment=[l][\color{grey}]{//},%morecomment=[s]{'}{'} % Ingen farver p kommentare
-	%	 morecomment=[s][\color{matlab-color2}]{'}{'}
+		 morecomment=[s][\color{matlab-color5}]{"Set}{z>:"},
 	%	keywordstyle=\color[RGB]{34,139,34},classoffset=3,
-	stringstyle=\color[RGB]{55,5,155}
+	%stringstyle=\color[RGB]{55,5,155}
 }
 
 % Eksempler
