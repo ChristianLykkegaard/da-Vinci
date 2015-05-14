@@ -104,7 +104,7 @@ x_1(t) \\ x_2(t)
 \end{subequations}
 \vspace{-0.6cm}
 \begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-Where  & & \\
+where  & & \\
 $x_1(t)$ is the position& [m] \\
 $x_2(t) = \dot{x}_1(t)$ is the velocity  & [m/s] \\
 $y(t)$ is the output (slide position)  & [m] \\
@@ -326,7 +326,8 @@ L_fB(x_1,x_2) =
 c_5\cos (c_4 + c_3 x_1) \sin(c_6+c_5 x_2)(x_2 \omega_n^2 + 2 x_1 \zeta \omega_n) - c3 x_2 \cos(c_6 + c_5 x_2) \sin(c_4 + c_3 x_1)
 \end{flalign*}
 Quickly pose the fact that $L_fB(x_1,x_2 ) \nless 0 \,\, \forall \,\, x_2 \approx 0$ due to the sign alternation caused by the term $c_5\cos(c_4 + c_3 x_1)$ in the boundaries.
-
+\section{Control Design}
+This section constitutes design of the two controllers. The controller based on the first order approximation is straight forward whereas the controller based on the second order approximation requires an observer because the velocity can not be measured.
 \subsection{Control Design based on First Order Model}\label{sec:K_Nbar_1D_1storder}
 The be able to find $k_0(x)$ from \autoref{eq:control_for_safety}, the constant $\epsilon$ used in \autoref{eq:smoothness} must be found. It can be determined from the \gls{cbf} from \autoref{eq:cbf1} such that it complies with the requirements from \autoref{tab:intervals}:
 \begin{flalign}
@@ -419,21 +420,21 @@ $K$ is found in \autoref{eq:K_1} &
 \end{tcolorbox}
 This completes the control design based on a first order system approximation. 
 \subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
-To design the smoothing in the transition area $\Delta_t$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here, i.e $\sigma(x_1)$ from \autoref{eq:smoothness} is a function of position only. {\color{red}{Overvej om kriteriet skal v\ae re h\aa rdere??}}
+To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here. To allow the instrument some physical distance to brake and turn around (caused by the inertia), $\sigma(x)$ is multiplied by a scalar $c$ such that it reaches 1 before it is too late for the instrument to turn around. $\sigma(x)$ is however still limited to its maximum value at 1.
 \begin{flalign}
 \sigma(x) = 
 \begin{cases}
 0 & \text{if} \mm B(x) \leq -\epsilon \\
--2  \left( \dfrac{B(x}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
+c\, \left( -2  \left( \dfrac{B(x}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \right) \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
 1  &\text{if} \mm B(x) \geq 0
 \end{cases}
 \end{flalign} 
-\vspace{-0.8cm}
-\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-Where  & & \\
-$B(x_1) = ax_1^2 + bx_1 + c$ as it is stated in \autoref{eq:cbf1} &
-\end{longtable}
-\vspace*{-0.2cm}
+At this point, two cases will be considered:
+\begin{itemize}
+\item \textbf{1.} Construction of $K$ and $\bar{N}$ in a similar way as in \autoref{sec:K_Nbar_1D_1storder}. This is possible in an ideal simulation because the velocity can be extrapolated by means of the forward euler approach (ideal design).
+\item \textbf{2.} Development of an observer to estimate the velocity based on the model and position measurements.
+\end{itemize}
+\subsubsection{Design with the intention to simulate with Forward Euler}
 The design of $K$ and $\bar{N}$ will follow the exact same procedure as described for the first order model except now $K \in \mathbb{R}^{1 \times 2}$. $\bar{N}$ remains as a scalar. The entire design procedure is therefore not carried through again.  
 
 However, it is of interest to slow down the system dynamics slightly compared to the controller based on a first order system. This is to enter the unsafe region with a lower velocity and thereby allow the safety controller some transition space to navigate the trajectory back to its safe area. The eigenvalues of the second order system is found to:
@@ -455,6 +456,33 @@ The DC gain can now be corrected with:
 \bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 6.173
 \label{eq:Nbar_2}
 \end{flalign}
+These matrices are used in the MATLAB simulation.
+\subsubsection{Observer Design}
+An observer (discrete version) with proper gain corrections can be designed as \citep{bib:Nbar}:
+\begin{flalign}
+\hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d (C\hat{x}(k)-y(k)) + M_d x_\text{ref}
+\label{eq:observer}
+\end{flalign}
+\vspace{-0.6cm}
+\begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+where  & & \\
+$k$ is the current sample \\
+$\Gamma$ is the discretized system matrix \\
+$\Phi$ is the discretized input matrix \\
+$K_d$ is control gain calculated from the discretized matrices \\
+$L_d$ is observer gain calculated from the discretized matrices \\
+$M$ is gain correction for the observer \\
+$N$ is gain correction for the system  
+\end{longtable}
+\vspace*{-0.2cm}
+The associated continuous system is:
+\begin{flalign*}
+&\dot{x} = A x + B(N x_\text{ref} - Kx) \\
+&y = Cx
+\end{flalign*}
+The equations are implement in simulink as shown in ???
+
+\newpage
 The complete controller is now designed as:
 \begin{tcolorbox}
 \begin{flalign*}
