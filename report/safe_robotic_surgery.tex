@@ -2,7 +2,7 @@
 This chapter ought to lay the basics of all shared control theory applied in the following chapters dealing with the design of a safe controller.
 
 Based on \citep{bib:artstein}, who founded \glspl{clf} as described in \autoref{eq:lyap}, a \gls{cbf} can be created \citep{bib:org_control} from where the definition below is stated:
-\begin{exa}[Control Barrier Function]
+\begin{defn}[Control Barrier Function]
 Given a system $\dot{x}=f(x)+g(x)u$, a \gls{cbf} exists if the below constraints are fulfilled:
 \begin{subequations}\label{eq:reqs}
 \begin{flalign}
@@ -19,7 +19,7 @@ $L_fB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e.
 $L_gB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{\partial B(x)}{\partial x}g(x)$ & [$\cdot$] 
 \end{tabular}
 \vspace*{0.2cm}
-\end{exa}
+\end{defn}
 Note how \autoref{eq:reqs} put forth demands for the open loop system in oppose to \autoref{eq:barrier_constraints} that describes the closed loop system. \Autoref{req1} states essentially the same as \autoref{cer2}, i.e. when $B(x)>0$ the region is unsafe. This makes it possible to design both the unsafe region and the safe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the unsafe area bounded by the barrier zero-line whenever the input can not be controlled (except for the critical point as the system is in its equilibrium at this point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
 %
 \section{The Control Law}\label{eq:control_for_safety}

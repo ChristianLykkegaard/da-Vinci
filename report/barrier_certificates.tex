@@ -34,7 +34,7 @@ Consider a subspace of the state-space $\mathcal{X}\subseteq\mathbb{R}^n$ defini
 Now safety of a closed-loop control system is given according to \citep{bib:safety,bib:prajna_framework} as:
 %\begin{exa}
 
-\begin{exa}[Safety of a System]\label{def:safety}
+\begin{defn}[Safety of a System]\label{def:safety}
 Denote a trajectory starting in $x(0)=x_0$ and with bounded disturbance function $\bar{d}:\mathbb{R}_{\geq 0}\rightarrow D$ by $\phi_{x_0}^{\bar{d}}$, defined by 
 \begin{equation}
 \frac{d \phi_{x_0}^{\bar{d}} }{dt} = f_{cl}\left( \phi_{x_0}^{\bar{d}} (t) \right) + h\left( \phi_{x_0}^{\bar{d}} (t) \right) \bar{d}(t)
@@ -47,7 +47,7 @@ The system $\Gamma_{cl} = (f_{cl},h,\mathcal{X},\mathcal{X}_0,\mathcal{X}_u,D)$ 
 \end{flalign}
 \noindent
 The system $\Gamma_{cl}$ is safe if there are no unsafe trajectories.
-\end{exa}
+\end{defn}
 
 %\vspace{-0.2cm}
 %
@@ -82,7 +82,7 @@ L_{f_{cl}}B(x)=\frac{dB(x)}{dx}f_{cl}(x)=\frac{dB(x)}{dx}\frac{dx(t)}{dt}=\frac{
 
 Requiring that the time derivative of the barrier function must be nonpositive on the entire set $\mathcal{X}$ (see \autoref{def:barrier_certificate}) corresponds to the value of the barrier function decreasing over time, hence seeking the minimum of the (convex) barrier certificate. Requiring the trajectory of the state to start within the safe set $\mathcal{X}_0$ this means that the trajectory will never cross the zero level set and enter the unsafe set $\mathcal{X}_u$, as this set only contains values of the barrier function larger than the initial value.
 
-\begin{exa}[Barrier Certificate]\label{def:barrier_certificate}	
+\begin{defn}[Barrier Certificate]\label{def:barrier_certificate}	
 If a barrier certificate can be constructed as a continuous and differentiable function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following inequalities  \citep{bib:prajna_framework}:
 \begin{subequations}\label{eq:barrier_constraints}
 \begin{flalign}
@@ -92,7 +92,7 @@ L_{f_{cl}}B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \label{cer3}
 \end{flalign}
 \end{subequations}
 Then safety of the closed-loop system $f_{cl}(x)$, as defined in \autoref{def:safety}, is guaranteed. 
-\end{exa}
+\end{defn}
 
 
 From \autoref{eq:barrier_constraints} it can be seen that the function $B(x)$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(x)/dx$ must have the opposite sign of the state derivative $dx/dt$ for any state within the region $\mathcal{X}$ where $B(x)$ is defined. 

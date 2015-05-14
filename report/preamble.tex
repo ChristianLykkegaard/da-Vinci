@@ -385,21 +385,37 @@ basicstyle=\ttfamily\scriptsize,
 \usepackage[framed,amsmath,thmmarks]{ntheorem}%	% when using thmmarks, amsmath must be an option as well. Otherwise \eqref doesn't work anymore.
 \usepackage{aliascnt}%
 \usepackage{hyperref}%							% Giver mulighed for at ens referencer bliver til en slags hyperlinks.
-\theoremheaderfont{\normalfont\bfseries}% 		% bruger samme font som resten af rapporten, i bold
-\theorembodyfont{\normalfont}% 					% bruger samme font som resten af rapporten
-\theoremstyle{break}% 							% linieskift efter overskrift
-\def\theoremframecommand{{\color{HeaderBlue}\vrule width 10pt \hspace{8pt}}}%
-\newtheorem{theorem}{Theorem}%
-\newaliascnt{example}{theorem}%
-\newshadedtheorem{exa}{Definition}[chapter]%		% navngivning af eksempel
-\aliascntresetthe{example}%
-\providecommand*{\exaautorefname}{eksempel}%	% Gør det muligt at bruge autoref på eksempler, og så er de navngivet Eksempel #.#
-\newenvironment{example}[1]{%					% tager ét input i {}-klammer (titel på eksempel)
-	\begin{exa}[#1]%
-}{%
-	\end{exa}%
+
+\newshadedtheorem{dummy}{Theorem}[chapter] % add [section] for numbering within sections
+\newcommand{\mynewtheorem}[2]{  
+	\theoremheaderfont{\normalfont\bfseries}% 		% bruger samme font som resten af rapporten, i bold
+	\theorembodyfont{\normalfont}% 					% bruger samme font som resten af rapporten
+	\theoremstyle{break}% 							% linieskift efter overskrift
+	\def\theoremframecommand{{\color{HeaderBlue}\vrule width 10pt \hspace{8pt}}}%
+	\newaliascnt{#1}{dummy}  
+	\newshadedtheorem{#1}[#1]{#2}  
+	\aliascntresetthe{#1}  % maybe we will squish some autoref defaults, but who cares?  
+	\expandafter\def\csname #1autorefname\endcsname{#2}
 }
+
+\mynewtheorem{defn}{Definition}
+\mynewtheorem{thm}{Theorem}  
+\mynewtheorem{prop}{Proposition}  \mynewtheorem{cor}{Corollary}  
+\mynewtheorem{lem}{Lemma}
+\mynewtheorem{exa}{Example}
+
+%\newtheorem{theorem}{Theorem}%
+%\newaliascnt{example}{theorem}%
+%\newshadedtheorem{exa}{Definition}[chapter]%		% navngivning af eksempel
+%%\aliascntresetthe{example}%
+%\providecommand*{\exaautorefname}{eksempel}%	% Gør det muligt at bruge autoref på eksempler, og så er de navngivet Eksempel #.#
+%\newenvironment{example}[1]{%					% tager ét input i {}-klammer (titel på eksempel)
+%	\begin{exa}[#1]%
+%}{%
+%	\end{exa}%
+%}
 %\newcommand{\exref}[1]{Eksempel~\ref{#1}}		% definerer hvordan der kan refereres til et eksempel således at referencen kommer til at hedder "Eksempel #" i stedet for "Titel #", hvor Titel er den titel der er givet eksemplet, angivet i lin 124 (5 linjer før denne). inde i environmentet skal \label sættes i linjen efter \begin{example}{Titel}, og når der skal refereres til eksemplet anvendes \exref{label_på_eksemplet}
+
 
 
 %\usepackage{xfrac}                                         %lort
@@ -436,7 +452,7 @@ basicstyle=\ttfamily\scriptsize,
 \let\orgautoref\autoref
 \providecommand{\Autoref}[1]%
 {%
-\def\exaautorefname{Definition}%
+%\def\exaautorefname{Definition}%
 \def\equationautorefname{Equation}%
 \def\figureautorefname{Figure}%
 \def\subfigureautorefname{Figure}%
@@ -456,8 +472,14 @@ basicstyle=\ttfamily\scriptsize,
 %  \def\theoremautorefname{Theorem}%
 \def\pageautorefname{Page}%
 \def\lstlistingautorefname{Code snip}%
-\def\exaautorefname{Definition}%
+%\def\exaautorefname{Definition}%
 %\def\appendixautorefname{Appendix}
+\def\exaautorefname{Example}%
+\def\defnautorefname{Definition}%
+\def\thmautorefname{Theorem}%
+\def\propautorefname{Proposition}%
+\def\corautorefname{Corollary}%
+\def\lemautorefname{Lemma}%
 \orgautoref{#1}%
 }
 
@@ -487,7 +509,13 @@ basicstyle=\ttfamily\scriptsize,
 \def\theoremautorefname{theorem}%
 \def\pageautorefname{page}%
 \def\lstlistingautorefname{code snip}%
-\def\exaautorefname{definition}%
+%\def\exaautorefname{definition}%
+\def\exaautorefname{example}%
+\def\defnautorefname{definition}%
+\def\thmautorefname{theorem}%
+\def\propautorefname{proposition}%
+\def\corautorefname{corollary}%
+\def\lemautorefname{lemma}%
 \orgautoref{#1}%
 }
 
