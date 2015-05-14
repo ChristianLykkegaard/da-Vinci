@@ -42,7 +42,7 @@ The system can clearly be approximated with an underdamped second order model, h
 \item One dimensional (1D) slide movement along the $z-$axis based on \underline{position and velocity}, hence a second order system model.
 \end{itemize}
 A first order approximation will be conducted first. 
-\subsection{1D Model based on Position}
+\subsection{1D Model based on Position}\label{subsec:model_1d}
 The system can be approximated to a linear first order system with a dominating time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide}:
 \begin{flalign*}
 \tau_s = 110\, \text{ms}
@@ -59,7 +59,7 @@ A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 1 \kk \we
 \end{flalign*}
 Which completes the first order approximation.
 
-\subsection{1D Model based on Position and Velocity}
+\subsection{1D Model based on Position and Velocity}\label{subsec:model_2d}
 The second order approximation is based on the form:
 \begin{flalign}
 \dfrac{Y(s)}{U(s)} = \dfrac{\omega_n^2}{s^2 + 2\zeta \omega_n s + \omega_n^2}
@@ -124,13 +124,13 @@ A = \begin{bmatrix}
 \end{flalign*}
 Which completes the second order model.
 
-\section{Construction of CBF}
+\section{Construction of CBF}\label{sec:construct_cbf}
 To illustrate the usefulness of \glspl{cbf}, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
 %
 %Consider the state intervals defined in \autoref{tab:intervals}.
 %
 %
-\subsection{Construction of CBF based on First Order Model}
+\subsection{Construction of CBF based on First Order Model}\label{subsec:cbf-1order}
 In this subsection, the state vector $x \in \mathbb{R}$ consist of the position only. Thus, a parabola is now introduced as \gls{cbf} as it allows an easy way to define $\mathcal{X}_u$ and $\mathcal{X}_0$ from \autoref{tab:intervals}. %A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
 \begin{flalign}
 B(x) &= ax^2+bx+c \label{eq:cbf1} 
@@ -184,7 +184,7 @@ The \gls{cbf} is plotted in \autoref{fig:barrierfunction} from where it is seen 
  L_gB(x) = (2ax+b)B = 2ax\tau^{-1} + b\tau^{-1} = 0 \kk \Leftrightarrow \kk 2ax = -b \kk \Leftrightarrow \kk x = \dfrac{-b}{2a}
  \end{flalign*} 
  This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
-\subsection{Construction of CBF Based on Second Order model}
+\subsection{Construction of CBF Based on Second Order model}\label{subsec:cbf-2order}
 Consider now $L_gB(x)$ for the same \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(x)$ is a function of position only, such that the CBF is:
 \begin{flalign*}
 B(x_1) = a\,x_1^2+ b\,x_1 + c
@@ -472,7 +472,7 @@ $K$ is found in \autoref{eq:K_2} &
 \end{tcolorbox}
 This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation will be outlined first. 
 \vspace{-0.3cm}
-\section{MATLAB Results}
+\section{MATLAB Results}\label{sec:matlab-results-slide-safety}
 The results shown in this section are based on the implemented controller found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts\_slide\_controller\_slide\_controller.m}. All plots are made with the following characteristics:
 \begin{itemize}
 \item The sampling rate is set to $f_s = 1\,$kHz (Expected sampling rate in the long run).
@@ -484,7 +484,7 @@ The results shown in this section are based on the implemented controller found 
 \end{itemize}
 The \texttt{model} variable in line 7 in \autoref{app:slide_implement_1} is set to the number 1 for the first order model and 2 for the second order model. 
 \vspace{-0.3cm}
-\subsection{MATLAB Results based on First Order Model}
+\subsection{MATLAB Results based on First Order Model}\label{subsec:matlab-results-1order}
 The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
 \begin{figure}[H]
 	\center
@@ -517,7 +517,7 @@ For the record, the control signal is plotted in \autoref{fig:control1}.
 \end{figure}
 It is seen from \autoref{fig:control1} how the control signal reacts instantaneously and quite aggressive when $\Lambda_s$ is exceeded to counteract the large difference in setpoints given. It is also noted how the controller eventually settles smootly even when setpoints are given in the interval $[-\infty:\Lambda_{s-}]$ and $[\Lambda_{s+}:\infty]$. However, as the setpoints approaches $\pm \infty$, the sampling rate must also converge towards infinity. This is obviously not a realistic scenario as the slide movement is physically constrained.
 \vspace{-0.3cm}
-\subsection{MATLAB Results based on Second Order Model}
+\subsection{MATLAB Results based on Second Order Model}\label{subsec:matlab-resutls-2-order}
 The state trajectory composing slide position based on the second order model is shown in \autoref{fig:traject2}.
 \begin{figure}[H]
 	\center
@@ -544,7 +544,7 @@ The constrained control signal is plotted in \autoref{fig:control2}
 It is from \autoref{fig:control2} noted how the control signal fluctuates heavily. This is because the position gradient (the velocity) changes sign constantly in the unsafe region as the trajectory seeks to go either one or the other way due to the safety controller and the setpoint given outside the safe region.
 
 The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outline safe and unsafe regions.
-\section{Implementation on the Da Vinci Robot}
+\section{Implementation on the Da Vinci Robot}\label{sec:davinci-implementation}
 The implementation constitutes the below listed bullet points:
 \begin{itemize}
 \item The controller will be implemented in C++. \textbf{Reason:} Along with Python, C++ is the two ROS compatible standards. The reason to use C++ over Python is to optimize the speed performance. Furthermore, it is the general opinion among ROS experts (such as Postdoc Karl Damkj\ae r Hansen and others) that C++ is more useful in robot simulations and development and lastly, the already exiting code at the Robotic Surgery Group - Aalborg University, is by far mostly developed in C++. However, Python as a scripting language, may be more user friendly, easier to get started with and in many cases more readable.
@@ -563,7 +563,7 @@ The algorithm is depicted in \autoref{fig:slide_safery_algorithm}.
 	\label{fig:slide_safery_algorithm}
 \end{figure}
 The source code associated with the algorithm from \autoref{fig:slide_safery_algorithm} can be found in \autoref{app:slide_implement_2}.
-\subsection{Implementation on the Da Vinci Robot based on 1D Model}
+\subsection{Implementation on the Da Vinci Robot based on 1D Model}\label{subsec:implement-davinci-1d}
 The execution time is first validated as it is essential for the controller to complete successfully.
 \begin{figure}[H]
 	\center
@@ -581,4 +581,4 @@ See \autoref{fig:traj_meas_1} for measured state trajectory with controllers cal
 	\label{fig:traj_meas_1}
 \end{figure}
 
-\subsection{Implementation on the Da Vinci Robot based on 2D Model}
+\subsection{Implementation on the Da Vinci Robot based on 2D Model}\label{subsec-implement-2dmodel}
