@@ -404,7 +404,7 @@ L_fB(x) = -2\tau^{-1}ax^2-\tau^{-1}bx \kk \wedge \kk L_gB(x) = 2ax\tau^{-1} + b\
 \label{eq:lies_1}
 \end{flalign}
 The complete control law can be determined from \autoref{eq:control_law}:
-\begin{tcolorbox}
+\begin{recap}[Control Law for First Order Approximation]
 \begin{flalign*}
 u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
 \end{flalign*}
@@ -417,9 +417,18 @@ $\bar{N}$ is found in \autoref{eq:barm_1} & \\
 $K$ is found in \autoref{eq:K_1} &
 \end{longtable}
 \vspace*{-0.2cm}
-\end{tcolorbox}
+\end{recap}
 This completes the control design based on a first order system approximation. 
 \subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
+A necessary condition for a controller is that the system is controllable:
+\begin{flalign*}
+ \mathcal{C} = \begin{bmatrix}
+ B \\ B\,A
+ \end{bmatrix} =  \begin{bmatrix}
+ 0 & \omega_n^2 \\
+ \omega_n^2 & -2 \zeta \omega_n^3
+ \end{bmatrix} \kk \text{thus} \mm \text{rank} ( \mathcal{C} ) = 2 = n \kk \Rightarrow \mm \text{controllable}
+\end{flalign*} 
 To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here. To allow the instrument some physical distance to brake and turn around (caused by the inertia), $\sigma(x)$ is multiplied by a scalar $c$ such that it reaches 1 before it is too late for the instrument to turn around. $\sigma(x)$ is however still limited to its maximum value at 1.
 \begin{flalign}
 \sigma(x) = 
@@ -432,7 +441,7 @@ c\, \left( -2  \left( \dfrac{B(x}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\
 At this point, two cases will be considered:
 \begin{itemize}
 \item \textbf{1.} Construction of $K$ and $\bar{N}$ in a similar way as in \autoref{sec:K_Nbar_1D_1storder}. This is possible in an ideal simulation because the velocity can be extrapolated by means of the forward euler approach (ideal design).
-\item \textbf{2.} Development of an observer to estimate the velocity based on the model and position measurements.
+\item \textbf{2.} Development of an observer to estimate the velocity based on the model and position measurements. This is necessary on a real system.
 \end{itemize}
 \subsubsection{Design with the intention to simulate with Forward Euler}
 The design of $K$ and $\bar{N}$ will follow the exact same procedure as described for the first order model except now $K \in \mathbb{R}^{1 \times 2}$. $\bar{N}$ remains as a scalar. The entire design procedure is therefore not carried through again.  
@@ -458,6 +467,15 @@ The DC gain can now be corrected with:
 \end{flalign}
 These matrices are used in the MATLAB simulation.
 \subsubsection{Observer Design}
+A necessary condition for an observer is that the system is observable:
+\begin{flalign*}
+ \mathcal{O}= \begin{bmatrix}
+ C \\ C A
+ \end{bmatrix} =  \begin{bmatrix}
+ 1 & 0 \\
+ 0 & 1
+ \end{bmatrix} \kk \text{thus} \mm \text{rank} ( \mathcal{O}) = 2 = n \kk \Rightarrow \mm \text{observable}
+\end{flalign*} 
 An observer (discrete version) with proper gain corrections can be designed as \citep{bib:Nbar}:
 \begin{flalign}
 \hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d ( \underbrace{C\hat{x}(k)-y(k)}_\text{error} ) + M x_\text{ref}
@@ -608,16 +626,26 @@ The results shown in this section are based on the implemented controller found 
 \item The design parameter $\kappa$ from \autoref{eq:control_law} is set to $\kappa=1$ (neutral).
 \item The simulation time is 5\,s. Various setpoints ought to indicate the behaviour in different regions.
 \end{itemize}
-The \texttt{model} variable in line 7 in \autoref{app:slide_implement_1} is set to the number 1 for the first order model and 2 for the second order model. 
+The \texttt{model} variable in the first line in \autoref{app:slide_implement_1} is set to the number 1 for the first order model and 2 for the second order model. 
 \vspace{-0.3cm}
 \subsection{MATLAB Results based on First Order Model}\label{subsec:matlab-results-1order}
 The state trajectory composing slide position is plotted in \autoref{fig:trajectory1}
+%
 \begin{figure}[H]
-	\center
-		\includegraphics[scale=0.6]{trajectory_slide.eps}
-	\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler with a sampling rate of $1\,$kHz. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position finds its equilibrium at some arbitrary state.}
-	\label{fig:trajectory1}
+%\hspace*{-10mm}
+\subbottom[State trajectory with $f_s = 2\text{kHz}$.]{\includegraphics[width=0.5\textwidth]{trajectory_2kHz.eps}\label{fig:2khz_1}}%
+\subbottom[State trajectory with $f_s = 100\text{Hz}$.]{\includegraphics[width=0.5\textwidth]{trajectory_100Hz.eps}\label{fig:100hz_1}}%
+\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position finds its equilibrium at a state determined by the linear combination of the two controllers.}
+\label{fig:trajectory1}
 \end{figure}
+%
+%
+%\begin{figure}[H]
+%	\center
+%		\includegraphics[scale=0.6]{trajectory_slide.eps}
+%	\caption{State trajectory for slide position for $\kappa=1$. MATLAB implementation can be found in \autoref{app:slide_implement_1}. The plot is based on forward euler with a sampling rate of $1\,$kHz. It is seen how the correct position is obtained in the interval $[\Lambda_{s-}:\Lambda_{s+}$]. When setpoints are given outside the safe area, the safety controller ensures that the hard boundaries $\Lambda_{h+}$ and $\Lambda_{h-}$ are not exceeded at any time and that the position finds its equilibrium at some arbitrary state.}
+%	\label{fig:trajectory1}
+%\end{figure}
 Varying $\kappa$ increases the aggressivity of the safety controller and can create fluctuations in the transition area if the sampling rate is too low. Likewise $\sigma(x)$ will fluctuate along with an increased $\kappa$. One must be careful when increasing $\kappa$ when the sampling rate is relatively low. %The effect of increasing $\kappa$ ten times is shown in \autoref{fig:trajectory2}.
 %\begin{figure}[H]
 %	\center
@@ -629,7 +657,7 @@ Varying $\kappa$ increases the aggressivity of the safety controller and can cre
 To verify that \autoref{req2} is fulfilled in the simulation, the Lie derivatives are plotted in \autoref{fig:lie1}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.55]{Lie_slide_1d.eps}
+		\includegraphics[width=1\textwidth]{Lie_slide_1d.eps}
 	\caption{Lie derivatives of the CBF along the vector fields $f(x) = Ax$ and $g(x)=B$. It is seen that $L_gfB(x) \neq 0 \,\, \forall x \neq \frac{-b}{2a}$ which essentially fulfils \autoref{req2}.}
 	\label{fig:lie1}
 \end{figure}
@@ -647,17 +675,28 @@ It is from \autoref{fig:lie1} seen that $L_gB(x) \neq 0 \,\, \forall x \neq -b/(
 \vspace{-0.2cm}
 The state trajectory composing slide position based on the second order model is shown in \autoref{fig:traject2}.
 \begin{figure}[H]
-	\center
-		\includegraphics[scale=0.6]{trajectory_slide_second_order_model_kappa_1.eps}
-	\caption{State trajectory for position based on second order system approximation. It is seen how the boundaries are respected at all time regardless of irresponsible/unsafe setpoints. It is seen how $\sigma(x)$ 	increases when setpoints are given in the unsafe area. AS a result, the control law is a linear combination of the safety controller $u(x) = k_0(x)$ and the linear controller by pole-placement $\tilde{u}(x)$.}
-	\label{fig:traject2}
+%\hspace*{-10mm}
+\subbottom[State trajectory with $f_s = 2\text{kHz}$.]{\includegraphics[width=0.5\textwidth]{trajectory_2_2kHz.eps}\label{fig:2khz_2}}%
+\subbottom[State trajectory with $f_s = 100\text{Hz}$.]{\includegraphics[width=0.5\textwidth]{trajectory_2_100Hz.eps}\label{fig:100hz_2}}%
+\caption{State trajectory for position based on second order system approximation. It is seen how the boundaries are respected at all time regardless of irresponsible/unsafe setpoints. It is seen how $\sigma(x)$ 	increases when setpoints are given in the unsafe area. AS a result, the control law is a linear combination of the safety controller $u(x) = k_0(x)$ and the linear controller by pole-placement $\tilde{u}(x)$..}
+\label{fig:traject2}
 \end{figure}
+%
+%
+%
+%
+%\begin{figure}[H]
+%	\center
+%		\includegraphics[scale=0.6]{trajectory_slide_second_order_model_kappa_1.eps}
+%	\caption{State trajectory for position based on second order system approximation. It is seen how the boundaries are respected at all time regardless of irresponsible/unsafe setpoints. It is seen how $\sigma(x)$ 	increases when setpoints are given in the unsafe area. AS a result, the control law is a linear combination of the safety controller $u(x) = k_0(x)$ and the linear controller by pole-placement $\tilde{u}(x)$.}
+%	\label{fig:traject2}
+%\end{figure}
 The state trajectory shown in \autoref{fig:traject2} verifies that the slide position does not exceed its limits even when setpoints are given outside the safe region.
 
 The Lie derivatives are plotted in \autoref{fig:lie2}.
 \begin{figure}[H]
 	\center
-		\includegraphics[scale=0.6]{Lie_slide_2d.eps}
+		\includegraphics[width=1\textwidth]{Lie_slide_2d.eps}
 	\caption{Lie derivatives. It is seen how $L_gB(x_1,x_2) = 0 \wedge L_fB(x_1,x_2) = 0$ at the same time which in general is critical but accepted in this specific case as it is caused by $x_2=0$ which implies $u(x)=0 \,\,\, \Rightarrow \,\,\, x_1 \rightarrow 0$ which is safe.}
 	\label{fig:lie2}
 \end{figure}

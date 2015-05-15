@@ -1,35 +1,12 @@
+This appendix contains the MATLAB implementation of the slide controller developed in \autoref{chap:cbf_1d_static}. No user inputs are required to run the script. The script shown here includes no plotting, but the script found in \autoref{app:cd} under the path \texttt{matlab\_scripts/slide\_controller/slide\_controller.m} includes all plotting details.
 \begin{lstlisting}[language=matlab]
-close all;
-clear; 
-clc; 
-format long;
-hfile = matlab.desktop.editor.getAll;
-
-model = 2; % 0 = both, 1 = first order model, 2 = second order model
+model = 2; % 1 = first order model, 2 = second order model
 
 %--- parabola coeficients for position constraints ---%
 a = 16/9; b = 4/45; c = -2/225; 
 %--- elliptic paraboloid  coeficients for position constraints ---%
 x10 = 1/40; x20 = 0; a1 = -3/40; b1 = -10; c1 = 1; c2 = -1;
 
-if model == 0
-    B = 2;
-    B_ = 1;
-else
-    B = 1;
-    B_ = 0;
-end
-
-vv = 0;
-for v = 1:1:B
-    if v == 1 && B_ == 1
-        model = 1;
-        fprintf('Simulating first order model..\n');
-    elseif v == 2 && B_ == 1
-        model = 2;
-        fprintf('Simulating second order model..\n');
-    end
-    
 if model == 2
     s = tf('s'); % prepare Laplace operator
     ts = (28-9)*1/50; % 5 percent settling time
@@ -39,8 +16,6 @@ if model == 2
     H = wn^2/(s^2 + 2*zeta*wn*s + wn^2); % calculate transfer function
     num = wn^2; % Specify numarator
     den = [1 2*zeta*wn wn^2]; % specify denominator
-    %[A,B,C,D] = tf2ss(num,den); % convert to state space system
-    %sys = ss(A,B,C,D); % make a sys
     A = [0 1; -wn^2 -2*zeta*wn];
     B = [0 wn^2]';
     C = [1 0];
@@ -48,17 +23,17 @@ if model == 2
     sys = ss(A,B,C,D)
     x(1,1) = 0 % initial state position
     x(2,1) = 0; % initial state velocity
-    K = acker(sys.a,sys.b,[-40 -50]);
+    K = acker(sys.a,sys.b,[-14 -15]);
 elseif model == 1
     tau = 0.110; % time constant
     a_sys = -1/tau; %
     b_sys = 1/tau; % sine wave frequency
     sys = ss(a_sys,b_sys,1,0);
     x(1,1) = 0; % initial state;
-    K = acker(a_sys,b_sys,[10*eig(sys.a)]); % control gain   
+    K = acker(a_sys,b_sys,[1.1*eig(sys.a)]); % control gain   
 end
 
-kappa = 1;
+kappa = 1; % design parameter
 Nbar = - inv(sys.c*inv(sys.a-sys.b*K)*sys.b); % ensure unity gain
 scrsz = get(groot,'ScreenSize'); % get screen information
 
@@ -69,11 +44,11 @@ syms x0
 softlims = solve(a*x0^2 + b*x0 + c == epsilon); % find soft limits
 epsilon = abs(epsilon); % specify ep silon as a positive number
 
+%--- make reference vector ---%
 XREF = [0.02 0.09 -0.14 -0.02 0.045 0.01]; % simulation setpoints
-%XREF = [0.025 1 0.0 -0.2 0.045 0.01]; % simulation setpoints
 xref = XREF(1); % initial reference
 
-f = 1000; Ts = 1/f; % sampling frequency
+f = 100; Ts = 1/f; % sampling frequency
 N = 5; % simulation time in seconds
 fprintf('Simulation time: %d seconds\n', N)
 
@@ -82,6 +57,7 @@ utilde = zeros(round(length(i)),1); % init utilde
 Rplot(1) = 1; % init reference plot
 
 for R = 1:length(i)
+  %--- set various references ---%
   REFS = 6;
   if R == round(length(i)/REFS)*1
       xref = XREF(2);
@@ -100,7 +76,7 @@ for R = 1:length(i)
       Rplot(6) = R;
   end
   
-  %--- Put physical constraints on the velocity  ---%
+  %--- physical constraints for velocity  ---%
   if 1
     if model == 2
       max_vel = 1;
@@ -112,7 +88,9 @@ for R = 1:length(i)
     end
   end
  
+  %--- output ---%
   y(:,R) = sys.C*x(:,R);
+  
   %--- determine sigma  ---% 
   if model == 1
       if (a*(x(1,R))^2 + b*(x(1,R)) + c) <= -epsilon
@@ -141,6 +119,7 @@ for R = 1:length(i)
       end 
   end
 
+  %--- print every thousand iteration to user ---%
   if mod(R,1000) == 1 
       if R ~= 1
           fprintf('iter = %d of %d\n', R-1, length(i)-1);
@@ -149,10 +128,11 @@ for R = 1:length(i)
       end
   end
 
+  %--- find lie derivatives ---%
   if model == 2
       LgB(1,R) = (c1*wn^2*(2*x(2,R) + 2*x20))/b1^2;
       LfB(1,R) = (c1*x(2,R)*(2*x(1,R) + 2*x10))/a1^2 - ...
-          (c1*(2*x(2,R) + 2*x20)*(x(1,R)*wn^2 + 2*x(2,R)*zeta*wn))/b1^2;  
+          (c1*(2*x(2,R) + 2*x20)*(x(1,R)*wn^2 + 2*x(2,R)*zeta*wn))/b1^2; 
   elseif model == 1
       LgB(1,R) = (2*(a)*(x(:,R)) + (b))*(sys.b);
       LfB(1,R) = (2*(a)*(x(:,R)) + (b))*((sys.a)*x(:,R));
@@ -162,30 +142,28 @@ for R = 1:length(i)
   utilde(1,R) = xref*Nbar - K*x(:,R);
 
   %--- Find safe controller ---%
-  threshold = 0.0001;
-  gamma2 = 1;
-  gamma1 = 0.5;
+  threshold = 0.001;
   if abs(LgB(1,R)) >= threshold
       k0(1,R) = -( ( LfB(1,R) + sqrt(LfB(1,R)^2 ...
           + kappa^2*LgB(1,R)*LgB(1,R)' )) /  (LgB(1,R)*LgB(1,R)')  ) *LgB(1,R);
-      kplot(1,R) =  0;%k0(1,R);
+      kplot(1,R) =  k0(1,R);
   else
-      k0(1,R) = x(1,R);
+      k0(1,R) = 0;
       kplot(1,R) = k0(1,R);
   end 
   
+  %--- control law ---%
   u0(1,R) = sigma*k0(1,R)+(1-sigma)*utilde(1,R);
   
-  %--- Put physical constraints on the control signal  ---%
-  if 1
-    slide_lim = 0.1;
-    if u0(1,R) > slide_lim
+  %--- physical constraints for control signal  ---%
+  slide_lim = 0.1;
+  if u0(1,R) > slide_lim
       u0(1,R) = slide_lim;
-    elseif u0(1,R) < -slide_lim
+  elseif u0(1,R) < -slide_lim
       u0(1,R) = -slide_lim;
-    end
   end
-
+ 
+  %--- save the LfclB ---%
   LfclB(1,R) = LfB(1,R) + LgB(1,R).*k0(1,R);
   
   %--- extrapolate with forward euler ---%
@@ -194,193 +172,4 @@ for R = 1:length(i)
   sig(1,R) = sigma;
   
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%    PLOTTING    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%--- plot LfB(x) and LgB(x) ---%
-M = 2.5;
-figure('Position',[scrsz(1) scrsz(4) scrsz(3)/3 scrsz(4)/3])
-hold on
-plot(y(1,1:end),LfB(1,:),'-b','linewidth',1)
-plot(y(1,1:end),LgB(1,:),'-g','linewidth',1)
-x_p = find(LfB >= 0);
-plot(y(x_p),LfB(x_p),'-r','linewidth',1)
-plot([-0.11 0.11], [0 0], ':k')
-plot([-b/(2*a) -b/(2*a)],[-M M],'-.m');
-plot([0.04 0.04],[-M M],'-.r');
-plot([0.05 0.05],[-M M],'-.r');
-plot([-0.09 -0.09],[-M M],'-.r');
-plot([-0.1 -0.1],[-M M],'-.r');
-h_legend = legend({'$L_fB(x)<0$','$L_gB(x)$','$L_fB(x) \geq 0$','zero level'}...
-    ,'Interpreter','latex','location','northeast');
-hold off
-set(h_legend,'FontSize',14);
-ax = gca;
-%ax.YLim = [-M M];
-ax.XLim = [-0.11 0.11];
-fig = gcf;
-fig.Name = 'Lie derivatives';
-xlabel('slide position [m]')
-ylabel('$L_fB(x) \, \wedge \, L_gB(x)$','Interpreter','latex')
-set(gca,'fontsize',14)
-title('Lie derivatives', 'FontSize', 14);
-if 1
-    if  model == 1
-        str1 = 'CBF extremity','Interpreter','latex';
-        text(-b/(2*a),-1,str1);
-    end
-    str1 = '\Lambda_{s+}','Interpreter','latex';
-    text(0.04,-1,str1);
-    str1 = '\Lambda_{h+}','Interpreter','latex';
-    text(0.05,-1,str1);
-    str1 = '\Lambda_{s,}','Interpreter','latex';
-    text(-0.09,-1,str1); 
-    str1 = '\Lambda_{h-}','Interpreter','latex';
-    text(-0.1,-1,str1); 
-end
-set(findall(gcf,'type','text'),'FontSize',14,'fontWeight','normal')
-set(0,'defaultAxesFontName', 'Times New Roman')
-set(0,'defaultTextFontName', 'Times New Roman')
-box on
-
-
-%--- plot Barrier function ---%
-z = linspace(-1, 1, 10^4);
-fprintf('plotting barrier function..\n')
-figure('Position',[scrsz(1) scrsz(4)/10 scrsz(3)/3 scrsz(4)/3])
-bar = a.*z.^2 + b.*z + c;
-h0 = plot(z,bar,'-b', 'linewidth',1);
-h0.DisplayName = 'barrier function';
-hold on;
-h1 = plot([-10 10],[0 0],'--k', 'linewidth', 1);
-h1.DisplayName = 'zero line';
-slide_lim_y = [-0.2 0.2]; 
-slide_lim = [ 0.1  0.1];
-h2 = plot(slide_lim, slide_lim_y, '-r', -slide_lim, slide_lim_y, '-r');
-h2(1).DisplayName = 'slide limits';
-plot(y(1,:),zeros(size(y)), 'xg')
-plot(y(1,end),0, 'xk')
-plot([x(1,end) x(1,end)], [-10 10], '-.r')
-axis([-0.15 0.1 -0.015 0.02]);
-grid off;
-legend([h0, h1, h2(1)],...
-        h0.DisplayName, h1.DisplayName, h2(1).DisplayName,...
-       'Location', 'NorthEast');
-fig = gcf;
-fig.Name = 'Overview';
-hold off;
-
-%--- plot control signal ---%
-fprintf('plotting control signals..\n')
-figure('Position',[scrsz(1)*scrsz(4)/1.5 scrsz(4) scrsz(3)/5 scrsz(4)/2.8])
-hold on
-if vv == 1
-    plot(linspace(0,length(i),length(u01(1,:))), u01(1,:),'-.r');
-end
-plot(linspace(0,length(i),length(u0(1,:))), u0(1,:),'-b');
-fig = gcf;
-fig.Name = 'control signal';
-if vv == 1
-    legend('control signal based on 1st order model','control signal based on 2nd order model')
-else
-    legend('control signal')
-end
-h_legend = legend({'$u(x),\,\,\,\,  \kappa = 1$'},'Interpreter','latex');
-set(h_legend,'FontSize',14);
-ax = gca;
-fig = gcf;
-ax.XLim = [0 N*1000];
-fig.Name = 'Control signals';
-xlabel('time [s/1000]')
-ylabel('u(x)')
-set(gca,'fontsize',14)
-title('Control signal', 'FontSize', 14);
-box on
-hold off
-
-%--- plot state trajectory with boundaries ---%
-fprintf('plotting states..\n')
-figure('Position',[scrsz(1)*scrsz(4)*1.1 scrsz(4)/10 scrsz(3)/3 scrsz(4)/3])
-hold on
-plot(linspace(0,length(i),length(y(1,:))), y(1,:),'-b','linewidth',1);
-plot(linspace(0,length(i),length(sig(1,:))), sig(1,:)./10,'-','Color',...
-    [0/255,255/255,0/255],'linewidth',1);
-if vv == 1
-   plot(linspace(0,length(i),length(y1(1,:))), y1(1,:),'-.b','linewidth',1);
-   plot(linspace(0,length(i),length(sig1(1,:))), sig1(1,:)./10,'-.','Color',...
-        [0/255,255/255,0/255],'linewidth',1);
-end
-plot([0 length(i)], [-0.1 -0.1],'-r')
-plot([0 length(i)], [softlims(1) softlims(1)],'-.r')
-plot([0 length(i)], [-0.1 -0.1],':k')
-Rplot(length(XREF) + 1) = length(i);
-for j = 1:length(XREF)
-    plot([Rplot(j) Rplot(j+1)],[XREF(j) XREF(j)],'-k', 'linewidth',1);
-    plot(Rplot(j), XREF(j), '*k');
-end
-plot([0 length(i)], [softlims(2) softlims(2)],'-.r')
-plot([0 length(i)], [0.05 0.05],'-r')
-plot([0 length(i)], [0.1 0.1],':k')
-h_legend = legend({'slide position','$\sigma(x)\cdot0.1$','$\Lambda_{h\pm}$','$\Lambda_{s\pm}$',...
-    'physical limit','reference level'},'Interpreter','latex','location','southeast');
-set(h_legend,'FontSize',14);
-ax = gca;
-ax.YLim = [-0.15 0.11];
-ax.XLim = [0 length(i)];
-fig = gcf;
-fig.Name = 'states';
-xlabel('time [s/1000]')
-ylabel('slide position [m]')
-set(gca,'fontsize',14)
-if model == 1
-    title('State trajectory for slide position based on first order model', 'FontSize', 14);
-elseif model == 2
-    title('State trajectory for slide position based on second order model', 'FontSize', 14);
-end    
-box on
-hold off
-
-if model == 2
-    figure
-    plot(x(2,:))
-    title('velocity')
-end
-figure
-plot(LfclB(1,:))
-title('LfclB')
-
-
-figure
-hold on
-plot(linspace(1,length(i),length(i)),LfB(1,:))
-plot(linspace(1,length(i),length(i)),LgB(1,:))
-hold off
-legend('LfB','LgB')
-title('LgB and LfB')
-
-if model == 2
-    figure
-    plot(linspace(1,length(i),length(i)),((((x(1,1:end-1)+x10).^2))./a1^2 + ((x(2,1:end-1)+x20).^2)./b1^2)*c1 + c2)
-    title('B(x1,x2)')
-elseif model == 1
-    figure
-    plot(linspace(1,length(i),length(i)),a.*x(1,1:end-1).^2 + b.*x(1,1:end-1) + c)
-    title('B(x1)')
-end
-
-end
-
-if v == 1
-    y1 = y(1,:);
-    sig1 = sig(1,:);
-    vv = 1;
-    u01 = u0(1,:);
-end
-
-fprintf('Done!\n')
-set(findall(gcf,'type','text'),'FontSize',14,'fontWeight','normal')
-set(0,'defaultAxesFontName', 'Times New Roman')
-set(0,'defaultTextFontName', 'Times New Roman')
 \end{lstlisting}
