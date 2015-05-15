@@ -1,4 +1,4 @@
-In this chapter the same system models for the robot slide movement are used as presented in \autoref{chap:cbf_1d_static}. Now, however, a dynamic reference is introduced, representing setpoints at a fixed distance to a moving surface such as a beating heart. An new set of states is introduced representing the movement of the beating heart simplified as a sine
+In this chapter the same system models for the robot slide movement are used as presented in \autoref{chap:cbf_1d_static}. Now, however, a dynamic reference is introduced, representing setpoints at a fixed distance to a moving surface such as a beating heart. A new set of states is introduced representing the movement of the beating heart simplified as a sine
 \begin{equation}
 \dot{x}_{heart} =
 \dot{\begin{bmatrix}
@@ -22,34 +22,61 @@ Here $\omega_h$ represents the frequency of the heart, and with an average heart
 	\label{fig:1stordersys_dynamiclimits}
 \end{figure}
 
-In \autoref{fig:1stordersys_dynamiclimits} a sine amplitude of 2\,cm is used and a reference defined as the 1D vector $d_{ref}=x_1-x_{h1}$, representing the robot tool distance to the point on the surface of the heart, is set to 1\,cm. This reference difference can be picked as any nonnegative value still allowing the slide position to stay within its (upper) physical limit.
-The reference for the robot tool position will in the following be defined as this positive difference in position, i.e.
+In \autoref{fig:1stordersys_dynamiclimits} a sine amplitude of 2\,cm is used and the time dependent reference for the robot tool tip is defined as the heart position plus a fixed distance of 1\,cm in the positive slide direction $x_\text{ref}=x_{h1}+d_\text{ref}$, i.e. according to \autoref{eq:utilde} the linear position controller to be used in $\mathcal{X}_0$ is
 \begin{equation}
-u(t) = \bar{N}(x_{h1}(t)+d_{ref})-kx(t)
+\tilde{u}(t) = \bar{N}(x_{h1}(t)+d_\text{ref})-Kx(t) \label{eq:utilde_dynamic}
 \end{equation}
-where $x$ here is the state vector of the 1D surgical robot system. \textcolor{red}{Or should it be $-k_1x_1$ no matter the order of the system?}
-The dynamic surface representing the heart also put forth new requirements to the safety controller, as the boundary between the safe and unsafe regions $\mathcal{X}_0$ and $\mathcal{X}_u$ is now moving concurrently with the heart surface. This requires the construction of barrier certificates that are functions of robot state as well as the dynamic surface position.
+%\textcolor{red}{Or should it be $-k_1x_1$ no matter the order of the system?}
+%The reference distance can be picked as any nonnegative value still allowing the slide position to stay within its (upper) physical limit.
+The dynamic surface representing the heart also put forth new requirements to the safety controller, as the boundary between the safe and unsafe regions $\mathcal{X}_0$ and $\mathcal{X}_u$ (and thereby also the transition region $\mathcal{T}$ between the use of linear and safety controller) is now moving concurrently with the heart surface. This requires the construction of barrier certificates that are functions of robot state as well as the dynamic surface position.
 
 
 
 \section{Safe Controller Design for First Order System}
-\textcolor{red}{introduce}
+First a linear position controller is designed for the augmented system consisting of the first order system modelled in \autoref{subsec:model_1d} and the simplified heart model in \autoref{eq:beating_heart_sine}. The controller is designed on the form presented in \autoref{eq:utilde}, and for the dynamic system, the reference is designed to be a fixed distance to the surface of the heart, as described in \autoref{eq:utilde_dynamic}.
+
+Once the closed-loop system has been designed, a barrier certificate is constructed iteratively by formulating a function that has its (dynamic) zero level set coinciding with the surface position of the heart, and is positive (indicating the unsafe region $\mathcal{X}_u$) below the surface and negative above, thus conforming with the first two requirements for a barrier certificate as given by \autoref{def:barrier_certificate}.
+
+In order to test compliance with the third requirement for a barrier certificate, the candidate barrier function is tested with the designed linear first order system according to the requirement in \autoref{req2}, and the candidate barrier function is altered iteratively until this requirement is fulfilled.
+
+When a barrier certificate for the closed-loop system has been found, a safety controller is designed according to \autoref{eq:control_law_safety}, and the region $\mathcal{T}$ is defined by choosing the constant $\epsilon$ and using the bump function $\sigma(x)$ in \autoref{eq:smoothness}, arriving at the safe controller in \autoref{eq:control_law} employing the linear position controller on $\mathcal{X}_0\setminus\mathcal{T}$ and the linear combination of the position controller and the CBF on $\mathcal{T}$
 
 \subsection{Setting up the Closed-Loop System and Designing the Linear Controller}
 An augmented state-space model including the dynamics of the robot tool from \autoref{eq:1storder_1D_ss} as well as the beating heart from \autoref{eq:beating_heart_sine}, is set up for the closed-loop first order system
 \begin{equation}
+f_{cl}(x)=\dot{\begin{bmatrix}
+	x_1\\x_{h1}\\x_{h2}\\d_\text{ref}
+	\end{bmatrix}} =
+\underbrace{\underbrace{\begin{bmatrix}
+		-1/\tau & 0 & 0 & 0\\0 & 0 & \omega_h & 0 \\ 0 & -\omega_h & 0 & 0 \\ 0& 0 & 0 & 0
+		\end{bmatrix}}_{A}
+	\begin{bmatrix}
+	x_1\\x_{h1}\\x_{h2}\\d_\text{ref}
+	\end{bmatrix}}_{f(x)}+ 
+\underbrace{\underbrace{\begin{bmatrix}
+		1/\tau \\ 0 \\ 0 \\ 0
+		\end{bmatrix}}_{B}}_{g(x)}
+\underbrace{\underbrace{\begin{bmatrix}
+		-k & \bar{N} & 0 & \bar{N}
+		\end{bmatrix}}_{K}
+	\begin{bmatrix}
+	x_1\\x_{h1}\\x_{h2}\\d_\text{ref}
+	\end{bmatrix}}_{\tilde{u}(x)}
+\end{equation}
+or formulated equivalently as
+\begin{equation}
 \dot{\begin{bmatrix}
 	x_1\\x_{h1}\\x_{h2}
 	\end{bmatrix}} =
-\begin{bmatrix}
--(1+k)/\tau & \bar{N}/\tau & 0\\0 & 0 & \omega_h \\ 0 & -\omega_h & 0
-\end{bmatrix}
+\underbrace{\begin{bmatrix}
+	-(1+k)/\tau & \bar{N}/\tau & 0\\0 & 0 & \omega_h \\ 0 & -\omega_h & 0
+	\end{bmatrix}}_{A_{cl}}
 \begin{bmatrix}
 x_1\\x_{h1}\\x_{h2}
 \end{bmatrix}+ 
-\begin{bmatrix}
-\bar{N}/\tau \\ 0 \\ 0
-\end{bmatrix}
+\underbrace{\begin{bmatrix}
+	\bar{N}/\tau \\ 0 \\ 0
+	\end{bmatrix}}_{B_{cl}}
 d_{ref}
 \end{equation}
 \begin{tabular}{rl}
@@ -59,31 +86,83 @@ $k$ & is the linear system controller designed according to \autoref{eq:K_1}\\
 $\bar{N}$ & is the system gain found according to \autoref{eq:barm_1}
 \end{tabular}\\
 
-Can also be written with the reference distance $d_{ref}$ as part of the state, with no dynamics indicating it is a fixed value:
-\begin{equation}
-f_{cl}(x)=\dot{\begin{bmatrix}
-	x_1\\x_{h1}\\x_{h2}\\d_{ref}
-	\end{bmatrix}} =
-\underbrace{\underbrace{\begin{bmatrix}
-		-1/\tau & 0 & 0 & 0\\0 & 0 & \omega_h & 0 \\ 0 & -\omega_h & 0 & 0 \\ 0& 0 & 0 & 0
-		\end{bmatrix}}_{A}
-	\begin{bmatrix}
-	x_1\\x_{h1}\\x_{h2}\\d_{ref}
-	\end{bmatrix}}_{f(x)}+ 
-\underbrace{\underbrace{\begin{bmatrix}
-		1/\tau \\ 0 \\ 0 \\ 0
-		\end{bmatrix}}_{B}}_{g(x)}
-\underbrace{\underbrace{\begin{bmatrix}
-		-k & \bar{N} & 0 & \bar{N}
-		\end{bmatrix}}_{K}
-	\begin{bmatrix}
-	x_1\\x_{h1}\\x_{h2}\\d_{ref}
-	\end{bmatrix}}_{u}
-\end{equation}
-
 \textcolor{red}{Should we design a $k$ that is slower conforming with what is found to be implementable?}
 
-\subsection{Constructing a Barrier Function}
+Before designing the controller $k$, the stability of this system is analysed. \textcolor{red}{Be sure it's the same for reference as for estimated state!} In order for the system to be (asymptotically) stable, the error should converge to zero
+\begin{equation}
+e(t)=x_\text{ref}(t)-x_1(t)=x_{h1}(t)+d_\text{ref}-x_1(t) = 0 \label{eq:ref_error}
+\end{equation}
+The requirement of the system being stable can be tested as the derivative of the error converging to zero
+\vspace{-5mm}
+\begin{subequations}
+\begin{align}
+\dot{e}(t)=\dot{x}_\text{ref}(t)-\dot{x}_1(t)=\dot{x}_{h1}(t)-\dot{x}_1(t)
+&= \omega_h x_{h2}(t) - (-\tfrac{1}{\tau}x_1(t)+\tfrac{1}{\tau}\bar{N}x_\text{ref}(t-\tfrac{1}{\tau}kx_1(t)) \nonumber\\
+&= \omega_h x_{h2}(t) + \tfrac{1}{\tau}(1+k)x_1(t)-\tfrac{1}{\tau}\bar{N}x_\text{ref}(t)
+\end{align}
+For a first order system of this particular configuration of the $A$ and $B$ matrices, as seen from \autoref{eq:barm_1}, $\bar{N}=1+k$, reducing the equation to
+\begin{equation}
+\dot{e}(t) =\omega_h x_{h2}(t) + \tfrac{1}{\tau}\bar{N}(x_1(t)-x_\text{ref}(t) = \omega_h x_{h2}(t) - \tfrac{1}{\tau}\bar{N}e(t)
+\end{equation}
+Now setting the error derivative equal to zero
+\begin{align}
+0 &= \omega_h x_{h2}(t) - \tfrac{1}{\tau}\bar{N}e(t)\nonumber\\
+\tfrac{1}{\tau}\bar{N}e(t) &= \omega_h x_{h2}(t)\nonumber\\
+e(t) &= \frac{\omega_h \tau}{\bar{N}}x_{h2}(t)
+\end{align}
+The value of $x_{h2}$ is time dependent, but will have its maximum and minimum values in the amplitude of the sine, i.e. for a heart sine amplitude of $A_\text{heart}=2$\,cm $x_{h2}\in[-0.02,0.02]$\,m.
+\end{subequations}
+This means that the error will fluctuate between the values
+\begin{equation}
+e(t) \in \begin{bmatrix} -\frac{\omega_h \tau}{\bar{N}}A_\text{heart},  & \frac{\omega_h \tau}{\bar{N}}A_\text{heart}  \end{bmatrix}
+\end{equation}
+\textcolor{red}{Makes no sense! How can the error derivative be zero only when the error is fluctuating?!}
+From safety, $x_1$ should always be above $x_{h1}$, i.e.
+\begin{equation}
+x_1(t)\geq x_{h1}(t) \qquad \Leftrightarrow \qquad x_{h1}(t)-x_1(t)\leq 0
+\end{equation}
+and as seen from \autoref{eq:ref_error}, this puts up a safety requirement for the reference distance
+\begin{equation}
+x_{h1}(t)-x_1(t) = e(t)-d_\text{ref}\leq 0 \qquad \Leftrightarrow \qquad d_\text{ref}\geq e_\text{max}=\frac{\omega_h \tau}{\bar{N}}A_\text{heart}
+\end{equation}
+
+Stability analysis: test that the system has negative poles, i.e. that all $\lambda$s are negative for which
+\begin{equation}
+\det\begin{vmatrix}
+A_{cl}-\lambda I & B_{cl}\\C_{cl}&D_{cl}
+\end{vmatrix}=0
+\end{equation}
+As the output should be the robot tool position, i.e. $C_{cl}=[1\,\,\,0\,\,\,0]$ and $D_{cl}=0$, this is found as
+\begin{align}
+&\det\begin{vmatrix}
+-(1+k)/\tau-\lambda & \bar{N}/\tau & 0 & \bar{N}/\tau\\
+0 & -\lambda  & \omega_h  & 0\\ 
+0 & -\omega_h & -\lambda & 0\\
+1 & 0 & 0 & 0
+\end{vmatrix}
+= 
+%(-(1+k)/\tau-\lambda) \cdot
+%\begin{vmatrix}
+%-\lambda  & \omega_h  & 0\\ 
+%-\omega_h & -\lambda & 0\\
+%0 & 0 & 0
+%\end{vmatrix}
+-1 \cdot \det\begin{vmatrix}
+\bar{N}/\tau & 0 & \bar{N}/\tau\\
+-\lambda & \omega_h  & 0\\ 
+-\omega_h & -\lambda & 0\\
+\end{vmatrix} \nonumber\\
+&\phantom{det}= -1\cdot \frac{\bar{N}}{\tau} \cdot \det 
+\begin{vmatrix}
+-\lambda & \omega_h\\
+-\omega_h &  -\lambda\\
+\end{vmatrix}
+= -\frac{\bar{N}}{\tau} \cdot (\lambda^2 +\omega_h^2)
+= 0 \qquad \Leftrightarrow \qquad \lambda = \pm\omega_h
+\end{align}
+\textcolor{red}{Not stable! positive eigenvalue in $\omega_h$}
+
+\subsection{Constructing a Control Barrier Function}
 As mentioned, a barrier certificate for this system with a zero level set at the surface of the heart, comprises moving boundaries and hence should be a function of both robot and heart position. According to \autoref{def:safety} a $B(x_1,x_{h1})$ should be constructed with unsafe region $\mathcal{X}_u$ below the surface of the heart, i.e. such that $B(x_1,x_{h1})$ is positive if $x_1<x_{h1}$ and negative otherwise. The very simplest function satisfying this requirement is a function
 \begin{equation}
 B_0(x_1,x_{h1})= c(x_{h1}-x_1)
@@ -125,7 +204,7 @@ L_{f_{cl}}B_0(x) &
 c\left(\omega_h x_{h2} - \frac{\bar{N}(x_{h1} + d_{ref})-(1+k) x_1}{\tau}\right)
 \end{align}
 \end{subequations}
-The Lie derivative $L_{f_{cl}}B_0(x)$ (with the heart sine placed as in \autoref{fig:1stordersys_dynamiclimits}) should be negative for the intersection of  $x_1\in[-0.1,0.1]$, $x_{h1}\in [-0.08,-0.04]$ and $x_{h2}\in [-0.02,0.02]$. We thus require that (recall from \autoref{eq:barm_1} that $\bar{N}=K+1$ for the present first order system)
+The Lie derivative $L_{f_{cl}}B_0(x)$ (with the heart sine placed as in \autoref{fig:1stordersys_dynamiclimits}) should be negative for  $x_1\in[-0.1,0.1]$, $x_{h1}\in [-0.08,-0.04]$ and $x_{h2}\in [-0.02,0.02]$. We thus require that (recall from \autoref{eq:barm_1} that $\bar{N}=K+1$ for the present first order system)
 \begin{align}
 \omega_h x_{h2} &< \frac{\bar{N}(x_{h1} + d_{ref})-(1+k) x_1}{\tau} = \frac{1+k}{\tau}(x_{h1} + d_{ref}-x_1)\nonumber\\
 \omega_h x_{h2} \frac{\tau}{1+k} &< x_{h1} + d_{ref}-x_1
