@@ -530,7 +530,7 @@ The feedback matrix and the the observer gain can now be found. They will again 
 \begin{itemize}
 \item No overshoot in the closed loop step response, i.e. Im($p_i)=0$.
 \item Asymptotically Stability, i.e. $|p_i| < 1 $
-\item Slow closed loop response, i.e. !($p_i \ll \lambda_{cl}$)
+\item Slow closed loop step response, i.e. !($p_i \ll \lambda_{cl}$)
 \item Positive feedback
 \item An observer significantly faster than the closed loop system $\Gamma + K_d \Phi$
 \end{itemize}
@@ -575,7 +575,7 @@ M = \tilde{M}N = \begin{bmatrix}
 Thereby, all unknowns from \autoref{eq:observer} is calculated.
 
 The complete controller based on the second order system approximation is now designed as:
-\begin{tcolorbox}
+\begin{recap}[Control Law for Second Order Approximation]
 \begin{flalign*}
 &\textbf{1.} \mm \hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d (C\hat{x}(k)-y(k) ) + M x_\text{ref} \\
 &\textbf{2.} \mm u(k) = \sigma(x)k_0(\hat{x})+(1-\sigma(x))(N \cdot x_\text{ref}-K_d\hat{x}(k))
@@ -594,7 +594,7 @@ $K_d$ is found in \autoref{eq:Kd_2} \\
 $C$ dates back from \autoref{eq:system:2}
 \end{longtable}
 \vspace*{-0.2cm}
-\end{tcolorbox}
+\end{recap}
 This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation is outlined first. 
 \vspace{-0.3cm}
 \section{MATLAB Results}\label{sec:matlab-results-slide-safety}
