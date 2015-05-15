@@ -1,5 +1,5 @@
 \vspace{-0.3cm}
-\section{MATLAB Results}\label{sec:matlab-results-slide-safety}
+\section{MATLAB Implementation and Results}\label{sec:matlab-results-slide-safety}
 \vspace{-0.2cm}
 The results shown in this section are based on the implemented controller found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts\_slide\_controller\_slide\_controller.m}. All plots are made with the following characteristics:
 \begin{itemize}
@@ -92,8 +92,17 @@ The Lie derivatives are plotted in \autoref{fig:lie2}.
 %	\label{fig:control2}
 %\end{figure}
 %It is from \autoref{fig:control2} noted how the control signal fluctuates heavily. This is because the position gradient (the velocity) changes sign constantly in the unsafe region as the trajectory seeks to go either one or the other way due to the safety controller and the setpoint given outside the safe region.
+\subsection{Observer Verification}
+The observer developed in \autoref{sec:K_Nbar_1D_2ndorder} will be verified with a step input at 1\,cm. The estimated position and velocity is plotted with the success criteria that $\hat{x}_1 = x_\text{ref}$ for $t \rightarrow \infty$ and no overshoot in the position occurs. The velocity must stay within a reasonable velocity span, i.e. below 1\,m/s when the time constant is considered. The error is defined as $\hat{y}-y$ and should obviously stay very low in steady state. The result is plotted in \autoref{fig:observerplot}.
+\begin{figure}[H]
+	\center
+		\includegraphics[width=1\textwidth]{observer_plot.eps}
+	\caption{Simulation results from the simulink implementation of the observer. Plot details and simulink file can be found in \autoref{app:cd} by running \texttt{run\_observer.m} under the path \texttt{matlab\_scripts/observer/}.}
+	\label{fig:observerplot}
+\end{figure}
+It is from \autoref{fig:observerplot} seen how the position, velocity and error all complies with the expected outcome and fulfil the requirements.
 
-The shown plots concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outlined safe and unsafe regions.
+The outlined plots throughout this section concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outlined safe and unsafe regions. It shall now be seen how to implement the results on the Da Vinci robot itself.
 \section{Implementation on the Da Vinci Robot}\label{sec:davinci-implementation}
 The implementation constitutes the below listed bullet points:
 \begin{itemize}
