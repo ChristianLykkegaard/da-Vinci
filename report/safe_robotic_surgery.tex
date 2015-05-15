@@ -2,23 +2,26 @@
 This chapter ought to lay the basics of all shared control theory applied in the following chapters dealing with the design of a safe controller.
 
 Based on \citep{bib:artstein}, who founded \glspl{clf} as described in \autoref{eq:lyap}, a \gls{cbf} can be created \citep{bib:org_control} from where the definition below is stated:
-\begin{defn}[Control Barrier Function]
-Given a system $\dot{x}=f(x)+g(x)u$, a \gls{cbf} exists if the below constraints are fulfilled:
+\begin{defn}[Control Barrier Function]\label{def:cbf}
+Given a system $\dot{x}=f(x)+g(x)u$, a  \gls{cbf} exists if the below constraints are fulfilled:
 \begin{subequations}\label{eq:reqs}
 \begin{flalign}
 x\in \mathcal{X}_u \hspace{0.3cm} &\Rightarrow \hspace{0.3cm} B(x) > 0  \label{req1} \\
 L_gB(x) = 0 \hspace{0.3cm} &\Rightarrow \hspace{0.3cm} L_fB(x) < 0 \label{req2} \\
 \{ x \in \mathcal{X} | B(x) \leq 0 \} &\neq \emptyset \label{req3}
 \end{flalign}
+\begin{tabular}{r  l} 
+where  &  \\
+$B(x)$ & is a control barrier function  \\ 
+$L_fB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $\frac{d B(x)}{d x}f(x)$  \\ 
+$L_gB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{d B(x)}{d x}g(x)$ \\
+\end{tabular}\\
+
+The requirement in \autoref{req2} can be hard to fulfill, and can be replaced with a relaxed constraint to obtain a weak \gls{cbf}:
+\begin{equation}
+L_gB(x) = 0 \hspace{0.3cm} \Rightarrow \hspace{0.3cm} L_fB(x) \leq 0 \label{req2_weak}
+\end{equation}
 \end{subequations}
-\vspace{-0.6cm}
-\begin{tabular}{r l l} 
-where  & & \\
-$B(x)$ & is a control barrier function & [$\cdot$] \\ 
-$L_fB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $f(x)$, i.e. $\frac{d B(x)}{d x}f(x)$ & [$\cdot$] \\ 
-$L_gB(x)$ & is the Lie derivative of $B(x)$ along the vector field  $g(x)$, i.e. $\frac{d B(x)}{d x}g(x)$ & [$\cdot$] 
-\end{tabular}
-\vspace*{0.2cm}
 \end{defn}
 Note how \autoref{eq:reqs} put forth demands for the open loop system as opposed to \autoref{eq:barrier_constraints} that describes the closed loop system. \Autoref{req1} states essentially the same as \autoref{cer2}, i.e. when $B(x)>0$ the region is unsafe. This makes it possible to design both the unsafe region and the safe region. \Autoref{req2} put forth the requirement that the gradient along the vector field $f(x)$ must point away from the unsafe area bounded by the zero level set of the barrier function whenever the state cannot be controlled by the input (except in the critical point as the system is in its equilibrium at this point). \Autoref{req3} simply states that the safe area must contain some states as control otherwise is impossible.
 %

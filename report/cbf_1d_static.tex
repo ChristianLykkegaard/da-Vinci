@@ -1,20 +1,13 @@
-This chapter intends to implement and analyse a controller ensuring safety if the demands from \autoref{req1}, \ref{req2} and \ref{req3} are obeyed. This shall first be tested on the slide movement on the Da Vinci surgical robot as it composes a prismatic joint and a 1:1 mapping from slide $joint\_angle$ to 1D position. Hence any inverse kinematic solver can be bypassed in the early phase of this project which is an important simplification to eliminate initial complications.
+This chapter intends to implement and analyse a controller ensuring safety if the demands from \autoref{def:cbf} %{req1}, \ref{req2} and \ref{req3} 
+are obeyed. This shall first be tested on the slide movement on the Da Vinci surgical robot as it comprises a prismatic joint and a 1:1 mapping from slide $joint\_angle$ to 1D position. Hence any inverse kinematics solver can be bypassed in the early phase of this project which is an important simplification to eliminate initial complications.
 
-The slide movement is visualized in \autoref{fig:slidefig} and an overview of terms used in this section is found in \autoref{fig:safe:overview}. \Autoref{fig:safe:overview} encompasses likewise the case study considered in this chapter. It put forth the demands that the upper region, i.e. the interval $[\Lambda_{h+}:\Lambda_\text{lim+}]$ is an unsafe area and the rest is considered safe. Furthermore, everything outside the slide physical limits, i.e. $[-\infty:\Lambda_\text{lim-}]$ and $[\Lambda_\text{lim+}:\infty]$ is also considered unsafe. This case study is purely made up with the purpose to demonstrate the use of a safety controller.
+The slide movement is visualized in \autoref{fig:slidefig} and an overview of terms used in this section is found in \autoref{fig:safe:overview}, which also encompasses  the case study considered in this chapter. It puts forth the demands that the upper slide region, i.e. the interval $[\Lambda_{h+},\Lambda_\text{lim+}]$ is an unsafe area and the rest is considered safe. Furthermore, everything outside the slide physical limits, i.e. $[-\infty,\Lambda_\text{lim-}]$ and $[\Lambda_\text{lim+},\infty]$ is also considered unsafe. This case study is purely made up with the purpose to demonstrate the use of a safety controller.
 \begin{figure}[H]
-    \centering
-    \begin{minipage}{.5\textwidth}
-        \centering
-        \includegraphics[width=0.84\linewidth]{slidemovefigure.pdf}
-        \caption{Illustration of slide movement.}
-        \label{fig:slidefig}
-    \end{minipage}%
-    \begin{minipage}{0.5\textwidth}
-        \centering
-        \includegraphics[width=0.8\linewidth]{slide_overview.pdf}
-        \caption{Boundaries used in this section.}
-        \label{fig:safe:overview}
-    \end{minipage}
+\centering
+\subbottom[Illustration of slide movement.]{\includegraphics[width=0.46\textwidth]{slidemovefigure.pdf}\label{fig:slidefig}}%
+\subbottom[Boundaries used in this section.]{\includegraphics[width=0.42\textwidth]{slide_overview.pdf}\label{fig:safe:overview}}%
+\caption{The slide position of the robotic instrument is visualized for the instrument house. As the remaining robot joints are not considered in this chapter, there is a one-to-one translation between instrument house position and instrument tip position. Slide house position in $d_0$ corresponds to tool tip position in zero in the $z$-dimension.}
+\label{fig:slide}
 \end{figure}
 The boundaries for the slide position are summed up in \autoref{tab:intervals}.
 \begin{table}[H]
@@ -23,25 +16,25 @@ The boundaries for the slide position are summed up in \autoref{tab:intervals}.
 $\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ \\
 $x \in \{[\Lambda_{\text{lim}-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{\text{lim}+}]\}$  & $x \in \{[\Lambda_{\text{lim}-},\Lambda_{h-}],[\Lambda_{h+},\Lambda_{\text{lim}+}]\} $ & $x \in \{[\Lambda_{h-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{h+}]\}$  \\
 \end{tabularx}
-\caption{Global state intervals for the position where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition line and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-},\Lambda_{s+}] \in \mathcal{Y}$ is safe thus $\tilde{u}(x)$ stated in \autoref{eq:utilde} can be used in this region.}
+\caption{Global state intervals for the position where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition line and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-},\Lambda_{s+}] = \mathcal{Y}$ is safe thus $\tilde{u}(x)$ stated in \autoref{eq:utilde} can be used in this region.}
 \label{tab:intervals}
 \end{table}
 As the control law stated in \autoref{eq:control_law} utilizes Lie derivatives, a system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
 \section{Modelling of Slide Movement}\label{sec:model_slide}
-To obtain a model of the slide movement, the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros}. The experiment is described in further details in \autoref{app:meas}. The result is plotted in \autoref{fig:stepresponseslide}. 
+To obtain a model of the slide movement, the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros} (topics are ROS syntax for communication lines, see \autoref{app:ros} for an introduction to ROS). The experiment is described in further details in \autoref{app:meas}, and the result is plotted in \autoref{fig:stepresponseslide}. 
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.5]{step_slide.eps}
+\includegraphics[scale=0.6]{step_slide.eps}
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}. The experiment is described in \autoref{app:meas}.}
 \label{fig:stepresponseslide}
 \end{figure}
-The system can clearly be approximated with an underdamped second order model, however, for initial simplicity, merely a simple first order model of the slide movement is used. It shall, however, also be approximated as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referenced as:
+The system can clearly be approximated with an underdamped second order model, however, for initial simplicity, merely a simple first order model of the slide movement is used. It shall, however, also be approximated as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referred to as:
 \begin{itemize}
-\item One dimensional (1D) slide movement along the $z-$axis based on \underline{position} only, hence a first order system model.
-\item One dimensional (1D) slide movement along the $z-$axis based on \underline{position and velocity}, hence a second order system model.
+\item One dimensional (1D) slide movement along the $z$-axis based on \underline{position} only, hence a first order system model.
+\item One dimensional (1D) slide movement along the $z$-axis based on \underline{position and velocity}, hence a second order system model.
 \end{itemize}
-A first order approximation will be conducted first. 
+A first order approximation of the state space system will be modelled first. 
 \subsection{1D Model based on Position}\label{subsec:model_1d}
 The system can be approximated to a linear first order system with a dominating time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide}:
 \begin{flalign*}
@@ -54,9 +47,9 @@ A linear system can be outlined as:
 \label{eq:1storder_1D_ss}
 \end{flalign}
 The system matrix $A$ and the input matrix $B$ can be read from the above equation:
-\begin{flalign*}
+\begin{flalign}
 A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 1 \kk \wedge \kk D = 0
-\end{flalign*}
+\end{flalign}
 Which completes the first order approximation.
 
 \subsection{1D Model based on Position and Velocity}\label{subsec:model_2d}
@@ -64,22 +57,21 @@ The second order approximation is based on the form:
 \begin{flalign}
 \dfrac{Y(s)}{U(s)} = \dfrac{\omega_n^2}{s^2 + 2\zeta \omega_n s + \omega_n^2}
 \label{eq:2order}
-\end{flalign}\\
-\vspace{-0.6cm}
-\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-Where  & & \\
-$Y(s)$ is the output in the Laplace domain  & [m] \\
-$U(s)$ is the input in the Laplace domain  & [m] \\
-\gls{omegan} is the natural frequency of the system & [rad/s] \\
-\gls{zeta} is the damping coefficient  & [$\cdot$] \\
-$s$ is the Laplace operator  & [rad/s] 
-\end{longtable}
-\vspace*{-0.2cm}
-The model can unambiguous be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured (conservatively) with the purpose to find $\omega_n$ and $\zeta$:
+\end{flalign}
+\begin{tabular}{rll} 
+where  & & \\
+$Y(s)$ & is the output in the Laplace domain  & [m] \\
+$U(s)$ & is the input in the Laplace domain  & [m] \\
+\gls{omegan} & is the natural frequency of the system & [rad/s] \\
+\gls{zeta} & is the damping coefficient  & [$\cdot$] \\
+$s$ & is the Laplace operator  & [rad/s] \\
+\end{tabular}\\
+
+The model can unambiguously be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured (conservatively) from \autoref{fig:stepresponseslide} with the purpose to find $\omega_n$ and $\zeta$:
 \begin{flalign*}
 \omega_n = \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \kk \wedge \kk  \zeta = \dfrac{-1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{-1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
-\Autoref{eq:2order} can be transferred to state space form: 
+\Autoref{eq:2order} can be transformed into state space form: 
 \begin{subequations}
 \begin{flalign}
 &Y(s)s^2 + 2\zeta \omega_n Y(s) s + \omega_n^2 Y(s) - \omega_n^2 U(s)  = 0 \\
@@ -102,15 +94,14 @@ x_1(t) \\ x_2(t)
 \end{bmatrix}
 \end{flalign}
 \end{subequations}
-\vspace{-0.6cm}
-\begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+\begin{tabular}{rll} 
 where  & & \\
-$x_1(t)$ is the position& [m] \\
-$x_2(t) = \dot{x}_1(t)$ is the velocity  & [m/s] \\
-$y(t)$ is the output (slide position)  & [m] \\
-$u(t)$ is the control input  & [$\cdot$]
-\end{longtable}
-\vspace*{-0.2cm}
+$x_1(t)$ & is the position& [m] \\
+$x_2(t) = \dot{x}_1(t)$ &is the velocity  & [m/s] \\
+$y(t)$ & is the output (slide position)  & [m] \\
+$u(t)$ & is the control input  & [$\cdot$]\\
+\end{tabular}\\
+
 Thus the linear system matrices can be outlined as:
 \begin{flalign}
 A = \begin{bmatrix}
