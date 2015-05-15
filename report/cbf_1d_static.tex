@@ -112,7 +112,7 @@ $u(t)$ is the control input  & [$\cdot$]
 \end{longtable}
 \vspace*{-0.2cm}
 Thus the linear system matrices can be outlined as:
-\begin{flalign*}
+\begin{flalign}
 A = \begin{bmatrix}
 0 & 1\\
  -\omega_n^2   & -2\zeta \omega_n 
@@ -120,8 +120,8 @@ A = \begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} \kk \wedge \kk C = \begin{bmatrix}
 1 & 0
-\end{bmatrix} \kk \wedge \kk D = 0
-\end{flalign*}
+\end{bmatrix} \kk \wedge \kk D = 0 \label{eq:system:2}
+\end{flalign}
 Which completes the second order model.
 
 \section{Construction of CBF}\label{sec:construct_cbf}
@@ -460,41 +460,138 @@ These matrices are used in the MATLAB simulation.
 \subsubsection{Observer Design}
 An observer (discrete version) with proper gain corrections can be designed as \citep{bib:Nbar}:
 \begin{flalign}
-\hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d (C\hat{x}(k)-y(k)) + M_d x_\text{ref}
+\hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d ( \underbrace{C\hat{x}(k)-y(k)}_\text{error} ) + M x_\text{ref}
 \label{eq:observer}
 \end{flalign}
 \vspace{-0.6cm}
 \begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
 where  & & \\
 $k$ is the current sample \\
-$\Gamma$ is the discretized system matrix \\
-$\Phi$ is the discretized input matrix \\
-$K_d$ is control gain calculated from the discretized matrices \\
-$L_d$ is observer gain calculated from the discretized matrices \\
-$M$ is gain correction for the observer \\
-$N$ is gain correction for the system  
+\gls{Gamma} is the discretized system matrix \\
+\gls{Phi} is the discretized input matrix \\
+\gls{Kd} is control gain calculated from the discretized matrices \\
+\gls{Ld} is observer gain calculated from the discretized matrices \\
+\gls{M} is gain correction to ensure unity gain for the observer \\
+\gls{N} is gain correction to ensure unity gain for the system  
 \end{longtable}
 \vspace*{-0.2cm}
 The associated continuous system is:
 \begin{flalign*}
-&\dot{x} = A x + B(N x_\text{ref} - Kx) \\
-&y = Cx
+\dot{x} &= A x + B(N x_\text{ref} - Kx) \\
+y &= Cx
 \end{flalign*}
-The equations are implement in simulink as shown in ???
+The equations are implemented in simulink as shown in \autoref{fig:simulink_observer}.
+\begin{figure}[H]
+	\center
+		\includegraphics[scale=0.6]{observer_2_order.pdf}
+	\caption{Simulink implementation of the discrete observer.}
+	\label{fig:simulink_observer}
+\end{figure}
+The augmented (discrete) system in $\mathbb{R}^{4 \times 4}$ will be outlined as:
+\begin{flalign*}
+\begin{bmatrix}
+x(k+1) \\
+\hat{x}(k+1)
+\end{bmatrix} &= \underbrace{\begin{bmatrix}
+\Gamma & \Phi K_d \\
+L_d C & \Gamma + \Phi K_d + L_d C 
+\end{bmatrix} }_{\Gamma_{cl}}\begin{bmatrix}
+x(k) \\ \hat{x}(k)
+\end{bmatrix} + \underbrace{\begin{bmatrix}
+\Phi N \\ M
+\end{bmatrix}}_{\Phi_{cl}} x_\text{ref} \\
+y(k) &= \underbrace{\begin{bmatrix}
+C & 0 & 0
+\end{bmatrix}}_{C_{cl}}\begin{bmatrix}
+x(k) \\ \hat{x}(k)
+\end{bmatrix}
+\end{flalign*}
+The discrete matrices $\Gamma$ and $\Phi$ can be found as \citep{bib:discrete_sampling}:
+\begin{flalign}
+\Gamma &= \text{expm} (A\, T_s) = \begin{bmatrix}
+0.986 & 0.009 \\
+-2.623 & 0.817
+\end{bmatrix} \label{eq:Gamma_2}  \\
+ \Phi &= \int_0^{T_s}  \text{expm} (A\, \mu) \, d \mu B = \begin{bmatrix}
+0.014 \\
+2.623
+\end{bmatrix} \label{eq:Phi_2} 
+\end{flalign}
+\vspace{-0.6cm}
+\begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+where  & & \\
+\text{expm} is the matrix exponential \\
+$T_s=100\,$ms is the sampling time
+\end{longtable}
+\vspace*{-0.2cm}
+The sampling time $T_s$ is according to Assistant Engineer Simon Jensen limited to 100\,Hz caused by the TCP/IP communication channel between ROS and the underlying hardware as seen in \autoref{fig:overview}.
 
-\newpage
-The complete controller is now designed as:
+The feedback matrix and the the observer gain can now be found. They will again be calculated by MATLAB, as the design procedure follow the exact same as in \autoref{sec:K_Nbar_1D_1storder}. The poles ($p_i$) will be placed from the below considerations:
+\begin{itemize}
+\item No overshoot in the closed loop step response, i.e. Im($p_i)=0$.
+\item Asymptotically Stability, i.e. $|p_i| < 1 $
+\item Slow closed loop response, i.e. !($p_i \ll \lambda_{cl}$)
+\item Positive feedback
+\item An observer significantly faster than the closed loop system $\Gamma + K_d \Phi$
+\end{itemize}
+\begin{flalign}
+K_d &= -\texttt{acker}\left( \Gamma,\Phi,\begin{bmatrix}
+0.5 & 0.35
+\end{bmatrix} \right) = \begin{bmatrix}
+ -11.360 & -0.305
+ \end{bmatrix} \label{eq:Kd_2} \\
+ L_d &= -\texttt{acker}\left( \Gamma^T,C^T,\begin{bmatrix}
+0.01 & 0.02
+\end{bmatrix} \right) = \begin{bmatrix}
+  -1.773 \\
+ -68.184
+ \end{bmatrix} \label{eq:Ld_2}
+\end{flalign}
+The matrix $M$ introduce zeros in the closed loop transfer function from $x_\text{ref} \rightarrow y(k)$. These can be eliminated by designing the zeros close to the cut-off frequency, i.e the characteristic polynomial of the matrix $\Gamma_{za}+\tilde{M}C_{za}$ where $\Gamma_{za}=\Gamma+\Phi K_d + L_d C$ and $C_{za}=-K_d$ has zeros close to the cut-off frequency \citep{bib:Nbar}. \texttt{acker} can again be used:
+\begin{flalign*}
+\tilde{M} = - \texttt{acker}\left( A_{za}^T, \Phi_{za}^T, \begin{bmatrix}
+0.01 & 0.02
+\end{bmatrix} \right) = \begin{bmatrix}
+  0.014 \\
+   2.623
+   \end{bmatrix}
+\end{flalign*}
+
+To ensure unity gain, the $N$ matrix can be computed as \citep{bib:Nbar}:
+\begin{flalign}
+N &= - \left( C_{cl} \Gamma_{cl}^{-1} \tilde{\Phi}_{cl} \right)^{-1} \kk \text{where} \mm \tilde{\Phi} = \begin{bmatrix}
+\Phi \\ \tilde{M}
+\end{bmatrix} \nonumber \\
+N &= 13.739 \label{eq:N_2}
+\end{flalign}
+The other matrix $M$ to ensure unity gain, can now be calculated as \citep{bib:Nbar}:
+\begin{flalign}
+M = \tilde{M}N = \begin{bmatrix}
+ 0.186 \\
+  36.040
+\end{bmatrix}
+\label{eq:M_2}
+\end{flalign}
+Thereby, all unknowns from \autoref{eq:observer} is calculated.
+
+The complete controller based on the second order system approximation is now designed as:
 \begin{tcolorbox}
 \begin{flalign*}
-u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx)
+&\textbf{1.} \mm \hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d (C\hat{x}(k)-y(k) ) + M x_\text{ref} \\
+&\textbf{2.} \mm u(k) = \sigma(x)k_0(\hat{x})+(1-\sigma(x))(N \cdot x_\text{ref}-K_d\hat{x}(k))
 \end{flalign*}
 \vspace{-0.8cm}
 \begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-Where  & & \\
-$\sigma(x)$ is computed from \autoref{eq:smoothness} with the $\epsilon$ found in \autoref{eq:epsilon} and the \gls{cbf} found in \autoref{eq:cbf1} &  \\
-$k_0(x)$ is computed from \autoref{eq:control_law} with the Lie derivatives found in \autoref{eq:LgB_2} and \ref{eq:LfB_2} & \\
-$\bar{N}$ is found in \autoref{eq:Nbar_2} & \\
-$K$ is found in \autoref{eq:K_2} &
+where  & & \\
+$\sigma(x)$ is computed from \autoref{eq:smoothness} with $\epsilon$ from in \ref{eq:epsilon} and the \gls{cbf} found in \ref{eq:cbf1} &  \\
+$k_0(x)$ is computed from \autoref{eq:control_law} with Lie derivatives from \ref{eq:LgB_2} and \ref{eq:LfB_2} & \\
+$\Gamma$ is found in \autoref{eq:Gamma_2} & \\
+$\Phi$ is found in \autoref{eq:Phi_2} & \\
+$N$ is found in \autoref{eq:N_2} & \\
+$M$ is found in \autoref{eq:M_2} \\
+$L_d$ is found in \autoref{eq:Ld_2} \\
+$K_d$ is found in \autoref{eq:Kd_2} \\
+$C$ dates back from \autoref{eq:system:2}
 \end{longtable}
 \vspace*{-0.2cm}
 \end{tcolorbox}

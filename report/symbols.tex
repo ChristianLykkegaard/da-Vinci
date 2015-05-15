@@ -144,7 +144,7 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{sigma}{
 name=$\sigma(x)$,
-description={Parameter that determine the linear combination between the safe and non-safe controller. It is restricted such that $0 \leq \sigma(x) \leq 1$},
+description={Parameter that determines the linear combination between the safe and non-safe controller. It is restricted such that $0 \leq \sigma(x) \leq 1$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{zeta}{
@@ -186,4 +186,51 @@ sort=d, type=symbols, symbol=[s]}
 name=$f_s$,
 description={Sampling time},
 sort=d, type=symbols, symbol=[Hz]}
+
+\newglossaryentry{Gamma}{
+name=$\Gamma$,
+description={Discrete version of the linear system matrix $A$ in $\mathbb{R}^{n \times n}$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Phi}{
+name=$\Phi$,
+description={Discrete version of the linear input matrix $B$ in $\mathbb{R}^{n \times m}$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Kd}{
+name=$K_d$,
+description={Feedback matrix in $\mathbb{R}^{m \times n}$ calculated from discrete matrices},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{K}{
+name=$K$,
+description={Feedback matrix in $\mathbb{R}^{m \times n}$ calculated from continuous matrices},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Ld}{
+name=$L_d$,
+description={Observer gain in $\mathbb{R}^{n \times m}$ calculated from discrete matrices},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{L}{
+name=$L$,
+description={Observer gain in $\mathbb{R}^{n \times m}$ calculated from continuous matrices},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{M}{
+name=$M$,
+description={Gain correction for an observer in $\mathbb{R}^{n \times m}$},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{N}{
+name=$N$,
+description={Gain correction for a system $\mathbb{R}^{m}$ with an observer},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Nbar}{
+name=$\bar{N}$,
+description={Gain correction for a system $\mathbb{R}^{m}$ without an observer},
+sort=d, type=symbols, symbol=[$\cdot$]}
+
+
 %\restoregeometry
