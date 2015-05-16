@@ -1,4 +1,11 @@
-In this chapter the same system models for the robot slide movement are used as presented in \autoref{chap:cbf_1d_static}. Now, however, a dynamic reference is introduced, representing setpoints at a fixed distance to a moving surface such as a beating heart. A new set of states is introduced representing the movement of the beating heart simplified as a sine
+This chapter ought to establish the fundamentals for a system ensuring safety when a doctor operates on a patient with a beating hearth. As indicated in \autoref{sec:aau_doc}, a proper initial set-up will be a surface mounted on a cylinder moving periodically as a sinusoid (in contrast to a more advanced model of the hearth, such as the one described in \autoref{app:dynamic_model_heart}). The set-up is depicted in figure ???
+
+FIGUR HVOR MANG KAN SE TEST OPSTILLINGEN 
+
+The same system models for the robot slide movement are used as presented in \autoref{chap:cbf_1d_static}.
+
+
+Now, a dynamic reference is introduced, representing setpoints at a fixed distance to the moving surface simulating the beating heart. A new set of states is introduced representing the movement of the beating heart simplified as a sinusoid which can be represented as a 2-dimensional matrix with eigenvalues on the imaginary axis in the $S$-plane:
 \begin{equation}
 \dot{x}_{heart} =
 \dot{\begin{bmatrix}
@@ -12,12 +19,24 @@ x_{h1}\\x_{h2}
 \end{bmatrix}
 \label{eq:beating_heart_sine}
 \end{equation}
-where $x_{h1}$ is the position of a point on the surface of the heart and $x_{h2}$ is the velocity of the point.
-Here $\omega_h$ represents the frequency of the heart, and with an average heartbeat period of 1.1\,s \citep{bib:heart_berkeley}, $\omega_h$ is set to be $2\pi/1.1$. In \autoref{fig:1stordersys_dynamiclimits} the moving surface of the heart is plotted over time, offset to an axis of oscillation in -6\,cm relative to the slide position. This curve marks the boundary to the unsafe region below it, and crossing this curve (from the safe region above it) corresponds to penetrating the heart surface with the surgical instrument tip. Note that the flexibility of the surface of the heart, at contact with the rigid tool, is not considered in the scope of this thesis. 
+\vspace{-0.8cm}
+\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
+where  & & \\
+$x_{h1}$ is the position of a point on the surface of the heart \\
+$x_{h2}$ is the velocity of the point \\
+$\omega_h$ has an average heartbeat period of 1.1\,s \citep{bib:heart_berkeley}, such that $\omega_h = 2\pi/1.1$.
+\end{longtable}
+\vspace*{-0.2cm}
+%
+%where $x_{h1}$ is the position of a point on the surface of the heart and $x_{h2}$ is the velocity of the point.
+%Here $\omega_h$ represents the frequency of the heart, 
+%$\omega_h$ has an average heartbeat period of 1.1\,s \citep{bib:heart_berkeley}, 
+%$\omega_h$ is set to be $2\pi/1.1$. 
+In \autoref{fig:1stordersys_dynamiclimits} the moving surface of the heart is plotted over time, offset to an axis of oscillation in -6\,cm relative to the slide position. This curve marks the boundary to the unsafe region below it, and crossing this curve (from the safe region above it) corresponds to penetrating the heart surface with the surgical instrument tip. Note that the flexibility of the surface of the heart, at contact with the rigid tool, is not considered in the scope of this thesis. 
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.6\textwidth]{1stordersys_dynamiclimits.pdf}
+	\includegraphics[width=0.65\textwidth]{1stordersys_dynamiclimits.pdf}
 	\caption{Example of a moving surface representing the heart, marking the boundary to the unsafe region $\mathcal{X}_u$. A reference is set within the safe region as a fixed distance to the surface of the beating heart.}
 	\label{fig:1stordersys_dynamiclimits}
 \end{figure}
