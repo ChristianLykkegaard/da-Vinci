@@ -10,7 +10,7 @@ To install ROS on a private laptop, it is recommended to simply follow the below
 
 \hspace{1cm} {\color{blue}{\textit{http://wiki.ros.org/ROS/Installation}}}
 
-Once ROS is installed, it is important to work on the \texttt{surgery-srv.lab.es.aau.dk} computer. It is recommended to work directly on the server in the lab as it provides additional GUI applications such as rviz, but it is obviously more convenient to work from a private laptop. Connection can be established through \texttt{ssh}:
+Once ROS is installed, it is possible to work on the \texttt{surgery-srv.lab.es.aau.dk} computer. It may introduce some advantages to work directly on the server in the lab as it provides additional GUI applications such as rviz, but it is obviously more convenient to work from a private laptop and the GUIs can be set-up without too much trouble. Connection to the server can be established through \texttt{ssh}:
 
 %\begin{lstlisting}[style=ubuntu]
 \hspace{1cm} \texttt{\$ ssh <user>@surgery-srv.lab.es.aau.dk}
@@ -31,20 +31,17 @@ The original environment (clean configuration) can be cloned with the following 
 
 \hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_driver}
 
-\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_moveit\_config}\vspace{0.2cm}
+%\hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_moveit\_config}\vspace{0.2cm}
 
-Each command copies a so called \gls{ros} package which initially are created by the \texttt{catkin\_create\_pkg} command. A "package" is simply the name convention for a chunk of software in \gls{ros}. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep} (it is not just the packages which should follow the \gls{rep} standard, but in fact the entire ROS workspace). This ought to make it easier to share and reuse code. The code developed in this thesis obeys to a large extend the \gls{rep}s but exceptions may occur. 
+Each command copies a package. The name and file structure of a package should follow a certain standard, i.e. the \gls{rep} (it is not just the packages which should follow the \gls{rep} standard, but in fact the entire ROS workspace). This ought to make it easier to share and reuse code. The code developed in this thesis obeys to a large extend the \gls{rep}s but exceptions may occur. 
 
-The three packages used are in that sense:
+The two initial packages used are in that sense:
 \begin{itemize}
 \item \texttt{davinci\_description}
 \item \texttt{davinci\_driver}
-\item \texttt{davinci\_moveit\_config}
+%\item \texttt{davinci\_moveit\_config}
 \end{itemize}
-The development branch, i.e. the result of the work undertaken in this project, can be cloned as:
-
-\hspace{0cm} \texttt{\$ git clone <URL> ---branch develop} \ \ \ {\color{RoyalBlue}{\textit{\# Clone all three packages}}}
-
+If the installation takes place on a local laptop, be sure to install all ROS dependencies. The necessary dependencies can be checked by running \texttt{rosdep check <package\_name>}.
 
 To build the entire environment, open a terminal, navigate to the root of the workspace (\texttt{daVinci\_ws/}) and type:
 
@@ -127,10 +124,51 @@ $^*$  & Also referenced as a package manifest. It provides information about the
 	\caption{Brief explanation of the purpose of the most common used folder names in a package.\newline $^*$ \citep{bib:CmakeLists}, $^{**}$ \citep{bib:package}.} 
 \label{tab:eleb}
 \end{table}
-\section{Specific File Structure of this Thesis}
-Low level flowcharts and low level code decomposition may be found in ??? and is as such not treated in this section.
+\section{Setup of Low Level Control and Initiating ROS}\label{sec:init_ROS}
+Before the communication between ROS and da Vinci may be considered, all low level PID controllers must run correctly and the RIO configuration must be performed. 
 
-The package where most of the development in this thesis takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. To give some idea of the content and how the code is structured, the directory tree on the following page is provided. It shows merely the "interesting files" seen from a developers point of view. In reality, additionally files are present. 
+From the \texttt{aau86730} computer, launch the \texttt{p4\_primary\_Control} icon located on the desktop and connect \texttt{RT Single Board RIO (172.26.12.32)} by right clicking the icon and press connect. Subsequently, navigate to \texttt{p4\_prim\_control\_FPGA\_multichannel\_7\_FLOAT\_SPI\_5.vi} and open it. This launch a GUI comprising access to the seven low level controllers which are activated from the arrow in the upper left corner. The controller gains, setpoints, maximum step size and various calibration options are easily accessible from this GUI, though it should not be necessary to modify any of those. 
+
+Be sure that the gearing factors are specified as follows:
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{X X X X X X X}
+\rowcolor{HeaderBlue} 
+\scriptsize \textbf{Intrument Jaw Left} &\scriptsize  \textbf{Intrument Jaw Right} &\scriptsize  \textbf{Intrument Pitch} &\scriptsize  \textbf{Instrument Roll} &\scriptsize  \textbf{Instrument Slide} & \scriptsize   \textbf{Hand Pitch} &  \scriptsize\textbf{Hand Roll}\\
+12 & 12 & 12.4 & 7.5 & 1340 & 200 & 200\\
+\end{tabularx}
+	\caption{Measured gearing factors. Gearing factors are measured such that $\pi$/4 from \gls{ros} corresponds to 45 degrees on the real robot.}
+\label{tab:gearing}
+\end{table}
+To allow the ROS environment access to the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
+\subsubsection*{ROS}
+It is important to notice that every time a new terminal is commenced it is important to source the bash file from the workspace, i.e.:
+
+\hspace{1cm} \texttt{\$ source devel/setup.bash}
+
+The following list of commands must be executed from the root of the workspace. It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. Open a terminal and run:
+
+\hspace{1cm} \textbf{1.} \ \ \ \texttt{\$ roscore} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running in the terminal}}}
+
+Now, to secure the TCP/IP connection between ROS and the RIO board (Rx \& Tx of setpoints), launch the driver from a new terminal:
+
+\hspace{1cm} \textbf{2.} \ \ \  \texttt{\$ roslaunch davinci\_driver davinci\_driver.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
+
+With these files processes running, the environment is proper set up. The remainder of this appendix will first elaborate what the moveit \gls{api} consist of, why it could be a good idea to use it and why it essentially is not used.
+\section{Structure of Moveit and Why it is Not Used}
+The moveit package includes the very handy \texttt{move\_group} node which search for a \gls{urdf} which is a description of the robot (containing parameters like joint limits, kinematics etc.) and it search for a \gls{srdf} which is 	a parameter generated by the setup assistant (elaborated in \autoref{app:setup_assist}), thus representing parameters not in the \gls{urdf}. This could be group state configurations or alike.
+
+In that sense the \texttt{move\_group} node offers a (when the ROS learning curve is conquered) sorely easy user interface from both python, C++ and a GUI. It was indeed an apparent starting interface to use, and the first connection to the robot was indeed established through the \texttt{move\_group} node and for that reason described in this appendix. As is shall be seen, \texttt{move\_group} has some disadvantages when the objective is a real-time safety controller, which mostly consist of:
+\begin{itemize}
+\item Speed. The \texttt{move\_group} node offers many features, including static obstacle avoidance and trajectory planning. All very useful applications, but they slow the trajectory generation down and proofs itself useless when the controllers developed in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic} are to be implemented.
+\end{itemize}
+
+The results of the work undertaken with the moveit package, can be cloned as the development branch at github:
+
+\hspace{0cm} \texttt{\$ git clone <URL> ---branch develop} \ \ \ {\color{RoyalBlue}{\textit{\# Clone both driver, description and moveit}}}
+
+VIS ET FLOTCHART OF ET KODE EKSEMPEL????
+
+The package where most of the development in this test takes place is in the \texttt{davinci\_moveit\_config} package located in the \texttt{src} folder. To give some idea of the content and how the code is structured, the directory tree on the following page is provided. It shows merely the "interesting files" seen from a developers point of view. In reality, additionally files are present. 
 \newpage
 \renewcommand*\DTstylecomment{\rmfamily\color{gray}\textsc}
 \renewcommand*\DTstyle{\ttfamily\textcolor{blue}}
@@ -203,39 +241,7 @@ The package where most of the development in this thesis takes place is in the \
 }
 %\caption{Code structure in the ROS environment}
 \end{figure}
-
-
-%Be very sure to clone all three packages.
-\subsubsection*{Setup of Low Level Control}
-Before the communication between ROS and da Vinci may be considered, all low level PID controllers must run correctly and the RIO configuration must be performed. 
-
-From the \texttt{aau86730} computer, launch the \texttt{p4\_primary\_Control} icon located on the desktop and connect \texttt{RT Single Board RIO (172.26.12.32)} by right clicking the icon and press connect. Subsequently, navigate to \texttt{p4\_prim\_control\_FPGA\_multichannel\_7\_FLOAT\_SPI\_5.vi} and open it. This launch a GUI comprising access to the seven low level controllers which are activated from the arrow in the upper left corner. The controller gains, setpoints, maximum step size and various calibration options are easily accessible from this GUI, though it should not be necessary to modify any of those. 
-
-Be sure that the gearing factors are specified as follows:
-\begin{table}[H]
-\begin{tabularx}{\textwidth}{X X X X X X X}
-\rowcolor{HeaderBlue} 
-\scriptsize \textbf{Intrument Jaw Left} &\scriptsize  \textbf{Intrument Jaw Right} &\scriptsize  \textbf{Intrument Pitch} &\scriptsize  \textbf{Instrument Roll} &\scriptsize  \textbf{Instrument Slide} & \scriptsize   \textbf{Hand Pitch} &  \scriptsize\textbf{Hand Roll}\\
-12 & 12 & 12.4 & 7.5 & 1340 & 200 & 200\\
-\end{tabularx}
-	\caption{Measured gearing factors. Gearing factors are measured such that $\pi$/4 from \gls{ros} corresponds to 45 degrees on the real robot.}
-\label{tab:gearing}
-\end{table}
-To allow the ROS environment access to the full range of setpoints, launch \texttt{p4-control\_prim-main4.vi} and activate this GUI in a similar manner. This GUI acts merely as interface and offers no user options as such. All necessary setup before initiating ROS is at this point in time performed.
-\subsubsection*{ROS}
-It is important to notice that every time a new terminal is commenced it is important to source the bash file from the workspace, i.e.:
-
-\hspace{1cm} \texttt{\$ source devel/setup.bash}
-
-The following list of commands must be executed from the root of the workspace. It is first of all important to collect all \gls{node}s such that they are able to communicate with each other. Open a terminal and run:
-
-\hspace{1cm} \textbf{1.} \ \ \ \texttt{\$ roscore} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running in the terminal}}}
-
-Now, to secure the TCP/IP connection between ROS and the RIO board (Rx \& Tx of setpoints), launch the driver from a new terminal:
-
-\hspace{1cm} \textbf{2.} \ \ \  \texttt{\$ roslaunch davinci\_driver davinci\_driver.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
-
-To allow trajectory planning, link the OMPL (Open Motion Planning Library) to the system by running: 
+Now, assuming step \textbf{1} and \textbf{2} in \autoref{sec:init_ROS} is carried through, it is possible to allow trajectory planning, by linking the OMPL (Open Motion Planning Library) to the system by running: 
 
 \hspace{1cm} \textbf{3.a} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config move\_group.launch} \ \ \ {\color{RoyalBlue}{\textit{\# Leave this running}}} 
 
@@ -253,34 +259,8 @@ This executes a GUI which provides the following options:
 
 FILL IN!????
 
-\subsubsection*{Useful and Regularly used ROS Commands}
-To build the entire environment, navigate to the root of the workspace and type:
 
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ catkin\_make}% \ \ \ {\color{RoyalBlue}{\textit{\# read various state information from terminal output}}} 
-
-The current joint position is per default broadcasted to the topic \texttt{joint\_states}. To subscribe to this topic, open a terminal and type:
-
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states} \ \ \ {\color{RoyalBlue}{\textit{\# read all state information from terminal output}}} 
-
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states/position[$n$]} \ \ \  {\color{RoyalBlue}{\textit{\# read the $n^\text{th}$ joint state}}} 
-
-Obtain a list of the used kinematic solvers, open a terminal and type:
-
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosparam list | grep kinematics} \ \ \ {\color{RoyalBlue}{\textit{\# read solvers from terminal}}} 
-
-view to all active topics:
-
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic list} \ \ \ {\color{RoyalBlue}{\textit{\# read topics from terminal}}} 
-
-Similar, see all active nodes as: 
-
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosnode list} \ \ \ {\color{RoyalBlue}{\textit{\# read nodes from terminal}}} 
-
-To create a \gls{urdf} file from the present xacro files, type the below command from the root of the workspace:
-
-\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosrun xacro xacro.py src/davinci\_description/robots/davinci.xacro > <name>.URDF} %\ \ \ {\color{RoyalBlue}{\textit{\# URDF is created}}} 
-%
-\subsection*{Setup Assistant}
+\subsection{Setup Assistant}\label{app:setup_assist}
 To run the setup assistant, open a terminal, navigate to the root of the workspace and type:
 
 \hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ roslaunch davinci\_moveit\_config setup\_assistant.launch} \ \ \ {\color{RoyalBlue}{\textit{\# GUI is launched}}} 
@@ -371,6 +351,38 @@ This ensures that the group \texttt{gripper} can operate with six \gls{dof}. It 
 It is finally of great significance to modify the \texttt{p4\_hand\_controller.yaml} file in the \texttt{davinci\_driver} package to include the correct joints. This should be taken care of when the development branch is cloned.
 \end{enumerate}
 %Files that needs to be created/modified manually when the setup assistant is launched:
+
+
+\section{Specific File Structure of this Thesis}
+lav noget lignede moveit, men med \texttt{gr1032}
+
+\subsubsection*{Useful and Regularly used ROS Commands}
+To build the entire environment, navigate to the root of the workspace and type:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ catkin\_make}% \ \ \ {\color{RoyalBlue}{\textit{\# read various state information from terminal output}}} 
+
+The current joint position is per default broadcasted to the topic \texttt{joint\_states}. To subscribe to this topic, open a terminal and type:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states} \ \ \ {\color{RoyalBlue}{\textit{\# read all state information from terminal output}}} 
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic echo joint\_states/position[$n$]} \ \ \  {\color{RoyalBlue}{\textit{\# read the $n^\text{th}$ joint state}}} 
+
+Obtain a list of the used kinematic solvers, open a terminal and type:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosparam list | grep kinematics} \ \ \ {\color{RoyalBlue}{\textit{\# read solvers from terminal}}} 
+
+view to all active topics:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rostopic list} \ \ \ {\color{RoyalBlue}{\textit{\# read topics from terminal}}} 
+
+Similar, see all active nodes as: 
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosnode list} \ \ \ {\color{RoyalBlue}{\textit{\# read nodes from terminal}}} 
+
+To create a \gls{urdf} file from the present xacro files, type the below command from the root of the workspace:
+
+\hspace{1cm} \textbf{$\bullet$} \ \ \  \texttt{\$ rosrun xacro xacro.py src/davinci\_description/robots/davinci.xacro > <name>.URDF} %\ \ \ {\color{RoyalBlue}{\textit{\# URDF is created}}} 
+%
 \subsection*{Useful Debugging Commands}
 To check which files are recently modified, open a terminal and run:
 
@@ -379,4 +391,3 @@ To check which files are recently modified, open a terminal and run:
 This is fairly useful as, for example, the setup-assistant overwrites a number of files. 
 
 {\color{white}{\gls{yaml}}}{\color{white}{\gls{xacro}}}
-
