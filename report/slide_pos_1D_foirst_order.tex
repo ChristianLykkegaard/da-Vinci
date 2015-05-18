@@ -1,4 +1,11 @@
-This appendix contains the MATLAB implementation of the slide controller developed in \autoref{chap:cbf_1d_static}. No user inputs are required to run the script. The script shown here includes no plotting, but the script found in \autoref{app:cd} under the path \texttt{matlab\_scripts/slide\_controller/slide\_controller.m} includes all plotting details.
+This appendix contains the MATLAB implementation of the controllers developed throughout the project, i.e.:
+\begin{itemize}
+\item Safety controller for a system with static boundaries for instrument slide in \autoref{sec:app:static}
+\item Safety controller for a system with dynamic boundaries to simulate a set-up consisting of a beating hearth and a safe distance between hearth and robot end effector. This is in \autoref{sec:app:dynamic}.
+\end{itemize}
+\section{Implementation of Instrument Slide Safety Controller with Static Boundaries}\label{sec:app:static}
+This section contains the MATLAB implementation of the slide controller developed in \autoref{chap:cbf_1d_static}. No user inputs are required to run the script. The script shown here includes no plotting, but the script found in \autoref{app:cd} under the path \texttt{matlab\_scripts/slide\_controller/slide\_controller.m} includes all plotting details.\\
+
 \begin{lstlisting}[language=matlab]
 model = 2; % 1 = first order model, 2 = second order model
 
@@ -171,5 +178,102 @@ for R = 1:length(i)
   x(:,R+1) = xdot*Ts + x(:,R);
   sig(1,R) = sigma;
   
+end
+\end{lstlisting}
+\section{Implementation of Instrument Slide Safety Controller with Dynamic Boundaries}\label{sec:app:dynamic}
+This section contains MATLAB implementation of the controller developed in \autoref{chap:cbf_1d_dynamic}. All plotting details are omitted in this section, but the controller can also be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_hearth/beating\_hearth\_controller.m} which includes the plotting section as well.\\
+
+\begin{lstlisting}[language=matlab]
+%--- setup systems ---%
+k = 9;
+Nbar = 10;
+tau = 0.110;
+wh = 2*pi/1.1;
+A = [-1/tau  0   0  0;
+      0      0   wh 0;
+      0     -wh  0  0;
+      0      0   0  0];
+B = [(1/tau) 0 0 0]';
+K = [-k Nbar 0 Nbar];
+
+%--- initial conditions ---%
+x(1,1) = 0.05; % initial state position
+x(2,1) = -0.03; % initial hearth position
+x(3,1) = 0; % initial hearth velocity
+x(4,1) = 0.03; % initial distance
+
+kappa = 1;
+scrsz = get(groot,'ScreenSize'); % get screen information
+
+f = 2000; Ts = 1/f; % sampling frequency
+N = 5; % simulation time in seconds
+fprintf('Simulation time: %d seconds\n', N)
+
+i = (0:Ts:N); % make simulation resolution realistic
+utilde = zeros(round(length(i)),1); % init utilde
+Rplot(1) = 1; % init reference plot
+
+%--- run controller ---%
+epsilon = 0.01; 
+for R = 1:length(i)
+    
+  if mod(R,1000) == 1 
+      if R ~= 1
+          fprintf('iter = %d of %d\n', R-1, length(i)-1);
+      else
+          fprintf('iter = %d of %d\n', R, length(i)-1);
+      end
+  end
+  
+  %--- give an unsafe distance ---%
+  if R > f*2 
+      x(4,R) = -0.01;
+  end
+  
+  cbf = x(2,R) - x(1,R);
+  %--- determine sigma  ---% 
+  if cbf <= -epsilon
+      sigma = 0;
+  elseif ( (cbf > -epsilon) && (cbf <  0)   )
+      sigma = -2*(cbf/epsilon).^3 - 3.*(cbf/epsilon).^2 + 1;
+  else
+      sigma = 1;
+  end
+  %sigma = 0;
+
+  %--- find lie derivatives ---%
+  LgB(1,R) = -1/tau;
+  LfB(1,R) = wh*x(3,R) + x(1,R)/tau;
+  
+  %-- Find controller by pole placement --%
+  utilde(1,R) = K*x(:,R);
+
+  %--- Find safe controller ---%
+  threshold = 0.001;
+  if abs(LgB(1,R)) >= threshold
+      k0(1,R) = -( ( LfB(1,R) + sqrt(LfB(1,R)^2 ...
+          + kappa^2*LgB(1,R)*LgB(1,R)' )) /  (LgB(1,R)*LgB(1,R)')  ) *LgB(1,R);
+      kplot(1,R) =  k0(1,R);
+  else
+      k0(1,R) = 0;
+      kplot(1,R) = k0(1,R);
+  end 
+
+  %--- control law ---%
+  u0(1,R) = sigma*k0(1,R)+(1-sigma)*utilde(1,R);
+  
+  %--- save the LfclB ---%  
+  LfclB(1,R) = LfB(1,R) + LgB(1,R).*k0(1,R);
+  
+  %--- extrapolate with forward euler ---%
+  %xdot = A*(x(:,R) + [0 0.2 0.2 0]') + u0(1,R)*B;
+  xdot = A*x(:,R) + u0(1,R)*B;
+  x(:,R+1) = xdot*Ts + x(:,R);
+  
+  %--- record sigma ---%
+  sig(1,R) = sigma;
+
+  %--- ---% calculate distance between hearth and robot end effector ---%
+  Delta(1,R) = x(1,R) - x(2,R);
 end
 \end{lstlisting}
