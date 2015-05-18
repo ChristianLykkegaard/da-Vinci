@@ -52,18 +52,18 @@ description={Time constant},
 sort=d, type=symbols, symbol=[s]}
 
 \newglossaryentry{X}{
-name=$X$,
-description={The set of all states allowed when safety is considered. It belongs in $X \subseteq \mathbb{R}^n$},
+name={$\mathcal{X}$},
+description={The set of all considered states for which safety should be guaranteed, $\mathcal{X} \subseteq \mathbb{R}^n$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{X0}{
-name=$X_0$,
-description={The set of all initial states allowed when safety is considered. It belongs in $X_0 \subseteq$ \gls{X}},
+name={$\mathcal{X}_0$},
+description={The set of all safe initial states  $\mathcal{X}_0 \subseteq$ \gls{X}},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Xu}{
-name=$X_u$,
-description={The set of all unsafe states. It belongs in $X_u \subseteq$ \gls{X}},
+name={$\mathcal{X}_u$},
+description={The set of all unsafe states, $\mathcal{X}_u \subset$ \gls{X}},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Yfancy}{
@@ -73,7 +73,7 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Tfancy}{
 name=$\mathcal{T}$,
-description={The set of all states in a transition area between the safe and unsafe region},
+description={The set of all (safe) states in a transition area between the safe and unsafe region},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{lambdai}{
@@ -87,8 +87,8 @@ description={Eigenvalue},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{x}{
-name=$x$,
-description={The state variable which is restricted to $x \in \mathbb{R}^n$ where  \gls{n} is the number of states},
+name=$\mathbf{x}$,
+description={The state variable which is restricted to $\mathbf{x} \in \mathbb{R}^n$ where  \gls{n} is the number of states},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{n}{
@@ -113,8 +113,8 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 
 \newglossaryentry{u}{
-name=$u$,
-description={Control input restricted to $u \in \mathbb{R}^m$ where \gls{m} is the number of inputs},
+name=$\mathbf{u}$,
+description={Control input restricted to $\mathbf{u} \in \mathbb{R}^m$ where \gls{m} is the number of inputs},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{t}{
@@ -158,23 +158,23 @@ description={Natural frequency},
 sort=d, type=symbols, symbol=[rad]}
 
 \newglossaryentry{A}{
-name=$A$,
-description={Linear system matrix in $\mathbb{R}^{n \times n}$},
+name=$\mathbf{A}$,
+description={Linear system matrix, $\mathbf{A}\in\mathbb{R}^{n \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{B}{
-name=$B$,
-description={Linear input matrix in $\mathbb{R}^{n \times m}$},
+name=$\mathbf{B}$,
+description={Linear input matrix, $\mathbf{B}\in\mathbb{R}^{n \times m}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{C}{
-name=$C$,
-description={Linear output matrix in $\mathbb{R}^{q \times n}$},
+name=$\mathbf{C}$,
+description={Linear output matrix, $\mathbf{C}\in\mathbb{R}^{q \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{D}{
-name=$D$,
-description={Linear feedforward matrix in $\mathbb{R}^{q \times m}$},
+name=$\mathbf{D}$,
+description={Linear feedforward matrix, $\mathbf{D}\in\mathbb{R}^{q \times m}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{cp}{
@@ -188,57 +188,57 @@ description={Sampling time},
 sort=d, type=symbols, symbol=[Hz]}
 
 \newglossaryentry{Gamma}{
-name=$\Gamma$,
-description={Discrete version of the linear system matrix $A$ in $\mathbb{R}^{n \times n}$},
+name=$\boldsymbol{\Gamma}$,
+description={Discrete version of the linear system matrix $\mathbf{A}$, $\boldsymbol{\Gamma}\in\mathbb{R}^{n \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Phi}{
-name=$\Phi$,
-description={Discrete version of the linear input matrix $B$ in $\mathbb{R}^{n \times m}$},
+name=$\boldsymbol{\Phi}$,
+description={Discrete version of the linear input matrix $\mathbf{B}$, $\boldsymbol{\Phi}\in\mathbb{R}^{n \times m}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Kd}{
-name=$K_d$,
-description={Feedback matrix in $\mathbb{R}^{m \times n}$ calculated from discrete matrices},
+name=$\mathbf{K}_d$,
+description={Feedback matrix calculated from discrete matrices, $\mathbf{K}_d\in\mathbb{R}^{m \times n}$ },
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{K}{
-name=$K$,
-description={Feedback matrix in $\mathbb{R}^{m \times n}$ calculated from continuous matrices},
+name=$\mathbf{K}$,
+description={Feedback matrix calculated from continuous matrices, $\mathbf{K} \in \mathbb{R}^{m \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Ld}{
-name=$L_d$,
-description={Observer gain in $\mathbb{R}^{n \times m}$ calculated from discrete matrices},
+name=$\mathbf{L}_d$,
+description={Observer gain calculated from discrete matrices, $\mathbf{L}_d\in\mathbb{R}^{n \times m}$ },
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{L}{
-name=$L$,
-description={Observer gain in $\mathbb{R}^{n \times m}$ calculated from continuous matrices},
+name=$\mathbf{L}$,
+description={Observer gain calculated from continuous matrices, $\mathbf{L}\in\mathbb{R}^{n \times m}$ },
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{M}{
-name=$M$,
-description={Gain correction for an observer in $\mathbb{R}^{n \times m}$},
+name=$\mathbf{M}$,
+description={Gain correction for an observer, $\mathbf{M}\in\mathbb{R}^{n \times m}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{N}{
-name=$N$,
-description={Gain correction for a system $\mathbb{R}^{m}$ with an observer},
+name=$\mathbf{N}$,
+description={Gain correction for a system with an observer, $\mathbf{N}\in\mathbb{R}^{m}$ },
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Nbar}{
-name=$\bar{N}$,
-description={Gain correction for a system $\mathbb{R}^{m}$ without an observer},
+name=$\bar{\mathbf{N}}$,
+description={Gain correction for a system without an observer, $\bar{\mathbf{N}}\in\mathbb{R}^{m}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Con}{
 name=$\mathcal{C}$,
-description={Controllability matrix in $\mathbb{R}^{n \times n}$},
+description={Controllability matrix, $\mathcal{C}\in\mathbb{R}^{n \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Obs}{
 name=$\mathcal{O}$,
-description={Observability matrix in $\mathbb{R}^{n \times n}$},
+description={Observability matrix, $\mathcal{O}\in\mathbb{R}^{n \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 %\restoregeometry
