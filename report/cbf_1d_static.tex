@@ -468,6 +468,7 @@ This completes the control design based on a first order system approximation.
 \subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
 \vspace{-2mm}
 A necessary condition for a controller is that the system is controllable:
+\vspace{-1mm}
 \begin{flalign*}
  \mathbf{\mathcal{C}} = \begin{bmatrix}
  \mathbf{B} & \mathbf{A}\,\mathbf{B}
@@ -476,36 +477,48 @@ A necessary condition for a controller is that the system is controllable:
  \omega_n^2 & -2 \zeta \omega_n^3
  \end{bmatrix} \kk \text{thus} \mm \text{rank} ( \mathcal{C} ) = 2 = n \kk \Rightarrow \mm \text{controllable}
 \end{flalign*} 
-To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here. To allow the instrument some physical distance to brake and turn around (caused by the inertia), $\sigma(\mathbf{x})$ is multiplied by a scalar $c$ such that it reaches 1 before it is too late for the instrument to turn around. $\sigma(\mathbf{x})$ is however still limited to its maximum value at 1.
+
+\vspace{-3mm}
+To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, $\epsilon$ is found as the level set value of $B(x_1,x_2)$ at the position soft limit with zero velocity:
+\vspace{-1mm}
 \begin{flalign}
-\sigma(\mathbf{x}) = 
-\begin{cases}
-0 & \text{if} \mm B(x_1) \leq -\epsilon \\
-c\, \left( -2  \left( \dfrac{B(x_1)}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \right) \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
-1  &\text{if} \mm B(x_1) \geq 0
-\end{cases}
-\end{flalign} 
-At this point, two cases will be considered:
+	\epsilon = |B(\Lambda_{s+},x_{20})| = |B(\Lambda_{s-},x_{20})| = 0.2489
+	\label{eq:epsilon_2}
+\end{flalign}
+
+%\autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here. To allow the instrument some physical distance to brake and turn around (caused by the inertia), $\sigma(\mathbf{x})$ is multiplied by a scalar $c$ such that it reaches 1 before it is too late for the instrument to turn around. $\sigma(\mathbf{x})$ is however still limited to its maximum value at 1.
+%\begin{flalign}
+%\sigma(\mathbf{x}) = 
+%\begin{cases}
+%0 & \text{if} \mm B(x_1) \leq -\epsilon \\
+%c\, \left( -2  \left( \dfrac{B(x_1)}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \right) \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
+%1  &\text{if} \mm B(x_1) \geq 0
+%\end{cases}
+%\end{flalign} 
 \vspace{-2mm}
+At this point, two cases will be considered:
+\vspace{-1mm}
 \begin{itemize}
-	\itemsep-0.3mm
+	\itemsep-1mm
 \item \textbf{1.} Construction of $\mathbf{K}$ and $\bar{\mathbf{N}}$ in a similar way as in \autoref{sec:K_Nbar_1D_1storder}. This is possible in an ideal simulation because the velocity can be extrapolated by means of the forward Euler approach (ideal design).
 \item \textbf{2.} Development of an observer to estimate the velocity based on the model and position measurements. This is necessary on a real system.
 \end{itemize}
-\vspace{-2mm}
+\vspace{-3mm}
 
 \subsubsection{Design with the intention to simulate with Forward Euler}
 \vspace{-2mm}
-The design of $\mathbf{K}$ and $\bar{\mathbf{N}}$ will follow the exact same procedure as described for the first order model except now $\mathbf{K} \in \mathbb{R}^{1 \times 2}$, while $\bar{\mathbf{N}}$ remains as a scalar. The entire design procedure is therefore not elaborated	 again.  
+The design of $\mathbf{K}$ and $\bar{\mathbf{N}}$ will follow the exact same procedure as described for the first order model except now $\mathbf{K} \in \mathbb{R}^{1 \times 2}$, while $\bar{\mathbf{N}}$ remains as a scalar. The entire design procedure is therefore not elaborated.  
 
 However, it is of interest to slow down the system dynamics slightly compared to the controller based on a first order system. This is to enter the transition region with a lower velocity and thereby allow the safety controller some transition space to navigate the trajectory back to its safe area. The eigenvalues of the second order system is found to:
-\vspace{-2mm}
+\vspace{-3mm}
 \begin{flalign*}
 \lambda_\text{2nd order system} = \begin{cases}
 -10.295 -14.765\,j \\
 -10.295 +14.765\, j
 \end{cases}
 \end{flalign*}
+
+\vspace{-2mm}
 The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself.
 \begin{flalign}
 \mathbf{K} = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
@@ -513,7 +526,10 @@ The feedback vector can be found with the MATLAB command \texttt{acker} based on
 \end{bmatrix}
 \label{eq:K_2}
 \end{flalign}
+
+\vspace{-2mm}
 The DC gain can now be corrected with:
+\vspace{-1mm}
 \begin{flalign}
 \bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} =  - \left( \mathbf{C}\,(\mathbf{A}-\mathbf{B}\,\mathbf{K})^{-1}\,\mathbf{B} \right)^{-1} = 6.173
 \label{eq:Nbar_2}
@@ -536,7 +552,10 @@ An observer (discrete version) with proper gain corrections can be designed as \
 \hat{\mathbf{x}}(k+1) = \boldsymbol{\Gamma} \hat{\mathbf{x}}(k) + \boldsymbol{\Phi} \mathbf{K}_d \hat{\mathbf{x}}(k) + \mathbf{L}_d ( \underbrace{\mathbf{C}\hat{\mathbf{x}}(k)-\mathbf{y}(k)}_\text{error} ) + \mathbf{M} x_\text{ref}
 \label{eq:observer}
 \end{flalign}
+
+\vspace{-4mm}
 with the associated continuous system:
+\vspace{-1mm}
 \begin{flalign*}
 	\dot{\mathbf{x}} &= \textbf{Ax} + \mathbf{B}(\mathbf{N} x_\text{ref} - \textbf{Kx}) \\
 	\textbf{y} &= \textbf{Cx}
@@ -636,12 +655,14 @@ The matrix $\mathbf{M}$ introduces zeros in the closed loop transfer function  $
 \end{flalign*}
 \vspace{-2mm}
 To ensure unity gain, the $\mathbf{N}$ matrix can be computed as \citep{bib:Nbar}:
+\vspace{-0.2cm}
 \begin{flalign}
 \mathbf{N} &= - \left( \mathbf{C}_{cl} \Gamma_{cl}^{-1} \tilde{\Phi}_{cl} \right)^{-1} \kk \text{where} \mm \tilde{\Phi} = \begin{bmatrix}
 \Phi \\ \tilde{M}
 \end{bmatrix} \nonumber \\
 \mathbf{N} &= 13.739 \label{eq:N_2}
 \end{flalign}
+\vspace{-0.2cm}
 The other matrix $\mathbf{M}$ ensuring unity gain, can now be calculated as \citep{bib:Nbar}:
 \begin{flalign}
 \mathbf{M} = \tilde{\mathbf{M}}\mathbf{N} = \begin{bmatrix}
@@ -650,6 +671,7 @@ The other matrix $\mathbf{M}$ ensuring unity gain, can now be calculated as \cit
 \end{bmatrix}
 \label{eq:M_2}
 \end{flalign}
+\vspace{-0.2cm}
 Thereby, all unknowns from \autoref{eq:observer} is calculated.
 
 \begin{recap}[Control Law for Second Order Approximation]
@@ -660,7 +682,7 @@ Thereby, all unknowns from \autoref{eq:observer} is calculated.
 \end{flalign*}
 \begin{tabular}{rl} 
 where  &  \\
-$\sigma(\mathbf{x})$ & is computed from \autoref{eq:smoothness} with $\epsilon$ from in \ref{eq:epsilon} and the \gls{cbf} found in \ref{eq:cbf1}  \\
+$\sigma(\mathbf{x})$ & is computed from \autoref{eq:smoothness} with $\epsilon$ from in \ref{eq:epsilon_2} and the \gls{cbf} found in \ref{eq:cbf2}  \\
 $k_0(\mathbf{x})$ & is computed from \autoref{eq:control_law} with Lie derivatives from \ref{eq:LgB_2} and \ref{eq:LfB_2}  \\
 $\Gamma$ & is found in \autoref{eq:Gamma_2} \\
 $\Phi$ & is found in \autoref{eq:Phi_2}  \\
@@ -670,6 +692,6 @@ $\mathbf{L}_d$& is found in \autoref{eq:Ld_2} \\
 $\mathbf{K}_d$ & is found in \autoref{eq:Kd_2} \\
 $\mathbf{C}$ & is found in \autoref{eq:system:2}
 \end{tabular}
-\vspace*{-0.2cm}
+\vspace*{-5mm}
 \end{recap}
 This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation is outlined first. 
