@@ -43,13 +43,13 @@ The system can be approximated to a linear first order system with a dominating 
 A linear system can be outlined as:
 \begin{flalign}
 Y(s) &= \dfrac{1}{\tau_s s + 1}U(s) \nonumber\\
-&=  \dfrac{1/\tau_s}{s + 1/\tau_s}\,U(s) = (s+1/\tau_s)^{-1}\,1/\tau_s\,U(s) \qquad\kk \overset{\overset{Y(s)=(C(sI-A)^{-1}B+D)U(s)}{\longrightarrow}}{\scriptsize \text{compare to obtain SS form}}  \nonumber\\ 
-& \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{Ax} + \underbrace{\tau_s^{-1}}_{B} u
+&=  \dfrac{1/\tau_s}{s + 1/\tau_s}\,U(s) = (s+1/\tau_s)^{-1}\,1/\tau_s\,U(s) \qquad\kk \overset{\overset{Y(s)=(\mathbf{C}(s\mathbf{I}-\mathbf{A})^{-1}\mathbf{B}+\mathbf{D})U(s)}{\longrightarrow}}{\scriptsize \text{compare to obtain SS form}}  \nonumber\\ 
+& \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{\mathbf{A}x} + \underbrace{\tau_s^{-1}}_{\mathbf{B}} u
 \label{eq:1storder_1D_ss}
 \end{flalign}
 The system matrix $A$ and the input matrix $B$ can be read from the above equation:
 \begin{flalign}
-A = - \tau_s^{-1} =  \kk \wedge \kk B = \tau_s^{-1} \kk \wedge \kk C = 1 \kk \wedge \kk D = 0
+\mathbf{A} = - \tau_s^{-1} =  \kk \wedge \kk \mathbf{B} = \tau_s^{-1} \kk \wedge \kk \mathbf{C} = 1 \kk \wedge \kk \mathbf{D} = 0
 \end{flalign}
 Which completes the first order approximation.
 
@@ -113,14 +113,14 @@ $u(t)$ & is the control input  & [$\cdot$]\\
 
 Thus the linear system matrices can be outlined as:
 \begin{flalign}
-A = \begin{bmatrix}
+\mathbf{A} = \begin{bmatrix}
 0 & 1\\
  -\omega_n^2   & -2\zeta \omega_n 
-\end{bmatrix} \kk \wedge \kk B = \begin{bmatrix}
+\end{bmatrix} \kk \wedge \kk \mathbf{B} = \begin{bmatrix}
 0 \\ \omega_n^2
-\end{bmatrix} \kk \wedge \kk C = \begin{bmatrix}
+\end{bmatrix} \kk \wedge \kk \mathbf{C} = \begin{bmatrix}
 1 & 0
-\end{bmatrix} \kk \wedge \kk D = 0 \label{eq:system:2}
+\end{bmatrix} \kk \wedge \kk \mathbf{D} = 0 \label{eq:system:2}
 \end{flalign}
 Which completes the second order model.
 
@@ -137,11 +137,11 @@ B(x) &= ax^2+bx+c \label{eq:cbf1}
 \end{flalign}
 The parameters $a$, $b$ and $c$ can be easily chosen to fulfil the requirements in \autoref{cer1} and \ref{cer2} for a barrier function, thereby fulfilling the parallel requirements for the \gls{cbf} in \autoref{req1} and \ref{req3}. From \autoref{req2} it is required that either $L_gB(x) \neq 0 \,\,\,\forall x\in \mathcal{X}$, or that $L_fB(x)<0$ when $L_gB(x) = 0$, as the input in that case will be insignificant. Analysing $L_gB(x) = 0$
 \begin{flalign*}
-	L_gB(x) \Bigm|_{g(x)=B} = ( 2ax + b ) \cdot \tau^{-1} = 0 \kk \Rightarrow \kk x = \dfrac{-b}{2a}\label{eq:LgB_1D}
+	L_gB(x) \Bigm|_{g(x)=\mathbf{B}} = ( 2ax + b ) \cdot \tau^{-1} = 0 \kk \Rightarrow \kk x = \dfrac{-b}{2a}\label{eq:LgB_1D}
 \end{flalign*}
 it is seen that this is only the case in $x = \tfrac{-b}{2a}$ which is indeed the critical point for a one dimensional parabola. As is the case for Lyapunov functions (see  \autoref{eq:lyap_vdot_minus_criticalpoint}) in the critical point the requirement on the derivative is relaxed to  $L_fB(x) \leq 0$.   
 \begin{flalign}
-L_fB(x) = \dfrac{d}{dx}B(x)f(x)\Bigm|_{f(x)=Ax}  &= (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx \nonumber\\
+L_fB(x) = \dfrac{d}{dx}B(x)f(x)\Bigm|_{f(x)=\mathbf{A}x}  &= (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx \nonumber\\
 L_fB(x)\Bigm|_{x= \frac{-b}{2a}} &= -2\tau^{-1}a\left(\frac{-b}{2a}\right)^2-\tau^{-1}b\left(\frac{-b}{2a}\right) = 0\nonumber
 %0 \kk \Leftrightarrow \kk  -2\tau^{-1}ax^2-\tau^{-1}bx = 0 \nonumber
 % \\  &-2ax^2-bx = 0 \mm \Rightarrow \mm x = 
@@ -184,24 +184,24 @@ The \gls{cbf} is plotted in \autoref{fig:barrierfunction} from which it is seen 
 % This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
 
 \subsection{Construction of CBF Based on Second Order model}\label{subsec:cbf-2order}
-Consider now for the second order system the same candidate \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(x)$ is a function of position only, such that the CBF is:
+Consider now for the second order system the same candidate \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(x_1)$ is a function of position only, such that the CBF is:
 \begin{flalign*}
 B(x_1) = a\,x_1^2+ b\,x_1 + c
 \end{flalign*}
-For this system model the Lie derivative $L_gB(x)=0\,\,\forall x$:
+For this system model the Lie derivative $L_gB(\mathbf{x})=0\,\,\forall \mathbf{x}$:
 \begin{flalign*}
-L_gB(x) = \dfrac{d B(x)}{d x}g(x) \Bigm|_{g(x)=B} =  
+L_gB(\mathbf{x}) = \dfrac{d B(x_1)}{d \mathbf{x}}g(\mathbf{x}) \Bigm|_{g(\mathbf{x})=\mathbf{B}} =  
 \begin{bmatrix}
-\dfrac{\partial B(x)}{\partial x_1} & \dfrac{\partial B(x)}{\partial x_2} 
+\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
 \end{bmatrix}\begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} = 0 \label{eq:LgB_secondorder_invalid}
 \end{flalign*}
-This puts forth the requirement that $L_fB(x)<0\,\,\, \forall \, x$. Accordingly:
+This puts forth the requirement that $L_fB(\mathbf{x})<0\,\,\, \forall \, \mathbf{x}$. Accordingly:
 \begin{flalign*}
-L_fB(x) = \dfrac{d B(x)}{d x}f(x) \Bigm|_{f(x)=Ax} &= 
+L_fB(\mathbf{x}) = \dfrac{d B(x_1)}{d \mathbf{x}}f(\mathbf{x}) \Bigm|_{f(\mathbf{x})=\mathbf{Ax}} &= 
 \begin{bmatrix}
-\dfrac{\partial B(x)}{\partial x_1} & \dfrac{\partial B(x)}{\partial x_2} 
+\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
 \end{bmatrix}
 \begin{bmatrix}
 0 & 1 \\
@@ -215,7 +215,7 @@ x_1 \\ x_2
 \end{flalign*}
 Note that the velocity appears in both terms. As the velocity can be both decreasing and increasing for all positions, this demand is impossible to fulfil with this candidate \gls{cbf}  and it is therefore invalid. A solution may be to include the velocity in the barrier function. 
 
-Safety constraints on velocity are not of any significant importance as such, but they are necessary for $L_gB(x)$ to obtain values different from zero as opposed to the Lie derivative of the invalid \gls{cbf} $B(x_1)$.
+Safety constraints on velocity are not of any significant importance as such, but they are necessary for $L_gB(\mathbf{x})$ to obtain values different from zero as opposed to the Lie derivative of the invalid \gls{cbf} $B(x_1)$.
 Consider instead the elliptic paraboloid as \gls{cbf}:
 \begin{flalign}
 B(x_1,x_2) =  \left( \dfrac{(x_1-x_{10})^2}{a_2^2} + \dfrac{(x_2-x_{20})^2}{b_2^2} \right) c_1 + c_2
@@ -237,7 +237,7 @@ The elliptic paraboloid allows constraints on both position and velocity.  To en
 \begin{flalign*}
 x_{10} &= \dfrac{\Lambda_{h-}+\Lambda_{h+}}{2} = -0.025 \\
 x_{20} &= 0\\
-\mathcal{M}_{B(x)=0} &= 4
+M_{0} &= 4
 %\Lambda_{x2-} &= -4 \kk \text{denotion of the lowest value where $B(0,x_2)=0$} \\
 %\Lambda_{x2+} &= 4 \kk \text{denotion of the highest value where $B(0,x_2)=0$} 
 \end{flalign*}
@@ -248,13 +248,14 @@ x_{20} &= 0\\
 	\label{fig:cbf_2ndorder}
 \end{figure}
 
-where $\mathcal{M}_{B(x)=0}$ denotes the semimajor axis of the zero level set of the \gls{cbf}.
+where ${M}_0$ denotes the semimajor axis of the zero level set of the \gls{cbf}.
 Note that $x_{20}$ ensures velocity equilibrium in 0\,m/s and note that the velocity outermost points are determined far bigger than the robot's physical limits to ensure that all position values on the interval  $[-0.1\,\,\,\,0.05]$ are considered safe (almost) independently of the velocity. % $\mathcal{X}_0 \notin \mathcal{X}_u $. 
 This is sketched in \autoref{fig:cbf_2ndorder} along with the chosen values.
 
-Having chosen the coordinates $x_10$ and $x_{20}$ for the critical point, an arbitrary negative value is chosen for $B(x_{10},x_{20})$, and using the four known coordinates from the zero level set $(\Lambda_{h+},0)$, $(\Lambda_{h-},0)$, $(x_{10},-4)$ and $(x_{10},4)$, five equations with four unknowns can be outlined with the below numerical values.
+Having chosen the coordinates $x_{10}$ and $x_{20}$ for the critical point, an arbitrary negative value is chosen for $B(x_{10},x_{20})$, and using the four known coordinates from the zero level set $(\Lambda_{h+},x_{20})$, $(\Lambda_{h-},x_{20})$, $(x_{10},-M_0)$ and $(x_{10},M_0)$, five equations with four unknowns can be outlined with the below numerical values.
+\vspace{-3mm}
 \begin{flalign*}
- \left.
+\hspace{5mm} \left.
 \begin{aligned}
 \left( \dfrac{\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}-x_{10}\right)^2}{a_2^2} + \frac{(0-x_{20})^2}{b_2^2} \right)c_1 + c_2 =  \underbrace{-1.000}_\text{any constant $<0$} \\
 \left(\dfrac{(\Lambda_{h+}-x_{10})^2}{a_2^2} +\frac{(0-x_{20})^2}{b_2^2}\right) c_1 + c_2 = 0 \\
@@ -278,8 +279,8 @@ c_2 &=& -1.000
 \end{flalign*}
 The Lie derivatives can now be calculated as:
 \begin{flalign}
-L_gB(x_1,x_2) &= \dfrac{d B(x_1,x_2)}{d x} \cdot g(x) \Big|_{g(x)=\textbf{B}} = \begin{bmatrix}
-\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_1}
+L_gB(\mathbf{x}) &= \dfrac{d B(x_1,x_2)}{d \mathbf{x}}  g(\mathbf{x}) \Big|_{g(\mathbf{x})=\textbf{B}} = \begin{bmatrix}
+\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_2}
 \end{bmatrix}  \begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} \nonumber \\
@@ -292,29 +293,35 @@ L_gB(x_1,x_2) &= \dfrac{d B(x_1,x_2)}{d x} \cdot g(x) \Big|_{g(x)=\textbf{B}} = 
 &= \dfrac{2c_1\omega_n^2}{b_2^2} x_2
 \label{eq:LgB_2}
 \end{flalign}
-It is seen that $L_gB(x_1,x_2) \neq 0 \mm \forall \,\,\, x_2 \neq 0$, hence $L_fB(x_1,x_2)$ is for that reason analysed and evaluated at $x_2=0$:
+It is seen that $L_gB(\mathbf{x}) \neq 0 \mm \forall \,\,\, x_2 \neq 0$, hence $L_fB(\mathbf{x})$ is for that reason analysed and evaluated at $x_2=0$:
+%\vspace{-3mm}
 \begin{flalign}
-L_fB(x_1,x_2) &= 
-\dfrac{\partial B(x_1,x_2)}{\partial x} f(x)\Big|_{f(x) = \textbf{Ax}} = \begin{bmatrix}
-\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_1}
-\end{bmatrix} \begin{bmatrix}
+L_fB(\mathbf{x}) &= 
+\dfrac{\partial B(x_1,x_2)}{\partial \mathbf{x}} f(\mathbf{x})
+\Big|_{f(\mathbf{x}) = \textbf{\textbf{Ax}}} =
+\begin{bmatrix}
+\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_2}
+\end{bmatrix} 
+\begin{bmatrix}
 0 & 1 \\
 -\omega_n^2 & -2 \zeta \omega_n
-\end{bmatrix} \begin{bmatrix}
+\end{bmatrix} 
+\begin{bmatrix}
 x_1 \\ x_2
 \end{bmatrix} \nonumber\\
 &= \begin{bmatrix}
  \dfrac{c_1(2x_1 - 2x_{10})}{a^2} &  \dfrac{c_1(2x_2 - 2x_{20})}{b^2}
-\end{bmatrix} \begin{bmatrix}
+\end{bmatrix} 
+\begin{bmatrix}
 x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 \end{bmatrix} \nonumber\\
 &= \dfrac{c_1x_2(2x_1-2x_{10})}{a_2^2} - \dfrac{c_1(2x_2-2x_{20})(\omega_n^2 x_1+2\zeta \omega_n x_2 )}{b_2^2} \Big|_{x_{20} = 0} \nonumber\\
-&= \left( \dfrac{2c_1(x_1+x_{10})}{a_2^2} - \dfrac{2c_1(\omega_n^2 x_1 +2\zeta \omega_n x_2)}{b_2^2} \right) x_2 \Big|_{x_{2} = 0} = 0
+&= 2c_1\left( \dfrac{x_1-x_{10}}{a_2^2} - \dfrac{\omega_n^2 x_1 +2\zeta \omega_n x_2}{b_2^2} \right) x_2 \Big|_{x_{2} = 0} = 0
 \label{eq:LfB_2}
 \end{flalign}
-It is noted that $L_fB(x_1,x_2) = 0$ for $x_2 = 0$ which implies stability but not asymptotic stability. That is in general not good for physical systems and does not fulfil \autoref{req2}. It does, however, fulfil \autoref{req2_weak} thus proving $B(x_1,x_2)$ to be a weak \gls{cbf}. %However, an engineering reflection and decision is taken at this point.
+It is noted that $L_fB(\mathbf{x}) = 0$ for $x_2 = 0$ which implies stability but not asymptotic stability. That is in general not good for physical systems and does not fulfil \autoref{req2}. It does, however, fulfil \autoref{req2_weak} thus proving $B(x_1,x_2)$ to be a weak \gls{cbf}. %However, an engineering reflection and decision is taken at this point.
 Note that when the velocity is zero, the slide movement is steady, although only marginally stable. %At this point $k_0(x)=0$, which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. 
-As an engineering reflection it is considered that when the state leaves the marginally stable equilibrium, $x_2 \neq 0$, and the safety controller $k_0(x)$ will ensure that the state will increase its distance to the unsafe set and go towards its stable equilibrium in $(x_{10},x_{20})=(-0.025,0)$. 
+As an engineering reflection it is considered that when the state leaves the marginally stable equilibrium, $x_2 \neq 0$, and the safety controller  will ensure that the state will increase its distance to the unsafe set and go towards its stable equilibrium in $(x_{10},x_{20})=(-0.025,0)$. 
 %It implies hereafter $x_2 \neq 0$ again which is sufficient for the safety controller. %That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. Lastly, the velocity will never be truly zero due to the finite resolution, i.e. a finite sampling rate. For these reasons, the \gls{cbf} from \autoref{eq:cbf2} is accepted, well aware that the \gls{cbf} is insufficient,. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
 
 
@@ -325,7 +332,7 @@ As an engineering reflection it is considered that when the state leaves the mar
 	\caption{CBF for the second order system model. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_cbf\_2d/plot\_cbf\_2d.m}}
 	\label{fig:barrierfunction_2d}
 \end{figure}
-The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}, from which it is seen how $B(x_1,x_2)<0$ only within the specified regions, i.e. $x_2 \in [-\mathcal{M}_{B(x)=0},\mathcal{M}_{B(x)=0}]$ and $x_1 \in [\Lambda_{h-},\Lambda_{h+}]$. %, and thus everything else is unsafe, i.e. $B(x) > 0$. 
+The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}, from which it is seen how $B(x_1,x_2)<0$ only within the specified regions, i.e. $x_2 \in [-M_0,M_0]$ and $x_1 \in [\Lambda_{h-},\Lambda_{h+}]$. %, and thus everything else is unsafe, i.e. $B(x) > 0$. 
 It is also seen that for small velocities (physically $x_{2,\text{max}}\approx 1$\,m/s) the \gls{cbf} is approximately vertical in the boundaries of $x_1$ %when the big numerical difference in the axes is taken into account.
 leaving $\mathcal{X}_0$ almost independent of the velocity, as prescribed in \autoref{fig:cbf_2ndorder}.
 
@@ -374,23 +381,23 @@ Utilizing $\sigma(x)$ as described in \autoref{eq:smoothness} secures a neat way
 	\label{fig:epsilon_plot}
 \end{figure}
 
-The system is approximated as a linear system on the form $\dot{x}=Ax+Bu$, thus pole placement can be used. No constraints to the constant feedback matrix $K$ will be outlined except stability. It will therefore be determined from the pole placement method where a closed loop pole that is ten times faster than the open loop pole will be placed. Ackermann's formula can be used \citep{bib:acker}:
+The system is approximated as a linear system on the form $\dot{\mathbf{x}}=\textbf{Ax}+\textbf{Bu}$, thus pole placement can be used. No constraints to the constant feedback matrix $\mathbf{K}$ will be outlined except stability. It will therefore be determined from the pole placement method where a closed loop pole that is ten times faster than the open loop pole will be placed. Ackermann's formula can be used \citep{bib:acker}:
 \begin{enumerate}
 \itemsep-3mm
-\item Identify the desired closed loop polynomial as $A_{cl}(s) = s^n + a_{c(n-1)}s^{n-1}  +  \cdots + a_ {c1}s + a_{c0}$: 
+\item Identify the desired closed loop polynomial as $\textbf{A}_{cl}(s) = s^n + a_{c(n-1)}s^{n-1}  +  \cdots + a_ {c1}s + a_{c0}$: 
 \vspace*{-1mm}
 \begin{flalign*}
-A_{cl}(s) = s + 10\,\tau^{-1}
+\textbf{A}_{cl}(s) = s + 10\,\tau^{-1}
 \end{flalign*}
-\item Identify the open loop polynomial as $A_{ol}(s) = s^n + a_{n-1}s^{n-1} +  \cdots + a_1s + a_0$: 
+\item Identify the open loop polynomial as $\textbf{A}_{ol}(s) = s^n + a_{n-1}s^{n-1} +  \cdots + a_1s + a_0$: 
 \vspace*{-1mm}
 \begin{flalign*}
-A_{ol}(s) = \lambda + \tau^{-1}
+\textbf{A}_{ol}(s) = \lambda + \tau^{-1}
 \end{flalign*}
 \item Compute the feedback matrix in controllable canonical form:
 \vspace*{-1mm}
 \begin{flalign*}
- \bar{K}^T = \begin{bmatrix}   
+ \bar{\mathbf{K}}^T = \begin{bmatrix}   
  \bar{k_1} \\
  \vdots \\
  \bar{k_n}
@@ -398,42 +405,42 @@ A_{ol}(s) = \lambda + \tau^{-1}
  a_{c0} - a_0 \\
  \vdots \\
  a_{c(n-1)} - a_{n-1}
- \end{bmatrix} \kk \Rightarrow  \kk \bar{K}^T = 10\,\tau^{-1} - \tau^{-1} = 9\,\tau^{-1}
+ \end{bmatrix} \kk \Rightarrow  \kk \bar{\mathbf{K}}^T = 10\,\tau^{-1} - \tau^{-1} = 9\,\tau^{-1}
 \end{flalign*}
 \vspace*{-1mm}
 \item Compute the similarity transform $Q$ recursively as: 
 \vspace*{-1mm}
 \begin{flalign*}
-Q = \begin{bmatrix}
-q_1 & q_2 & \cdots & q_n
+\textbf{Q} = \begin{bmatrix}
+\textbf{q}_1 & \textbf{q}_2 & \cdots & \textbf{q}_n
 \end{bmatrix} \qquad
 \Rightarrow \qquad
-Q = \tau^{-1}
+\textbf{Q} = \tau^{-1}
 \end{flalign*}
 \vspace*{-1mm}
 \begin{tabular}{rl}
 where&\\
-$ q_n$&\hspace{-3mm}$ = \textbf{B}$ \\
-$ q_{j-1}$&\hspace{-3mm}$ = A\,q_j + a_{j-1}B$\\
+$ \textbf{q}_n$&\hspace{-3mm}$ = \textbf{B}$ \\
+$ \textbf{q}_{j-1}$&\hspace{-3mm}$ = \textbf{A}\,\textbf{q}_j + a_{j-1}\textbf{B}$\\
 \end{tabular}\\\\
 
 \item Compute the feedback matrix as:
 \vspace*{-1mm}
 \begin{flalign}
-K = \bar{K}\,Q^{-1} = 9\,\tau^{-1}\dfrac{1}{\tau^{-1}} = 9
+\mathbf{K} = \bar{\mathbf{K}}\,\mathbf{Q}^{-1} = 9\,\tau^{-1}\dfrac{1}{\tau^{-1}} = 9
 \label{eq:K_1}
 \end{flalign}
 \end{enumerate}
-The constant feedback matrix $\bar{N}$, ensuring unity gain between reference and output, can be computed as \citep{bib:Nbar}:
+The constant feedback matrix $\bar{\mathbf{N}}$, ensuring unity gain between reference and output, can be computed as \citep{bib:Nbar}:
 \vspace*{-3mm}
 \begin{flalign}
-\bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 10
+\bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} =  - \left( \mathbf{C}\,(\mathbf{A}-\mathbf{B}\,\mathbf{K})^{-1}\,\mathbf{B} \right)^{-1} = 10
 \label{eq:barm_1}
 \end{flalign}
 %\subsubsection*{Merged Control Law}
 With the Lie derivatives computed as:
 \begin{flalign}
-L_fB(x) = -2\tau^{-1}ax^2-\tau^{-1}bx \kk \wedge \kk L_gB(x) = 2ax\tau^{-1} + b\tau^{-1}
+L_fB(\mathbf{x}) = -2a\tau^{-1}x^2-b\tau^{-1}x \kk \wedge \kk L_gB(\mathbf{x}) = 2a\tau^{-1}x + b\tau^{-1}
 \label{eq:lies_1}
 \end{flalign}
 
@@ -442,15 +449,15 @@ L_fB(x) = -2\tau^{-1}ax^2-\tau^{-1}bx \kk \wedge \kk L_gB(x) = 2ax\tau^{-1} + b\
 
 	The complete control law can be determined from \autoref{eq:control_law}:
 \begin{flalign*}
-u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{N} \cdot x_\text{ref}-Kx) 
+u(x) = \sigma(x)k_0(x)+(1-\sigma(x))(\bar{\mathbf{N}}  x_\text{ref}-\mathbf{K}x) 
 \end{flalign*}
 \vspace{-0.8cm}
 \begin{tabular}{rp{13.7cm}} 
 where  & \\
 $\sigma(x)$ & is computed from \autoref{eq:smoothness} with the $\epsilon$ found in \autoref{eq:epsilon} and the \gls{cbf} found in \autoref{eq:cbf1}  \\
 $k_0(x)$ & is computed from \autoref{eq:control_law_safety} with the Lie derivatives stated in \autoref{eq:lies_1} \\
-$\bar{N}$ & is found in \autoref{eq:barm_1}  \\
-$K$ & is found in \autoref{eq:K_1} \\
+$\bar{\mathbf{N}}$ & is found in \autoref{eq:barm_1}  \\
+$\mathbf{K}$ & is found in \autoref{eq:K_1} \\
 \end{tabular}\\
 \end{recap}
 %\vspace{-0.2cm}
@@ -459,33 +466,40 @@ This completes the control design based on a first order system approximation.
 
 
 \subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
+\vspace{-2mm}
 A necessary condition for a controller is that the system is controllable:
 \begin{flalign*}
- \mathcal{C} = \begin{bmatrix}
- B & A\,B
+ \mathbf{\mathcal{C}} = \begin{bmatrix}
+ \mathbf{B} & \mathbf{A}\,\mathbf{B}
  \end{bmatrix} =  \begin{bmatrix}
  0 & \omega_n^2 \\
  \omega_n^2 & -2 \zeta \omega_n^3
  \end{bmatrix} \kk \text{thus} \mm \text{rank} ( \mathcal{C} ) = 2 = n \kk \Rightarrow \mm \text{controllable}
 \end{flalign*} 
-To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here. To allow the instrument some physical distance to brake and turn around (caused by the inertia), $\sigma(x)$ is multiplied by a scalar $c$ such that it reaches 1 before it is too late for the instrument to turn around. $\sigma(x)$ is however still limited to its maximum value at 1.
+To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, the $\epsilon$ found in \autoref{eq:epsilon} is used again such that the \gls{cbf} from \autoref{eq:cbf1} is reused here. To allow the instrument some physical distance to brake and turn around (caused by the inertia), $\sigma(\mathbf{x})$ is multiplied by a scalar $c$ such that it reaches 1 before it is too late for the instrument to turn around. $\sigma(\mathbf{x})$ is however still limited to its maximum value at 1.
 \begin{flalign}
-\sigma(x) = 
+\sigma(\mathbf{x}) = 
 \begin{cases}
-0 & \text{if} \mm B(x) \leq -\epsilon \\
-c\, \left( -2  \left( \dfrac{B(x}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \right) \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
-1  &\text{if} \mm B(x) \geq 0
+0 & \text{if} \mm B(x_1) \leq -\epsilon \\
+c\, \left( -2  \left( \dfrac{B(x_1)}{\epsilon} \right)^3 - 3\left( \dfrac{B(x_1)}{\epsilon} \right)^2 +1 \right) \kk &\text{if} \mm B(x_1) \in (-\epsilon,0) \\
+1  &\text{if} \mm B(x_1) \geq 0
 \end{cases}
 \end{flalign} 
 At this point, two cases will be considered:
+\vspace{-2mm}
 \begin{itemize}
-\item \textbf{1.} Construction of $K$ and $\bar{N}$ in a similar way as in \autoref{sec:K_Nbar_1D_1storder}. This is possible in an ideal simulation because the velocity can be extrapolated by means of the forward euler approach (ideal design).
+	\itemsep-0.3mm
+\item \textbf{1.} Construction of $\mathbf{K}$ and $\bar{\mathbf{N}}$ in a similar way as in \autoref{sec:K_Nbar_1D_1storder}. This is possible in an ideal simulation because the velocity can be extrapolated by means of the forward Euler approach (ideal design).
 \item \textbf{2.} Development of an observer to estimate the velocity based on the model and position measurements. This is necessary on a real system.
 \end{itemize}
-\subsubsection{Design with the intention to simulate with Forward Euler}
-The design of $K$ and $\bar{N}$ will follow the exact same procedure as described for the first order model except now $K \in \mathbb{R}^{1 \times 2}$. $\bar{N}$ remains as a scalar. The entire design procedure is therefore not carried through again.  
+\vspace{-2mm}
 
-However, it is of interest to slow down the system dynamics slightly compared to the controller based on a first order system. This is to enter the unsafe region with a lower velocity and thereby allow the safety controller some transition space to navigate the trajectory back to its safe area. The eigenvalues of the second order system is found to:
+\subsubsection{Design with the intention to simulate with Forward Euler}
+\vspace{-2mm}
+The design of $\mathbf{K}$ and $\bar{\mathbf{N}}$ will follow the exact same procedure as described for the first order model except now $\mathbf{K} \in \mathbb{R}^{1 \times 2}$, while $\bar{\mathbf{N}}$ remains as a scalar. The entire design procedure is therefore not elaborated	 again.  
+
+However, it is of interest to slow down the system dynamics slightly compared to the controller based on a first order system. This is to enter the transition region with a lower velocity and thereby allow the safety controller some transition space to navigate the trajectory back to its safe area. The eigenvalues of the second order system is found to:
+\vspace{-2mm}
 \begin{flalign*}
 \lambda_\text{2nd order system} = \begin{cases}
 -10.295 -14.765\,j \\
@@ -494,22 +508,24 @@ However, it is of interest to slow down the system dynamics slightly compared to
 \end{flalign*}
 The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself.
 \begin{flalign}
-K = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
+\mathbf{K} = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
 5.173  &  0.214
 \end{bmatrix}
 \label{eq:K_2}
 \end{flalign}
 The DC gain can now be corrected with:
 \begin{flalign}
-\bar{N} = - \left( C\,A_{cl}^{-1}\,B \right)^{-1} =  - \left( C\,(A-B\,K)^{-1}\,B \right)^{-1} = 6.173
+\bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} =  - \left( \mathbf{C}\,(\mathbf{A}-\mathbf{B}\,\mathbf{K})^{-1}\,\mathbf{B} \right)^{-1} = 6.173
 \label{eq:Nbar_2}
 \end{flalign}
 These matrices are used in the MATLAB simulation.
+
 \subsubsection{Observer Design}
+\vspace{-2mm}
 A necessary condition for an observer is that the system is observable:
 \begin{flalign*}
- \mathcal{O}= \begin{bmatrix}
- C \\ C A
+ \mathbf{\mathcal{O}}= \begin{bmatrix}
+ \mathbf{C} \\ \textbf{CA}
  \end{bmatrix} =  \begin{bmatrix}
  1 & 0 \\
  0 & 1
@@ -517,26 +533,26 @@ A necessary condition for an observer is that the system is observable:
 \end{flalign*} 
 An observer (discrete version) with proper gain corrections can be designed as \citep{bib:Nbar}:
 \begin{flalign}
-\hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d ( \underbrace{C\hat{x}(k)-y(k)}_\text{error} ) + M x_\text{ref}
+\hat{\mathbf{x}}(k+1) = \boldsymbol{\Gamma} \hat{\mathbf{x}}(k) + \boldsymbol{\Phi} \mathbf{K}_d \hat{\mathbf{x}}(k) + \mathbf{L}_d ( \underbrace{\mathbf{C}\hat{\mathbf{x}}(k)-\mathbf{y}(k)}_\text{error} ) + \mathbf{M} x_\text{ref}
 \label{eq:observer}
 \end{flalign}
-\vspace{-0.6cm}
-\begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-where  & & \\
-$k$ is the current sample \\
-\gls{Gamma} is the discretized system matrix \\
-\gls{Phi} is the discretized input matrix \\
-\gls{Kd} is control gain calculated from the discretized matrices \\
-\gls{Ld} is observer gain calculated from the discretized matrices \\
-\gls{M} is gain correction to ensure unity gain for the observer \\
-\gls{N} is gain correction to ensure unity gain for the system  
-\end{longtable}
-\vspace*{-0.2cm}
-The associated continuous system is:
+with the associated continuous system:
 \begin{flalign*}
-\dot{x} &= A x + B(N x_\text{ref} - Kx) \\
-y &= Cx
+	\dot{\mathbf{x}} &= \textbf{Ax} + \mathbf{B}(\mathbf{N} x_\text{ref} - \textbf{Kx}) \\
+	\textbf{y} &= \textbf{Cx}
 \end{flalign*}
+\begin{tabular}{rl} 
+where  & \\
+$k$& is the current sample \\
+\gls{Gamma}& is the discretized system matrix \\
+\gls{Phi}& is the discretized input matrix \\
+\gls{Kd}& is control gain calculated from the discretized matrices \\
+\gls{Ld}& is observer gain calculated from the discretized matrices \\
+\gls{M}& is gain correction to ensure unity gain for the observer \\
+\gls{N}& is gain correction to ensure unity gain for the system \\ 
+\end{tabular}\\
+
+
 The equations are implemented in simulink as shown in \autoref{fig:simulink_observer}.
 \begin{figure}[H]
 	\center
@@ -544,86 +560,91 @@ The equations are implemented in simulink as shown in \autoref{fig:simulink_obse
 	\caption{Simulink implementation of the discrete observer.}
 	\label{fig:simulink_observer}
 \end{figure}
-The augmented (discrete) system in $\mathbb{R}^{4 \times 4}$ will be outlined as:
+The augmented (discrete) system with $\mathbf{x}_\text{augmented}\in\mathbb{R}^4$ is formulated as:
 \begin{flalign*}
 \begin{bmatrix}
-x(k+1) \\
-\hat{x}(k+1)
+\mathbf{x}(k+1) \\
+\hat{\mathbf{x}}(k+1)
 \end{bmatrix} &= \underbrace{\begin{bmatrix}
-\Gamma & \Phi K_d \\
-L_d C & \Gamma + \Phi K_d + L_d C 
-\end{bmatrix} }_{\Gamma_{cl}}\begin{bmatrix}
-x(k) \\ \hat{x}(k)
+\boldsymbol\Gamma & \boldsymbol\Phi \mathbf{K}_d \\
+\mathbf{L}_d \mathbf{C} & \boldsymbol\Gamma + \boldsymbol\Phi \mathbf{K}_d + \mathbf{L}_d \mathbf{C} 
+\end{bmatrix} }_{\boldsymbol\Gamma_{cl}}\begin{bmatrix}
+\mathbf{x}(k) \\ \hat{\mathbf{x}}(k)
 \end{bmatrix} + \underbrace{\begin{bmatrix}
-\Phi N \\ M
-\end{bmatrix}}_{\Phi_{cl}} x_\text{ref} \\
-y(k) &= \underbrace{\begin{bmatrix}
-C & 0 & 0
-\end{bmatrix}}_{C_{cl}}\begin{bmatrix}
-x(k) \\ \hat{x}(k)
+\boldsymbol\Phi \mathbf{N} \\ \mathbf{M}
+\end{bmatrix}}_{\boldsymbol\Phi_{cl}} x_\text{ref} \\
+\mathbf{y}(k) &= \underbrace{\begin{bmatrix}
+\mathbf{C} & 0 & 0
+\end{bmatrix}}_{\mathbf{C}_{cl}}\begin{bmatrix}
+\mathbf{x}(k) \\ \hat{\mathbf{x}}(k)
 \end{bmatrix}
 \end{flalign*}
-The discrete matrices $\Gamma$ and $\Phi$ can be found as \citep{bib:discrete_sampling}:
+The discrete matrices $\boldsymbol\Gamma$ and $\boldsymbol\Phi$ can be found as \citep{bib:discrete_sampling}:
 \begin{flalign}
-\Gamma &= \text{expm} (A\, T_s) = \begin{bmatrix}
+\boldsymbol\Gamma &= \text{expm} (\mathbf{A}\, T_s) = \begin{bmatrix}
 0.986 & 0.009 \\
 -2.623 & 0.817
 \end{bmatrix} \label{eq:Gamma_2}  \\
- \Phi &= \int_0^{T_s}  \text{expm} (A\, \mu) \, d \mu B = \begin{bmatrix}
+ \boldsymbol\Phi &= \int_0^{T_s}  \text{expm} (\mathbf{A}\, \mu) \, d \mu \cdot\mathbf{B} = \begin{bmatrix}
 0.014 \\
-2.623
+2.623 
 \end{bmatrix} \label{eq:Phi_2} 
 \end{flalign}
-\vspace{-0.6cm}
-\begin{longtable}{p{.8\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-where  & & \\
-\text{expm} is the matrix exponential \\
-$T_s=100\,$ms is the sampling time
-\end{longtable}
-\vspace*{-0.2cm}
+\begin{tabular}{rl} 
+where  &  \\
+\text{expm}& is the matrix exponential \\
+$T_s$&  is the sampling time, $T_s=100\,$ms\\
+\end{tabular}\\
+
 The sampling time $T_s$ is according to Assistant Engineer Simon Jensen limited to 100\,Hz caused by the TCP/IP communication channel between ROS and the underlying hardware as seen in \autoref{fig:overview}.
 
-The feedback matrix and the the observer gain can now be found. They will again be calculated by MATLAB, as the design procedure follow the exact same as in \autoref{sec:K_Nbar_1D_1storder}. The poles ($p_i$) will be placed from the below considerations:
+The feedback matrix and  the observer gain can now be found. They will again be calculated in MATLAB, as the design procedure follow the exact same as in \autoref{sec:K_Nbar_1D_1storder}. The poles ($p_i$) will be placed from the below considerations:
+\vspace{-2mm}
 \begin{itemize}
+	\itemsep-0.5mm
 \item No overshoot in the closed loop step response, i.e. Im($p_i)=0$.
-\item Asymptotically Stability, i.e. $|p_i| < 1 $
-\item Slow closed loop step response, i.e. !($p_i \ll \lambda_{cl}$)
-\item Positive feedback
-\item An observer significantly faster than the closed loop system $\Gamma + \Phi K_d$
+\item Asymptotic stability, i.e. $|p_i| < 1 $
+\item Slow closed loop step response
+\item Positive feedback, i.e. the controller and observer gains must be negative
+\item An observer significantly faster than the closed loop system $\Gamma + \Phi \mathbf{K}_d$
 \end{itemize}
+\vspace{-5mm}
 \begin{flalign}
-K_d &= -\texttt{acker}\left( \Gamma,\Phi,\begin{bmatrix}
+\mathbf{K}_d &= -\texttt{acker}\left( \Gamma,\Phi,\begin{bmatrix}
 0.5 & 0.35
 \end{bmatrix} \right) = \begin{bmatrix}
  -11.360 & -0.305
  \end{bmatrix} \label{eq:Kd_2} \\
- L_d &= -\texttt{acker}\left( \Gamma^T,C^T,\begin{bmatrix}
+ \mathbf{L}_d &= -\texttt{acker}\left( \Gamma^T,\mathbf{C}^T,\begin{bmatrix}
 0.01 & 0.02
 \end{bmatrix} \right) = \begin{bmatrix}
   -1.773 \\
  -68.184
  \end{bmatrix} \label{eq:Ld_2}
 \end{flalign}
-The matrix $M$ introduce zeros in the closed loop transfer function from $x_\text{ref} \rightarrow y(k)$. These can be eliminated by designing the zeros close to the cut-off frequency, i.e the characteristic polynomial of the matrix $\Gamma_{za}+\tilde{M}C_{za}$ where $\Gamma_{za}=\Gamma+\Phi K_d + L_d C$ and $C_{za}=-K_d$ has zeros close to the cut-off frequency \citep{bib:Nbar}. \texttt{acker} can again be used:
+\vspace{-5mm}
+
+The matrix $\mathbf{M}$ introduces zeros in the closed loop transfer function  $\mathbf{y}(k)/x_\text{ref}$. These can be eliminated by designing the zeros close to the cut-off frequency, i.e the characteristic polynomial of the matrix $\Gamma_{za}+\tilde{\mathbf{M}}\mathbf{C}_{za}$ has zeros close to the cut-off frequency, where $\Gamma_{za}=\Gamma+\Phi \mathbf{K}_d + \mathbf{L}_d \mathbf{C}$ and $\mathbf{C}_{za}=-\mathbf{K}_d$ \citep{bib:Nbar}. The MATLAB function  \texttt{acker} can again be used:
+\vspace{-2mm}
 \begin{flalign*}
-\tilde{M} = - \texttt{acker}\left( A_{za}^T, \Phi_{za}^T, \begin{bmatrix}
+\tilde{\mathbf{M}} = - \texttt{acker}\left( \mathbf{A}_{za}^T, \Phi_{za}^T, \begin{bmatrix}
 0.01 & 0.02
 \end{bmatrix} \right) = \begin{bmatrix}
   0.014 \\
    2.623
    \end{bmatrix}
 \end{flalign*}
-
-To ensure unity gain, the $N$ matrix can be computed as \citep{bib:Nbar}:
+\vspace{-2mm}
+To ensure unity gain, the $\mathbf{N}$ matrix can be computed as \citep{bib:Nbar}:
 \begin{flalign}
-N &= - \left( C_{cl} \Gamma_{cl}^{-1} \tilde{\Phi}_{cl} \right)^{-1} \kk \text{where} \mm \tilde{\Phi} = \begin{bmatrix}
+\mathbf{N} &= - \left( \mathbf{C}_{cl} \Gamma_{cl}^{-1} \tilde{\Phi}_{cl} \right)^{-1} \kk \text{where} \mm \tilde{\Phi} = \begin{bmatrix}
 \Phi \\ \tilde{M}
 \end{bmatrix} \nonumber \\
-N &= 13.739 \label{eq:N_2}
+\mathbf{N} &= 13.739 \label{eq:N_2}
 \end{flalign}
-The other matrix $M$ to ensure unity gain, can now be calculated as \citep{bib:Nbar}:
+The other matrix $\mathbf{M}$ ensuring unity gain, can now be calculated as \citep{bib:Nbar}:
 \begin{flalign}
-M = \tilde{M}N = \begin{bmatrix}
+\mathbf{M} = \tilde{\mathbf{M}}\mathbf{N} = \begin{bmatrix}
  0.186 \\
   36.040
 \end{bmatrix}
@@ -631,25 +652,24 @@ M = \tilde{M}N = \begin{bmatrix}
 \end{flalign}
 Thereby, all unknowns from \autoref{eq:observer} is calculated.
 
-The complete controller based on the second order system approximation is now designed as:
 \begin{recap}[Control Law for Second Order Approximation]
+	The complete controller based on the second order system approximation is now designed as:
 \begin{flalign*}
-&\textbf{1.} \mm \hat{x}(k+1) = \Gamma \hat{x}(k) + \Phi K_d \hat{x}(k) + L_d (C\hat{x}(k)-y(k) ) + M x_\text{ref} \\
-&\textbf{2.} \mm u(k) = \sigma(x)k_0(\hat{x})+(1-\sigma(x))(N \cdot x_\text{ref}-K_d\hat{x}(k))
+&\textbf{1.}  \phantom{\mathbf{u}(k)}\hat{\mathbf{x}}(k+1) = \Gamma \hat{\mathbf{x}}(k) + \Phi \mathbf{K}_d \hat{\mathbf{x}}(k) + \mathbf{L}_d (\mathbf{C}\hat{\mathbf{x}}(k)-\mathbf{y}(k) ) + \mathbf{M} x_\text{ref} \\
+&\textbf{2.} \phantom{\hat{\mathbf{x}}(k+1)}\mathbf{u}(k) = \sigma(\mathbf{x})k_0(\hat{\mathbf{x}})+(1-\sigma(\mathbf{x}))(\mathbf{N} \cdot x_\text{ref}-\mathbf{K}_d\hat{\mathbf{x}}(k))
 \end{flalign*}
-\vspace{-0.8cm}
-\begin{longtable}{p{.9\textwidth} p{.1\textwidth} p{.1\textwidth}} 
-where  & & \\
-$\sigma(x)$ is computed from \autoref{eq:smoothness} with $\epsilon$ from in \ref{eq:epsilon} and the \gls{cbf} found in \ref{eq:cbf1} &  \\
-$k_0(x)$ is computed from \autoref{eq:control_law} with Lie derivatives from \ref{eq:LgB_2} and \ref{eq:LfB_2} & \\
-$\Gamma$ is found in \autoref{eq:Gamma_2} & \\
-$\Phi$ is found in \autoref{eq:Phi_2} & \\
-$N$ is found in \autoref{eq:N_2} & \\
-$M$ is found in \autoref{eq:M_2} \\
-$L_d$ is found in \autoref{eq:Ld_2} \\
-$K_d$ is found in \autoref{eq:Kd_2} \\
-$C$ dates back from \autoref{eq:system:2}
-\end{longtable}
+\begin{tabular}{rl} 
+where  &  \\
+$\sigma(\mathbf{x})$ & is computed from \autoref{eq:smoothness} with $\epsilon$ from in \ref{eq:epsilon} and the \gls{cbf} found in \ref{eq:cbf1}  \\
+$k_0(\mathbf{x})$ & is computed from \autoref{eq:control_law} with Lie derivatives from \ref{eq:LgB_2} and \ref{eq:LfB_2}  \\
+$\Gamma$ & is found in \autoref{eq:Gamma_2} \\
+$\Phi$ & is found in \autoref{eq:Phi_2}  \\
+$\mathbf{N}$ & is found in \autoref{eq:N_2}  \\
+$\mathbf{M}$ & is found in \autoref{eq:M_2} \\
+$\mathbf{L}_d$& is found in \autoref{eq:Ld_2} \\
+$\mathbf{K}_d$ & is found in \autoref{eq:Kd_2} \\
+$\mathbf{C}$ & is found in \autoref{eq:system:2}
+\end{tabular}
 \vspace*{-0.2cm}
 \end{recap}
 This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation is outlined first. 
