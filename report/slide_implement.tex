@@ -161,7 +161,7 @@ All plots and measurements in this subsection can be reconstructed by running th
     \label{fig:traj_meas_1}
 \end{figure}
 The measured state trajectory is plotted in \autoref{fig:traj_meas_1}.
-Here it is seen how the controller ensures that $x \in \mathcal{X}_u^c \ \ \forall \, x$. The poor system approximation is also revealed as the trajectory has an overshoot which was not included in the simulation found in \autoref{fig:trajectory1}. This is however not surprising as the first order approximation was created to simplify the control barrier function and to avoid the observer design as an initial approach. A consequence of the overshoot is seen when setpoints very close to $\Lambda_{s+}$ are given. The slide movement starts to oscillate which is caused by $\sigma(x)$. This is obviously not a good thing, but nevertheless it is the intended outcome when $x \in \mathcal{T}$. Additionally, it is seen how $\sigma(x)$ forces the position below its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x > x_\text{ref}$ when $x \in \mathcal{T}$. %This is indeed the effect of $\sigma(x)$. 
+Here it is seen how the controller ensures that $x \in \mathcal{X}_u^c \ \ \forall \, x$. The poor system approximation is also revealed as the trajectory has an overshoot which was not included in the simulation found in \autoref{fig:trajectory1}. This is however not surprising as the first order approximation was created to simplify the control barrier function and to avoid the observer design as an initial approach. A consequence of the overshoot is seen when setpoints very close to $\Lambda_{s+}$ are given. The slide movement starts to oscillate which is caused by $\sigma(x)$. This is obviously not a good thing, but nevertheless it is the intended outcome when $x \in \mathcal{T}$. Additionally, it is seen how $\sigma(x)$ allows $k_0(x)$ to force the position from reaching its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x$ to cross $x_\text{ref}$ when $x_\text{ref} \in \mathcal{T}$. %This is indeed the effect of $\sigma(x)$. 
 It is finally seen that the safety controller is fully functional for both $\mathbb{R}^-$ and $\mathbb{R}^+$.
 
 The Lie derivatives are calculated based on the measured position. The result is seen in \autoref{fig:meas_lie_1}.
@@ -202,8 +202,7 @@ It is seen that the real time part is completed within the allowed 10\,ms (100\,
 	\caption{Measured position trajectory based on the second order approximation.}
     \label{fig:traj_meas_2}
 \end{figure}
-The measured state trajectory is plotted in \autoref{fig:traj_meas_2}, visualizing how the overshoot is eliminated, which was indeed the main purpose of the development of a controller based on a second order approximation. Also, note how it is possible to give setpoints close to the the set $\mathcal{T}$ and still avoid oscillations caused by $\sigma(\mathbf{x})\neq 0$. This is a big advantage when a doctor needs to operate close to an unsafe region. Finally, just as in \autoref{fig:traj_meas_1}, it is seen how $\sigma(\mathbf{x})$ forces the position below its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x_1 > x_\text{ref}$ when $x \in \mathcal{T}$, as is intended with $\sigma(\mathbf{x})$.
-
+The measured state trajectory is plotted in \autoref{fig:traj_meas_2}, visualizing how the overshoot is eliminated, which was indeed the main purpose of the development of a controller based on a second order approximation. Also, note how it is possible to give setpoints close to the the set $\mathcal{T}$ and still avoid oscillations caused by $\sigma(\mathbf{x})\neq 0$. This is a big advantage when a doctor needs to operate close to an unsafe region. Finally, just as in \autoref{fig:traj_meas_1}, it is seen how $\sigma(\mathbf{x})$ allows $k_0(\mathbf{x})$ to force the position from reaching its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x$ to cross $x_\text{ref}$ when $x_\text{ref} \in \mathcal{T}$, as is intended with $\sigma(\mathbf{x})$.
 
 \begin{figure}[H]
 	\center
@@ -218,7 +217,7 @@ In conclusion, this chapter verifies the usefulness of the theory presented in \
 
 The results from this chapter suggest some improvements in the current setup:
 \begin{itemize}
-\item Replace the TCP/IP communication channel with a \gls{udp} channel such that the topic \texttt{joint\_states} updates faster, i.e. preferably with 2\,kHz. This will  improve the precision and resolution and ultimately save human lives.
+\item Replace the TCP/IP communication channel with a \gls{udp} channel such that the topic \texttt{joint\_states} updates faster, i.e. preferably with 2\,kHz. This will  improve the precision and resolution and ultimately help save human lives.
 \item Improve the transition region $\mathcal{T}$ such that precise setpoints can be given in this region. This could imply a purely non-linear controller in $\mathcal{T}$.
 \item Improve the bump function $\sigma(\mathbf{x})$ for the second order system such that the braking distance is optimized.
 \end{itemize}
