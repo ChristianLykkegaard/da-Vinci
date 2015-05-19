@@ -232,109 +232,132 @@ Three dimensional positions of the tool tip is described in a frame oriented as 
 
 
 
-\section{Modelling of Robot Hand Movement}
+\section{Modelling of Robot Hand Movement in 3D}
+In order to set up a dynamic model of the da Vinci robot hand, a decision is made to model the three axes as decoupled for initial simplification. \textcolor{red}{Argue why, something about measurement, as movements are composed from changing joint angles obviously the axes are coupled, but it is also dependent on the low level controllers on the FPGA.} Measurements are made for a step input on each of the three axes, as shown in \textcolor{red}{FIGURE}
+
 \textcolor{red}{Make measurement of step for cases: x-axis, y-axis, z-axis, and xyz at the same time. Compare to slide measurement.}
 
-\section{Safe Controller Design for First Order System}
-For simplicity, a completely decoupled system is assumed with the same characteristics for each axis as described in \autoref{subsec:model_1d}. \textcolor{red}{Argue why, something about measurement, as movements are composed from changing joint angles obviously the axes are coupled, but it is also dependent on the low level controllers on the FPGA.} Based on this, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
-\begin{equation}\label{eq:3D_sys_static}
-\small
+It is decided to model the response for each of the three (decoupled) axes as three first order systems, and the open loop system for the robot hand is formulated as:
+\begin{equation}\label{eq:3D_sys_static_openloop}
+\dot{\mathbf{x}}=
 \dot{\begin{bmatrix}
-	x\\y\\z
-	\end{bmatrix}} =
+x_x\\x_y\\x_z
+\end{bmatrix}} =
 \underbrace{\begin{bmatrix}
-	-1/\tau & 0 & 0\\0 & -1/\tau & 0 \\ 0 & 0 & -1/\tau
-	\end{bmatrix}
-	\begin{bmatrix}
-	x\\y\\z
-	\end{bmatrix}}_{f(x)} +
+-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
+\end{bmatrix}
+\begin{bmatrix}
+x_x\\x_y\\x_z
+\end{bmatrix}}_{f(\mathbf{x})} +
 \underbrace{\begin{bmatrix}
-	1/\tau& 0 & 0 \\ 0& 1/\tau & 0 \\0& 0& 1/\tau
-	\end{bmatrix}}_{g(x)}
-\underbrace{\left(\begin{bmatrix}
-	\bar{N}_x & 0 & 0 \\0 & \bar{N}_y & 0 \\0& 0& \bar{N}_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_{ref}\\y_{ref}\\z_{ref}
-	\end{bmatrix}
-	-
-	\begin{bmatrix}
-	k_x & 0 & 0 \\0 & k_y & 0 \\0& 0&  k_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x\\y\\z
-	\end{bmatrix}\right)}_{\tilde{u}}
+1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+\end{bmatrix}}_{g(\mathbf{x})}
+\mathbf{u}(\mathbf{x})
 \end{equation}
-\begin{tabular}{rl}
-where & \\
-$\tau$ & is the time constant given in \autoref{subsec:model_1d}, $\tau = 110$\,ms\\
-$\bar{N}_i$ & are the system gains for each of the decoupled systems, computed according to \autoref{eq:barm_1}\\
-$k_i$ & are the controller gains for each of the decoupled systems, computed according to \autoref{eq:K_1}\\
-\end{tabular}\\
+with time constant from \textcolor{red}{MEASUREMENT}
 
-This position controller is used on the safe set $\mathcal{X}_0$, and when the state enters the transition area $\mathcal{T}$ (as defined in \autoref{eq:control_for_safety}) close to the set $\mathcal{X}_u$, the CBF should be used and the two controllers weighted with $\sigma$ as described in \autoref{eq:control_law}. The safe controller or CBF is designed in terms of a valid barrier certificate as defined in \autoref{eq:control_law_safety}, hence a candidate barrier certificate must be constructed.
-
-\subsection{Constructing a Barrier Certificate}
-A candidate barrier certificate is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate barrier certificate. A candidate barrier function is proposed of the form:
+\section{Construction of CBF}
+A candidate barrier certificate is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate CBF. A candidate CBF is proposed of the form:
 \begin{equation}
-B_0(x,y,z) = -\left(  \left(\frac{x-c_x}{r_x}\right)^2 + \left(\frac{y-c_y}{r_y}\right)^2 + \left(\frac{z-c_z}{r_z}\right)^2 - 1 \right)
+	B_0(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
 \end{equation}
 \begin{tabular}{rl}
 	where&\\
-	$[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid, $c\in\mathbb{R}^3$ \\
-	$[r_x\,\, r_y\,\, r_z]$ & is the length of the semi-axes of the ellipsoid, $r\in\mathbb{R}^3_+$\\
+	$[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid, $\mathbf{c}\in\mathbb{R}^3$ \\
+	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$, an average heart size is [12,6,8]\,cm\\
 \end{tabular}\\
 
-An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, with $c= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $r=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$, the red ellipsoid enclosing the unsafe region $\mathcal{X}_u$, the one level set shown in black. Note that the function $-B(x,y,z)$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
+\textcolor{red}{Where should we define the center of the ellipsoid - should be such that the tool can reach all the way around it (but not necessarily below)}
+
+An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, the zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
 
 \begin{figure}[htbp]
 	\centering
 	\hspace*{-15mm}
 	\includegraphics[width=0.7\textwidth]{zerolevelset_3d.pdf}
-	\caption{Red marks the zero level set (and black marks the one level set, indicating that the ellipsoid encloses the region $\mathcal{X}_u$).}
+	\caption{Example of a CBF on the form described in \autoref{eq:barrier_3d}, here with $\mathbf{c}= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $\mathbf{r}=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$. The zero level set is indicated by the red ellipsoid, while the black ellipsoid marks the one level set, indicating that the enclosed  region is the unsafe set $\mathcal{X}_u$).}
 	\label{fig:zerolevelset_3d}
 \end{figure}
 
-The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static}. This is done by splitting the constraint up into the combined constraints on $L_gB(x)$ and $L_fB(x)$ from \autoref{req2}:
+The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static_openloop}. This is done by splitting the constraint up into the combined constraints on $L_gB(\mathbf{x})$ and $L_fB(\mathbf{x})$ from \autoref{req2}, first testing where $L_gB_0(\mathbf{x})=0$:
 \begin{align}
-L_gB_0(x) = \frac{dB_0(x,y,z)}{dx,y,z}g(x) &= 
-\begin{bmatrix} 
-\frac{2}{r_x^2}(c_x-x) & \frac{2}{r_y^2}(c_y-y) & \frac{2}{r_z^2}(c_z-z) 
-\end{bmatrix}
-\begin{bmatrix}
-1/\tau& 0 & 0 \\ 0& 1/\tau & 0 \\0& 0& 1/\tau
-\end{bmatrix} \nonumber\\
-&= \frac{2}{\tau}
-\begin{bmatrix} 
-\frac{1}{r_x^2}(c_x-x) & \frac{1}{r_y^2}(c_y-y) & \frac{1}{r_z^2}(c_z-z) 
-\end{bmatrix}
+	L_gB_0(\mathbf{x}) = \frac{dB_0(\mathbf{x})}{d\mathbf{x}}g(\mathbf{x}) &= 
+	\begin{bmatrix} 
+		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
+	\end{bmatrix}
+	\begin{bmatrix}
+		1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+	\end{bmatrix} \nonumber\\
+	&= 2
+	\begin{bmatrix} 
+		\frac{1}{r_x^2\tau_x}(c_x-x_x) & \frac{1}{r_y^2\tau_y}(c_y-x_y) & \frac{1}{r_z^2\tau_z}(c_z-x_z) 
+	\end{bmatrix}
 \end{align}
-It can be seen that $L_gB(x)=0$ in the center of the ellipsoid $[c_x,c_y,c_z]$, and hence it is tested that $L_fB(x)<0$ in this point:
+It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
 \begin{align}
-L_fB_0(x) &= \frac{dB_0(x,y,z)}{dx,y,z}f(x) = 
-\begin{bmatrix} 
-\frac{2}{r_x^2}(c_x-x) & \frac{2}{r_y^2}(c_y-y) & \frac{2}{r_z^2}(c_z-z) 
-\end{bmatrix}
-\begin{bmatrix}
--1/\tau& 0 & 0 \\ 0& -1/\tau & 0 \\0& 0& -1/\tau
-\end{bmatrix} 
-\begin{bmatrix}
-x\\y\\z
-\end{bmatrix}\nonumber\\
-& \phantom{=\frac{dB_0(x,y,z)}{dx,y,z}f(x)} =
--\frac{2}{\tau} \left(
-\frac{1}{r_x^2}(c_xx-x^2) +\frac{1}{r_y^2}(c_yy-y^2) + \frac{1}{r_z^2}(c_zz-z^2) \right)\\
-L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
+	L_fB_0(\mathbf{x}) &= \frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
+	\begin{bmatrix} 
+		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
+	\end{bmatrix}
+	\begin{bmatrix}
+		-1/\tau_x& 0 & 0 \\ 0& -1/\tau_y & 0 \\0& 0& -1/\tau_z
+	\end{bmatrix} 
+	\begin{bmatrix}
+		x_x\\x_y\\x_z
+	\end{bmatrix}\nonumber\\
+	& \phantom{=\frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x})} =
+	-2\left(
+	\frac{1}{r_x^2\tau_x}(c_xx_x-x_x^2) +\frac{1}{r_y^2\tau_y}(c_yx_y-x_y^2) + \frac{1}{r_z^2\tau_z}(c_zx_z-x_z^2) \right)\\
+	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
 \end{align}
-As this is the vertex of the barrier function, the relaxed requirement $L_fB(x)\leq 0$ applies, and hence this candidate barrier function is used in the design of the safety controller.
+It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
 
-\textcolor{red}{pick the same values for K and N as before? Get measures for a heart to define the radii! Where should we define the center of the ellipsoid - should be such that the tool can reach all the way around it (but not necessarily below)}
+
+
+
+\section{Control Design for 3D System}
+Based on the modelled decoupled first order systems, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
+\begin{equation}\label{eq:3D_sys_static}
+\small
+\dot{\begin{bmatrix}
+	x_x\\x_y\\x_z
+	\end{bmatrix}} =
+\underbrace{\begin{bmatrix}
+	-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_x\\x_y\\x_z
+	\end{bmatrix}}_{f(\mathbf{x})} +
+\underbrace{\begin{bmatrix}
+	1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+	\end{bmatrix}}_{g(\mathbf{x})}
+\underbrace{\left(\begin{bmatrix}
+	\bar{\mathbf{N}}_x & 0 & 0 \\0 & \bar{\mathbf{N}}_y & 0 \\0& 0& \bar{\mathbf{N}}_z
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_\text{ref}\\y_\text{ref}\\z_\text{ref}
+	\end{bmatrix}
+	-
+	\begin{bmatrix}
+	\mathbf{K}_x & 0 & 0 \\0 & \mathbf{K}_y & 0 \\0& 0&  \mathbf{K}_z
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_x\\x_y\\x_z
+	\end{bmatrix}\right)}_{\tilde{\mathbf{u}}}
+\end{equation}
+\begin{tabular}{rl}
+where & \\
+$\tau$ & is the time constant given in \autoref{subsec:model_1d}, $\tau = 110$\,ms \textcolor{red}{NEW MEAS!}\\
+$\bar{\mathbf{N}}_i$ & are the system gains for each of the decoupled systems, computed according to \autoref{eq:barm_1}\\
+$\mathbf{K}_i$ & are the controller gains for each of the decoupled systems, computed according to \autoref{eq:K_1}\\
+\end{tabular}\\
+
+\textcolor{red}{pick  values for K and N }
+
+This position controller is used on the safe set $\mathcal{X}_0$, and when the state enters the transition area $\mathcal{T}$ (as defined in \autoref{eq:control_for_safety}) close to the set $\mathcal{X}_u$, the CBF should be used and the two controllers weighted with $\sigma$ as described in \autoref{eq:control_law}. The safe controller or CBF is designed in terms of a valid barrier certificate as defined in \autoref{eq:control_law_safety}, hence a candidate barrier certificate must be constructed.
+
 
 
 
 THIS IS ONLY POSITION, NOT ORIENTATION
 
-\subsection{Design of the CBF}
-\textcolor{red}{design according to Allg\" ower and pick a value for epsilon (start of transition area)}
-
-\section{Safe Controller Design for Second Order System}
