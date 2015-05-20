@@ -1,21 +1,4 @@
-This appendix serves as a short introduction to the Matlab toolbox SOSTOOLS in the scope of searching for a barrier certificate for a specific closed-loop system $f_{cl}(x)$.
 
-\section{Download and Install SOSTOOLS}
-\vspace*{-3mm}
-SOSTOOLS is a free third-party Matlab toolbox developed by engineering departments of four major universities. A zip file of the toolbox can be downloaded from 
-
-\hspace{1cm} {\color{blue}{\textit{http://www.cds.caltech.edu/sostools}}}
-
-also containing a user guide \citep{bib:sostools_manual} to sum of squares (SOS) problems and how to formulate a problem to solve it with the toolbox, along with a set of demos. 
-
-SOSTOOLS takes as input the \gls{sos} program formulation, recasts it as a \gls{sdp} problem, calls \gls{sdp} solvers, and recasts the solution to the \gls{sdp} problem into the solution to the \gls{sos} problem. This means that the toolbox requires that an \gls{sdp} solver toolbox is installed, e.g. the SeDuMi (Self-Dual-Minimization) solver, which can be downoaded from
-
-\hspace{1cm} {\color{blue}{\textit{http://sedumi.ie.lehigh.edu/downloads}}}
-
-The toolboxes are activated in Matlab by adding the downloaded unzipped folders to the Matlab path.
-
-\section{Defining an SOS Program}
-\vspace*{-3mm}
 As described in \citep{bib:sostools_manual}, an SOS program is initialized by declaring the independent variables as \texttt{syms} or \texttt{pvar} and optionally scalar decision variables as \texttt{syms}, and initializing an SOS program with the command \texttt{sosprogram} (in the below, grey denotes optional inputs)
 
 \hspace*{1cm} \texttt{>> syms x1 dvar;}\\
@@ -42,53 +25,348 @@ When all variables and constraints are input to the program, the solver is calle
 \hspace*{1cm} \texttt{>> getB = sosgetsol(prog,P)}
 
 
-%SeDuMi 1.3 by AdvOL, 2005-2008 and Jos F. Sturm, 1998-2003.
-%Alg = 2: xz-corrector, Adaptive Step-Differentiation, theta = 0.250, beta = 0.500
-%Put 5 free variables in a quadratic cone
-%eqs m = 180, order n = 71, dim = 935, blocks = 8
-%nnz(A) = 746 + 0, nnz(ADA) = 12522, nnz(L) = 6351
-%it :     b*y       gap    delta  rate   t/tP*  t/tD*   feas cg cg  prec
-%0 :            4.95E-01 0.000
-%1 :   0.00E+00 1.37E-01 0.000 0.2775 0.9000 0.9000   1.00  1  0  1.4E+00
-%2 :   0.00E+00 4.05E-02 0.000 0.2945 0.9000 0.9000   1.00  1  1  4.0E-01
-%3 :   0.00E+00 1.11E-02 0.000 0.2736 0.9000 0.9000   1.00  1  1  1.1E-01
-%4 :   0.00E+00 2.96E-03 0.000 0.2675 0.9000 0.9000   1.00  1  1  2.9E-02
-%5 :   0.00E+00 9.17E-04 0.000 0.3096 0.9000 0.9000   1.00  1  1  9.1E-03
-%6 :   0.00E+00 3.18E-04 0.000 0.3470 0.9107 0.9000   1.00  1  1  2.9E-03
-%7 :   0.00E+00 7.91E-05 0.000 0.2486 0.8202 0.9000   1.00  1  1  7.4E-04
-%8 :   0.00E+00 1.99E-05 0.000 0.2522 0.9000 0.9047   1.00  1  1  2.0E-04
-%9 :   0.00E+00 6.61E-06 0.000 0.3314 0.7727 0.9000   1.00  1  2  6.7E-05
-%10 :   0.00E+00 2.00E-06 0.000 0.3029 0.9000 0.9043   1.00  2  2  2.1E-05
-%11 :   0.00E+00 7.15E-07 0.000 0.3573 0.8589 0.9000   1.00  1  3  7.3E-06
-%12 :   0.00E+00 2.33E-07 0.000 0.3257 0.9000 0.9025   1.00  6  7  2.4E-06
-%13 :   0.00E+00 8.28E-08 0.000 0.3554 0.8725 0.9000   1.00  8  9  8.5E-07
-%14 :   0.00E+00 2.69E-08 0.000 0.3247 0.9000 0.9050   1.00 12 15  2.9E-07
-%15 :   0.00E+00 9.41E-09 0.000 0.3499 0.9000 0.9000   1.00 19 19  9.9E-08
-%16 :   0.00E+00 3.31E-09 0.000 0.3516 0.9020 0.9000   1.00 21 22  3.4E-08
-%17 :   0.00E+00 1.15E-09 0.000 0.3468 0.9017 0.9000   1.00 25 24  1.1E-08
-%18 :   0.00E+00 3.91E-10 0.000 0.3411 0.9007 0.9000   1.00 36 39  3.9E-09
-%
-%iter seconds digits       c*x               b*y
-%18      0.9   Inf  0.0000000000e+00  0.0000000000e+00
-%|Ax-b| =   4.6e-09, [Ay-c]_+ =   6.8E-10, |x|=  6.3e+00, |y|=  1.4e+01
-%
-%Detailed timing (sec)
-%Pre          IPM          Post
-%1.200E-02    4.640E-01    7.001E-03    
-%Max-norms: ||b||=0, ||c|| = 0,
-%Cholesky |add|=3, |skip| = 5, ||L.L|| = 1.03727e+08.
-%
-%Residual norm: 4.6491e-09
-%
-%iter: 18
-%feasratio: 1.0000
-%pinf: 0
-%dinf: 0
-%numerr: 0
-%timing: [0.0120 0.4640 0.0070]
-%wallsec: 0.4830
-%cpusec: 0.9219
+
 
 If no solution could be found, the degree (and thereby complexity) of some SOS variables or polynomials may be increased through their monomials, which may yield a solution to the SOS problem.
 
+In this and the following chapters, barrier certificates are attempted to be constructed by use of Putinar's Positivstellensatz in \autoref{def:putinar} with the Matlab toolbox SOSTOOLS (see \autoref{app:sostools} for a short introduction to the toolbox). In this chapter the first and second order systems depicted in \autoref{fig:stepresponseslide} are considered with a static reference on the position.
 
+\section{Defining a Polynomial Barrier Certificate in SOSTOOLS}\label{sec:app_sostools_barrier_search}
+
+A polynomial barrier certificate can be constructed using \gls{sos} optimization, e.g by using an \gls{sos} program such as SOSTOOLS, which is a convex relaxation framework based on sum of squares decompositions of multivariate polynomials and semidefinite programming solvers \citep{bib:prajna_framework}. A short introduction to the SOSTOOLS syntax is presented in \autoref{app:sostools}.
+Searching for a barrier certificate in SOSTOOLS require the definition of all of the vaiables and polynomials given by \autoref{eq:barrier_constraints_putinar} as follows:
+
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\bullet$}
+\begin{itemize}
+	\itemsep-0.5mm
+	\item \textbf{Initialize the Program}\\
+	First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{syms} or \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
+	\item \textbf{Define the Vector Field}\\
+	The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}$ in terms of the symbolic state vector.
+	\item \textbf{Set up the Constraints on the Polynomial Barrier Certificate}\\
+	Declare a monomial vector $Z_B$ in $x$ (or part of $x$) of sufficiently large degree, and parametrize the polynomial $B(x)$ as a function of $Z_B$ with \texttt{sospolyvar}.  
+	The problem of finding the coefficients for the barrier certificate is now for each region $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ a matter of defining the following:
+	\vspace*{-1mm}
+	\begin{itemize}
+		\item \textbf{Define the Polynomials $g_j(x)$}\\
+		Define one or more polynomials $g_j$ that are positive in the region to be defined and negative outside. Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries. 
+		\item \textbf{Declare the SOS Variables $q_j(x)$}\\
+		Declare monomial vectors $Z_{q_j}$ in $x$ of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible), and parametrize the SOS polynomials (multipliers) $q_j$ with \texttt{sossosvar}.
+		\item \textbf{Set up the Inequality}\\
+		Cf. the nonnegativity of an \gls{sos} polynomial ($q_0$), the \texttt{sosineq} can be written as the right-hand side of \autoref{eq:putinar_sos}: Choose a small positive number $\epsilon$ for defining the region $\mathcal{X}_u$;
+		set up the inequality (corresponding to the region to be defined) according to \autoref{eq:barrier_constraints_putinar}. The inequality pertaining to a set may be defined in terms of several $g_j$s; if the set is defined by
+		\begin{itemize}
+			\item $g_1 \bigcap g_2 \bigcap ... \bigcap g_m$, then write $h - \sum q_jg_j\geq 0$
+			\item $g_1 \bigcup g_2 \bigcup ... \bigcup g_m$, then write $h - q_1g_1\geq 0$, $h - q_2g_2\geq 0$ etc.
+		\end{itemize} 
+		Note that each expression in the inequalities of \autoref{eq:barrier_constraints_putinar} must have even degrees in the leading and trailing terms in order for the equality in \autoref{eq:putinar_sos} to hold.
+	\end{itemize}
+	\item \textbf{Solve the SOS Program}\\
+	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Otherwise it can be concluded that safety cannot be guaranteed of the closed-loop system under scrutiny. 
+\end{itemize}
+
+
+
+
+
+\textcolor{red}{Matter of defining degree of B and qs - how to decide?}
+In the following section an example is given on how to search for a barrier certificate with SOSTOOLS.
+
+
+
+
+
+
+
+
+%\textcolor{red}{Og hvordan bruger I så det. Kør eksemplet videre, så det er klart hvordan (8.2e) oversættes til SOS program. Jeg synes I skal køre eksemplet hele vejen igennem og idregne det i SOSTOOLS. På denne måde overbeviser i læseren og, at I kan oversætte teorien til praktisk implementation - Og dette giver points! }
+
+
+
+\subsection{Example of Barrier Certificate Search with SOSTOOLS}
+This section presents a simple example of a barrier certificate search for a 1D first order state space system with $x_1\in\mathcal{X}\subset\mathbb{R}$ corresponding to the robot slide joint being the only degree of freedom (see \autoref{fig:safe:overview} for an overview of the slide movement). First the system is defined, and a controller is designed with pole placement.
+\begin{lstlisting}[language=matlab]
+% Define state-space system with x1 = robot position
+tau = 0.11; % time constant for the robot slide
+A = -1/tau;
+B = 1/tau;
+K = place(A,B,[-10*1/tau]);
+\end{lstlisting}
+Then the symbolic state variables are declared for the SOS program in SOSTOOLS with the command \texttt{pvar}, which corresponds to the command \texttt{syms} in the Matlab symbolic toolbox. Now the SOS program \texttt{prog} can be initialized using the function \texttt{sosprogram} which takes the state variable(s) as input. For a short introduction to SOSTOOLS and its syntax, see \autoref{app:sostools}.
+\begin{lstlisting}[language=matlab]
+% Declare state variables
+pvar x1
+
+% Initialize the sum of squares program
+prog = sosprogram(x1);
+\end{lstlisting}
+%The reference for the robot position is generated as the 1D heart position, taking into account the system gain $\bar{N}$, and the closed-loop system equation is written as a function of the sybolic state. %\textcolor{red}{Something is wrong with the reference..?}
+The vector field or derivative of the state can now be defined in terms on the symbolic state variable. This function is necessary for the SOS program when requiring that the Lie derivative of the barrier certificate must be negative on the set $\mathcal{X}$.
+\begin{lstlisting}[language=matlab]
+% Vector field dx/dt = fx (closed loop)
+fx = (A-B*K)*x1;
+\end{lstlisting}
+For ease of defining a (1D) function $g$ that is positive on an interval [$p_1\,\,\, p_2$], a parabola function is used.
+\begin{lstlisting}[language=matlab]
+function [a,b,c] = parabola(p1,p2)
+a = -1;
+b = a*(p1^2-p2^2)/(p2-p1);
+c = -a*p1^2-b*p1;
+end
+\end{lstlisting}
+Now declare the polynomial barrier function with the command \texttt{sospolyvar}. To do this, a monomial vector must be specified with \texttt{monomials} (see the monomial example in \autoref{eq:monomial_example}), which takes as input the state variable(s) and the monomial degree(s). The monomial degrees for $B(x)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x)$ that is 0:4.
+\begin{lstlisting}[language=matlab]
+% Declare polynomial barrier function
+zB = monomials(x1,0:4);
+[prog,Bx] = sospolyvar(prog,zB);
+\end{lstlisting}
+Now the region $\mathcal{X}$ can be defined for the slide region $\pm0.1$\,m using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial} and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
+\begin{lstlisting}[language=matlab]
+% Define space X in R^n
+[a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1]
+gX = a*x1^2+b*x1+c;
+zX = monomials(vars,0:2);
+[prog,qX] = sossosvar(prog,zX);
+prog = sosineq(prog,-diff(Bx,x1)*fx-gX*qX);
+\end{lstlisting}
+Similarly, the region $\mathcal{X}_u$ is defined according to the SOS inequality in \autoref{cer2_putinar} as the area between slide positions 5-10\,cm.
+\begin{lstlisting}[language=matlab]
+% Define space Xu in X
+[a,b,c]=parabola(0.05,0.1);
+gXu = a*x1^2+b*x1+c;
+zXu = monomials(x1,0:2);
+[prog,fXu] = sossosvar(prog,zXu);
+prog = sosineq(prog,Bx-gXu*fXu);
+\end{lstlisting}
+And finally the region $\mathcal{X}_0$ is defined according to the SOS inequality in \autoref{cer1_putinar} as $\mathcal{X}\setminus\mathcal{X}_u$.
+\begin{lstlisting}[language=matlab]
+% Define space X0 in X
+[a,b,c] = parabola(-0.1,0.05);
+gX0 = a*x1^2+b*x1+c;
+zX0 = monomials(x1,0:2);
+[prog,fX0] = sossosvar(prog,zX0);
+prog = sosineq(prog,-Bx-gX0*fX0);
+\end{lstlisting}
+With all three areas defined according to \autoref{eq:barrier_constraints_putinar}, the program is ready to be solved by using the command \texttt{sossolve}. If a solution is found, an overview of the solution accuracy is printed in the Matlab terminal as the residual norm, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \texttt{sosgetsol}.
+\begin{lstlisting}[language=matlab]
+% Solve for B
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bx)
+\end{lstlisting}
+For this particular program, the solution barrier certificate is found to be
+\begin{equation}
+B(x) = 0.016168\cdot x_1^4 + 0.0064892\cdot x_1^3 + 0.00072547\cdot x_1^2 + 6.5473e\text{-}8\cdot x_1 - 2.7291e\text{-}6
+\end{equation}
+and is depicted in \autoref{fig:barrier_1storder_staticlim}.
+
+\begin{figure}[htbp]
+	\hspace*{-12mm}
+	\includegraphics[width=1.1\textwidth]{1stordersys_staticlimits.pdf}
+	\caption{A barrier certificate is found with SOSTOOLS that complies with the requirements in \autoref{eq:barrier_constraints}: it is positive on $\mathcal{X}_u=\{x_1\in [0.05,\,\,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,\,\,0.05]\}$, and its Lie derivative is nonpositive on $\mathcal{X}=\{x_1\in [-0.1,\,\,0.1]\}$.}
+	\label{fig:barrier_1storder_staticlim}
+\end{figure}
+
+
+
+\section{Safety Verification of First Order System}
+First a linear open-loop state space system is defined according to the measurement of a step on the robot slide, showing a time constant $\tau=110$\,ms, giving the closed-loop system in \autoref{eq:1storder_1D_ss}:
+\begin{equation}
+\dot{x} = Ax+Bu = Ax+B(\bar{N}x_{ref}-Kx) = %-\tau^{-1}x+\tau^{-1}u=
+-\tau^{-1}x+\tau^{-1}(\bar{N}x_{ref}-Kx)
+\label{eq:1D_1storder}
+\end{equation} 
+which can be recast as the augmented state-space system
+\begin{equation}
+\dot{\tilde{x}}=
+\dot{\begin{bmatrix}
+	x_1\\x_{ref}
+	\end{bmatrix}} =
+\begin{bmatrix}
+A-BK&B\bar{N}\\0&0
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_{ref}
+\end{bmatrix}
+= f_{cl}(x)
+\label{eq:xtilde_1storder_1D}
+\end{equation}
+with no dynamics on the reference. A controller $K$ is found according to pole placement as described in \autoref{sec:K_Nbar_1D_1storder}, i.e. for the first order 1D system in \autoref{eq:1D_1storder} a controller that is 10 times faster than the system will be $K=9$. Similarly the system scaling factor $\bar{N}$ is determined according to the method described in \autoref{sec:K_Nbar_1D_1storder} as $\bar{N}=10$.
+The independent state variables are defined and the SOS program initialized as described in \autoref{sec:app_sostools_barrier_search}.
+
+%Now the $g_j$ functions in \autoref{eq:barrier_constraints_putinar} are constructed according to \autoref{fig:safe:overview}:
+%\begin{itemize}
+%%\itemsep-1.3mm
+%\itemsep-0.7mm
+%\item The set $\mathcal{X}$ is defined by constructing a (second order polynomial) function $g_{1}(x_1)\geq 0 \in [\Lambda_{\text{lim}-},\Lambda_{\text{lim}+}]= [-0.1,0.1]$\,m, delimiting the region of possible robot tool positions, and another function $g_2(x_{ref})\geq 0 \in [\Lambda_{h-}+\Delta,\Lambda_{h+}-\Delta]=[-0.1+\Delta,0.05-\Delta]$\,m, delimiting the region of allowable reference positions 
+%\end{itemize}
+
+The linear first order system from \autoref{eq:1storder_1D_ss} is defined with the same pole placement controller and thereby system gain as in \autoref{eq:K_1} and \ref{eq:barm_1}, and the same regions/intervals assigned for $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ as given in \autoref{fig:safe:overview} - see \autoref{fig:intervals_for_sos}.
+\begin{lstlisting}[language=matlab]
+% 1D system WITH STATIC REFERENCE
+clear all; clc; 
+
+% Time constant from measurement
+tau = 0.11;
+% State-space matrices from first order open-loop system
+A = -1/tau;
+B = 1/tau;
+% Setpoint controller that is xx times faster than the system
+xx = 10;
+K = place(A,B,[xx*A]);
+
+C = 1;
+D = 0;
+Acl = A-B*K;
+sysol = ss(A,B,C,D);
+syscl = ss(Acl,B,C,D);
+
+% Internal gain in the system for compensation of the reference
+Nbar = -inv(C*inv(A-B*K)*B+D);
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+Xmax = 0.1;
+Xmin = -0.1;
+Xumax = Xmax;
+Xumin = 0.05;
+X0max = Xumin;
+X0min = Xmin;
+\end{lstlisting}
+
+\begin{figure}[htbp]
+	\centering\includegraphics[width=0.6\textwidth]{intervals_for_sos.pdf}
+	\caption{Intervals for the 1D case study, where the solid black line represents the interval $\mathcal{X}=\{x_1\in [-0.1, 0.1]\}$, and the interval $\mathcal{X}_0$ defines the interval where $B(x)\leq 0$, while $\mathcal{X}_u$ defines the interval where $B(x)>0$, separated from the zero level set by the small distance $\epsilon$. The interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$ is the interval of positions from which a reference can be taken $x_{ref}\in\mathcal{X}_{0\Delta}$. This interval is slightly smaller than the safe initial set $\mathcal{X}_0$, separated from the zero level set of $B(x)$ by the small distance $\Delta$.}
+	\label{fig:intervals_for_sos}
+\end{figure}
+
+The small $\epsilon>0$ from \autoref{cer2_putinar} is defined "as small as possible", and another small $\Delta>0$ is introduced in order to be test for validity of a controller with references within the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$ with a distance of at least $\Delta$ to the zero level set of $B(x)$, see \autoref{fig:intervals_for_sos}.
+\begin{lstlisting}[language=matlab]
+% Distance reference should keep to the unsafe region
+delta = 0.001;
+
+% Distance which the unsafe region is allowed to deviate from the desired zero level set specified by the g(x) defining Xu
+epsilon = 0.00001;
+\end{lstlisting}
+The SOS program is initialized with the augmented state $\tilde{x}$ and thereby vector field as defined in \autoref{eq:xtilde_1storder_1D}. 
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Control Barrier Function Search for 1D system WITH STATIC REFERENCE
+pvar x1 xref
+xtilde = [x1; xref];
+
+% =============================================
+% First, initialize the sum of squares program
+prog = sosprogram(xtilde);
+
+% =============================================
+% Vector field dt/dx = fx (closed loop)
+fx = [A-B*K B*Nbar; 0 0]*xtilde;
+\end{lstlisting}
+The polynomial $B(x)$ is declared in as small degree "as possible". If any odd-order functions $g_j$ exist, $B(x)$'s leading term should be of an even degree higher than the uneven degree of the leading term of that $g_jq_j$. \textcolor{red}{It is considered that $B(x)$ should only be a function of the position and not of the reference, as the controller is considered as a static position setpoint controller for one single reference, and the program then tests the set of controllers, each with a setpoint within the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$, for safety.}
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Declare polynomial degree of barrier function (FUNCTION OF BOTH X1 AND XREF?)
+zB = monomials(x1,0:4);
+[prog,Bar] = sospolyvar(prog,zB);
+\end{lstlisting}
+As $B(x)$ should be valid for the set $\mathcal{X}$, $\mathcal{X}$ is defined by $g_1(x_1)$ being positive on the slide interval, \textcolor{red}{and simultaneously $g_2(x_{ref})$ being positive on the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$.} See \autoref{fig:intervals_for_sos} and \ref{fig:1D_static_gfunctions}.
+
+\begin{figure}[htbp]
+	\hspace*{-5mm}
+	\subbottom[The $g(x_1)$ functions defining the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$.]{\includegraphics[width=0.55\textwidth]{1stordersys_staticlimits_g.pdf}\label{fig:1stordersys_staticlimits_g}}%
+	\hspace{-2mm}
+	\subbottom[The function $g(x_{ref})$ also used to define $\mathcal{X}$.]{\includegraphics[width=0.55\textwidth]{1stordersys_staticlimits_gref.pdf}\label{fig:1stordersys_staticlimits_gref}}%
+	\caption{The functions $g$ used to define the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ by the interval in which they are positive, i.e. $\mathcal{X}_u$ is defined by the interval where $g_{X_u}(x_1)$ is positive in \autoref{fig:1stordersys_staticlimits_g}. In the definition of the set $\mathcal{X}$, corresponding to the space where the barrier certificate is valid, also a function $g$ of the reference/setpoint is used. This means that the barrier certificate is valid for all controllers with setpoint within the interval where $g(x_{ref})$ is positive.}
+	\label{fig:1D_static_gfunctions}
+\end{figure}
+
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Define space X in Rn
+
+% Define g1(x1) to be positive on the region that we want X to encompass
+[a,b,c]=parabola(Xmin,Xmax); % get coefficients for parabola
+gX1 = a*x1^2+b*x1+c;
+
+% Declare SOS polynomials q1(xtilde) in the full state (CHOICE OF DEGREEE?)
+zX1 = monomials(xtilde,0:2); 
+[prog,qX1] = sossosvar(prog,zX1);
+
+% With g2(xref) define X only on the interval of allowed references
+[a,b,c]=parabola(X0min+delta,X0max-delta);
+gX2 = a*xref^2+b*xref+c;
+
+% Declare SOS polynomials q2(xtilde) (CHOICE OF DEGREE?)
+zX2 = monomials(xtilde,0:2);
+[prog,qX2] = sossosvar(prog,zX2);
+
+% Setup SOS inequality according to Putinar's Positivstellensatz
+prog = sosineq(prog,-[diff(Bar,x1) diff(Bar,xref)]*fx-gX1*qX1-gX2*qX2);
+\end{lstlisting}
+The unsafe set is defined as the interval where the position $x_1$ takes values between 5 and 10\,cm, see \autoref{fig:intervals_for_sos} and \ref{fig:1D_static_gfunctions}. \textcolor{red}{It is not clear whether also the reference should be part of the definition of $\mathcal{X}_u$ (with a $g_2(x_{ref})$ positive on the same interval as $g_1(x_1)$), it has been tested both with and without, but there is no clear indication from the results that is should or should not be included.}
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Define space Xu in X
+
+% Define g1(x1) to be positive on the region that we want Xu to encompass
+[a,b,c]=parabola(Xumin,Xumax);
+gXu1 = a*x1^2+b*x1+c;
+
+% Declare SOS polynomials q1(xtilde) in the full state (CHOICE OF DEGREEE?)
+zXu1 = monomials(xtilde,0:3);
+[prog,qXu1] = sossosvar(prog,zXu1);
+
+% With g2(xref) define Xu outside the interval of allowed references
+[a,b,c]=parabola(Xumin,Xumax);
+gXu2 = a*xref^2+b*xref+c;
+
+% Declare SOS polynomials q2(xtilde) (CHOICE OF DEGREE?)
+zXu2 = monomials(xtilde,0:3);
+[prog,qXu2] = sossosvar(prog,zXu2);
+
+% Setup SOS inequality according to Putinar's Positivstellensatz
+prog = sosineq(prog,Bar-epsilon-gXu1*qXu1);%-gXu2*qXu2);
+\end{lstlisting}
+\textcolor{red}{The same is the case for the definition of $\mathcal{X}_0$; it is defined as the safe position region, and it has been tested with and without the requirement of references in the interval $\mathcal{X}_{0\Delta} \subset \mathcal{X}_0$.}
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Define space X0 in X
+
+% Define g1(x1) to be positive on the region that we want X0 to encompass
+[a,b,c]=parabola(X0min,X0max);
+gX01 = a*x1^2+b*x1+c;
+
+% Declare SOS polynomials q1(xtilde) in the full state (CHOICE OF DEGREEE?)
+zX01 = monomials(xtilde,0:4);
+[prog,qX01] = sossosvar(prog,zX01);
+
+% With g2(xref) define X0 only on the interval of allowed references
+[a,b,c]=parabola(X0min+delta,X0max-delta);
+gX02 = a*xref^2+b*xref+c;
+
+% Declare SOS polynomials q2(xtilde) (CHOICE OF DEGREE?)
+zX02 = monomials(xtilde,0:3);
+[prog,qX02] = sossosvar(prog,zX02);
+
+% Setup SOS inequality according to Putinar's Positivstellensatz
+prog = sosineq(prog,-Bar-gX01*qX01);%-gX02*qX02);
+\end{lstlisting}
+In most cases the solution found has a leading term coefficient of order between -4 and -2, but very often the value of $B(x)$ is either positive or negative on the entire interval [-0.1,0.1]. \textcolor{red}{Strangely, in all tested combinations, $L_{f_{cl}}B(x)$ is positive-valued on an interval approximately [-0.02,0]. This and the fact that the zero level set of the barrier in no case is in $x=0.05$ makes it seem like we still haven't formulated the problem correctly in terms of the SOS description. We could use a little help to see what we do wrong.} 
+\begin{lstlisting}[language=matlab]
+% =============================================
+% Solve for B
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bar)
+
+dBdx = [diff(getB,x1) diff(getB,xref)]
+
+% =============================================
+% Plot B and LfclB
+figure
+subplot(1,2,1);
+Bx = plotB(getB,[Xmin,Xmax],0);
+subplot(1,2,2);
+LfclB = plotLfclB(dBdx,A,B,C,D,K,Nbar,[Xmin,Xmax]);
+\end{lstlisting}
+
+\textcolor{red}{It has been tried tweaking the constants $\epsilon$ and $\Delta$ as well as testing with all the monomial degrees $Z_B$, $Z_{X1}$, $Z_{X2}$, $Z_{u1}$, ($Z_{u2}$), $Z_{01}$, ($Z_{02}$), in degrees 0:2, 0:3, 0:4, and in/excluding the constraints from $x_{ref}$ on $\mathcal{X}_u$ an $\mathcal{X}_0$, but in no case $B(x)$ attains a shape that remotely reflects the requirements (on $x_1$) for $\mathcal{X}_u$ an $\mathcal{X}_0$.}
