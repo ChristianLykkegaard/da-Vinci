@@ -276,7 +276,7 @@ The results shown are implemented with the following characteristics:
 \item The distance $d_\text{ref}$ is initially set to 3\,cm which is safe. At 2\,s the distance $d_\text{ref}$ is altered to -1\,cm emulating a surgeon who accidentally forced the robot to penetrate the heart. The expected outcome of this is obviously that the safety controller prevents this by ensuring a distance between end effector and the beating heart.
 \item Initial conditions are set such that the robot end effector is positioned at a distance to the heart greater than the desired distance. The expected outcome is that the system will attempt to track the distance $x_1-x_{h1}=d_\text{ref}$.
 \end{itemize}
-The MATLAB implementation itself can be found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_hearth/beating\_hearth\_controller.m}. The state trajectory is plotted in \autoref{fig:matlab_dynamics}.
+The MATLAB implementation itself can be found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_heart/beating\_heart\_controller.m}. The state trajectory is plotted in \autoref{fig:matlab_dynamics}.
 
 \vspace{-2mm}
 \begin{figure}[H]
