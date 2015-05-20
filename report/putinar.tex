@@ -1,36 +1,50 @@
+This chapter ought to describe and establish the theory applied when the analysis approach is adopted, i.e. to analyse if a given closed loop system is safe.
+
 Barrier certificates can be used to (in)validate the safety compliance of a controller design by testing if a barrier certificate can be found according to \autoref{eq:barrier_constraints} for the closed-loop system $f_{cl}(x)$. When the vector field of the closed-loop system is polynomial and the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ are described by polynomial (in)equalities, a polynomial barrier certificate can be constructed using \gls{sos} optimization \citep{bib:prajna_framework}. A polynomial $p(x)$ is \gls{sos} if there exist polynomials $f_1,\dots,f_m$ such that \citep{bib:parrilo_sdp}
 \begin{equation}
 p(x) = \sum_{j=1}^{m}f_j^2(x)
 \end{equation}
+%
+%A \gls{sos} program is a convex optimization problem of the form \citep{bib:prajna_framework,bib:sostools}
+%\begin{subequations}
+%\begin{align}
+%&\min_{c}\, w^Tc\\
+%&\text{subject to} \qquad
+%q_{i,0}(x) + \sum_{j=1}^{m} q_{i,j}(x)g_j(x) \,\,\,\in \Sigma[x]
+%\qquad \text{for}\quad
+%i=1,\dots, p
+%\end{align}
+%\end{subequations}
+%\vspace*{-4mm}
+%\begin{tabular}{rl}
+%where &\\
+%$w$ & is a vector of weighting coefficients of the linear objective function\\
+%$c$ & is a vector formed by the (unknown) scalar real coefficients of $g_j(x)$\\
+%$g_j(x)$ & are polynomials in $x$\\
+%$q_{i,j}(x)$ & are given \gls{sos} polynomials with fixed coefficients\\
+%$\Sigma$ & denotes the set of \gls{sos} variables\\
+%\subsection*{Notation}
 
-A \gls{sos} program is a convex optimization problem of the form \citep{bib:prajna_framework,bib:sostools}
-\begin{subequations}
-\begin{align}
-&\min_{c}\, w^Tc\\
-&\text{subject to} \qquad
-q_{i,0}(x) + \sum_{j=1}^{m} q_{i,j}(x)g_j(x) \,\,\,\in \Sigma[x]
-\qquad \text{for}\quad
-i=1,\dots, p
-\end{align}
-\end{subequations}
-\vspace*{-4mm}
-\begin{tabular}{rl}
-where &\\
-$w$ & is a vector of weighting coefficients of the linear objective function\\
-$c$ & is a vector formed by the (unknown) scalar real coefficients of $g_j(x)$\\
-$g_j(x)$ & are polynomials in $x$\\
-$q_{i,j}(x)$ & are given \gls{sos} polynomials with fixed coefficients\\
-$\Sigma$ & denotes the set of \gls{sos} variables\\
-$\mathbb{R}[x]$ &denotes a set of polynomials in $x$ with coefficients in $\mathbb{R}$\\
-\end{tabular}\\\\
-
-
+A short illustrating example is given initially with the intention to provide some understanding about \gls{sos} polynomials and the notation applied.
+\vspace{-0.0cm}
+\begin{exa}
+Consider the two parabola polynomials $f_1(x)=a\,x^2 + b\, x + c$ and $f_2(x) = (d + e\,x)^2= d^2 + 2de\,x + e^2 x^2$, then if the relationship:
+\begin{flalign*}
+a = e^2 \mm \wedge \mm b =  2de \mm \wedge \mm  c = d^2 \kk \Big( \text{or simply $b=\sqrt{ac}$} \Big)
+\end{flalign*} 
+holds, then $a,b,c$ are \gls{sos} variables, denoted by $a,b,c \in \Sigma$, because they are the coefficient in an \gls{sos} polynomial. In that sense, $\Sigma$ denotes the set of \gls{sos} variables. It can additionally be stated that:
+\begin{flalign*}
+f_1(x) \in \Sigma[x]
+\end{flalign*}
+where $\Sigma[x]$ denotes a set of polynomials in $x$ with coefficients in $\mathbb{R}$.
+\end{exa}
+\vspace{-0.0cm}
 Introducing the notion of a monomial vector as a vector $Z$ in $x$ of degree $deg$; e.g. if $x\in\mathbb{R}^2$ and $deg=[0:2]$ each entry has the form $x_1^ax_2^b$ with exponents $a+b=deg=0,...,2$ i.e.
 \begin{equation}
-Z=[x_1^0x_2^0\quad x_1^1x_2^0\quad x_1^0x_2^1\quad x_1^1x_2^1\quad x_1^2x_2^0\quad x_1^0x_2^2]^T=[1\quad x_1\quad x_2\quad x_1x_2\quad x_1^2\quad x_2^2]^T
+Z=[x_1^0x_2^0\quad x_1^1x_2^0\quad x_1^0x_2^1\quad x_1^2x_2^0\quad x_1^1x_2^1\quad x_1^0x_2^2]^T=[1\quad x_1\quad x_2\quad x_1^2\quad x_1x_2\quad  x_2^2]^T
 \label{eq:monomial_example}
 \end{equation} 
-Now, according to \citep{bib:parrilo_sdp} a \gls{sos} polynomial $p\in \Sigma[x]$ can be formulated on a quadratic form comprising a coefficient matrix and a monomial vector
+Now, according to \citep{bib:parrilo_sdp} an \gls{sos} polynomial $p\in \Sigma[x]$ can be formulated on a quadratic form comprising a coefficient matrix and a monomial vector
 \begin{equation}
 p = Z^T Q \, Z, \qquad\qquad p\geq 0 \quad \forall \, x\in\mathbb{R}^n %\setminus \{0\}
 \label{eq:sos_polynomial}
@@ -47,7 +61,7 @@ A Positivstellensatz is a structure theorem of a positive polynomial on some set
 %A Positivstellensatz defines the regions of a semialgebraic set where a function is positive. 
 %non-commutative Positivstellens\"{a}tze characterize things like a polynomial $p$ being positive where another polynomial $q$ is positive
 Specifically for Putinar's Positivstellensatz, a compact set $\mathbb{K}$ is defined by the positivity of the polynomials $g_j$, e.g. in 1D Cartesian space $g(x)$ may be a parabola which is positive-valued on the interval $x\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{x\in[a,b]\}$.
-Now the positivity (or nonnegativity or zero value) of a polynomial $h$ on the set $\mathbb{K}$ can be expressed in terms of a weighted sum of the polynomials $g_j$ with \gls{sos} coefficients \citep[pp 184-186]{bib:sos_putinar_laurent},\citep[pp 28-29]{bib:sos_putinar_lasserre}.\\
+Now the positivity of a polynomial $h$ on the set $\mathbb{K}$ can be expressed in terms of a weighted sum of some polynomials $g_j$ with \gls{sos} coefficients \citep[pp 184-186]{bib:sos_putinar_laurent},\citep[pp 28-29]{bib:sos_putinar_lasserre}.\\
 
  
 
@@ -118,7 +132,7 @@ Note that the inequality is on positivity in \autoref{cer2} whereas it is on non
 
 \section{Defining a Polynomial Barrier Certificate in SOSTOOLS}\label{sec:app_sostools_barrier_search}
 
-A polynomial barrier certificate can be constructed using \gls{sos} optimization, e.g by using a \gls{sos} program such as SOSTOOLS, which is a convex relaxation framework based on sum of squares decompositions of multivariate polynomials and semidefinite programming solvers \citep{bib:prajna_framework}. A short introduction to the SOSTOOLS syntax is presented in \autoref{app:sostools}.
+A polynomial barrier certificate can be constructed using \gls{sos} optimization, e.g by using an \gls{sos} program such as SOSTOOLS, which is a convex relaxation framework based on sum of squares decompositions of multivariate polynomials and semidefinite programming solvers \citep{bib:prajna_framework}. A short introduction to the SOSTOOLS syntax is presented in \autoref{app:sostools}.
 Searching for a barrier certificate in SOSTOOLS require the definition of all of the vaiables and polynomials given by \autoref{eq:barrier_constraints_putinar} as follows:
 
 \renewcommand{\labelitemii}{$\circ$}
