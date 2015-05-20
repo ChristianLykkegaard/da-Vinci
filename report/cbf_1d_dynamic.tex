@@ -43,13 +43,12 @@ x_{h20}
 \end{flalign}
 \begin{tabular}{rp{14cm}} 
 where  &  \\
-$x_{h1}$& is the position of a point on the surface of the heart \\
-$x_{h2}$& is the velocity of the point \\
-$\omega_h$& is the heartbeat frequency, $\omega_h = 2\pi/T_h$ rad/s with an average heartbeat period $T_h=1.1$\,s \citep{bib:heart_berkeley} \\
-$x_{h10}$ & is the initial value of $x_{h1}$ \\
-$x_{h20}$ & is the initial value of $x_{h2}$\\
+\gls{xh1}& is the position of a point on the surface of the heart \\
+\gls{xh2}& is the velocity of the point \\
+\gls{wh}& is the heartbeat frequency, $\omega_h = 2\pi/T_h$ rad/s with an average heartbeat period \gls{Th}$=1.1$\,s \citep{bib:heart_berkeley} \\
+\gls{xh10} & is the initial value of $x_{h1}$ \\
+\gls{xh20} & is the initial value of $x_{h2}$\\
 \end{tabular}\\
-
 
 Note that the magnitude of $\omega_h$ determines the frequency and that the initial conditions determines the amplitude of the heart oscillation. The heartbeat will with this system have a natural oscillation around zero. 
 \subsubsection*{Modelling the Robot Slide Movement}
@@ -66,7 +65,7 @@ The one dimensional model is used to simplify the equations thus precluding comp
 \vspace{-1mm}
 \subsubsection*{Introducing a Dynamic Reference in the Model}
 \vspace{-1mm}
-To be able to guarantee that a given distance is maintained between the heart and the robot end effector, an additional state can be added the system. Thus, a new set of states is introduced representing the movement of the beating heart, the movement of the robot and a relative distance $d_\text{ref}$.
+To be able to guarantee that a given distance is maintained between the heart and the robot end effector, an additional state can be added the system. Thus, a new set of states is introduced representing the movement of the beating heart, the movement of the robot and a relative distance \gls{dref}.
 %\begin{flalign*}
 %\textbf{x} = \begin{bmatrix}
 %x_1 \\ x_{h1} \\ x_{h2} \\ d_\text{ref}
@@ -111,7 +110,7 @@ where &\\
 $\tau$ & is the time constant of the first order system $\tau=0.11$\,s as given in \autoref{sec:model_slide}\\
 $\mathbf{K}$ & is the linear system controller designed according to \autoref{eq:K_1}, $\mathbf{K} \in \mathbb{R}$ \\
 $\bar{\textbf{N}}$ & is the system gain found according to \autoref{eq:barm_1}, $\bar{\mathbf{N}} \in \mathbb{R}$ \\
-$\bar{\textbf{K}}$ & is the augmented feedback vector, $\bar{\textbf{K}} \in \mathbb{R}^{1 \times 4}$
+\gls{Kbar} & is the augmented feedback vector, $\bar{\textbf{K}} \in \mathbb{R}^{1 \times 4}$
 \end{tabular}\\
 
 %Such that:
@@ -288,7 +287,7 @@ The MATLAB implementation itself can be found in \autoref{app:slide_implement_1}
 It is from \autoref{fig:matlab_dynamics} seen that the robot end effector settles at a distance at $d_\text{ref}=3\,$cm until the simulation reaches 2\,s ($k=4000$). Then $d_\text{ref}$ changes to -1\,cm which causes the safety controller to react. The state $x_1$ settles at a safe distance from the beating heart which is left untouched, and the simulated controller is thereby verified to work as intended.
 
 \section{Implementation on the Da Vinci Robot}
-
+On the way..
 %\newpage
 %%\begin{flalign}
 %%f_{cl}(x)=\dot{\begin{bmatrix}

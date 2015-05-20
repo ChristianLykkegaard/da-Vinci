@@ -154,8 +154,13 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{omegan}{
 name=$\omega_n$,
-description={Natural frequency},
-sort=d, type=symbols, symbol=[rad]}
+description={Natural frequency of a second order system},
+sort=d, type=symbols, symbol=[rad/s]}
+
+\newglossaryentry{wh}{
+name=$\omega_h$,
+description={Frequency of a beating heart},
+sort=d, type=symbols, symbol=[rad/s]}
 
 \newglossaryentry{A}{
 name=$\mathbf{A}$,
@@ -202,6 +207,11 @@ name=$\mathbf{K}_d$,
 description={Feedback matrix calculated from discrete matrices, $\mathbf{K}_d\in\mathbb{R}^{m \times n}$ },
 sort=d, type=symbols, symbol=[$\cdot$]}
 
+\newglossaryentry{Kbar}{
+name=$\bar{\mathbf{K}}$,
+description={Augmented feedback matrix, $\bar{\mathbf{K}}\in\mathbb{R}^{m \times n}$ },
+sort=d, type=symbols, symbol=[$\cdot$]}
+
 \newglossaryentry{K}{
 name=$\mathbf{K}$,
 description={Feedback matrix calculated from continuous matrices, $\mathbf{K} \in \mathbb{R}^{m \times n}$},
@@ -241,4 +251,45 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 name=$\mathcal{O}$,
 description={Observability matrix, $\mathcal{O}\in\mathbb{R}^{n \times n}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{xh1}{
+name=$x_{h1}$,
+description={The position state of a beating heart},
+sort=d, type=symbols, symbol=[m]}
+
+\newglossaryentry{xh2}{
+name=$x_{h2}$,
+description={The velocity state of a beating heart},
+sort=d, type=symbols, symbol=[m/s]}
+
+\newglossaryentry{Th}{
+name=$T_h$,
+description={Heart beat period},
+sort=d, type=symbols, symbol=[s]}
+
+\newglossaryentry{xh10}{
+name=$x_{h10}$,
+description={Initial value of the position state},
+sort=d, type=symbols, symbol=[m]}
+
+\newglossaryentry{xh20}{
+name=$x_{h12}$,
+description={Initial value of the velocity state},
+sort=d, type=symbols, symbol=[m/s]}
+
+\newglossaryentry{x1}{
+name=$x_1$,
+description={Position state of the robot in a system},
+sort=d, type=symbols, symbol=[m]}
+
+\newglossaryentry{x2}{
+name=$x_2$,
+description={Velocity state of the robot in a system},
+sort=d, type=symbols, symbol=[m/s]}
+
+
+\newglossaryentry{dref}{
+name=$d_\text{ref}$,
+description={Distance between a beating heart and robot end effector},
+sort=d, type=symbols, symbol=[m]}
 %\restoregeometry
