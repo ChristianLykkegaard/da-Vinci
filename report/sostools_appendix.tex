@@ -1,0 +1,13 @@
+This appendix serves as a short description of how to download and install the MATLAB toolbox SOSTOOLS.
+
+SOSTOOLS is a free third-party Matlab toolbox developed by engineering departments of four major universities. A zip file of the toolbox can be downloaded from 
+
+\hspace{1cm} {\color{blue}{\textit{http://www.cds.caltech.edu/sostools}}}
+
+also containing a user guide \citep{bib:sostools_manual} to sum of squares (SOS) problems and how to formulate a problem to solve it with the toolbox, along with a set of demos. 
+
+SOSTOOLS takes as input the \gls{sos} program formulation, recasts it as a \gls{sdp} problem, calls \gls{sdp} solvers, and recasts the solution to the \gls{sdp} problem into the solution to the \gls{sos} problem. This means that the toolbox requires that an \gls{sdp} solver toolbox is installed, e.g. the SeDuMi (Self-Dual-Minimization) solver, which can be downoaded from
+
+\hspace{1cm} {\color{blue}{\textit{http://sedumi.ie.lehigh.edu/downloads}}}
+
+The toolboxes are activated in Matlab by adding the downloaded unzipped folders to the Matlab path.

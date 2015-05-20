@@ -1,6 +1,10 @@
-This chapter ought to describe and establish the theory applied when the analysis approach is adopted, i.e. to analyse if a given closed loop system is safe.
+The construction of a valid barrier certificate can be a non-trivial task, as it was seen in the construction of a \gls{cbf} for the second order system in \autoref{subsec:cbf-2order}, and with increasing order of the system for which safety need be guaranteed the difficulty rapidly increases. Hence it is desired to use a more methodical approach to constructing barrier certificates, and for this purpose the MATLAB toolbox SOSTOOLS can be used. This toolbox requires that the problem is cast as a \gls{sos} program, which is why this chapter is dedicated to give an introduction to the concept of \gls{sos} and how the barrier certificate definition can be recast as a \gls{sos} problem.
 
-Barrier certificates can be used to (in)validate the safety compliance of a controller design by testing if a barrier certificate can be found according to \autoref{eq:barrier_constraints} for the closed-loop system $f_{cl}(x)$. When the vector field of the closed-loop system is polynomial and the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ are described by polynomial (in)equalities, a polynomial barrier certificate can be constructed using \gls{sos} optimization \citep{bib:prajna_framework}. A polynomial $p(x)$ is \gls{sos} if there exist polynomials $f_1,\dots,f_m$ such that \citep{bib:parrilo_sdp}
+%This chapter describes and establishes the theory applied when the analysis approach is adopted, i.e. to analyse if a given closed loop system is safe.
+When a barrier certificate can be found for a closed-loop system $f_{cl}(x)$ according to \autoref{def:barrier_certificate} this signifies a verification that the system, and hence the controller, is safe.
+
+%Barrier certificates can be used to (in)validate the safety compliance of a controller design by testing if a barrier certificate can be found according to \autoref{eq:barrier_constraints} for the closed-loop system $f_{cl}(x)$. 
+When the vector field of the closed-loop system is polynomial and the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ are described by polynomial (in)equalities, a polynomial barrier certificate can be constructed using \gls{sos} optimization \citep{bib:prajna_framework}. A polynomial $p(x)$ is \gls{sos} if there exist polynomials $f_1,\dots,f_m$ such that \citep{bib:parrilo_sdp}
 \begin{equation}
 p(x) = \sum_{j=1}^{m}f_j^2(x)
 \end{equation}
@@ -27,16 +31,16 @@ p(x) = \sum_{j=1}^{m}f_j^2(x)
 
 A short illustrating example is given initially with the intention to provide some understanding about \gls{sos} polynomials and the notation applied.
 \vspace{-0.0cm}
-\begin{exa}
+\begin{exa}[Sum of Squares Polynomial]
 Consider the two parabola polynomials $f_1(x)=a\,x^2 + b\, x + c$ and $f_2(x) = (d + e\,x)^2= d^2 + 2de\,x + e^2 x^2$, then if the relationship:
 \begin{flalign*}
-a = e^2 \mm \wedge \mm b =  2de \mm \wedge \mm  c = d^2 \kk \Big( \text{or simply $b=\sqrt{ac}$} \Big)
+a = e^2 \mm \wedge \mm b =  2de \mm \wedge \mm  c = d^2 \kk \Big( \text{or simply $b=2\sqrt{ac}$} \Big)
 \end{flalign*} 
-holds, then $a,b,c$ are \gls{sos} variables, denoted by $a,b,c \in \Sigma$, because they are the coefficient in an \gls{sos} polynomial. In that sense, $\Sigma$ denotes the set of \gls{sos} variables. It can additionally be stated that:
+holds, then $a,b,c$ are \gls{sos} variables, denoted by $a,b,c \in \Sigma$, because they are the coefficients in an \gls{sos} polynomial. In that sense, $\Sigma$ denotes the set of \gls{sos} variables. It can additionally be stated that:
 \begin{flalign*}
 f_1(x) \in \Sigma[x]
 \end{flalign*}
-where $\Sigma[x]$ denotes a set of polynomials in $x$ with coefficients in $\mathbb{R}$.
+where $\Sigma[x]$ denotes a set of polynomials in $x$ with coefficients in $\Sigma$, i.e. $f_1(x)$ is \gls{sos}.
 \end{exa}
 \vspace{-0.0cm}
 Introducing the notion of a monomial vector as a vector $Z$ in $x$ of degree $deg$; e.g. if $x\in\mathbb{R}^2$ and $deg=[0:2]$ each entry has the form $x_1^ax_2^b$ with exponents $a+b=deg=0,...,2$ i.e.
@@ -60,7 +64,7 @@ A Positivstellensatz is a structure theorem of a positive polynomial on some set
 %Obtain certificates of positivity on a basic semialgebraic set $\mathbb{K}\subseteq\mathbb{R}^n$. \citep{bib:sos_putinar_laurent}
 %A Positivstellensatz defines the regions of a semialgebraic set where a function is positive. 
 %non-commutative Positivstellens\"{a}tze characterize things like a polynomial $p$ being positive where another polynomial $q$ is positive
-Specifically for Putinar's Positivstellensatz, a compact set $\mathbb{K}$ is defined by the positivity of the polynomials $g_j$, e.g. in 1D Cartesian space $g(x)$ may be a parabola which is positive-valued on the interval $x\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{x\in[a,b]\}$.
+Specifically for Putinar's Positivstellensatz, a compact set $\mathbb{K}$ is defined by the positivity of some polynomials $g_j$, e.g. in 1D Cartesian space $g(x)$ may be a parabola which is positive-valued on the interval $x\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{x\in[a,b]\}$.
 Now the positivity of a polynomial $h$ on the set $\mathbb{K}$ can be expressed in terms of a weighted sum of some polynomials $g_j$ with \gls{sos} coefficients \citep[pp 184-186]{bib:sos_putinar_laurent},\citep[pp 28-29]{bib:sos_putinar_lasserre}.\\
 
  
@@ -130,141 +134,6 @@ Note that the inequality is on positivity in \autoref{cer2} whereas it is on non
  
 	
 
-\section{Defining a Polynomial Barrier Certificate in SOSTOOLS}\label{sec:app_sostools_barrier_search}
-
-A polynomial barrier certificate can be constructed using \gls{sos} optimization, e.g by using an \gls{sos} program such as SOSTOOLS, which is a convex relaxation framework based on sum of squares decompositions of multivariate polynomials and semidefinite programming solvers \citep{bib:prajna_framework}. A short introduction to the SOSTOOLS syntax is presented in \autoref{app:sostools}.
-Searching for a barrier certificate in SOSTOOLS require the definition of all of the vaiables and polynomials given by \autoref{eq:barrier_constraints_putinar} as follows:
-
-\renewcommand{\labelitemii}{$\circ$}
-\renewcommand{\labelitemiii}{$\bullet$}
-\begin{itemize}
-\itemsep-0.5mm
-\item \textbf{Initialize the Program}\\
-First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{syms} or \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
-\item \textbf{Define the Vector Field}\\
-The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}$ in terms of the symbolic state vector.
-\item \textbf{Set up the Constraints on the Polynomial Barrier Certificate}\\
-Declare a monomial vector $Z_B$ in $x$ (or part of $x$) of sufficiently large degree, and parametrize the polynomial $B(x)$ as a function of $Z_B$ with \texttt{sospolyvar}.  
-The problem of finding the coefficients for the barrier certificate is now for each region $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ a matter of defining the following:
-\vspace*{-1mm}
-\begin{itemize}
-	\item \textbf{Define the Polynomials $g_j(x)$}\\
-	Define one or more polynomials $g_j$ that are positive in the region to be defined and negative outside. Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries. 
-	\item \textbf{Declare the SOS Variables $q_j(x)$}\\
-	Declare monomial vectors $Z_{q_j}$ in $x$ of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible), and parametrize the SOS polynomials (multipliers) $q_j$ with \texttt{sossosvar}.
-	\item \textbf{Set up the Inequality}\\
-	Cf. the nonnegativity of an \gls{sos} polynomial ($q_0$), the \texttt{sosineq} can be written as the right-hand side of \autoref{eq:putinar_sos}: Choose a small positive number $\epsilon$ for defining the region $\mathcal{X}_u$;
-	set up the inequality (corresponding to the region to be defined) according to \autoref{eq:barrier_constraints_putinar}. The inequality pertaining to a set may be defined in terms of several $g_j$s; if the set is defined by
-	\begin{itemize}
-		\item $g_1 \bigcap g_2 \bigcap ... \bigcap g_m$, then write $h - \sum q_jg_j\geq 0$
-		\item $g_1 \bigcup g_2 \bigcup ... \bigcup g_m$, then write $h - q_1g_1\geq 0$, $h - q_2g_2\geq 0$ etc.
-	\end{itemize} 
-	Note that each expression in the inequalities of \autoref{eq:barrier_constraints_putinar} must have even degrees in the leading and trailing terms in order for the equality in \autoref{eq:putinar_sos} to hold.
-\end{itemize}
-\item \textbf{Solve the SOS Program}\\
-With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Otherwise it can be concluded that safety cannot be guaranteed of the closed-loop system under scrutiny. 
-\end{itemize}
-
-
-
-
-
-\textcolor{red}{Matter of defining degree of B and qs - how to decide?}
-In the following section an example is given on how to search for a barrier certificate with SOSTOOLS.
-
-
-
-
-
-
-
-
-%\textcolor{red}{Og hvordan bruger I så det. Kør eksemplet videre, så det er klart hvordan (8.2e) oversættes til SOS program. Jeg synes I skal køre eksemplet hele vejen igennem og idregne det i SOSTOOLS. På denne måde overbeviser i læseren og, at I kan oversætte teorien til praktisk implementation - Og dette giver points! }
-
-
-
-\subsection{Example of Barrier Certificate Search with SOSTOOLS}
-This section presents a simple example of a barrier certificate search for a 1D first order state space system with $x_1\in\mathcal{X}\subset\mathbb{R}$ corresponding to the robot slide joint being the only degree of freedom (see \autoref{fig:safe:overview} for an overview of the slide movement). First the system is defined, and a controller is designed with pole placement.
-\begin{lstlisting}[language=matlab]
-% Define state-space system with x1 = robot position
-tau = 0.11; % time constant for the robot slide
-A = -1/tau;
-B = 1/tau;
-K = place(A,B,[-10*1/tau]);
-\end{lstlisting}
-Then the symbolic state variables are declared for the SOS program in SOSTOOLS with the command \texttt{pvar}, which corresponds to the command \texttt{syms} in the Matlab symbolic toolbox. Now the SOS program \texttt{prog} can be initialized using the function \texttt{sosprogram} which takes the state variable(s) as input. For a short introduction to SOSTOOLS and its syntax, see \autoref{app:sostools}.
-\begin{lstlisting}[language=matlab]
-% Declare state variables
-pvar x1
-
-% Initialize the sum of squares program
-prog = sosprogram(x1);
-\end{lstlisting}
-%The reference for the robot position is generated as the 1D heart position, taking into account the system gain $\bar{N}$, and the closed-loop system equation is written as a function of the sybolic state. %\textcolor{red}{Something is wrong with the reference..?}
-The vector field or derivative of the state can now be defined in terms on the symbolic state variable. This function is necessary for the SOS program when requiring that the Lie derivative of the barrier certificate must be negative on the set $\mathcal{X}$.
-\begin{lstlisting}[language=matlab]
-% Vector field dx/dt = fx (closed loop)
-fx = (A-B*K)*x1;
-\end{lstlisting}
-For ease of defining a (1D) function $g$ that is positive on an interval [$p_1\,\,\, p_2$], a parabola function is used.
-\begin{lstlisting}[language=matlab]
-function [a,b,c] = parabola(p1,p2)
-	a = -1;
-	b = a*(p1^2-p2^2)/(p2-p1);
-	c = -a*p1^2-b*p1;
-end
-\end{lstlisting}
-Now declare the polynomial barrier function with the command \texttt{sospolyvar}. To do this, a monomial vector must be specified with \texttt{monomials} (see the monomial example in \autoref{eq:monomial_example}), which takes as input the state variable(s) and the monomial degree(s). The monomial degrees for $B(x)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x)$ that is 0:4.
-\begin{lstlisting}[language=matlab]
-% Declare polynomial barrier function
-zB = monomials(x1,0:4);
-[prog,Bx] = sospolyvar(prog,zB);
-\end{lstlisting}
-Now the region $\mathcal{X}$ can be defined for the slide region $\pm0.1$\,m using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial} and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
-\begin{lstlisting}[language=matlab]
-% Define space X in R^n
-[a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1]
-gX = a*x1^2+b*x1+c;
-zX = monomials(vars,0:2);
-[prog,qX] = sossosvar(prog,zX);
-prog = sosineq(prog,-diff(Bx,x1)*fx-gX*qX);
-\end{lstlisting}
-Similarly, the region $\mathcal{X}_u$ is defined according to the SOS inequality in \autoref{cer2_putinar} as the area between slide positions 5-10\,cm.
-\begin{lstlisting}[language=matlab]
-% Define space Xu in X
-[a,b,c]=parabola(0.05,0.1);
-gXu = a*x1^2+b*x1+c;
-zXu = monomials(x1,0:2);
-[prog,fXu] = sossosvar(prog,zXu);
-prog = sosineq(prog,Bx-gXu*fXu);
-\end{lstlisting}
-And finally the region $\mathcal{X}_0$ is defined according to the SOS inequality in \autoref{cer1_putinar} as $\mathcal{X}\setminus\mathcal{X}_u$.
-\begin{lstlisting}[language=matlab]
-% Define space X0 in X
-[a,b,c] = parabola(-0.1,0.05);
-gX0 = a*x1^2+b*x1+c;
-zX0 = monomials(x1,0:2);
-[prog,fX0] = sossosvar(prog,zX0);
-prog = sosineq(prog,-Bx-gX0*fX0);
-\end{lstlisting}
-With all three areas defined according to \autoref{eq:barrier_constraints_putinar}, the program is ready to be solved by using the command \texttt{sossolve}. If a solution is found, an overview of the solution accuracy is printed in the Matlab terminal as the residual norm, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \texttt{sosgetsol}.
-\begin{lstlisting}[language=matlab]
-% Solve for B
-prog = sossolve(prog);
-getB = sosgetsol(prog,Bx)
-\end{lstlisting}
-For this particular program, the solution barrier certificate is found to be
-\begin{equation}
-B(x) = 0.016168\cdot x_1^4 + 0.0064892\cdot x_1^3 + 0.00072547\cdot x_1^2 + 6.5473e\text{-}8\cdot x_1 - 2.7291e\text{-}6
-\end{equation}
-and is depicted in \autoref{fig:barrier_1storder_staticlim}.
-
-\begin{figure}[htbp]
-	\hspace*{-12mm}
-	\includegraphics[width=1.1\textwidth]{1stordersys_staticlimits.pdf}
-	\caption{A barrier certificate is found with SOSTOOLS that complies with the requirements in \autoref{eq:barrier_constraints}: it is positive on $\mathcal{X}_u=\{x_1\in [0.05,\,\,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,\,\,0.05]\}$, and its Lie derivative is nonpositive on $\mathcal{X}=\{x_1\in [-0.1,\,\,0.1]\}$.}
-	\label{fig:barrier_1storder_staticlim}
-\end{figure}
 
 \section{Approach for Verification of System Safety}
 
