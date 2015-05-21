@@ -319,6 +319,22 @@ section]      %use section level for toc entries
 	%stringstyle=\color[RGB]{55,5,155}
 }
 
+\definecolor{cmake-comment}{rgb}{0,0,1}
+\definecolor{cmake-purple}{rgb}{1,0,1}
+\lstdefinelanguage{cmake} {              % Definition af Arduino-language
+	morekeywords={export,run_depend,build_depend,buildtool_depend,author,cmake_minimum_required,name,maintainer,version,license,find_package,package,include_directories,add_executable,target_link_librarie},
+	keywordstyle=\color[RGB]{60,179,113},classoffset=3, %blue
+	morekeywords={catkin_INCLUDE_DIRS,catkin_LIBRARIES},
+	keywordstyle=\color[RGB]{0,100,0},classoffset=2, %green
+	morekeywords={import},
+	keywordstyle=\color[RGB]{255,0,255},classoffset=1, %green
+	%   sensitive=false, morecomment=[l]{\%}, morecomment=[s]{/*}{*/} % Ingen farver p kommentare
+	comment=[l][\color{grey}]{//},%morecomment=[s]{'}{'} % Ingen farver p kommentare
+		 morecomment=[s][\color{cmake-purple}]{"}{"},
+	%	keywordstyle=\color[RGB]{34,139,34},classoffset=3,
+	%stringstyle=\color[RGB]{55,5,155}
+}
+
 \lstdefinelanguage{Arduino} {              % Definition af Arduino-language
 	morekeywords={include,define},
 		keywordstyle=\color[RGB]{160,32,240},classoffset=2,

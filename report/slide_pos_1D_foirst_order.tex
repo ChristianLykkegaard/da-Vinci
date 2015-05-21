@@ -266,14 +266,13 @@ for R = 1:length(i)
   LfclB(1,R) = LfB(1,R) + LgB(1,R).*k0(1,R);
   
   %--- extrapolate with forward euler ---%
-  %xdot = A*(x(:,R) + [0 0.2 0.2 0]') + u0(1,R)*B;
   xdot = A*x(:,R) + u0(1,R)*B;
   x(:,R+1) = xdot*Ts + x(:,R);
   
   %--- record sigma ---%
   sig(1,R) = sigma;
 
-  %--- ---% calculate distance between hearth and robot end effector ---%
+  %--- calculate distance between hearth and robot end effector ---%
   Delta(1,R) = x(1,R) - x(2,R);
 end
 \end{lstlisting}

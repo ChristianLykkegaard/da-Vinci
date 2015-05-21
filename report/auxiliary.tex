@@ -1,0 +1,62 @@
+This appendix contains auxiliary files developed such that the ROS framework is initialized correct. All packages mentioned in this appendix can be found at github - Robotic Surgery Group - Aalborg University (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup}). For the package \texttt{gr1032} it includes development (from scratch):
+\begin{itemize}
+\item \texttt{CMakeLists.txt} (shown in this appendix)
+\item \texttt{package.xml} (shown in this appendix)
+\item \texttt{run\_controllers.cpp} (shown in \autoref{app:slide_implement_2})
+\item \texttt{run\_controllers.py} (wrapper script - shown in this appendix).
+\end{itemize}
+A number of files are modified to allow proper control outputs. They are not shown here, but it includes  modifications of:
+\begin{itemize}
+\item \texttt{davinci\_driver.launch} located at \texttt{daVinci\_ws/src/davinci\_driver/launch} in the package \texttt{davinci\_driver}. Modification: Control output for the six joints are added such that the previous controller \texttt{controller\_spawner\_joint\_state\_controller} is overruled by:
+\begin{itemize}
+\item \texttt{slide\_position\_controller}
+\item \texttt{hand\_pitch\_position\_controller}
+\item \texttt{hand\_roll\_position\_controller}
+\end{itemize}
+\end{itemize}
+\section*{CMakeLists.txt}
+\begin{lstlisting}[language=cmake]
+cmake_minimum_required(VERSION 2.8.3)
+project(gr1032)
+
+find_package(catkin REQUIRED COMPONENTS
+  roscpp kdl_parser
+)
+
+catkin_package(
+)
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
+add_executable(run_controllers src/run_controllers.cpp)
+
+target_link_libraries(run_controllers
+  ${catkin_LIBRARIES}
+)
+\end{lstlisting}
+\section*{package.xml}
+\begin{lstlisting}[language=cmake]
+<?xml version="1.0"?>
+<package>
+  <name>gr1032</name>
+  <version>0.0.0</version>
+  <description>gr1032 Master Thesis</description>
+  <maintainer email="15gr1032@es.aau.dk">gr1032</maintainer>
+  <license>GPLv3</license>
+  <author email="15gr1032@es.aau.dk">gr1032</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>kdl_parser</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>kdl_parser</run_depend>
+  <export>
+  </export>
+</package>
+\end{lstlisting}
+\section*{run\_controllers.py}
+\begin{lstlisting}[language=cmake]
+import os
+os.system("rosrun gr1032 run_controllers /slide_command:=/davinci/slide_position_controller/command /pitch_command:=/davinci/hand_pitch_position_controller/command /roll_command:=/davinci/hand_roll_position_controller/command")
+\end{lstlisting}
