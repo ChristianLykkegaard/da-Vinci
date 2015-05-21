@@ -43,7 +43,7 @@ The configuration at Aalborg University is based on a first generation Da Vinci 
 \caption{Naming convention used for the da Vinci robot.}
 \label{fig:naming_convention}
 \end{figure}
-\Autoref{fig:naming_convention} depicts the distinction of the robotic parts such that the far left part is named the "arm" which is uncontrollable (but adjustable). The center left part consist of the controllable dynamic parts which is labelled as the "hand". The "tool" located center-right consist of a replaceable instrument worth 10.000\,kr and only certified to be used for 10 operations. The outermost part of the instrument is labelled the "end-effector" and is mostly the reference point for the controllers developed.
+\Autoref{fig:naming_convention} depicts the distinction of the robotic parts such that the far left part is named the "arm" which is uncontrollable (but adjustable). The center left part consists of the controllable dynamic parts which is labelled as the "hand". The "tool" located center right consists of a replaceable instrument worth 10.000\,kr and only certified to be used for 10 operations. The outermost part of the instrument is labelled the "end-effector" and it is  this which should follow a reference point in the developed controllers.
 
 %
 %\subsection{Technical Overview of the Robotic Surgery System}
@@ -66,14 +66,14 @@ In order to prevent potential violation of physical joint constraints, stricter 
 An introduction to the Da Vinci system has at this point be given. Thus the contribution of this project will be outlined in the upcoming subsection.
 \subsection{Overview of Thesis Contribution to the AAU da Vinci System}\label{sec:project_overview}
 The focus of this thesis is the highest abstraction layer as seen in the top of \autoref{fig:overview}, i.e. the ROS environment. The purpose of this layer primarily constitutes the implementation of algorithms that require heavy processing and non real-time processing or tasks with loose timing constraints \citep{bib:robot_paper}.
-Given the topics described in the introduction to this project and the desire to automate surgery by means of the Da Vinci robot, this thesis will practically and theoretical entail the tasks outlined in \autoref{tab:requirement}.
+Given the topics described in the introduction to this project and the desire to automate surgery by means of the Da Vinci robot, this thesis will practically and theoretically encompass the tasks outlined in \autoref{tab:requirement}.
 \begin{table}[H]
 \begin{tabularx}{\textwidth}{X X}
 \rowcolor{HeaderBlue} 
 \textbf{Problem} &  \textbf{Origin}\\
 Design a position controller such that it is possible to specify regions where it can be guaranteed that the end-effector will never enter. & Provide the surgeon with a feature ensuring that certain regions will never be touched, e.g. veins and similar. \\
 \rowcolor{textBlue} 
-Design a position controller taking  user input relative to a point on the surface of a beating heart while ensuring that the hearth is not penetrated. & Founding automating control on beating hearts where a safe distance to the heart is obeyed such that the heart under no circumstances is penetrated.\\
+Design a position controller taking  user input relative to a point on the surface of a beating heart while ensuring that the heart is not penetrated. & Founding automated control on beating hearts where a safe distance to the heart is maintained such that the heart under no circumstances is penetrated.\\
 Modelling the system without touching the underlying controllers & The cascaded controllers seen in \autoref{fig:overview} are not to be touched. Safety is desired solely from the ROS environment. \\
 \rowcolor{textBlue} 
 Implement the controllers physically on the Da Vinci Robot. This implies an understanding of the entire \gls{ros} framework & Verify the theory in practice and thereby be a first mover on this topic \\
@@ -88,7 +88,7 @@ The problems given in \autoref{tab:requirement} may be solved in a number of way
 \end{itemize}
 Consequently, this report presents algorithms, analysis, controllers, software development and formal verification that guarantees safety for automated surgeries.
 
-The chapters in this report is split such that a certificate to guarantee the safety is established in \autoref{chap:barrier_cerificates} followed by \autoref{chap:cbf} where the applied theory to design a controller that guarantees safety for specified regions is described. Thus \autoref{chap:cbf_1d_static} provides an exhaustive example of how to apply the theory to the Da Vinci robot. \Autoref{chap:cbf_1d_dynamic} concerns safety while operating on a beating heart. Next is \autoref{chap:cbf_3d_static} which founds safety in the three dimensional space. An interim conclusion is given in \autoref{chap:interim} which concludes the need for an easier way to construct the certificates. Thus \autoref{chap:putinar} describes a way to apply automated software which ought to easy the search for certificates. Thereby, \autoref{chap:sostools} provides examples of how to apply the software to the use-cases described in the preceding chapters. Finally, chapter ?? concludes...
+The chapters in this report are split such that a certificate to guarantee the safety is established in \autoref{chap:barrier_cerificates} followed by \autoref{chap:cbf} where the applied theory to design a controller that guarantees safety for specified regions is described. Thus \autoref{chap:cbf_1d_static} provides an exhaustive example of how to apply the theory to the Da Vinci robot. \Autoref{chap:cbf_1d_dynamic} concerns safety while operating on a beating heart. Next is \autoref{chap:cbf_3d_static} which founds safety in the three dimensional space. An interim conclusion is given in \autoref{chap:interim} which concludes the need for an easier way to construct the certificates. Thus \autoref{chap:putinar} describes a way to apply automated software which ought to easy the search for certificates. Thereby, \autoref{chap:sostools} provides examples of how to apply the software to the use-cases described in the preceding chapters. \textcolor{red}{Finally, chapter ?? concludes...}
 
 
 
