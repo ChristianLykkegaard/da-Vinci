@@ -7,7 +7,7 @@ A barrier certificate search is tested on the first order system as described in
 \end{equation}
 This system is used in the following subsections in the barrier function search.
 
-\subsection{First Order System with Zero Reference}
+\subsection{First Order System with Zero Reference}\label{subsec:zeroref}
 To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the simple 1D first order system with zero as reference position.
 Define the open-loop system, and design a controller (with pole placement) as described in \autoref{sec:K_Nbar_1D_1storder}.
 \begin{lstlisting}[language=matlab]
@@ -184,10 +184,10 @@ getqX1 = sosgetsol(prog,qX);
 %\end{lstlisting}
 
 \vspace{-2mm}
-This is indeed the case, and it is verified that a barrier certificate is found for the closed-loop system in \autoref{eq:sos_firstorder}, namely
+This is indeed the case, and it is thereby verified that a barrier certificate is found for the closed-loop system in \autoref{eq:sos_firstorder}, namely
 \vspace{-2mm}
 \begin{equation}
-B(x_1) = 373.0249\cdot x_1^4 + 151.3339\cdot x_1^3 + 16.8843\cdot x_1^2 - 6.4509e\text{-}06\cdot x_1 - 0.061301
+B(x_1) = 373.0249\cdot x_1^4 + 151.3339\cdot x_1^3 + 16.8843\cdot x_1^2 - 6.4509e\text{-}6\cdot x_1 - 0.061301
 \end{equation}
 
 \vspace{-3mm}
@@ -213,7 +213,13 @@ The first three coefficients of the polynomial barrier certificate are of ample 
 
 \subsection{Verifying a Range of Reference Positions for the First Order System}
 
-It is desired to verify the system in \autoref{eq:sos_firstorder} for a range of references, preferably for all references within the safe position interval, such that the sets would be as in 
+Now a non-zero reference is introduced. As it is desired to verify a whole range of references, the barrier polynomial is now formulated as a function of both state and reference $B(x,x_\text{ref})$.
+The goal is to verify the system in \autoref{eq:sos_firstorder} for a range of references, preferably for all references within the safe position interval, such that the sets would be as depicted in \autoref{fig:sos_Xregion}.
+However, from \autoref{eq:sos_firstorder} it can be seen that with the unity gain matrix $\bar{\mathbf{N}}$ the system can be  written as
+\begin{equation}
+\dot{x} = \tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x)\label{eq:1storder_christoffer}
+\end{equation}
+which will be zero when $x=x_\text{ref}$. This means that the Lie derivative will be zero for $x=x_\text{ref}$, and as this line is part of the safe region, it means that it will be a minimum value of the barrier function of negative value. In \autoref{fig:sos_Xregion_Bvalue} it can be seen that this minimum is very close to the zero level set around the unsafe region, requiring a very high degree polynomial to obtain this shape of zero level set. This can be resolved by decreasing the upper value of allowed references, as illustrated in \autoref{fig:sos_Xregion_Bvalue_limitref} with an example of a fairly smooth zero level set.
 
 \begin{figure}[htbp]
 \centering
@@ -222,18 +228,116 @@ It is desired to verify the system in \autoref{eq:sos_firstorder} for a range of
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_Xregion_Bvalue.pdf}\label{fig:sos_Xregion_Bvalue}}%
 \hspace{3mm}
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_Xregion_Bvalue_limitref.pdf}\label{fig:sos_Xregion_Bvalue_limitref}}%
-\caption{It is desired}
+\caption{Outline of the safe and unsafe sets marking the value requirements for the barrier certificate as a function of the robot position and the reference position. \Autoref{fig:sos_Xregion} depicts a set $\mathcal{X}$ where all references within the safe positions are allowed. \Autoref{fig:sos_Xregion_Bvalue} sketches that $B(x)$ will have a minimum in $x=x_\text{ref}$ as inferred from \autoref{eq:1storder_christoffer} and \autoref{fig:sos_Xregion_Bvalue_limitref} shows how an insoluble requirement for obtaining the zero level set may be relaxed by contracting the interval of allowed references.}
 \label{fig:sets_reference}
 \end{figure}
 
+The reference is introduced as another independent variable \texttt{xref} in the \gls{sos} program, and constraints for each of the sets are included as extra terms in the sums in \autoref{eq:barrier_constraints_putinar}, e.g. for the set $\mathcal{X}_0$ a new term with \gls{sos} polynomial $q(x)$ and polynomial $g(x_\text{ref})$ positive on a reference (test) interval is included in the inequality as:
+\begin{lstlisting}[language=matlab]
+% Constraint on the set X0 being nonpositive for the interval of references 
+[a,b,c]=parabola(rMin,rMax);
+gX02 = a*xref^2+b*xref+c;
+zX02 = monomials(xtilde,0:4);
+[prog,qX02] = sossosvar(prog,zX02);
 
-Testing with controller k=9 as in the initial design. As the zero reference has proven to point of origin is to test with references in a small interval around zero. $\bar{\epsilon}=0.001$ as before but the safety distance $\Delta$ is increased from 0.001 to 0.002. q degrees 0:4
+prog = sosineq(prog,-B-gX01*qX01-gX02*qX02);
+\end{lstlisting}
 
-B degree 0:6 -- ok in interval +-1cm, feas ratio 0.9657, numerr 0, resnorm 6.7e-6. expanding downwards, for -3cm feas ratio 0.8727, to -4cm feasratio 0.9342, for -5 feasratio 0.9321, for -6cm feasratio 0.9579, -10, 1.5cm feasr 0.8377, not workin to 2cm, because the Q not working is that for Xu try to increase $\bar{\epsilon}$ and because numerr is 1 (not workin) also increasing $\Delta$ (also not working). Back to $\bar{\epsilon}=0.001$, $\Delta=0.001$. ok with 1.7cm feasr 0.8259 numerr 0 resnorm 0.00064404, works with 2cm feasr 0.6538 numerr 0 resnorm 0.00087217, not working with 2.5cm (or back down to 2.1cm)
+A number of tests are run with SOSTOOLS for varying values of $\bar{\epsilon}$ and $\Delta$, different degrees of the \gls{sos} polynomials $q_j$ (through their monomials) and the barrier certificate $B(x)$ itself, in order to understand the effect of varying each of these parameters and to test for which intervals of references a solution can be found.
+A solution found with SOSTOOLS is considered valid if it passes the test that each of the expressions in the inequalities are \gls{sos} by testing if they can be resolved on the form in \autoref{eq:sos_polynomial}. The analysis in the following is based on the results for these solutions, with the conclusions summarized in \autoref{tab:sostools_varying_param}.
+
+Numerical problems are reported for all solutions found, and the residual norms are in general in the order of -3 and -4, so it is desired to keep the degree of polynomials low and to increase the value of $\bar{\epsilon}$, compared to \autoref{subsec:zeroref}. As seen from \autoref{fig:sos_Xregion_Bvalue} $\bar{\epsilon}$ is the minimum value of the barrier function on the unsafe set, and increasing this may require the zero level set to be pushed further away from $\mathcal{X}_u$. This may require also increasing the distance $\Delta$ to the safe set, i.e. contracting the region $\mathcal{X}_0$.
+%It makes sense that increasing epsilon will also require a slight increase in delta from the figure, as the zero level set of B has to be between the two sets i.e. decreasing the region X0.
+
+\begin{table}[htbp]
+\begin{tabularx}{\textwidth}{l X}
+\rowcolor{HeaderBlue}
+\textbf{Parameter} & \textbf{Effect of variation}\\
+deg$(B)$ & In general the feasibility ratio is better (closer to one) when testing for higher degrees of $B(x)$ (0:6 or 0:8 compared to 0:4), and solutions can be found for larger intervals of the reference when $B(x)$ has higher degree.\\
+\rowcolor{textBlue}
+deg$(q_j)$ & Increasing the degree of the \gls{sos} polynomials (0:6 compared to 0:2 or 0:4) generally degrades the feasibility ratio.\\
+$\bar{\epsilon}$ & Increasing $\bar{\epsilon}$ shows a trend of slightly increasing the residual norm. Increasing $\bar{\epsilon}$ iteratively proves that gradually an increase in $\Delta$ is also required for solutions to be found. \\
+\rowcolor{textBlue}
+$\Delta$ & Generally increasing $\Delta$ will also decrease the allowed interval of references, and shows a trend of decreasing the residual norm until some limit.\\
+\textbf{K} & Lowering the gain of the controller increases  the allowed reference interval.
+\end{tabularx}
+\caption{Effect of varying different parameters in the \gls{sos} program, see \autoref{fig:sets_reference} for a visualization of $\bar{\epsilon}$ and $\Delta$. Results are only included for solutions where all inequalities were verified to be \gls{sos}.}
+\label{tab:sostools_varying_param}
+\end{table}
 
 
-B degree 0:4 -- interval -6, 1cm feas ratio 0.8694, to -7cm feasr 0.9270, -8cm feasr 0.8763 resnorm 0.00027269, -9cm feasr 0.8763, -10cm feasr 0.8255 resnorm 0.00068869, not working with -10, 2cm or with -10,1.5cm, but works with 1.2cm feasr 0.7455 numerr 0 resnorm 0.00060655 "run into numerical problems" (increasing qs to 0:6 still not working with 1.3cm), increasing $\bar{\epsilon}=0.01$ because of numerical problems and resnorm but not working with 1.2cm (also not working when increasing $\Delta=0.01$), but with this delta it works at 0.5cm feasr 0.9030 numerr 1 resnorm 0.0003211, then decreasing delta back not working
+Point of departure is taken in the same values for the parameters $\bar{\epsilon}$ and $\Delta$, and degrees of the \gls{sos} polynomials $q_j$ and the barrier certificate as presented in \autoref{subsec:zeroref}, i.e. $\bar{\epsilon}=0.001$, $\Delta=0.001$, deg$(B)=$[0:4] and all \gls{sos} polynomials deg$(q_j)=$[0:4]. The same controller gain is used as described in \autoref{sec:K_Nbar_1D_1storder} ($\textbf{K}=9$), and a small interval of references around zero is used initially.
 
-try to increase the degree of B and qs drastically, but feasratio becomes negative and Q1 cannot be found (it also takes very long to compute), primal infeasible. Decreasing degrees to B 0:8 and qs 0:6 and $\bar{\epsilon}=0.001$, $\Delta=0.001$ solution found for -10,1.5cm feasr 0.8754, however decreasing degree of qs to 0:4 increases feasr to 0.9458, lowering B to 0:6 feasr 0.8865
+The interval of references for which a solution can be found depends on all of the parameters summarized in \autoref{tab:sostools_varying_param}. The lower limit of allowed references in $\mathcal{X}_0$ is independent of the parameters, though,  as no irrealizable requirements are set for $B(x)$ in this region. Hence it is the upper  end of the interval which is tested to which limit it can be elevated.
 
-or decreasing the region $\mathcal{X}_0$
+
+
+
+Larger intervals of allowed references are found the smaller $\bar{\epsilon}$ and $\Delta$ are and increasing the degree of $B(x)$ from [0:4] to [0:6] elevates the upper limit for allowed references.
+
+
+
+%Generally increasing $\Delta$ will also decrease the allowed interval and shows a trend of decreasing the residual norm until some limit where it doesn't seem to affect the construction of B so much more.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_withRef_k9_B4_q4.pdf}
+\caption{Barrier certificate of degree [0:4], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=0.001$, $\Delta=0.001$ and gain $\textbf{K}=9$ allows an interval of references [-0.1,0.012], with \texttt{feasratio=0.7455} and \texttt{Residual norm=6.1e-4}.}
+\label{fig:1D_1stordersys_withRef_k9_B4_q4}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_withRef_k9_B6_q4.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=0.001$, $\Delta=0.001$ and gain $\textbf{K}=9$ allows an interval of references [-0.1,0.02], with \texttt{feasratio=0.6538} and \texttt{Residual norm=8.7e-4}.}
+\label{fig:1D_1stordersys_withRef_k9_B6_XuX0}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_withRef_k02_B6_q2.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=0.001$, $\Delta=0.001$ and gain $\textbf{K}=0.2$ allows an interval of references [-0.1,0.032], with \texttt{feasratio=0.5349} and \texttt{Residual norm=8.1e-4}.}
+\label{fig:1D_1stordersys_withRef_k02_B6_q2_XuX0}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_withRef_k02_B6_q2_e01.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=0.1$, $\Delta=0.015$ and gain $\textbf{K}=0.2$ allows an interval of references [-0.1,0.017], with \texttt{feasratio=0.9888} and \texttt{Residual norm=3.5e-4}.}
+\label{fig:1D_1stordersys_withRef_k02_B6_q2_e01}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_withRef_k02_B6_q4_e1.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=1$, $\Delta=0.015$ and gain $\textbf{K}=0.2$ allows an interval of references [-0.1,0.016], with \texttt{feasratio=1.0134} and \texttt{Residual norm=1.6e-3}.}
+\label{fig:1D_1stordersys_withRef_k02_B6_q4_e1}
+\end{figure}
+
+
+%Testing with controller k=9 as in the initial design. As the zero reference has proven to point of origin is to test with references in a small interval around zero. $\bar{\epsilon}=0.001$ as before but the safety distance $\Delta$ is increased from 0.001 to 0.002. q degrees 0:4
+%
+%B degree 0:6 -- ok in interval +-1cm, feas ratio 0.9657, numerr 0, resnorm 6.7e-6. expanding downwards, for -3cm feas ratio 0.8727, to -4cm feasratio 0.9342, for -5 feasratio 0.9321, for -6cm feasratio 0.9579, -10, 1.5cm feasr 0.8377, not workin to 2cm, because the Q not working is that for Xu try to increase $\bar{\epsilon}$ and because numerr is 1 (not workin) also increasing $\Delta$ (also not working). Back to $\bar{\epsilon}=0.001$, $\Delta=0.001$. ok with 1.7cm feasr 0.8259 numerr 0 resnorm 0.00064404, works with 2cm feasr 0.6538 numerr 0 resnorm 0.00087217, not working with 2.5cm (or back down to 2.1cm) ---------- increase $\bar{\epsilon}=1$, $\Delta=0.01$ does not work at max -5cm, increase $\Delta=0.02$ works for max -5cm but not for -1cm (and still not working if decreasing $\bar{\epsilon}=0.1$), works for $\bar{\epsilon}=0.01$ feasr 0.9505 numerr 1 resnorm 8.2627e-5, this also works for rmax 1cm feasr 0.9486 numerr 1 resnorm 0.00056789, but not working at 2cm (and still not when decreasing $\Delta=0.01$ or to $\Delta=0.001$)
+%
+%
+%B degree 0:4 -- interval -6, 1cm feas ratio 0.8694, to -7cm feasr 0.9270, -8cm feasr 0.8763 resnorm 0.00027269, -9cm feasr 0.8763, -10cm feasr 0.8255 resnorm 0.00068869, not working with -10, 2cm or with -10,1.5cm, but works with 1.2cm feasr 0.7455 numerr 0 resnorm 0.00060655 "run into numerical problems" (increasing qs to 0:6 still not working with 1.3cm), increasing $\bar{\epsilon}=0.01$ because of numerical problems and resnorm but not working with 1.2cm (also not working when increasing $\Delta=0.01$), but with this delta it works at 0.5cm feasr 0.9030 numerr 1 resnorm 0.0003211, then decreasing delta back not working
+%
+%try to increase the degree of B and qs drastically, but feasratio becomes negative and Q1 cannot be found (it also takes very long to compute), primal infeasible. Decreasing degrees to B 0:8 and qs 0:6 and $\bar{\epsilon}=0.001$, $\Delta=0.001$ solution found for -10,1.5cm feasr 0.8754, however decreasing degree of qs to 0:4 increases feasr to 0.9458, lowering B to 0:6 feasr 0.8865
+%
+%or decreasing the region $\mathcal{X}_0$
+%
+%
+%=========================================
+%
+%with K=0.2, qs 0:4, B 0:6, $\Delta=0.001$, $\bar{\epsilon}=0.001$
+%
+%-10cm to 2cm: feasr 0.7909 numerr 0, resnorm 0.00011224, not working for 3cm, works for 2.5cm feasr 0.8205 numerr 0 resnorm 0.00031701, and 2.7cm feasr 0.8461 numerr 0, resnorm 0.00021563, not working for 2.8cm, increase $\Delta=0.005$ at 2.2cm works feasr 0.8437 numerr 0 resnorm 9.3091e-5, not working at 2.7cm, also not when decreasing $\Delta=0.0001$, but works at $\Delta=0.0008$ with feasr 0.7027
+%
+%increase $\bar{\epsilon}=0.01$ ($\Delta=0.001$) not working for 2.7cm, 2.5cm, 2.3cm 2.1cm, works with 1.9cm feasr 0.9116 numerr 1 resnorm 0.00037474, increase $\Delta=0.01$ feasr 0.8619 numerr 0 resnorm 0.00027732
+%
+%increase $\bar{\epsilon}=0.1$ not working at 1.9cm ($\Delta=0.01$), works at 1.7cm feasr 0.9476 numerr 1 resnorm 0.00037428, decreasing $\Delta=0.001$ not working but works at $\Delta=0.005$ feasr 0.9245 numerr 1 resnorm 0.0005283, for $\Delta=0.015$ works at 1.8cm feasr 0.8212 numerr 0 resnorm 0.00015046, not working at 2cm, but works when decreasing $\Delta=0.01$ works feasr 0.8514 numerr 0 resnorm 0.00043032, not working for 2.2cm (also not when decreasing $\Delta=0.001$ or $\Delta=0.005$,
+%$\bar{\epsilon}=0.1$ with $\Delta=0.015$ works at 1.6cm feasr 1.0067 numerr 1 resnorm 0.00014081, not working at 1.8cm
+%
+%increase $\bar{\epsilon}=1$ not working (for $\Delta=0.005$ at 1.7cm), increase $\Delta=0.01$ not working, down to 1.5cm not working, 1cm not working, increase $\Delta=0.02$ works feasr 0.9683 numerr 1 resnorm 0.0015249, this also works for 1.5cm feasr 1.0014 numerr 1 resnorm 0.00093821, not working at 2cm, decrease $\Delta=0.015$ still not working, or at 1.7cm, works at 1.6cm feasr 1.0134 numerr 1 resnorm 0.0016455, increasing $\Delta=0.02$ not working, or at $\Delta=0.01$
