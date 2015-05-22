@@ -6,7 +6,7 @@
 
 This appendix ought to give concrete knowledge to utilize the \gls{ros} environment wrt. the \gls{daVinci} surgery robot at Aalborg University as it comprises an immense load of files, packages and various GUI interfaces. It also intends to provide an overview of the code structure and the underlying thoughts. The \gls{ros} environment is currently only developed for Ubuntu. The content of this appendix is accordingly assuming Ubuntu as operating system and assumes additionally basic knowledge in Unix. 
 
-To install ROS on a private laptop, it is recommended to simply follow the below URL:
+To install ROS on a private laptop, it is recommended to follow the below URL:
 
 \hspace{1cm} {\color{blue}{\textit{http://wiki.ros.org/ROS/Installation}}}
 
@@ -24,8 +24,8 @@ Then navigate to the source directory (\texttt{src}) and type:
 
 \hspace{1cm} \texttt{\$ catkin\_init\_workspace}
 
-This creates a number of necessary files and folders. The code located at the "Robotic Surgery Group - Aalborg University" must be copied/cloned to the \texttt{src} folder. %({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
-The original environment (clean configuration) can be cloned with the following git terminal commands:\vspace{0.1cm}
+This creates a number of necessary files and folders. The code located at the "Robotic Surgery Group - Aalborg University" can be copied/cloned to the \texttt{src} folder. %({\color{blue}{\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}}}).
+The original environment (clean configuration) can e.g. be cloned with the following git terminal commands:\vspace{0.1cm}
 
 \hspace{0cm} \texttt{\$ git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description}
 
@@ -279,7 +279,7 @@ The \gls{ik} test and \gls{fk} test are executed. Both of them ask the slide pos
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{traj_moveit.eps}
-	\caption{Trajectories plotted by means of Moveit. It is seen that the processing time is high and nearly useless when the objective differs from trajectory planning. The code used to generate the trajectory is showed in \autoref{fig:code-eks-moveit}. It is also seen that the dynamics are limited.}
+	\caption{Trajectories plotted by means of Moveit. It is seen that the processing time is high and nearly useless when the objective differs from trajectory planning. The code used to generate the trajectories is showed in \autoref{fig:code-eks-moveit}. It is also seen that the dynamics are limited. Measurement files and plotting details can be found in \autoref{app:cd} by running \texttt{run\_moveit\_trajectory.m} under the path \texttt{measurements/moveit\_test}.}
 	\label{fig:moveit_traj}
 \end{figure}
 As seen from \autoref{fig:moveit_traj}, the \texttt{move\_group} node requires processing time to calculate a trajectory which is nearly useless for real-time controllers. The processing time is due to the highly advanced trajectory generation calculated by the \texttt{move\_group} node. An example of how to use of the \texttt{move\_group} node is provide in \autoref{fig:code-eks-moveit}. The code snippet to the left shows the use of forward kinematics and the code snippet to the right shows how to use the inverse kinematics and it is indeed these code snippets that have been used to generated the trajectories in \autoref{fig:moveit_traj}. It is important to include the proper Moveit libraries and structure of \texttt{CMakeLists.txt} and \texttt{package.xml} correctly. These are found at github when the development branch just described is cloned.
@@ -431,9 +431,91 @@ It is finally of great significance to modify the \texttt{p4\_hand\_controller.y
 %Files that needs to be created/modified manually when the setup assistant is launched:
 %
 %
-\section{Specific File Structure of this Thesis - The gr1032 Package}
-lav noget lignede moveit, men med \texttt{gr1032}
+\section{Specific Structure of this Thesis - The gr1032 Development Branch}
+Be sure that ROS is installed according to the beginning of this appendix. Additionally, the low level controllers and ROS must be initiated as described in \autoref{sec:init_ROS}. The \texttt{gr1032} package can be cloned from github as:
 
+\hspace{0.0cm}  \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/Gr1032}
+
+If the original \texttt{davinci\_description} and \texttt{davinci\_driver} package are cloned to the workspace, delete them. It is important that the \texttt{gr1032} branch is cloned from the driver package and the description package as:
+
+\hspace{0.0cm}  \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_driver ---branch gr1032}
+
+\hspace{0.0cm}  \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description ---branch gr1032}
+
+The file structure in the \texttt{daVinci} workspace should be similar to the one depicted below (plus additional files).
+\begin{figure}[H]
+% to make comment:
+% .4 davinci\_moveit\_config\DTcomment{Guillaume}.
+\dirtree{%
+.1 /...
+.2 davinci\_ws. %\DTcomment{workspace folder, created by mkdir}.
+.3 \color{ForestGreen}{run\_controllers.py} \color{gray}{wrapper script}.
+.3 build. %\DTcomment{generated by catkin\_init\_workspace}.
+%.4 \color{gray}{..}.
+.4 \color{gray}{... all make-files}. %\DTcomment{generated by catkin\_init\_workspace}.
+.3 devel. %\DTcomment{generated by catkin\_init\_workspace}.
+%.4 \color{gray}{..}.
+.4 \color{gray}{... all libraries and setup files}. %\DTcomment{generated by catkin\_init\_workspace}.
+.3 src.
+.4 \color{ForestGreen}{CMakeLists.txt}.
+.4 davinci\_description. %\DTcomment{\underline{Package:} Physical sizes and rotation matrices}.
+.5 \color{ForestGreen}{CMakeLists.txt}.
+.5 config.
+.6 \color{ForestGreen}{davinci.rviz}.
+.5 launch.
+.6 \color{ForestGreen}{demo.launch}.
+.6 \color{ForestGreen}{visualize\_in\_rviz.launch}.
+.5 meshes.
+.6 \color{gray}{... all .stl files (used for the 3D model in rviz)}.
+.5 \color{ForestGreen}{package.xml}.
+.5 robots.
+.6 \color{ForestGreen}{remote\_center\_manipulator.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for the hand}.
+.6 \color{ForestGreen}{davinci.xacro}\hspace{0.2cm}\color{gray}{\# assembles all xml macros}.
+.6 \color{ForestGreen}{p4\_arm.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for the arm}.
+.6 instruments.
+.7 \color{ForestGreen}{needle\_driver.xacro}\hspace{0.2cm}\color{gray}{\# rotation matrices for instrument}.
+.4 davinci\_driver. %\DTcomment{\underline{Package:} Interface with the physical robot}.
+.5 \color{ForestGreen}{CMakeLists.txt}.
+.5 launch.
+.6 \color{ForestGreen}{davinci\_driver.launch} \color{gray}{\# include control output}.
+.6 \color{ForestGreen}{ros\_control.launch} \color{gray}{\# include controllers}.
+.5 src.  
+.6 \color{ForestGreen}{davinci\_driver.cpp}\hspace{0.2cm}\color{gray}{\# establish connection }.
+.6 \color{ForestGreen}{ros\_driver.cpp}\hspace{0.2cm}\color{gray}{\# establish connection }.
+.6 \color{ForestGreen}{sbrio\_driver.cpp}\hspace{0.2cm}\color{gray}{\# establish connection }.
+.5 config.
+.6 \color{ForestGreen}{davinci\_ip\_adresses.yaml}\hspace{0.2cm}\color{gray}{\# set IP for RIO primary/secondary board}.
+.6 \color{ForestGreen}{p4\_hand\_controller.yaml}\hspace{0.2cm}\color{gray}{\# specify each controllable joint}.
+.4 gr1032.
+.5 \color{ForestGreen}{CMakeLists.txt}.
+.5 \color{ForestGreen}{package.xml}.
+.5 src.
+.6 \color{ForestGreen}{run\_controller.cpp} \color{gray}{\# main C++ interface (controllers) }.
+.5 launch \color{gray}{\# not used}.
+}
+\end{figure}
+The controllers are executed by running the two commands below in two individual terminals:
+\begin{itemize}
+\item \texttt{roslaunch davinci\_driver davinci\_driver.launch}
+\item \texttt{python run\_controllers.py}
+\end{itemize}
+This leaves a \gls{gui} as shown below:
+\lstdefinestyle{DOS}
+{
+    backgroundcolor=\color{white},
+    basicstyle=\scriptsize\color{black}\ttfamily
+}
+\begin{lstlisting}[style=DOS]
+*******************************************
+The following options are avaiable:
+-------------------------------------------
+press 'a' to run slide safety controller
+press 'b' to run custom joint angles
+press 'c' to run demo:
+press 'd' to run beating heart controller:
+*******************************************
+\end{lstlisting}
+The desired controller is now ready to be executed by entering the inquired letters. The \texttt{gr1032} package provides also demo's which the exclusive purpose of demonstrating the capabilities of the Da Vinci robot. The file and code structure is not as such described deeper in this appendix. The algorithms associated with each controller is described under each appertaining chapter in the main report. 
 \subsubsection*{Useful and Regularly used ROS Commands}
 To build the entire environment, navigate to the root of the workspace and type:
 
