@@ -1,7 +1,7 @@
 \lstdefinestyle{DOS}
 {
-    backgroundcolor=\color{black},
-    basicstyle=\scriptsize\color{green}\ttfamily
+    backgroundcolor=\color{white},
+    basicstyle=\scriptsize\color{black}\ttfamily
 }
 This appendix contains measurement description of most experiments carried out.
 \section{Step Response of Slide Position}
@@ -32,11 +32,14 @@ Type:
 
 This launches the \gls{ui} shown below.
 \begin{lstlisting}[style=DOS]
+*********************************
+_________________________________
 Press 'j' to specify joint angles
 Press 'x' to specify cartesian positions (IK)
 Press 'd' to run demo mode
 Press 't' to run test mode
 Press 'i' to run IK test 
+*********************************
 \end{lstlisting}
 Type \textbf{j} + \textbf{enter} to enter custom joint angle mode. It is by default at its zero position for all joint angles. Type 0.005 for slide position and zero for the remaining angles.
 \subsection*{Second Terminal}
@@ -82,4 +85,4 @@ Use the MATLAB script and the recorded measurement data found in \autoref{app:cd
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}}. 
 \label{fig:stepresponseslideapp}
 \end{figure}
-The approximated second and first order system are found as...????
+This completes this measurement log.
