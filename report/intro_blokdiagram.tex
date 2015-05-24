@@ -74,11 +74,11 @@ Given the topics described in the introduction to this project and the desire to
 Design a position controller such that it is possible to specify regions where it can be guaranteed that the end-effector will never enter. & Provide the surgeon with a feature ensuring that certain regions will never be touched, e.g. veins and similar. \\
 \rowcolor{textBlue} 
 Design a position controller taking  user input relative to a point on the surface of a beating heart while ensuring that the heart is not penetrated. & Founding automated control on beating hearts where a safe distance to the heart is maintained such that the heart under no circumstances is penetrated.\\
-Modelling the system without touching the underlying controllers & The cascaded controllers seen in \autoref{fig:overview} are not to be touched. Safety is desired solely from the ROS environment. \\
+Modelling the system sufficiently without touching the underlying controllers & The cascaded controllers seen in \autoref{fig:overview} are not to be touched. Safety is desired solely from the ROS environment. \\
 \rowcolor{textBlue} 
-Implement the controllers physically on the Da Vinci Robot. This implies an understanding of the entire \gls{ros} framework & Verify the theory in practice and thereby be a first mover on this topic \\
+Implement the controllers physically on the Da Vinci Robot. This also implies an understanding of the entire \gls{ros} framework & Verify the theory in practice and thereby be a first mover on this topic \\
 \end{tabularx}
-	\caption{Problems to be solved throughout this thesis and why they are desired to be solved..}
+	\caption{Problems to be solved throughout this thesis and why they are desired to be solved.}
 \label{tab:requirement}
 \end{table}
 The problems given in \autoref{tab:requirement} may be solved in a number of ways and it is not initially obvious which is the more appropriate one. For that reason, it is chosen to bifurcate a solution strategy, thus two approaches are used:

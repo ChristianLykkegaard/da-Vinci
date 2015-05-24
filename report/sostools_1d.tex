@@ -382,7 +382,13 @@ In \autoref{fig:1D_1stordersys_withRef_k02_B6_q4_e1} the value is increased even
 \newpage
 \subsection{Considering the Error as the Independent Variable}
 
-As it is seen from \autoref{tab:sostools_varying_param} there are quite a few tuning parameters when searching for a barrier certificate, and iteratively finding a combination giving as large an interval of allowed references within $\mathcal{X}_0$ as possible can be a long process. Hence instead of formulating the barrier certificate in terms of the robot position and the position reference, it can plainly be formulated as the error between the two:
+As it is seen from \autoref{tab:sostools_varying_param} there are quite a few tuning parameters when searching for a barrier certificate, and iteratively finding a combination giving as large an interval of allowed references within $\mathcal{X}_0$ as possible can be a long process. Recall the system:
+\begin{flalign*}
+\dot{x} = \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \kk \Leftrightarrow \kk \dot{x} = \tau^{-1}(\textbf{K}+1)\underbrace{(x_\text{ref} - x)}_{x_\text{err}}
+\end{flalign*}
+
+
+Hence instead of formulating the barrier certificate in terms of the robot position and the position reference, it can plainly be formulated as the error between the two:
 \begin{equation*}
 x_\text{err}=x_\text{ref}-x
 \end{equation*}
