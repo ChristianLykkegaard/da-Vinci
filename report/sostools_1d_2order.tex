@@ -1,2 +1,40 @@
 \section{Barrier Certificate Search for Second Order 1D System}
+From \autoref{subsec:model_2d}
+\begin{equation}
+\dot{\mathbf{x}}(t)= 
+\begin{bmatrix}
+0 & 1\\
+-\omega_n^2  & -2\zeta \omega_n  
+\end{bmatrix}
+\mathbf{x}(t) + 
+\begin{bmatrix}
+0\\\omega_n^2
+\end{bmatrix}\left(\bar{\mathbf{N}}x_\text{ref}-\mathbf{K}\mathbf{x}(t)\right),
+ \kk \text{with }
+ \omega_n = 17 \,\text{rad/s}, \quad \zeta = 0.55
+\end{equation}
 
+
+From \autoref{eq:K_2}
+\begin{flalign}
+	\mathbf{K} = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
+		5.173  &  0.214
+	\end{bmatrix}
+\end{flalign}
+
+From \autoref{eq:Nbar_2}
+\begin{flalign}
+	\bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} =  - \left( \mathbf{C}\,(\mathbf{A}-\mathbf{B}\,\mathbf{K})^{-1}\,\mathbf{B} \right)^{-1} = 6.173
+\end{flalign}
+
+The error is 
+\begin{equation}
+x_\text{err}=\bar{\mathbf{N}}x_\text{ref}-\mathbf{K}\mathbf{x}(t)=6.173x_\text{ref}- (5.173x_1(t)  +  0.214x_2(t))
+\end{equation}
+and its derivative
+\begin{align}
+\dot{x}_\text{err}=- 5.173\dot{x}_1(t)  -  0.214\dot{x}_2(t) &= -5.173x_2 -0.214(- \omega_n^2 x_1 - 2\zeta \omega_n x_2 + \omega_n^2 x_\text{err} )\nonumber\\
+&= (0.214\cdot2\zeta \omega_n - 5.173)x_2 + 0.214\omega_n^2\underbrace{(x_1-x_\text{err})}_{\textcolor{red}{x_\text{ref} ???}}
+\end{align}
+
+Argh kan ikke t\ae nke mere
