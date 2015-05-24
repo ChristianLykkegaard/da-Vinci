@@ -322,6 +322,7 @@ B(\mathbf{x}) = \,\,\,\,\,&
 \end{figure}
 
 As it can be seen from \autoref{fig:1D_1stordersys_withRef_k9_B4_q4} and \ref{fig:1D_1stordersys_withRef_k9_B6_q4}, increasing the order of the barrier polynomial indeed does have an effect on the steepness of the curve.
+The asterisks in each of the plots of $L_{f_{cl}}B(x)$ marks spots on the curve where its value is positive, which in all cases happen along the line $x_1=x_\text{ref}$. The reason for this error is the numerical problems encountered for all of the solutions.
 
 It is known from the implementation described in \autoref{sec:davinci-implementation}, that at present time the controller gain that can be implemented is considerably lower than the gain of $\mathbf{K}=9$, and hence safety is sought to be certified for a greater interval of references by using a lower gain. \Autoref{fig:1D_1stordersys_withRef_k02_B6_q2} shows a plot of another sixth order polynomial barrier certificate found for a system with feedback gain $\mathbf{K}=0.2$, which is valid for references in an interval extending up to 3.2\,cm.
 
@@ -383,20 +384,165 @@ In \autoref{fig:1D_1stordersys_withRef_k02_B6_q4_e1} the value is increased even
 
 As it is seen from \autoref{tab:sostools_varying_param} there are quite a few tuning parameters when searching for a barrier certificate, and iteratively finding a combination giving as large an interval of allowed references within $\mathcal{X}_0$ as possible can be a long process. Hence instead of formulating the barrier certificate in terms of the robot position and the position reference, it can plainly be formulated as the error between the two:
 \begin{equation*}
-x_\text{err}=x-x_\text{ref}
+x_\text{err}=x_\text{ref}-x
 \end{equation*}
 and with no dynamics in the reference, the error state system equation is found from \autoref{eq:1storder_christoffer} as
 \begin{equation}
-\dot{x}_\text{err} = \dot{x} = \tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x) = -\tau^{-1}(\mathbf{K}+1)x_\text{err}
+\dot{x}_\text{err} = \dot{x} = -\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x) = -\tau^{-1}(\mathbf{K}+1)x_\text{err}
 \end{equation}
-Now the problem has been reduced to one dimension  through a coordinate shift, with the safe set being errors less than a distance to the outline of the safe positions. That is, test that the error always stays below a value $\delta_\text{err}$ corresponding to being able to give references up until a safety distance $\delta_\text{err}$ from the unsafe set, see \autoref{fig:sets_error}.
+Now the problem has been reduced to one dimension  through a coordinate shift, and safety can now be tested for relative positions instead of absolute. It is still assumed that any reference given is given outside the unsafe area, which according to \autoref{tab:intervals} is the absolute slide positions $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$, and it is still the goal to determine how close to the unsafe set references can be given while still guaranteeing safety.
 
-\begin{figure}[htbp]
+%The error will be negative when the end effector is above the reference, and 
+As the unsafe region is the upper part of the interval $\mathcal{X}$, it is required to restrict the error in the negative direction, corresponding to restricting how much the end effector position is allowed to be above (more positive than) the reference. 
+If a reference is given at a distance $\delta_\text{err}$ from the unsafe region starting at 5\,cm, it is required that the error does not exceed $-\delta_\text{err}$ in the negative direction. This is illustrated in \autoref{fig:sos_error_2d}. Thus testing how large an interval of allowed references can be given with guaranteed system safety, corresponds to testing how small an (absolute) value of $-\delta_\text{err}$ outlining the unsafe region of the error state system, for which safety can be guaranteed. This is illustrated in \autoref{fig:sos_error_1d}.
+
+
+
+\begin{figure}[b]
 \centering
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_2d.pdf}\label{fig:sos_error_2d}}%
 \hspace{3mm}
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_1d.pdf}\label{fig:sos_error_1d}}%
-\caption{}
+\hspace{3mm}
+\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_errorref_1d.pdf}\label{fig:sos_errorref_1d}}%
+\caption{With references given outside the unsafe region, system safety can be guaranteed if the error is certified to stay above the value $-\delta_\text{err}$. When this is the case, system safety is guaranteed for all references up to a safety distance of $\delta_\text{err}$ from the unsafe set.}
 	\label{fig:sets_error}
 \end{figure}
 
+When restricting the error this is in principle done for any reference, thus if a reference is given far away from the unsafe area, the end effector is still not allowed to be more than the small distance $\delta_\text{err}$ above the reference. 
+
+%In the error space this means that the error must not go below $-\delta_\text{err}$. If a barrier certificate can be found for unsafe errors of $-\delta_\text{err}$ and below ($\mathcal{X}_u=\{x_\text{err}\in [-??,-\delta_\text{err}]\}$), it can be guaranteed that the robot position will never be more than a distance $\delta_\text{err}$ above the reference, and hence it is verified that references can be given as long as the reference is at least a distance $\delta_\text{err}$ from the unsafe set.
+
+Due to the underlying low-level controllers in the system (see \autoref{fig:overview}), the system equation in \autoref{eq:sos_firstorder} is only valid for small steps of less than 3\,cm. Therefore the tests on the error state system in SOSTOOLS are made on a set $\mathcal{X}=\{x_\text{err}\in[-0.03,0.03] \}$, thus testing for how small a value $\delta_\text{err}$ for which a solution can be found when the unsafe set is $\mathcal{X}_u=\{x_\text{err}\in[-0.03,-\delta_\text{err}] \}$, as illustrated in \autoref{fig:sos_errorref_1d}. A valid solution will certify that steps in positive direction (upwards) of 3\,cm is acceptable, and will never yield an error below $-\delta_\text{err}$, and that references can safely be given that have a distance of at least $\delta_\text{err}$ to the unsafe positions, i.e. safe references are references below 5\,cm $-\delta_\text{err}$. For references below the end effector position no barrier certificate is needed, although the certificate found does allow steps in downwards direction of up to $\delta_\text{err}$. \textcolor{red}{Er ikke sikker p\aa  det giver mening med stepst\o rrelser, er det steady-state fejlen vi ser p\aa ?}
+
+Again the parameters given in \autoref{tab:sostools_varying_param} are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution, the findings conforming with the previous conclusions, the additional conclusions listed in \autoref{tab:sostools_varying_param_error}.
+
+\begin{table}[htbp]
+\begin{tabularx}{\textwidth}{l X}
+\rowcolor{HeaderBlue}
+\textbf{Parameter} & \textbf{Effect of variation}\\
+deg$(B)$ & In general the residual norm is lower when testing for higher degrees of $B(x)$ ([0:6] compared to [0:4]).\\
+\rowcolor{textBlue}
+deg$(q_j)$ & Increasing the degree of the \gls{sos} polynomials ([0:4] compared to [0:2]) generally increases the residual norm. Having different degrees for the different \gls{sos} polynomials also generally increases the residual norm.\\
+$\bar{\epsilon}$ & Increasing $\bar{\epsilon}$ in general increases the residual norm of the solution. \\
+\rowcolor{textBlue}
+$\Delta$ & Decreasing $\Delta$ too much will preclude a solution to be found, otherwise $\Delta$ does not have much influence on the solution.\\
+\textbf{K} & Lowering the gain of the controller decreases the residual norm of the solution.\\
+\rowcolor{textBlue}
+$\delta_\text{err}$ & Decreasing $\delta_\text{err}$ increases the residual norm of the solution. No solutions could be found for $\delta_\text{err}<9$\,mm.
+\end{tabularx}
+\caption{Effect of varying different parameters in the \gls{sos} program. Results are only included for solutions where all inequalities were verified to be \gls{sos}.}
+\label{tab:sostools_varying_param_error}
+\end{table}
+
+%systemet har underliggende controllere der gør at systemmodellen kun gælder hvis der gives små steps i reference, derfor er der ingen grund til at define et rum X i errorspace der er større til hver side end de step der kan gives
+
+
+Running a number of tests in SOSTOOLS varying the parameters in \autoref{tab:sostools_varying_param_error} it is concluded that solutions for $\delta_\text{err}<9$\,mm cannot be found, and hence safety can be guaranteed if references are given at a minimum distance of 9\,mm from the unsafe region. 
+
+Examples of results are given in the figures in the following pages. Comparing \autoref{fig:1D_1stordersys_error_k9_B4_q2_e7-4_d1-3} and \ref{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3} it is seen that increasing the degree of the barrier certificate from four to six does not change the curve much on the interval $\mathcal{X}$, while it does lower the residual norm an order. Comparing \autoref{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3} 
+and \ref{fig:1D_1stordersys_error_k9_B6_q4_e7-4_d1-3} it is seen that increasing the degree of the \gls{sos} polynomials from two to four also hardly changes the curve, but increases the residual norm two orders. Finally, comparing \autoref{fig:1D_1stordersys_error_k02_B6_q4_e1-3_d4-3}, \ref{fig:1D_1stordersys_error_k02_B6_q4_e1-2_d4-3} and \ref{fig:1D_1stordersys_error_k02_B6_q4_e1-1_d4-3} it is clearly seen that requiring a ten times larger value  $\bar{\epsilon}$ on the unsafe set, the barrier certificate is scaled up approximately ten times in value. As indicated, though, the residual norm is also increased along with $\bar{\epsilon}$.
+
+Maybe a corresponding positive value can be found restricting the error in the positive direction hence also restricting how much the end effector position is allowed to be below any reference \textcolor{red}{NOT TESTED}. If a barrier certificate for the error can be found ensuring that the error will stay within the interval $[-\delta_\text{err},\delta_\text{err}]$ i.e. with unsafe regions on both sides of this interval, this means that for any reference, the end effector position can be guaranteed never to be more than a distance $\delta_\text{err}$ away from the reference \textcolor{red}{in steady-state? It cannot say anything about steps that are larger than $\delta_\text{err}$, but maybe we don't care about that?}
+
+
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B4_q2_e5-4_d1-2.pdf}
+%\caption{Barrier certificate of degree [0:4], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=5e$-4, $\Delta=1e$-2 and gain $\textbf{K}=9$, with \texttt{feasratio=0.9956} and \texttt{Residual norm=4.4e-7}.}
+%\label{fig:1D_1stordersys_error_k9_B4_q2_e5-4_d1-2}
+%\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B4_q2_e7-4_d1-3.pdf}
+\caption{Barrier certificate of degree [0:4], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0120} and \texttt{Residual norm=3.7e-7}.}
+\label{fig:1D_1stordersys_error_k9_B4_q2_e7-4_d1-3}
+\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B4_q3_e5-4_d1-2.pdf}
+%\caption{Barrier certificate of degree [0:4], all \gls{sos} polynomials of degree [0:3], $\bar{\epsilon}=5e$-4, $\Delta=1e$-2 and gain $\textbf{K}=9$, with \texttt{feasratio=0.8604} and \texttt{Residual norm=1.6e-5}.}
+%\label{fig:1D_1stordersys_error_k9_B4_q3_e5-4_d1-2}
+%\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q2_e7-4_d1-3.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0392} and \texttt{Residual norm=4.7e-8}.}
+\label{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3}
+\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q4_e1-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.027} and \texttt{Residual norm=3.3e-8}.}
+%\label{fig:1D_1stordersys_error_k9_B6_q4_e1-4_d1-3}
+%\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q4_e5-4_d4-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=5e$-4, $\Delta=4e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0632} and \texttt{Residual norm=8.4e-8}.}
+%\label{fig:1D_1stordersys_error_k9_B6_q4_e5-4_d4-3}
+%\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q4_e7-4_d1-3.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0142} and \texttt{Residual norm=1.1e-6}.}
+\label{fig:1D_1stordersys_error_k9_B6_q4_e7-4_d1-3}
+\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q2_e1-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=1e$-4, $\Delta=1e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0539} and \texttt{Residual norm=2.2e-9}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q2_e1-4_d1-3}
+%\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-3_d4-3.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-3, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0495} and \texttt{Residual norm=1.9e-8}.}
+\label{fig:1D_1stordersys_error_k02_B6_q4_e1-3_d4-3}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-2_d4-3.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-2, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0262} and \texttt{Residual norm=2.8e-7}.}
+\label{fig:1D_1stordersys_error_k02_B6_q4_e1-2_d4-3}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-1_d4-3.pdf}
+\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-1, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0298} and \texttt{Residual norm=2.5e-6}.}
+\label{fig:1D_1stordersys_error_k02_B6_q4_e1-1_d4-3}
+\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-4, $\Delta=1e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=0.9664} and \texttt{Residual norm=1.9e-8}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q4_e1-4_d1-3}
+%\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-4_d4-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-4, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0096} and \texttt{Residual norm=9.9e-10}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q4_e1-4_d4-3}
+%\end{figure}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e7-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=0.9988} and \texttt{Residual norm=5.8e-8}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q4_e7-4_d1-3}
+%\end{figure}
