@@ -394,7 +394,7 @@ x_\text{err}=x_\text{ref}-x
 \end{equation*}
 and with no dynamics in the reference, the error state system equation is found from \autoref{eq:1storder_christoffer} as
 \begin{equation}
-\dot{x}_\text{err} = \dot{x} = -\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x) = -\tau^{-1}(\mathbf{K}+1)x_\text{err}
+\dot{x}_\text{err} = -\dot{x} = -\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x) = -\tau^{-1}(\mathbf{K}+1)x_\text{err}
 \end{equation}
 Now the problem has been reduced to one dimension  through a coordinate shift, and safety can now be tested for relative positions instead of absolute. It is still assumed that any reference given is given outside the unsafe area, which according to \autoref{tab:intervals} is the absolute slide positions $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$, and it is still the goal to determine how close to the unsafe set references can be given while still guaranteeing safety.
 
@@ -446,8 +446,7 @@ $\delta_\text{err}$ & Decreasing $\delta_\text{err}$ increases the residual norm
 
 Running a number of tests in SOSTOOLS varying the parameters in \autoref{tab:sostools_varying_param_error} it is concluded that solutions for $\delta_\text{err}<9$\,mm cannot be found, and hence safety can be guaranteed if references are given at a minimum distance of 9\,mm from the unsafe region. \textcolor{green}{for f\o rste ordens system er det underligt den ikke kan g\aa\, helt ud til kanten, der burde ikke v\ae re oversving, hvad kan \aa rsagen v\ae re?}
 
-Examples of results are given in the figures in the following pages. Comparing \autoref{fig:1D_1stordersys_error_k9_B4_q2_e7-4_d1-3} and \ref{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3} it is seen that increasing the degree of the barrier certificate from four to six does not change the curve much on the interval $\mathcal{X}$, while it does lower the residual norm an order. Comparing \autoref{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3} 
-and \ref{fig:1D_1stordersys_error_k9_B6_q4_e7-4_d1-3} it is seen that increasing the degree of the \gls{sos} polynomials from two to four also hardly changes the curve, but increases the residual norm two orders. Finally, comparing \autoref{fig:1D_1stordersys_error_k02_B6_q4_e1-3_d4-3}, \ref{fig:1D_1stordersys_error_k02_B6_q4_e1-2_d4-3} and \ref{fig:1D_1stordersys_error_k02_B6_q4_e1-1_d4-3} it is clearly seen that requiring a ten times larger value  $\bar{\epsilon}$ on the unsafe set, the barrier certificate is scaled up approximately ten times in value. As indicated, though, the residual norm is also increased along with $\bar{\epsilon}$.
+Examples of results are given in the figures in the following pages. Comparing the plots in \autoref{fig:1D_1stordersys_error_k9_varying_degrees} it is seen that increasing the degree of the barrier certificate from four to six does not change the curve much on the interval $\mathcal{X}$, while it does lower the residual norm an order. It can also be seen that increasing the degree of the \gls{sos} polynomials from two to four also hardly changes the curve, but increases the residual norm two orders. Finally, comparing the plots in  \autoref{fig:1D_1stordersys_error_k02_B6_q4_varying_epsilon} it is clearly seen that requiring a ten times larger value  $\bar{\epsilon}$ on the unsafe set, the barrier certificate is scaled up approximately ten times in value. As indicated, though, the residual norm is also increased along with $\bar{\epsilon}$.
 
 Maybe a corresponding positive value can be found restricting the error in the positive direction hence also restricting how much the end effector position is allowed to be below any reference \textcolor{red}{NOT TESTED}. If a barrier certificate for the error can be found ensuring that the error will stay within the interval $[-\delta_\text{err},\delta_\text{err}]$ i.e. with unsafe regions on both sides of this interval, this means that for any reference, the end effector position can be guaranteed never to be more than a distance $\delta_\text{err}$ away from the reference \textcolor{red}{in steady-state? It cannot say anything about steps that are larger than $\delta_\text{err}$, but maybe we don't care about that?}
 
@@ -460,12 +459,12 @@ Maybe a corresponding positive value can be found restricting the error in the p
 %\label{fig:1D_1stordersys_error_k9_B4_q2_e5-4_d1-2}
 %\end{figure}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B4_q2_e7-4_d1-3.pdf}
-\caption{Barrier certificate of degree [0:4], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0120} and \texttt{Residual norm=3.7e-7}.}
-\label{fig:1D_1stordersys_error_k9_B4_q2_e7-4_d1-3}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B4_q2_e7-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:4], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0120} and \texttt{Residual norm=3.7e-7}.}
+%\label{fig:1D_1stordersys_error_k9_B4_q2_e7-4_d1-3}
+%\end{figure}
 
 %\begin{figure}[htbp]
 %\centering
@@ -474,12 +473,12 @@ Maybe a corresponding positive value can be found restricting the error in the p
 %\label{fig:1D_1stordersys_error_k9_B4_q3_e5-4_d1-2}
 %\end{figure}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q2_e7-4_d1-3.pdf}
-\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0392} and \texttt{Residual norm=4.7e-8}.}
-\label{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q2_e7-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0392} and \texttt{Residual norm=4.7e-8}.}
+%\label{fig:1D_1stordersys_error_k9_B6_q2_e7-4_d1-3}
+%\end{figure}
 
 %\begin{figure}[htbp]
 %\centering
@@ -495,12 +494,12 @@ Maybe a corresponding positive value can be found restricting the error in the p
 %\label{fig:1D_1stordersys_error_k9_B6_q4_e5-4_d4-3}
 %\end{figure}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q4_e7-4_d1-3.pdf}
-\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0142} and \texttt{Residual norm=1.1e-6}.}
-\label{fig:1D_1stordersys_error_k9_B6_q4_e7-4_d1-3}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k9_B6_q4_e7-4_d1-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$, with \texttt{feasratio=1.0142} and \texttt{Residual norm=1.1e-6}.}
+%\label{fig:1D_1stordersys_error_k9_B6_q4_e7-4_d1-3}
+%\end{figure}
 
 %\begin{figure}[htbp]
 %\centering
@@ -509,28 +508,28 @@ Maybe a corresponding positive value can be found restricting the error in the p
 %\label{fig:1D_1stordersys_error_k02_B6_q2_e1-4_d1-3}
 %\end{figure}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-3_d4-3.pdf}
-\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-3, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0495} and \texttt{Residual norm=1.9e-8}.}
-\label{fig:1D_1stordersys_error_k02_B6_q4_e1-3_d4-3}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-3_d4-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-3, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0495} and \texttt{Residual norm=1.9e-8}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q4_e1-3_d4-3}
+%\end{figure}
 
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-2_d4-3.pdf}
-\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-2, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0262} and \texttt{Residual norm=2.8e-7}.}
-\label{fig:1D_1stordersys_error_k02_B6_q4_e1-2_d4-3}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-2_d4-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-2, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0262} and \texttt{Residual norm=2.8e-7}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q4_e1-2_d4-3}
+%\end{figure}
 
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-1_d4-3.pdf}
-\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-1, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0298} and \texttt{Residual norm=2.5e-6}.}
-\label{fig:1D_1stordersys_error_k02_B6_q4_e1-1_d4-3}
-\end{figure}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=\textwidth]{1D_1stordersys_error_k02_B6_q4_e1-1_d4-3.pdf}
+%\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=1e$-1, $\Delta=4e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=1.0298} and \texttt{Residual norm=2.5e-6}.}
+%\label{fig:1D_1stordersys_error_k02_B6_q4_e1-1_d4-3}
+%\end{figure}
 
 %\begin{figure}[htbp]
 %\centering
@@ -552,3 +551,17 @@ Maybe a corresponding positive value can be found restricting the error in the p
 %\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:4], $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=0.2$, with \texttt{feasratio=0.9988} and \texttt{Residual norm=5.8e-8}.}
 %\label{fig:1D_1stordersys_error_k02_B6_q4_e7-4_d1-3}
 %\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{1D_1stordersys_error_k9_varying_degrees.pdf}
+	\caption{Barrier certificates with $\bar{\epsilon}=7e$-4, $\Delta=1e$-3 and gain $\textbf{K}=9$. Varying the degrees of the barrier certificate and the \gls{sos} polynomials, where deg$(B)=$[0:4] and deg$(q)=$[0:2] gives  \texttt{feasratio=1.0120} and \texttt{Residual norm=3.7e-7}, deg$(B)=$[0:6] and deg$(q)=$[0:2] gives  \texttt{feasratio=1.0392} and \texttt{Residual norm=4.7e-8}, deg$(B)=$[0:6] and deg$(q)=$[0:4] gives \texttt{feasratio=1.0142} and \texttt{Residual norm=1.1e-6}.}
+	\label{fig:1D_1stordersys_error_k9_varying_degrees}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{1D_1stordersys_error_k02_B6_q4_varying_epsilon.pdf}
+	\caption{Barrier certificates of degree [0:6], all \gls{sos} polynomials of degree [0:4], with  $\Delta=4e$-3 and gain $\textbf{K}=0.2$. Varying the value of $\bar{\epsilon}$, where $\bar{\epsilon}=1e$-4 gives \texttt{feasratio=1.0096} and \texttt{Residual norm=9.9e-10}, $\bar{\epsilon}=1e$-3 gives \texttt{feasratio=1.0495} and \texttt{Residual norm=1.9e-8}, $\bar{\epsilon}=1e$-2, gives \texttt{feasratio=1.0262} and \texttt{Residual norm=2.8e-7}, $\bar{\epsilon}=1e$-1 gives \texttt{feasratio=1.0298} and \texttt{Residual norm=2.5e-6}.}
+	\label{fig:1D_1stordersys_error_k02_B6_q4_varying_epsilon}
+\end{figure}

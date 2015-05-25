@@ -1,19 +1,59 @@
-\newpage
+
 \section{Barrier Certificate Search for Second Order 1D System}
-From \autoref{subsec:model_2d}
+Now a second order model of the robot slide position is used in the search for a barrier certificate for the 1D system, with the system model as found in \autoref{subsec:model_2d}
 \begin{equation}
-\dot{\mathbf{x}}(t)= 
+\dot{\mathbf{x}}= 
 \begin{bmatrix}
 0 & 1\\
 -\omega_n^2  & -2\zeta \omega_n  
 \end{bmatrix}
-\mathbf{x}(t) + 
+\mathbf{x} + 
 \begin{bmatrix}
 0\\\omega_n^2
-\end{bmatrix}\left(\bar{\mathbf{N}}x_\text{ref}-\mathbf{K}\mathbf{x}(t)\right),
+\end{bmatrix}\left(\bar{\mathbf{N}}x_\text{ref}-\mathbf{K}\mathbf{x}\right),
  \kk \text{with }
  \omega_n = 17 \,\text{rad/s}, \quad \zeta = 0.55
 \end{equation}
+where again the matrix $\bar{\mathbf{N}}$ ensures unity gain between the position and its reference, which means that $\bar{\mathbf{N}}=K_1+1$. Now the position error is 
+\begin{align*}
+x_\text{err,1}&=x_\text{ref}-x_1\\
+\dot{x}_\text{err,1} &= -\dot{x}_1 \,=-x_2=x_\text{err,2}\\
+\ddot{x}_\text{err,1} &= \dot{x}_\text{err,2} = -\dot{x}_2 = \omega_n^2 x_1 +2\zeta\omega_n x_2 - \omega_n^2(\bar{\mathbf{N}}x_\text{ref}-(K_1x_1+K_2 x_2))\nonumber\\
+& \phantom{= -\ddot{x}_\text{err,1} = \dot{x}_2. } = (2\zeta\omega_n +K_2)x_2 -\omega_n^2(K_1+1)(x_\text{ref}-x_1)\nonumber\\
+& \phantom{= -\ddot{x}_\text{err,1} = \dot{x}_2. } = -(2\zeta\omega_n +K_2){x}_\text{err,2} - \omega_n^2(K_1+1)x_\text{err,1}
+%- 5.173\dot{x}_1(t)  -  0.214\dot{x}_2(t) &= -5.173x_2 -0.214(- \omega_n^2 x_1 - 2\zeta \omega_n x_2 + \omega_n^2 x_\text{err} )\nonumber\\
+%&= (0.214\cdot2\zeta \omega_n - 5.173)x_2 + 0.214\omega_n^2\underbrace{(x_1-x_\text{err})}_{\textcolor{red}{x_\text{ref} ???}}
+\end{align*}
+giving the error state-space equation
+\begin{equation}
+\dot{\mathbf{x}}_\text{err}= 
+\dot{\begin{bmatrix}
+{x}_\text{err,1} \\ 
+{x}_\text{err,2}
+\end{bmatrix}} =
+\begin{bmatrix}
+0 & 1 \\
+-\omega_n^2(K_1+1) & -(2\zeta\omega_n +K_2)
+\end{bmatrix}
+\begin{bmatrix}
+x_\text{err,1} \\ {x}_\text{err,2}
+\end{bmatrix}
+\end{equation}
+
+As for the first order system, the unsafe set is $\mathcal{X}_u=\{x_1\in[0.05,0.1] \}$, and it is assumed that references are never given in the unsafe set (or outside the physical limits of the slide position). Hence it is again the goal to limit the position error in negative direction (tool position above reference), while the velocity of the error obviously has the same physical limits as the velocity of the robot tool, i.e. a maximum velocity of $\pm 1$\,m/s. This means that the sets are defined as $\mathcal{X}=\{x_\text{err,1}\in[-0.03,0.03], x_\text{err,2}\in[-1,1] \}$, the unsafe set $\mathcal{X}_u=\{x_\text{err,1}\in[-0.03,-\delta_\text{err}], x_\text{err,2}\in[-1,1] \}$ and the safe set $\mathcal{X}_0=\{x_\text{err,1}\in[-\delta_\text{err} +\Delta,0.03], x_\text{err,2}\in[-1,1] \}$, see \autoref{fig:sos_error_2d_2ndorder}, and it is again desired to find as small a value $\delta_\text{err}$ as possible, thus guaranteeing system safety for references until a minimum distance $\delta_\text{err}$ from the region of unsafe positions, see \autoref{fig:sos_error_1d_2ndorder} and \ref{fig:sos_errorref_1d_2ndorder}.
+
+\begin{figure}[b]
+	\centering
+	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_2d_2ndorder.pdf}\label{fig:sos_error_2d_2ndorder}}%
+	\hspace{3mm}
+	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_1d.pdf}\label{fig:sos_error_1d_2ndorder}}%
+	\hspace{3mm}
+	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_errorref_1d.pdf}\label{fig:sos_errorref_1d_2ndorder}}%
+	\caption{With references given outside the unsafe region, system safety can be guaranteed if the error is certified to stay above the value $-\delta_\text{err}$. When this is the case, system safety is guaranteed for all references up to a safety distance of $\delta_\text{err}$ from the unsafe set.}
+	\label{fig:sets_error_2ndorder}
+\end{figure}
+
+
 
 
 From \autoref{eq:K_2}
@@ -27,17 +67,3 @@ From \autoref{eq:Nbar_2}
 \begin{flalign}
 	\bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} =  - \left( \mathbf{C}\,(\mathbf{A}-\mathbf{B}\,\mathbf{K})^{-1}\,\mathbf{B} \right)^{-1} = 6.173
 \end{flalign}
-
-The error is 
-\begin{equation}
-x_\text{err}=\bar{\mathbf{N}}x_\text{ref}-\mathbf{K}\mathbf{x}(t)=6.173x_\text{ref}- (5.173x_1(t)  +  0.214x_2(t))
-\end{equation}
-and its derivative
-\begin{align}
-\dot{x}_\text{err}=- 5.173\dot{x}_1(t)  -  0.214\dot{x}_2(t) &= -5.173x_2 -0.214(- \omega_n^2 x_1 - 2\zeta \omega_n x_2 + \omega_n^2 x_\text{err} )\nonumber\\
-&= (0.214\cdot2\zeta \omega_n - 5.173)x_2 + 0.214\omega_n^2\underbrace{(x_1-x_\text{err})}_{\textcolor{red}{x_\text{ref} ???}}
-\end{align}
-
-Argh kan ikke t\ae nke mere
-
-\textcolor{green}{kort ned til 2 variable?}
