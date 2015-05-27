@@ -105,9 +105,6 @@ When the \gls{sos} program is solved, the list of information printed out in the
 If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being one, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to one for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
 The \texttt{residual norm} is the norm of the numerical error in the solution \citep{bib:sostools_manual}, and when numerical problems cause this error to exceed a tolerance set in the SOSTOOLS solver, this is indicated  as a warning of numerical errors with \texttt{numerr = 1}, while a numerical error of two indicates failure of the solver.
 
-A final test that the solution is valid is to check that the \gls{sos} inequalities, i.e. the formulation of the constraints according to \autoref{def:barrier_sos}, are \gls{sos}. This can be done by testing that each of the expressions can be resolved in the form in \autoref{eq:sos_f_squared} or \autoref{eq:sos_polynomial}, i.e. as $\sum f^2(x)$ or $Z^T(x)QZ(x)$ with the function \texttt{findsos} using the polynomial coefficients from the solution (using \texttt{sosgetsol} as described in \autoref{tab:sostools_syntax}). If any of the three expressions cannot be resolved in these forms, it can be concluded that it is not \gls{sos}, and hence the solution does not comply with the requirements for a barrier certificate, i.e. the solution is invalid.
-
-
 %Residual norm: 0.00019444
 %
 %iter: 17
@@ -136,3 +133,5 @@ A final test that the solution is valid is to check that the \gls{sos} inequalit
 	\caption{SOSTOOLS parameters useful in the evaluation of the validity of a solution  barrier function.}
 	\label{tab:sostools_evaluation}
 \end{table}
+
+A final test that the solution is valid is to check that the \gls{sos} inequalities, i.e. the formulation of the constraints according to \autoref{def:barrier_sos}, are \gls{sos}. This can be done by testing that each of the expressions can be resolved in the form in \autoref{eq:sos_f_squared} or \autoref{eq:sos_polynomial}, i.e. as $\sum f^2(x)$ or $Z^T(x)QZ(x)$ with the function \texttt{findsos} using the polynomial coefficients from the solution (using \texttt{sosgetsol} as described in \autoref{tab:sostools_syntax}). If any of the three expressions cannot be resolved in these forms, it can be concluded that it is not \gls{sos}, and hence the solution does not comply with the requirements for a barrier certificate, i.e. the solution is invalid.
