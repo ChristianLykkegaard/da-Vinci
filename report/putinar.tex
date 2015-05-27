@@ -17,7 +17,7 @@ SOSTOOLS can be used to search for a polynomial barrier certificate given that \
 Furthermore the recasting of the barrier certificate definition as an \gls{sos} problem requires the use of \gls{sos} polynomials. An \gls{sos} polynomial $p(x)$ is denoted by $p\in\Sigma[x]$ signifying that $p$ is a polynomial in the variable $x$ with coefficients in the set of \gls{sos} variables: $\Sigma$. A polynomial $p(x)$ is \gls{sos} if there exist polynomials $f_1,\dots,f_m$ such that \citep{bib:parrilo_sdp}
 \vspace{-2mm}
 \begin{equation}
-p(x) = \sum_{j=1}^{m}f_j^2(x)
+p(x) = \sum_{j=1}^{m}f_j^2(x) \label{eq:sos_f_squared}
 \end{equation}
 %
 %A \gls{sos} program is a convex optimization problem of the form \citep{bib:prajna_framework,bib:sostools}

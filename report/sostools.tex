@@ -1,39 +1,46 @@
-As presented in \autoref{chap:putinar} a polynomial barrier certificate can be constructed using \gls{sos} optimization by using the MATLAB toolbox SOSTOOLS. This toolbox is a convex relaxation framework based on sum of squares decompositions of multivariate polynomials and semidefinite programming solvers \citep{bib:prajna_framework} (for acquisition, see \autoref{app:sostools}).
-In this chapter barrier certificates are sought with SOSTOOLS by use of Putinar's Positivstellensatz, presented in \autoref{def:putinar}.
+As presented in \autoref{chap:putinar} a polynomial barrier certificate can be constructed using \gls{sos} optimization by employing the MATLAB toolbox SOSTOOLS. This toolbox is a convex relaxation framework based on sum of squares decompositions of multivariate polynomials and semidefinite programming solvers \citep{bib:prajna_framework} (for acquisition, see \autoref{app:sostools}).
+
+In this chapter barrier certificates are found with SOSTOOLS by using Putinar's Positivstellensatz, presented in \autoref{def:putinar}, to set the constraints for the barrier certificate on each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$.
+First, \autoref{sec:sostools_syntax} introduces the basic functions in SOSTOOLS needed to formulate the requirements for the barrier certificate, and a step-by-step guide to define the program is presented, concluding with an overview of how to evaluate the validity of a solution.
+In \autoref{sec:sos_search_1storder} the one-dimensional system comprising the da Vinci robot slide movement from \autoref{chap:cbf_1d_static} is analysed, initiated by an exhaustive example of the full formulation of a barrier certificate search for the first order system model, % is given, followed by a search for barrier certificates on the  first order system model from \autoref{subsec:model_1d} in order to determine for which references safety can be guaranteed.
+and finally, in \autoref{sec:sos_2ndorder_error}, the robot slide movement modelled as a second order system  is safety validated.
 
 
-\section{SOSTOOLS Syntax}
-\vspace{-2mm}
-An \gls{sos} program is the environment in which the \gls{sos} requirements in \autoref{def:barrier_sos} are set up, and searching for the barrier certificate corresponds to solving the \gls{sos} program.
-This section is a short introduction to the SOSTOOLS formulation of the parameters and variables necessary to set up the requirements for the barrier certificate, based on the SOSTOOLS user guide \citep{bib:sostools_manual}.  
-An overview of necessary \gls{sos} functions from the toolbox is given in \autoref{tab:sostools_syntax}.
 
-\begin{table}[H]
-\begin{tabularx}{\textwidth}{p{6cm} X}
-\rowcolor{HeaderBlue}
-\textbf{Syntax} & \textbf{Explanation}\\
-\texttt{pvar x1;}\newline
-\texttt{prog = sosprogram(x1);} & Initialization of an \gls{sos} program \texttt{prog} in the state variable \texttt{x1}, which is declared as  type \texttt{pvar} (or identically as \texttt{syms}, if the MATLAB symbolic toolbox is available)\\
-\rowcolor{textBlue} 
-\texttt{Z = monomials(x1,deg);}\newline
-\texttt{[prog,q] = sossosvar(prog,Z);} & Parametrize an \gls{sos} polynomial \texttt{q} in the \gls{sos} program \texttt{prog}. The degree of the \gls{sos} polynomial is defined by the monomial vector \texttt{Z} of degree \texttt{deg} (i.e. deg(\texttt{q}) $=$ 2\texttt{deg})\\
-\texttt{Z = monomials(x1,deg);}\newline
-\texttt{[prog,B] = sospolyvar(prog,Z);} & Parametrize a polynomial \texttt{B} in the \gls{sos} program \texttt{prog}. The degree of the  polynomial is defined by the monomial vector \texttt{Z} of degree \texttt{deg} (i.e. deg(\texttt{B}) $=$ \texttt{deg})\\
-\rowcolor{textBlue}
-%\texttt{prog = soseq(prog,B-q);} & Declare the equality constraint \texttt{B-q} $=0$ in the \gls{sos} program \texttt{prog}\\
-\texttt{prog = sosineq(prog,B-q);} & Declare the inequality constraint \texttt{B-q} $\geq 0$ (or more exact: \texttt{B-q} $\in\Sigma[x_1]$) in the \gls{sos} program \texttt{prog}\\
-%\rowcolor{textBlue}
-\texttt{prog = sossolve(prog);} & Solve the \gls{sos} program \texttt{prog} i.e. find coefficients for all polynomials conforming with all constraints \\
-\rowcolor{textBlue}
-\texttt{getB = sosgetsol(prog,B)} & After solving, get the solution (with coefficients) for the polynomial \texttt{B}\\
-\texttt{[Q,Z,f] = findsos(getB-getq);} &  Test that the solution found complies with the requirement that the inequality is in fact \gls{sos}
-\end{tabularx}
-\caption{SOSTOOLS functions necessary to search for a barrier function as given by \autoref{def:barrier_sos}.}
-\label{tab:sostools_syntax}
+\section{Formulation of a Barrier Certificate in SOSTOOLS Syntax}\label{sec:sostools_syntax}
+
+An \gls{sos} program is the framework in which the barrier certificate is defined by setting up the  \gls{sos} requirements from \autoref{def:barrier_sos}, and searching for the barrier certificate corresponds to solving the \gls{sos} program.
+This section gives a short introduction to the SOSTOOLS formulation of the parameters and variables necessary to set up the requirements for the barrier certificate, based on the SOSTOOLS user guide \citep{bib:sostools_manual}.  
+An overview of necessary \gls{sos} functions is given in \autoref{tab:sostools_syntax}.
+\vspace{2mm}
+\begin{table}[htbp]
+	\begin{tabularx}{\textwidth}{p{6cm} X}
+		\rowcolor{HeaderBlue}
+		\textbf{Syntax} & \textbf{Explanation}\\
+		\texttt{pvar x1;}\newline
+		\texttt{prog = sosprogram(x1);} & Initialization of an \gls{sos} program \texttt{prog} in the state variable \texttt{x1}, which is declared as  type \texttt{pvar} (symbolic variable)\\
+		\rowcolor{textBlue} 
+		\texttt{Z = monomials(x1,deg);}\newline
+		\texttt{[prog,q] = sossosvar(prog,Z);} & Parametrize an \gls{sos} polynomial \texttt{q} in the \gls{sos} program \texttt{prog}. The degree of the \gls{sos} polynomial is defined by the monomial vector \texttt{Z} of degree \texttt{deg} (i.e. deg(\texttt{q}) $=$ 2\texttt{deg})\\
+		\texttt{Z = monomials(x1,deg);}\newline
+		\texttt{[prog,B] = sospolyvar(prog,Z);} & Parametrize a polynomial \texttt{B} in the \gls{sos} program \texttt{prog}. The degree of the  polynomial is defined by the monomial vector \texttt{Z} of degree \texttt{deg} (i.e. deg(\texttt{B}) $=$ \texttt{deg})\\
+		\rowcolor{textBlue}
+		%\texttt{prog = soseq(prog,B-q);} & Declare the equality constraint \texttt{B-q} $=0$ in the \gls{sos} program \texttt{prog}\\
+		\texttt{prog = sosineq(prog,B-q);} & Declare the inequality constraint \texttt{B-q} $\geq 0$ (or more exact: \texttt{B-q} $\in\Sigma[x_1]$) in the \gls{sos} program \texttt{prog}\\
+		%\rowcolor{textBlue}
+		\texttt{prog = sossolve(prog);} & Solve the \gls{sos} program \texttt{prog} i.e. find coefficients for all polynomials conforming with all constraints \\
+		\rowcolor{textBlue}
+		\texttt{getB = sosgetsol(prog,B)} & After solving, get the solution (with coefficients) for the polynomial \texttt{B}
+	\end{tabularx}
+	\caption{SOSTOOLS functions necessary to search for a barrier function as given by \autoref{def:barrier_sos}.}
+	\label{tab:sostools_syntax}
 \end{table}
 
-\vspace{-1mm}
-An \gls{sos} program is initialized with the command \texttt{sosprogram}, and polynomials and \gls{sos} polynomials can be declared in the program in the variables that are input to the program (see \autoref{tab:sostools_syntax}) with \texttt{sospolyvar} and \texttt{sossosvar}, respectively.
+
+
+
+\vspace{-2mm}
+An \gls{sos} program is initialized with the command \texttt{sosprogram}, and polynomials and \gls{sos} polynomials can be declared in the program as functions of the variables that are input to the program (see \autoref{tab:sostools_syntax}) with \texttt{sospolyvar} and \texttt{sossosvar}, respectively.
 %
 %where \texttt{degrees} is the degrees of variables desired in the monomial; \texttt{[2 4]} would in this case give that \verb|Z = [x1^2; x1^4]| while \texttt{degrees = 0:2} would result in \verb|Z = [1; x1; x1^2]|. Declaring an SOS polynomial is done similarly to declaring an SOS variable
 %
@@ -45,28 +52,29 @@ When the necessary SOS variables and polynomials are defined, the inequalities i
 
 
 
-\section{Defining a Polynomial Barrier Certificate in SOSTOOLS}\label{sec:app_sostools_barrier_search}
+\subsection{Step-by-step Guide to Search for a Polynomial Barrier Certificate in SOSTOOLS}\label{sec:app_sostools_barrier_search}
 \vspace{-2mm}
 
-Searching for a polynomial barrier certificate in SOSTOOLS require the definition of all of the variables and polynomials given by \autoref{def:barrier_sos} as follows:
+Searching for a polynomial barrier certificate in SOSTOOLS requires the definition of all of the variables and polynomials given by \autoref{def:barrier_sos} as follows:
 \vspace{-2mm}
 \renewcommand{\labelitemii}{$\circ$}
 \renewcommand{\labelitemiii}{$\bullet$}
 \begin{itemize}
 	\itemsep-0.7mm
 	\item \textbf{Initialize the Program}\\
-	First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{syms} or \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
+	First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
 	\item \textbf{Define the Vector Field}\\
-	The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}$ in terms of the symbolic state vector.
+	The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}(x)$ in terms of the symbolic state vector.
 	\item \textbf{Set up the Constraints for the Polynomial Barrier Certificate}\\
 	Declare a monomial vector $Z_B$ in $x$ (or part of $x$) of sufficiently large degree, and parametrize the polynomial $B(x)$ as a function of $Z_B$ with \texttt{sospolyvar}.  
 	The problem of finding the coefficients for the barrier certificate is now for each region $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ a matter of defining the following:
 	\vspace*{-1mm}
 	\begin{itemize}
 		\item \textbf{Define the Polynomials $g_j(x)$}\\
-		Define one or more polynomials $g_j$ that are positive in the region to be defined and negative outside. Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries. 
+		Define one or more polynomials $g_j$ that are positive in the region to be defined, e.g. $\mathcal{X}$, and negative outside. %Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries. 
 		\item \textbf{Declare the SOS Variables $q_j(x)$}\\
-		Declare monomial vectors $Z_{q_j}$ in $x$ of appropriate degree (preferably as small as possible to keep the complexity of the problem as low as possible), and parametrize the SOS polynomials (multipliers) $q_j$ with \texttt{sossosvar}.
+		Declare monomial vectors $Z_{q_j}$ in $x$ of appropriate degree (preferably as small as possible), % to keep the complexity of the problem as low as possible), 
+		and parametrize the SOS polynomials (multipliers) $q_j$ with \texttt{sossosvar}.
 		\item \textbf{Set up the Inequality}\\
 		Cf. the nonnegativity of an \gls{sos} polynomial ($q_0$), each \texttt{sosineq} can be formulated as given by  \autoref{def:barrier_sos}. For \autoref{cer2_putinar} choose a small positive number $\bar{\epsilon}$. The inequality pertaining to a set may be defined in terms of several $g_j$s; if the set is defined by
 		\begin{itemize}
@@ -90,3 +98,41 @@ Searching for a polynomial barrier certificate in SOSTOOLS require the definitio
 %\textcolor{red}{Og hvordan bruger I så det. Kør eksemplet videre, så det er klart hvordan (8.2e) oversættes til SOS program. Jeg synes I skal køre eksemplet hele vejen igennem og idregne det i SOSTOOLS. På denne måde overbeviser i læseren og, at I kan oversætte teorien til praktisk implementation - Og dette giver points! }
 
 
+\subsection{Evaluating the SOSTOOLS Solution}
+If no solution is found, the tested closed-loop system $f_{cl}(x)$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(x)$ or \gls{sos} polynomials $q_j(x)$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
+
+When the \gls{sos} program is solved, the list of information printed out in the MATLAB terminal includes a number of useful parameters for evaluating the validity of the solution, summarized in \autoref{tab:sostools_evaluation}.
+If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being one, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to one for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
+The \texttt{residual norm} is the norm of the numerical error in the solution \citep{bib:sostools_manual}, and when numerical problems cause this error to exceed a tolerance set in the SOSTOOLS solver, this is indicated  as a warning of numerical errors with \texttt{numerr = 1}, while a numerical error of two indicates failure of the solver.
+
+A final test that the solution is valid is to check that the \gls{sos} inequalities, i.e. the formulation of the constraints according to \autoref{def:barrier_sos}, are \gls{sos}. This can be done by testing that each of the expressions can be resolved in the form in \autoref{eq:sos_f_squared} or \autoref{eq:sos_polynomial}, i.e. as $\sum f^2(x)$ or $Z^T(x)QZ(x)$ with the function \texttt{findsos} using the polynomial coefficients from the solution (using \texttt{sosgetsol} as described in \autoref{tab:sostools_syntax}). If any of the three expressions cannot be resolved in these forms, it can be concluded that it is not \gls{sos}, and hence the solution does not comply with the requirements for a barrier certificate, i.e. the solution is invalid.
+
+
+%Residual norm: 0.00019444
+%
+%iter: 17
+%feasratio: 0.9477
+%pinf: 0
+%dinf: 0
+%numerr: 0
+
+%"Feasibility ratio is the final value of the feasibility indicator. This indicator converges to 1 for problems with a complementary solution, and to −1 for strongly infeasible problems. If the feasibility ratio is somewhere in between, this is usually an indication of numerical problems. The values pinf and dinf detect the feasibility of the problem. If pinf = 1, then the primal problem is infeasible. If dinf = 1, the dual problem is infeasible. If numerr is positive, the optimization algorithm (i.e., the semidefinite program solver) terminated without achieving the desired accuracy. The value numerr = 1 gives a warning of numerical problems, while numerr = 2 indicates a complete failure due to numerical problems." 
+
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{p{3.5cm} X}
+		\rowcolor{HeaderBlue}
+	\textbf{Parameter} & \textbf{Explanation}\\	
+		\texttt{pinf = 0} & Primal infeasibility of the problem is indicated with \texttt{pinf = 1}\\
+		\rowcolor{textBlue}
+		\texttt{dinf = 0} & Dual infeasibility of the problem is indicated with \texttt{dinf = 1}\\
+		\texttt{feasratio = 1} & Feasibility ratio converges to 1 for feasible solutions and to -1 for strongly infeasible solutions, while values in between indicate numerical problems in the solution\\
+		\rowcolor{textBlue}
+		\texttt{numerr = 0} & Numerical error warning is indicated with \texttt{numerr = 1} if the residual norm exceeds a tolerance value (default to 1e-9, see \texttt{sossolve.m} line 61), and complete failure of the solution is indicated with \texttt{numerr = 2}\\
+		\texttt{Residual norm} & Norm of the numerical error in the solution \\
+		\rowcolor{textBlue}
+		\texttt{[Q,Z,f] = findsos(-B-g*q);} &  Test that the solution found complies with the requirement that the inequality is in fact \gls{sos} by checking that it can be resolved as \texttt{Z}$^T$\texttt{QZ} or $\sum$\texttt{f}$^2$\\
+		\rowcolor{textBlue}
+	\end{tabularx}
+	\caption{SOSTOOLS parameters useful in the evaluation of the validity of a solution  barrier function.}
+	\label{tab:sostools_evaluation}
+\end{table}

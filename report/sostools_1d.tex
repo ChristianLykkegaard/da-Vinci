@@ -1,46 +1,72 @@
 
-\section{Barrier Certificate Search for First Order 1D System}
-A barrier certificate search is tested on the first order system as described in \autoref{subsec:model_1d}, i.e. for the  1D state space system with $x_1\in\mathcal{X}\subset\mathbb{R}$ corresponding to the robot slide joint being the only degree of freedom (see \autoref{fig:safe:overview} for an overview of the slide movement), with a linear position controller as described in \autoref{sec:K_Nbar_1D_1storder}, thus a closed-loop system
-\begin{equation}
-\dot{x} = \textbf{A}x+\textbf{B}u = \textbf{A}x+\textbf{B}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x) = %-\tau^{-1}x+\tau^{-1}u=
--\tau^{-1}x+\tau^{-1}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x), \kk \text{with }\tau=110\,\text{ms}\label{eq:sos_firstorder}
-\end{equation}
-This system is used in the following subsections in the barrier function search.
+\section{Barrier Certificate Search for First Order Robot Slide System}\label{sec:sos_search_1storder}
+In order to search for a barrier certificate the robot slide system from \autoref{chap:cbf_1d_static} is reintroduced, and will be recapitulated along with new notation. As illustrated in \autoref{fig:slide_sos} the physical limits of the slide movement, $\pm 10$\,cm,  defines the set $\mathcal{X}$, and the unsafe region $\mathcal{X}_u$ is the upper 5\,cm of this interval. The safe set should be as large as possible, but due to the fact that the barrier certificate must have a minimum value of $\bar{\epsilon}$ on the unsafe set, the safe set $\mathcal{X}_0$ is separated from $\mathcal{X}_u$ by a small distance $\Delta$, as illustrated in \autoref{fig:sos_delta}. This can be summarized  (with units in meter) as
+\vspace{-2mm}
+\begin{itemize}
+\itemsep-0.7mm
+\item Considered subset of the state space is the interval between the physical limits of the slide movement, i.e. $\mathcal{X}=\{x\in [-0.1,0.1] \}\subset\mathbb{R}$
+\item The unsafe set is $\mathcal{X}_u=\{x\in [0.05,0.1] \}\subset\mathcal{X}$
+\item The safe set is as much of the remaining part of the considered set as possible, i.e. $\mathcal{X}_0=\{x\in [-0.1,0.05-\Delta] \}\subset\mathcal{X}\setminus\mathcal{X}_u$
+\end{itemize}
 
-\subsection{First Order System with Zero Reference}\label{subsec:zeroref}
-To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the simple 1D first order system with zero as reference position.
+\vspace{-10mm}
+\begin{figure}[H]
+	\centering\hspace{10mm}
+	\subbottom[Role of $\Delta$.]{\includegraphics[width=0.3\textwidth]{sos_delta.pdf}\label{fig:sos_delta}}%
+	\hspace{5mm}
+	\subbottom[Boundaries used in this section.]{\includegraphics[width=0.42\textwidth]{slide_sos.pdf}\label{fig:slide_sos}}%
+	\caption{The boundaries in slide position of the robotic instrument for each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$,  is visualized for the instrument house. The safe and unsafe sets are separated by a small distance $\Delta$ for the barrier certificate to be able to comply with \autoref{def:barrier_sos}.}
+	\label{fig:sos_slide}
+\end{figure}
+
+Using the first order linear model of the robot slide system described in \autoref{subsec:model_1d}, and  the linear position controller described in \autoref{sec:K_Nbar_1D_1storder} with proportional gain \textbf{K} and unity gain between reference and position secured by $\bar{\mathbf{N}}=\textbf{K}+1$, %giving input $u=\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x$, 
+the closed-loop system is recapitulated as
+%i.e. for the  1D state space system with $x_1\in\mathcal{X}\subset\mathbb{R}$ corresponding to the robot slide joint being the only degree of freedom (see \autoref{fig:safe:overview} for an overview of the slide movement), thus a closed-loop system
+\vspace{-1mm}
+\begin{align}
+\dot{x} = \textbf{A}x+\textbf{B}u &= \textbf{A}x+\textbf{B}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x)\nonumber\\
+&= \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \nonumber\\
+& = %-\tau^{-1}x+\tau^{-1}u=
+%-\tau^{-1}x+\tau^{-1}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x), 
+\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x),
+\kk\kk\mm \text{with }\tau=110\,\text{ms}\label{eq:sos_firstorder}
+\end{align}
+
+
+This system is used in the following subsections in the barrier function search.
+First with a reference in zero giving detailed explanations of the program formulation, and subsequently for the same system, testing for how wide a range of references safety can be guaranteed. Last, a coordinate shift from the position-reference-space to the error-space is performed in order to simplify the search for reference intervals yielding valid solutions.
+
+\subsection{Safety Verification of First Order System with Zero Reference}\label{subsec:zeroref}
+To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position.
 First, define the open-loop system, and design a controller (with pole placement) as described in \autoref{sec:K_Nbar_1D_1storder}.
 \begin{lstlisting}[language=matlab]
 % Time constant from measurement
 tau = 0.11;
-% State-space matrices from first order open-loop system
+% State-space matrices from first order system
 A = -1/tau;
 B = 1/tau;
-% Setpoint controller that is xx times faster than the system
-xx = 10;
-K = place(A,B,[xx*A]);
+K = place(A,B,10*eig(A));
 \end{lstlisting}
-Define the boundaries for each of the three sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ as given in \autoref{fig:slide} and \autoref{tab:intervals}, and define the desired distance $\Delta$ between the safe and unsafe sets and  the minimum value $\bar{\epsilon}$ of the barrier function on the unsafe set. %in order to get $\mathcal{X} =\{x\in[-0.1,0.1]\}$, $\mathcal{X}_u=\{x\in[0.05,0.1]\}$ and $\mathcal{X}_0=\{x\in[-0.1,0.05-\Delta]\}$.
+%Define the boundaries for each of the three sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ as given in \autoref{fig:slide_sos}, and 
+Define the desired distance $\Delta$ between the safe and unsafe sets along with  the minimum value $\bar{\epsilon}$ of the barrier function on the unsafe set. %in order to get $\mathcal{X} =\{x\in[-0.1,0.1]\}$, $\mathcal{X}_u=\{x\in[0.05,0.1]\}$ and $\mathcal{X}_0=\{x\in[-0.1,0.05-\Delta]\}$.
 \begin{lstlisting}[language=matlab]
-% scaling factor = 1/100 for [meter], or 1 for [cm]
-scale = 1/100;
-
 % Distance between defined safe and unsafe regions
-delta = 0.1*scale;
+delta = 1e-3;
 
 % Minimum value of the barrier certificate on the unsafe set Xu
-epsilon = 0.001;
-
-% Set upper and lower limits for the set intervals X, Xu and X0
-Xmax = 10*scale;
-Xmin = -10*scale;
-Xumax = Xmax;
-Xumin = 5*scale;
-X0max = Xumin-delta;
-X0min = Xmin;
+epsilon = 1e-3;
 \end{lstlisting}
+%% Set upper and lower limits for the set intervals X, Xu and X0
+%Xmax = 0.1;
+%Xmin = -0.1;
+%Xumax = Xmax;
+%Xumin = 0.05;
+%X0max = Xumin-delta;
+%X0min = Xmin;
+%\end{lstlisting}
 
-Then the symbolic state variables are declared for the SOS program in SOSTOOLS with the command \texttt{pvar} (which corresponds to the command \texttt{syms} in the MATLAB symbolic toolbox). Now the SOS program \texttt{prog} can be initialized using the function \texttt{sosprogram} which takes the state variable(s) as input. 
+Then the symbolic state variables are declared for the SOS program in SOSTOOLS with the command \texttt{pvar}. % (which corresponds to the command \texttt{syms} in the MATLAB symbolic toolbox). 
+Now the SOS program \texttt{prog} can be initialized using the function \texttt{sosprogram} which takes the state variable as input. 
 \begin{lstlisting}[language=matlab]
 % Declare state variables
 pvar x1
@@ -64,16 +90,16 @@ function [a,b,c] = parabola(p1,p2,a)
 	c=-a*p1^2-b*p1;
 end
 \end{lstlisting}
-Now declare the polynomial barrier function with the command \texttt{sospolyvar}. To do this, a monomial vector must be specified with \texttt{monomials} (see the monomial example in \autoref{eq:monomial_example}), which takes the state variable(s) and the monomial degree(s) as input. The monomial degrees for $B(x)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x)$ that is [0:4], i.e. a polynomial in $x_1$ of degrees zero through four.
+Now declare the polynomial barrier function with the command \texttt{sospolyvar}. To do this, a monomial vector must be specified with \texttt{monomials} (see the monomial example in \autoref{eq:monomial_example}), which takes the state variable and the monomial degree(s) as input. The monomial degrees for $B(x)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x)$ that is [0:4], i.e. a polynomial in $x_1$ of degrees zero through four.
 \begin{lstlisting}[language=matlab]
 % Declare the polynomial barrier function
 zB = monomials(x1,0:4);
 [prog,Bar] = sospolyvar(prog,zB);
 \end{lstlisting}
-Now the region $\mathcal{X}$ can be defined for the slide region $\pm0.1$\,m using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial}, i.e. $q=Z^TQZ$ (so the degree of $q$ is twice the degree of the monomial vector $Z$), and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
+Now the set $\mathcal{X}$ can be defined as the slide region according to \autoref{fig:slide_sos} using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial}, i.e. $q=Z^TQZ$ (so the degree of $q$ is twice the degree of the monomial vector $Z$), and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
 \begin{lstlisting}[language=matlab]
 % Define space X in Rn
-[a,b,c] = parabola(Xmin,Xmax); % get coefficients for parabola which is positive for x in [-0.1,0.1] m
+[a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1] m
 gX = a*x1^2+b*x1+c;
 
 zX = monomials(x1,0:4);
@@ -81,10 +107,10 @@ zX = monomials(x1,0:4);
 
 prog = sosineq(prog,-diff(Bar,x1)*fx-gX*qX);
 \end{lstlisting}
-Similarly, the region $\mathcal{X}_u$ is defined according to the SOS inequality in \autoref{cer2_putinar} as the area between slide positions 5-10\,cm as given by \autoref{fig:slide}.
+Similarly, the unsafe region $\mathcal{X}_u$ is defined according to the SOS inequality in \autoref{cer2_putinar} as the area between slide positions 5-10\,cm as given by \autoref{fig:slide_sos}.
 \begin{lstlisting}[language=matlab]
 % Define space Xu in X
-[a,b,c]=parabola(Xumin,Xumax);
+[a,b,c]=parabola(0.05,0.1);
 gXu = a*x1^2+b*x1+c;
 
 zXu = monomials(x1,0:4);
@@ -95,7 +121,7 @@ prog = sosineq(prog,Bar-epsilon-gXu*qXu);
 And finally the region $\mathcal{X}_0$ is defined according to the SOS inequality in \autoref{cer1_putinar} as $\mathcal{X}_0\subset\mathcal{X}\setminus\mathcal{X}_u$, separated from the unsafe set by the distance $\Delta$.
 \begin{lstlisting}[language=matlab]
 % Define space X0 in X
-[a,b,c]=parabola(X0min,X0max);
+[a,b,c]=parabola(-0.1,0.05-delta);
 gX0 = a*x1^2+b*x1+c;
 
 zX0 = monomials(x1,0:4);
@@ -103,7 +129,7 @@ zX0 = monomials(x1,0:4);
 
 prog = sosineq(prog,-Bar-gX0*qX0);
 \end{lstlisting}
-With all three areas defined according to \autoref{eq:barrier_constraints_putinar}, the program is ready to be solved by using the command \texttt{sossolve}. If a solution is found, an overview of the solution accuracy is printed in the MATLAB terminal as the residual norm, feasibility ratio, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \texttt{sosgetsol}.
+With all three areas defined according to \autoref{def:barrier_sos}, the program is ready to be solved by using the command \texttt{sossolve}. If a solution is found, an overview of the solution accuracy is printed in the MATLAB terminal as the residual norm, feasibility ratio, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \texttt{sosgetsol}.
 \begin{lstlisting}[language=matlab]
 % Solve for barrier certificate
 prog = sossolve(prog);
@@ -111,7 +137,7 @@ getB = sosgetsol(prog,Bar)
 \end{lstlisting}
 
 \vspace{-2mm}
-From the terminal printout it is verified that the problem is neiter primal or dual infeasible, and that the feasibility ratio for this solution is given as 1.0122, which is fairly close to 1 and hence indicates that the solution is valid. The solution is found in 15 iterations with a residual norm of 7.5521e-10 and no indication of numerical errors.
+From the terminal printout it is verified that the problem is neiter primal or dual infeasible, and that the feasibility ratio for this solution is given as 1.0122, which is fairly close to 1 and hence indicates that the solution is valid. The solution is found in 15 iterations with a residual norm of 7.5521e-10 and thereby no indication of numerical errors.
 
 To additionally verify that the solution is indeed valid, it is tested that the solution complies with the inequalities being \gls{sos} by testing if they can be resolved to the form in \autoref{eq:sos_polynomial}.
 \begin{lstlisting}[language=matlab]
@@ -124,7 +150,7 @@ getqX1 = sosgetsol(prog,qX);
 % Test if the inequalities are SOS
 [Q,~,~] = findsos(getB-epsilon-gXu*getqXu1);
 [Q2,~,~] = findsos(-getB-gX0*getqX01);
-[Q3,~,~] = findsos(-diff(getB,x1)*fx-gX*getqX1);
+[Q3,~,~] = findsos(-detdBdx*fx-gX*getqX1);
 \end{lstlisting}
 %Result
 %\begin{lstlisting}[language=matlab]
@@ -191,12 +217,18 @@ B(x_1) = 373.0249\cdot x_1^4 + 151.3339\cdot x_1^3 + 16.8843\cdot x_1^2 - 6.4509
 \end{equation}
 
 \vspace{-3mm}
-The first three coefficients of the polynomial barrier certificate are of ample size (not in the order 1e-5 or less), while the last seem unimportant. Decreasing the degree of the monomial $Z_B$ (and thereby\,the\,order of $B$) to [2:4] does, however, not prove a proper solution, as the inequality \autoref{cer3_putinar} cannot be resolved on the form in \autoref{eq:sos_polynomial} and hence is not \gls{sos}. The  barrier certificate is depicted in \autoref{fig:1D_1stordersys_noRef}.
+The first three coefficients of the polynomial barrier certificate are of ample size (not in the order 1e-5 or less), while the fourth seem unimportant. Decreasing the degree of the monomial $Z_B$ (and thereby\,the\,order of $B$) to [0,2:4] %does, however, not prove a proper solution, as the inequality \autoref{cer3_putinar} cannot be resolved on the form in \autoref{eq:sos_polynomial} and hence is not \gls{sos}. 
+gives the solution
+\begin{equation}
+B(x_1) = 290.559\cdot x_1^4 + 112.4642\cdot x_1^3 + 12.2165\cdot x_1^2 - 0.044304
+\end{equation}
+which is also a valid barrier certificate, found in 13 iterations with feasibility ratio 0.9797 and a residual norm of 1.0412e-09.
+The two barrier certificates are depicted in \autoref{fig:1D_1stordersys_noRef}, from which it is seen that they appear identical on the set $\mathcal{X}$, both complying with the requirements for a barrier certificate, i.e. they are positive ($B(x_1)\geq \bar{\epsilon}$) on $\mathcal{X}_u=\{x_1\in [0.05,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,0.05-\Delta]\}$, and their Lie derivatives are nonpositive on $\mathcal{X}=\{x_1\in [-0.1,0.1]\}$.
 
 \begin{figure}[htbp]
 \centering%	\hspace*{-12mm}
 \includegraphics[width=0.9\textwidth]{1D_1stordersys_noRef.pdf}
-	\caption{A barrier certificate is found with SOSTOOLS that complies with the requirements in \autoref{eq:barrier_constraints}: it is positive ($B(x_1)\geq \bar{\epsilon}$) on $\mathcal{X}_u=\{x_1\in [0.05,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,0.05-\Delta]\}$, and its Lie derivative is nonpositive on $\mathcal{X}=\{x_1\in [-0.1,0.1]\}$.}
+	\caption{Barrier certificates found with SOSTOOLS that comply with the requirements in \autoref{def:barrier_sos}. }
 	\label{fig:1D_1stordersys_noRef}
 \end{figure}
 
@@ -211,15 +243,15 @@ The first three coefficients of the polynomial barrier certificate are of ample 
 
 
 
-\subsection{Verifying a Range of Reference Positions for the First Order System}
+\subsection{Verifying a Range of Reference Positions for the First Order System}\label{sec:sos_1storder_references}
 
-Now a non-zero reference is introduced. As it is desired to verify a whole range of references, the barrier polynomial is now formulated as a function of both state and reference $B(x,x_\text{ref})$.
+Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x,x_\text{ref})$.
 The goal is to verify safety of the system in \autoref{eq:sos_firstorder} for a range of references, preferably for all references within the safe position interval, such that the sets would be as depicted in \autoref{fig:sos_Xregion}.
-However, from \autoref{eq:sos_firstorder} it can be seen that with the unity gain matrix $\bar{\mathbf{N}}$ the system can be  written as
-\begin{equation}
-\dot{x} = \tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x)\label{eq:1storder_christoffer}
-\end{equation}
-which will be zero when $x=x_\text{ref}$. This means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, and as this line is part of the safe region, it means that it will be a minimum value of the barrier function of negative value. In \autoref{fig:sos_Xregion_Bvalue} it can be seen that this minimum is very close to the zero level set around the unsafe region, requiring a very high degree polynomial to obtain this shape of zero level set. This can be resolved by decreasing the upper value of allowed references, as illustrated in \autoref{fig:sos_Xregion_Bvalue_limitref} with an example of a fairly smooth zero level set.
+%However, from \autoref{eq:sos_firstorder} it can be seen that with the unity gain matrix $\bar{\mathbf{N}}$ the system can be  written as
+%\begin{equation}
+%\dot{x} = \tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x)\label{eq:1storder_christoffer}
+%\end{equation}
+It can be seen from \autoref{eq:sos_firstorder} that the vector field will be zero when $x=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_Bvalue} with a green line. As this line crosses through the safe region, it means that it will be a minimum value of the barrier function of negative value. In \autoref{fig:sos_Xregion_Bvalue} it can be seen that this minimum is very close to the zero level set around the unsafe region, requiring a very high degree polynomial to obtain this shape of zero level set. This can be resolved by decreasing the upper value of allowed references, as illustrated in \autoref{fig:sos_Xregion_Bvalue_limitref} with an example of a fairly smooth zero level set.
 
 \begin{figure}[htbp]
 \centering
@@ -228,7 +260,7 @@ which will be zero when $x=x_\text{ref}$. This means that the Lie derivative of 
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_Xregion_Bvalue.pdf}\label{fig:sos_Xregion_Bvalue}}%
 \hspace{3mm}
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_Xregion_Bvalue_limitref.pdf}\label{fig:sos_Xregion_Bvalue_limitref}}%
-\caption{Outline of the safe and unsafe sets marking the value requirements for the barrier certificate as a function of the robot position and the reference position. \Autoref{fig:sos_Xregion} depicts a set $\mathcal{X}$ where all references within the safe positions are allowed. \Autoref{fig:sos_Xregion_Bvalue} sketches that $B(x)$ will have a minimum in $x=x_\text{ref}$ as inferred from \autoref{eq:1storder_christoffer}, and \autoref{fig:sos_Xregion_Bvalue_limitref} shows how an insoluble requirement for obtaining the zero level set may be relaxed by contracting the interval of allowed references.}
+\caption{Outline of the safe and unsafe sets marking the value requirements for the barrier certificate as a function of the robot position and the reference position. \Autoref{fig:sos_Xregion} depicts a set $\mathcal{X}$ where all references within the safe positions are allowed. \Autoref{fig:sos_Xregion_Bvalue} sketches that $B(x)$ will have a minimum in $x=x_\text{ref}$ as inferred from \autoref{eq:sos_firstorder}, and \autoref{fig:sos_Xregion_Bvalue_limitref} shows how an insoluble requirement for obtaining the zero level set may be relaxed by contracting the interval of allowed references.}
 \label{fig:sets_reference}
 \end{figure}
 
@@ -380,7 +412,7 @@ In \autoref{fig:1D_1stordersys_withRef_k02_B6_q4_e1} the value is increased even
 %increase $\bar{\epsilon}=1$ not working (for $\Delta=0.005$ at 1.7cm), increase $\Delta=0.01$ not working, down to 1.5cm not working, 1cm not working, increase $\Delta=0.02$ works feasr 0.9683 numerr 1 resnorm 0.0015249, this also works for 1.5cm feasr 1.0014 numerr 1 resnorm 0.00093821, not working at 2cm, decrease $\Delta=0.015$ still not working, or at 1.7cm, works at 1.6cm feasr 1.0134 numerr 1 resnorm 0.0016455, increasing $\Delta=0.02$ not working, or at $\Delta=0.01$
 
 \newpage
-\subsection{Considering the Error as the Independent Variable}
+\subsection{Considering the Error as the Independent Variable}\label{sec:sos_1storder_error}
 
 As it is seen from \autoref{tab:sostools_varying_param} there are quite a few tuning parameters when searching for a barrier certificate, and iteratively finding a combination giving as large an interval of allowed references within $\mathcal{X}_0$ as possible can be a long process. Recall the system:
 \begin{flalign*}
