@@ -84,7 +84,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 		Note that each expression in the inequalities in \autoref{def:barrier_sos} must have even degrees in the leading and trailing terms in order for the expressions to be \gls{sos}.
 	\end{itemize}
 	\item \textbf{Solve the SOS Program}\\
-	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Also, adjusting $\Delta$ and $\epsilon$ may increase the probability of finding a solution. Otherwise it can be concluded that safety cannot be guaranteed of the system under scrutiny and the set $\mathcal{X}_0$ may be forced smaller. 
+	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, adjusting the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Also, adjusting $\Delta$ and $\epsilon$ may increase the probability of finding a solution. Otherwise it can be concluded that safety cannot be guaranteed of the system under scrutiny and the set $\mathcal{X}_0$ may be forced smaller. 
 \end{itemize}
 
 
