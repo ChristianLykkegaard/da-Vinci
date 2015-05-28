@@ -23,11 +23,11 @@ the closed-loop system is recapitulated as
 %i.e. for the  1D state space system with $x_1\in\mathcal{X}\subset\mathbb{R}$ corresponding to the robot slide joint being the only degree of freedom (see \autoref{fig:safe:overview} for an overview of the slide movement), thus a closed-loop system
 \vspace{-1mm}
 \begin{align}
-\dot{x} = \textbf{A}x+\textbf{B}u &= \textbf{A}x+\textbf{B}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x)\nonumber\\
-&= \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \nonumber\\
+\dot{x}_1 = \textbf{A}x_1+\textbf{B}u &= \textbf{A}x_1+\textbf{B}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x_1)\nonumber\\
+&= \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x_1 + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \nonumber\\
 & = %-\tau^{-1}x+\tau^{-1}u=
 %-\tau^{-1}x+\tau^{-1}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x), 
-\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x),
+\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x_1),
 \kk\kk\mm \text{with }\tau=110\,\text{ms}\label{eq:sos_firstorder}
 \end{align}
 
@@ -36,7 +36,7 @@ This system is used in the following subsections in the barrier function search.
 First with a reference in zero giving detailed explanations of the program formulation, and subsequently for the same system, testing for how wide a range of references safety can be guaranteed. Last, a coordinate shift from the position-reference-space to the error-space is performed in order to simplify the search for reference intervals yielding valid solutions.
 
 \subsection{Safety Verification of First Order System with Zero Reference}\label{subsec:zeroref}
-To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position. Commands associated with SOSTOOLS is marked in brown in the following code snips. 
+To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position. Commands associated with SOSTOOLS is marked in brown in the following code snips. The full code can be found in \autoref{app:sos_noref} and on the attached cd on the path \texttt{matlab\_scripts/sostools/1storder\_noRef.m}
 
 Search for a barrier certificate by first defining the open-loop system, and designing a controller (with pole placement) as described in \autoref{sec:K_Nbar_1D_1storder}.
 \begin{lstlisting}[language=matlab]
@@ -245,14 +245,31 @@ It is noted that the safety verification is accomplished with a fourth order pol
 
 \subsection{Verifying a Range of Reference Positions for the First Order System}\label{sec:sos_1storder_references}
 
-Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x,x_\text{ref})$.
-The goal is to verify safety of the system in \autoref{eq:sos_firstorder} for a range of references, preferably for all references within the safe position interval, such that the sets would be as depicted in \autoref{fig:sos_Xregion}.
+Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x,x_\text{ref})$, thus implying that augmented state space equation equivalent to \autoref{eq:sos_firstorder}: 
 %However, from \autoref{eq:sos_firstorder} it can be seen that with the unity gain matrix $\bar{\mathbf{N}}$ the system can be  written as
-%\begin{equation}
-%\dot{x} = \tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x)\label{eq:1storder_christoffer}
-%\end{equation}
+\begin{equation}
+\dot{\begin{bmatrix}
+x_1\\x_\text{ref}
+\end{bmatrix}} 
+= \begin{bmatrix}
+\mathbf{A}+\textbf{BK} & \textbf{B}\bar{\mathbf{N}}\\
+0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_\text{ref}
+\end{bmatrix}
+= \begin{bmatrix}
+-\tau^{-1}(\mathbf{K}+1) & \tau^{-1}(\mathbf{K}+1)\\
+0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_\text{ref}
+\end{bmatrix}
+\label{eq:1storder_augmented}
+\end{equation}
 
-It can be seen from \autoref{eq:sos_firstorder} that the vector field will be zero when $x=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_dBdx} with a green line. To the upper left of this line the system will have positive time derivative, thus requiring that the derivative of the barrier function with respect to $x_1$ must be negative in this region in order to comply with \autoref{cer3} i.e. $L_{f_{cl}}B(x) \leq 0$. To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region.
+The goal is to verify safety of this system for a range of references, preferably for all references within the safe position interval, such that the sets would be as depicted in \autoref{fig:sos_Xregion}.
+It can be seen from \autoref{eq:1storder_augmented} that the vector field will be zero when $x=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_dBdx} with a green line. To the upper left of this line the system will have positive time derivative, thus requiring that the derivative of the barrier function with respect to $x_1$ must be negative in this region in order to comply with \autoref{cer3} i.e. $L_{f_{cl}}B(x) \leq 0$. To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region.
 
 Requiring a zero level set of the barrier certificate between $x_1=0.05-\Delta$ and $x_1=0.05$, this means that the value of $B(x)$ \textcolor{red}{something something}
 
