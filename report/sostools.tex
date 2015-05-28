@@ -26,7 +26,7 @@ An overview of necessary \gls{sos} functions is given in \autoref{tab:sostools_s
 		\texttt{[prog,B] = sospolyvar(prog,Z);} & Parametrize a polynomial \texttt{B} in the \gls{sos} program \texttt{prog}. The degree of the  polynomial is defined by the monomial vector \texttt{Z} of degree \texttt{deg} (i.e. deg(\texttt{B}) $=$ \texttt{deg})\\
 		\rowcolor{textBlue}
 		%\texttt{prog = soseq(prog,B-q);} & Declare the equality constraint \texttt{B-q} $=0$ in the \gls{sos} program \texttt{prog}\\
-		\texttt{prog = sosineq(prog,B-q);} & Declare the inequality constraint \texttt{B-q} $\geq 0$ (or more exact: \texttt{B-q} $\in\Sigma[x_1]$) in the \gls{sos} program \texttt{prog}\\
+		\texttt{prog = sosineq(prog,-B-q$\cdot$g);} & Declare the inequality constraint, e.g. \texttt{-B-q$\cdot$g} (or more exact: \texttt{-B-q$\cdot$g} $\in\Sigma[x_1]$) in the \gls{sos} program \texttt{prog}\\
 		%\rowcolor{textBlue}
 		\texttt{prog = sossolve(prog);} & Solve the \gls{sos} program \texttt{prog} i.e. find coefficients for all polynomials conforming with all constraints \\
 		\rowcolor{textBlue}
@@ -44,7 +44,7 @@ An \gls{sos} program is initialized with the command \texttt{sosprogram}, and po
 %
 %where \texttt{degrees} is the degrees of variables desired in the monomial; \texttt{[2 4]} would in this case give that \verb|Z = [x1^2; x1^4]| while \texttt{degrees = 0:2} would result in \verb|Z = [1; x1; x1^2]|. Declaring an SOS polynomial is done similarly to declaring an SOS variable
 %
-When the necessary SOS variables and polynomials are defined, the inequalities in \autoref{def:barrier_sos} can be defined with the function \texttt{sosineq}, and when all constraints are set up, the program is (attempted to be) solved by calling \texttt{sossolve}. This will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the function \texttt{sosgetsol}.
+When the necessary SOS variables and polynomials are defined, the inequalities in \autoref{def:barrier_sos} can be defined with the function \texttt{sosineq}, and when all constraints are set up, the program is (attempted to be) solved by calling \texttt{sossolve}. This will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the function \texttt{sosgetsol} (more about evaluating the solution is found in \autoref{subsec:eval_sos}).
 
 
 
@@ -98,7 +98,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 %\textcolor{red}{Og hvordan bruger I så det. Kør eksemplet videre, så det er klart hvordan (8.2e) oversættes til SOS program. Jeg synes I skal køre eksemplet hele vejen igennem og idregne det i SOSTOOLS. På denne måde overbeviser i læseren og, at I kan oversætte teorien til praktisk implementation - Og dette giver points! }
 
 
-\subsection{Evaluating the SOSTOOLS Solution}
+\subsection{Evaluating the SOSTOOLS Solution}\label{subsec:eval_sos}
 If no solution is found, the tested closed-loop system $f_{cl}(x)$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(x)$ or \gls{sos} polynomials $q_j(x)$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
 
 When the \gls{sos} program is solved, the list of information printed out in the MATLAB terminal includes a number of useful parameters for evaluating the validity of the solution, summarized in \autoref{tab:sostools_evaluation}.
