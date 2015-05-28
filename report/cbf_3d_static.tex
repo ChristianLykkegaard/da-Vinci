@@ -1,14 +1,25 @@
-This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. 
+This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus simulating a heart or another vital untouchable organ.
 \begin{figure}[H]
 \centering
 \subbottom[The Robotic patient manipulator.]{\includegraphics[width=0.45\textwidth]{rviz_09_17_18_frame1.pdf}\label{fig:rviz_09_17_18_frame}}%
 	\hspace*{5mm}
 \subbottom[The robot hand and instrument.]{\includegraphics[width=0.45\textwidth]{robot_hand_unsafe_region.pdf}\label{fig:robot_hand_unsafe_region}}%
-\caption{Patient manipulator and a fixed region within the reachable space $\mathcal{X}$ that is unsafe, $\mathcal{X}_u$, marked by a red ellipsoid.}
+\caption{Patient manipulator and a fixed region within the reachable space $\mathcal{X}$ that is unsafe, $\mathcal{X}_u$, marked by a red ellipsoid thus insinuating an ellipsoid as \gls{cbf}.}
 \label{fig:robot_hand_3d}
 \end{figure}
+Given the reachability of the robotic end effector which is tested to be roughly a square with the measures [0.2 0.2 0.2]\,m centered in (0,0,0), the sets considered in this chapter can be outlined in \autoref{tab:intervals_3d}.
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{X X X X}
+\rowcolor{HeaderBlue} 
+$\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ & $\mathcal{T}$ \\
+$\mathcal{X} = \{ x \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline $ {\color{white}{mmm}} y \in [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline ${\color{white}{mmm}} z \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] \}$ & 
+$\mathcal{X}_u = \{x \in [-r_x, r_x] $,\newline $ {\color{white}{mmmn}}y \in [-r_y, r_y] $,\newline ${\color{white}{mmmn}}z \in [-r_z, r_z] \}$  &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ consist of a layer around the ellipsoid with $\text{thickness}=1$.\\
+\end{tabularx}
+\caption{Sets considered in this chapter, where $r_x=0.03$\,m, $r_y=0.06$\,m, $r_z=0.03$\,m are lengths of the semi-axes of an ellipsoid and $\bar{\Lambda}_\text{lim}=0.1$m being the extremity of the box encircling the reachable space.}
+\label{tab:intervals_3d}
+\end{table}
 %
-In contrast to \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}, which solely comprise the prismatic slide joint, this chapter concerns the five independent revolute joints as well. Accordingly, this chapter presents the material required to be able to manoeuvre in the 3D Cartesian space and to be able to specify an unsafe set $\mathcal{X}_u$ encircled by an ellipsoid. This implies the topics:
+The theory, analysis and implementation aspects presented in this chapter differs from the previous work in this report. In contrast to \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}, which solely comprise the prismatic slide joint, this chapter concerns the five independent revolute joints as well. Accordingly, this chapter presents the material required to be able to manoeuvre in the 3D Cartesian space and to be able to specify an unsafe set $\mathcal{X}_u$ encircled by an ellipsoid. This implies the topics:
 \begin{itemize}
 \item Development of a sufficient model describing movement in three dimensions.
 \item Construction of a control barrier function fulfilling the demand for an ellipsoid encirclement of $\mathcal{X}_u$.
@@ -16,6 +27,7 @@ In contrast to \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}, w
 \item Implementation in MATLAB.
 \item Implementation on the Da Vinci robot. This entails a kinematic description of the robot links and joints such that a translation between the 3D Cartesian space and the 6D joint space can be established.
 \end{itemize}
+Thus the first topic will be to model the movement sufficiently.
 \section{Modelling of Robot Hand Movement in 3D}
 The system shall be modelled as a linear state space system on the form:
 \begin{flalign*}
@@ -60,19 +72,7 @@ The time constants are measured from \textcolor{red}{appendix ??} and found to:
 \end{flalign*}
 With a sufficient model established the \gls{cbf} can be considered.
 \section{Construction of CBF}
-Given the reachability of the robotic end effector which is tested to be roughly a square with the measures [0.2 0.2 0.2]\,m centered in (0,0,0), the sets considered can be outlined in \autoref{tab:intervals_3d}.
-\begin{table}[H]
-	\begin{tabularx}{\textwidth}{X X X X}
-\rowcolor{HeaderBlue} 
-$\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ & $\mathcal{T}$ \\
-$\mathcal{X} = \{ x \in  [-0.1, 0.1] $,\newline $ y \in [-0.1, 0.1] $,\newline $z \in  [-0.1, 0.1] \}$ & 
-$x \in \{ [-0.03, 0.03] \}$,\newline $y \in \{ [-0.06, 0.06] \}$,\newline $z \in \{ [-0.03, 0.03] \}$ &  lol & lol \\
-\end{tabularx}
-\caption{..}
-\label{tab:intervals_3d}
-\end{table}
-
-A \gls{cbf} is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart or another desired three dimensional region, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate CBF. A candidate CBF is proposed of the form:
+A \gls{cbf} is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart or another desired three dimensional region, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the CBF. The CBF is proposed of the form:
 \begin{equation}
 	B(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
 \end{equation}
@@ -82,19 +82,31 @@ A \gls{cbf} is proposed that complies with the first two constraints in \autoref
 	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$, an average heart size is [12,6,8]\,cm\\
 \end{tabular}\\
 
-An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, the zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
-
-\begin{figure}[htbp]
-	\centering
-	\hspace*{-15mm}
-	\includegraphics[width=0.7\textwidth]{zerolevelset_3d.pdf}
-	\caption{Example of a CBF on the form described in \autoref{eq:barrier_3d}, here with $\mathbf{c}= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $\mathbf{r}=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$. The zero level set is indicated by the red ellipsoid, while the black ellipsoid marks the one level set, indicating that the enclosed  region is the unsafe set $\mathcal{X}_u$).}
+The \gls{cbf} is visualized in \autoref{fig:zerolevelset_3d}. The zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
+\begin{figure}[H]
+\centering
+	\hspace*{-3cm}
+	\includegraphics[width=1.3\textwidth]{cbf_3d_init.eps}
+	\caption{BF on the form described in with center $\mathbf{c}= [0,\,\,\,\, 0\,\,\,\, -0]$ and $\mathbf{r}=[0.03,\,\,\,\, 0.05,\,\,\,\, 0.03]$.}
 	\label{fig:zerolevelset_3d}
 \end{figure}
-
-The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static_openloop}. This is done by splitting the constraint up into the combined constraints on $L_gB(\mathbf{x})$ and $L_fB(\mathbf{x})$ from \autoref{req2}, first testing where $L_gB_0(\mathbf{x})=0$:
-\begin{align}
-	L_gB_0(\mathbf{x}) = \frac{dB_0(\mathbf{x})}{d\mathbf{x}}g(\mathbf{x}) &= 
+%
+%\begin{figure}[H]
+%	\centering
+%	\hspace*{-15mm}
+%	\includegraphics[width=1.2\textwidth]{cbf_3d_init.eps}
+%	\caption{Example of a CBF on the form described in \autoref{eq:barrier_3d}, here with $\mathbf{c}= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $\mathbf{r}=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$. The zero level set is indicated by the red ellipsoid, while the black ellipsoid marks the one level set, indicating that the enclosed  region is the unsafe set $\mathcal{X}_u$).}
+%	\label{fig:zerolevelset_3d}
+%\end{figure}
+%The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static_openloop}. This is done by splitting the constraint up into the combined constraints on $L_gB(\mathbf{x})$ and $L_fB(\mathbf{x})$ from \autoref{req2}, first testing where $L_gB_0(\mathbf{x})=0$:
+As suggested in \autoref{req2}, if $L_fB(\textbf{x})\neq 0 \forall x$ then safety can always be guaranteed. Thus testing $L_fB(\textbf{x})$:
+\begin{flalign}
+	L_gB(\textbf{x}) = \frac{dB(\mathbf{x})}{d\mathbf{x}}g(\mathbf{x})\Bigm|_{g(\textbf{x})=\textbf{B}} &= \begin{bmatrix}
+	 \dfrac{\partial B(\textbf{x})}{\partial x_x} & \dfrac{\partial B(\textbf{x})}{\partial x_y} & \dfrac{\partial B(\textbf{x})}{\partial x_z}
+\end{bmatrix}\begin{bmatrix}
+		1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+	\end{bmatrix}	\nonumber \\
+	 &= 
 	\begin{bmatrix} 
 		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
 	\end{bmatrix}
@@ -105,7 +117,7 @@ The third constraint in \autoref{def:barrier_certificate} is tested for a barrie
 	\begin{bmatrix} 
 		\frac{1}{r_x^2\tau_x}(c_x-x_x) & \frac{1}{r_y^2\tau_y}(c_y-x_y) & \frac{1}{r_z^2\tau_z}(c_z-x_z) 
 	\end{bmatrix}
-\end{align}
+\end{flalign}
 It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
 \begin{align}
 	L_fB_0(\mathbf{x}) &= \frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
