@@ -1,6 +1,7 @@
 
-\section{Barrier Certificate Search for Second Order 1D System}\label{sec:sos_2ndorder_error}
-Now a second order model of the robot slide position is used in the search for a barrier certificate for the 1D system, with the system model as found in \autoref{subsec:model_2d}
+\section{Barrier Certificate Search for Second Order Robot Slide System}\label{sec:sos_2ndorder_error}
+
+To complete the construction of barrier certificates with SOSTOOLS for the robot slide movement, parallel to the construction of \glspl{cbf} in \autoref{chap:cbf_1d_static}, and in order to test SOSTOOLS on a system of a higher state space dimension, the second order model of the robot slide position from \autoref{subsec:model_2d} is reintroduced. As for the first order system, a linear position controller is tested for safety compliance, using the same controller gains as presented in \autoref{sec:K_Nbar_1D_2ndorder} with proportional gain $\mathbf{K}=[K_1\,\,\,\,K_2]=[5.1728\,\,\,\,0.2142]$ and unity gain between reference and position secured by $\bar{\mathbf{N}}=K_1+1=6.1728$. The closed-loop second order system with $x_1=$ position and $x_2=$ velocity of the end-effector, is recapitulated as
 \begin{equation}
 \dot{\mathbf{x}}= 
 \begin{bmatrix}
@@ -14,7 +15,8 @@ Now a second order model of the robot slide position is used in the search for a
  \kk \text{with }
  \omega_n = 17 \,\text{rad/s}, \quad \zeta = 0.55
 \end{equation}
-where again the matrix $\bar{\mathbf{N}}$ ensures unity gain between the position and its reference, which means that $\bar{\mathbf{N}}=K_1+1$. Now the position error is 
+%where again the matrix $\bar{\mathbf{N}}$ ensures unity gain between the position and its reference, which means that $\bar{\mathbf{N}}=K_1+1$. Now the position error is 
+giving the error dynamics
 \begin{align*}
 x_\text{err,1}&=x_\text{ref}-x_1\\
 \dot{x}_\text{err,1} &= -\dot{x}_1 \,=-x_2=x_\text{err,2}\\
@@ -24,7 +26,7 @@ x_\text{err,1}&=x_\text{ref}-x_1\\
 %- 5.173\dot{x}_1(t)  -  0.214\dot{x}_2(t) &= -5.173x_2 -0.214(- \omega_n^2 x_1 - 2\zeta \omega_n x_2 + \omega_n^2 x_\text{err} )\nonumber\\
 %&= (0.214\cdot2\zeta \omega_n - 5.173)x_2 + 0.214\omega_n^2\underbrace{(x_1-x_\text{err})}_{\textcolor{red}{x_\text{ref} ???}}
 \end{align*}
-giving the error state-space equation
+which can be compressed to standard state space form as
 \begin{equation}
 \dot{\mathbf{x}}_\text{err}= 
 \dot{\begin{bmatrix}
@@ -46,9 +48,9 @@ As for the first order system, the unsafe set is $\mathcal{X}_u=\{x_1\in[0.05,0.
 	\centering
 	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_2d_2ndorder.pdf}\label{fig:sos_error_2d_2ndorder}}%
 	\hspace{3mm}
-	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_1d.pdf}\label{fig:sos_error_1d_2ndorder}}%
-	\hspace{3mm}
-	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_errorref_1d.pdf}\label{fig:sos_errorref_1d_2ndorder}}%
+\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_delta_error_2ndorder.pdf}\label{fig:sos_delta_error_2ndorder}}%
+\hspace{3mm}
+\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_errorref_1d_new_2ndorder.pdf}\label{fig:sos_errorref_1d_new_2ndorder}}%
 	\caption{With references given outside the unsafe region, system safety can be guaranteed if the error is certified to stay above the value $-\delta_\text{err}$. When this is the case, system safety is guaranteed for all references up to a safety distance of $\delta_\text{err}$ from the unsafe set.}
 	\label{fig:sets_error_2ndorder}
 \end{figure}
@@ -62,19 +64,19 @@ Again, the same parameters as in \autoref{sec:sos_1storder_references} and \ref{
 	\label{fig:1D_2ndordersys_error_B4_q1_e5-2_d5-3_8mm}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{1D_2ndordersys_error_B6_q2_e5-2_d5-3_8mm.pdf}
-	\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=5$e-2, $\Delta=5$\,mm and $\delta_\text{err}=8$\,mm gives \texttt{feasratio=0.9500} and \texttt{Residual norm=1.8e-5}.}
-	\label{fig:1D_2ndordersys_error_B6_q2_e5-2_d5-3_8mm}
-\end{figure}
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=\textwidth]{1D_2ndordersys_error_B6_q2_e5-2_d5-3_8mm.pdf}
+%	\caption{Barrier certificate of degree [0:6], all \gls{sos} polynomials of degree [0:2], $\bar{\epsilon}=5$e-2, $\Delta=5$\,mm and $\delta_\text{err}=8$\,mm gives \texttt{feasratio=0.9500} and \texttt{Residual norm=1.8e-5}.}
+%	\label{fig:1D_2ndordersys_error_B6_q2_e5-2_d5-3_8mm}
+%\end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{1D_2ndordersys_error_B8_q3_e5-2_d5-3_8mm.pdf}
-	\caption{Barrier certificate of degree [0:8], all \gls{sos} polynomials of degree [0:3], $\bar{\epsilon}=5$e-2, $\Delta=5$\,mm and $\delta_\text{err}=8$\,mm gives \texttt{feasratio=0.9882} and \texttt{Residual norm=4.5e-5}.}
-	\label{fig:1D_2ndordersys_error_B8_q3_e5-2_d5-3_8mm}
-\end{figure}
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=\textwidth]{1D_2ndordersys_error_B8_q3_e5-2_d5-3_8mm.pdf}
+%	\caption{Barrier certificate of degree [0:8], all \gls{sos} polynomials of degree [0:3], $\bar{\epsilon}=5$e-2, $\Delta=5$\,mm and $\delta_\text{err}=8$\,mm gives \texttt{feasratio=0.9882} and \texttt{Residual norm=4.5e-5}.}
+%	\label{fig:1D_2ndordersys_error_B8_q3_e5-2_d5-3_8mm}
+%\end{figure}
 
 Three examples of solutions are seen in \autoref{fig:1D_2ndordersys_error_B4_q1_e5-2_d5-3_8mm}, \ref{fig:1D_2ndordersys_error_B6_q2_e5-2_d5-3_8mm} and \ref{fig:1D_2ndordersys_error_B8_q3_e5-2_d5-3_8mm} with $\delta_\text{err}=8$\,mm and with a minimum value in the unsafe set $\bar{\epsilon}=5$e-2. Compared to the first order system increasing the degrees of the barrier function and the \gls{sos} polynomials  more clearly causes a scaling of the functional values, while the curves are close to identical in shape on the sets. The residual norm of the solution is growing when the polynomial degrees are increased, confirming the intuition that it is preferred to keep the polynomial degrees as low as possible. Numerical problems are reported for all three solutions as for almost all solutions found, however, numerical errors are only indicated for the two lowest-order polynomials plotted in \autoref{fig:1D_2ndordersys_error_B4_q1_e5-2_d5-3_8mm} and \ref{fig:1D_2ndordersys_error_B6_q2_e5-2_d5-3_8mm}, but not for the solution plotted in \autoref{fig:1D_2ndordersys_error_B8_q3_e5-2_d5-3_8mm}.
 
