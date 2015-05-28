@@ -1,6 +1,6 @@
 
 \section{Barrier Certificate Search for First Order Robot Slide System}\label{sec:sos_search_1storder}
-In order to search for a barrier certificate the robot slide system from \autoref{chap:cbf_1d_static} is reintroduced, and will be recapitulated along with new notation. As illustrated in \autoref{fig:slide_sos} the physical limits of the slide movement, $\pm 10$\,cm,  defines the set $\mathcal{X}$, and the unsafe region $\mathcal{X}_u$ is the upper 5\,cm of this interval. The safe set should be as large as possible, but due to the fact that the barrier certificate must have a minimum value of $\bar{\epsilon}$ on the unsafe set, the safe set $\mathcal{X}_0$ is separated from $\mathcal{X}_u$ by a small distance $\Delta$, as illustrated in \autoref{fig:sos_delta}. This can be summarized  (with units in meter) as
+In order to search for a barrier certificate the robot slide system from \autoref{chap:cbf_1d_static} is reintroduced, and will be recapitulated along with new notation. As illustrated in \autoref{fig:sos_slide} the physical limits of the slide movement, $\pm 10$\,cm,  defines the set $\mathcal{X}$, and the unsafe region $\mathcal{X}_u$ is the upper 5\,cm of this interval. The safe set should be as large as possible, but due to the fact that the barrier certificate must have a minimum value of $\bar{\epsilon}$ on the unsafe set, the safe set $\mathcal{X}_0$ is separated from $\mathcal{X}_u$ by a small distance $\Delta$, as was illustrated in \autoref{fig:sos_delta1}. This can be summarized  (with units in meter) as
 \vspace{-2mm}
 \begin{itemize}
 \itemsep-0.7mm
@@ -8,14 +8,13 @@ In order to search for a barrier certificate the robot slide system from \autore
 \item The unsafe set is $\mathcal{X}_u=\{x\in [0.05,0.1] \}\subset\mathcal{X}$
 \item The safe set is as much of the remaining part of the considered set as possible, i.e. $\mathcal{X}_0=\{x\in [-0.1,0.05-\Delta] \}\subset\mathcal{X}\setminus\mathcal{X}_u$
 \end{itemize}
+It is noted that the design criteria differ from the criteria in \autoref{chap:cbf_1d_static} given that the barrier certificate now must be valid in the entire safe region.
 
-\vspace{-10mm}
+\vspace{-2mm}
 \begin{figure}[H]
 	\centering\hspace{10mm}
-	\subbottom[Role of $\Delta$.]{\includegraphics[width=0.3\textwidth]{sos_delta.pdf}\label{fig:sos_delta}}%
-	\hspace{5mm}
-	\subbottom[Boundaries used in this section.]{\includegraphics[width=0.42\textwidth]{slide_sos.pdf}\label{fig:slide_sos}}%
-	\caption{The boundaries in slide position of the robotic instrument for each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$,  is visualized for the instrument house. The safe and unsafe sets are separated by a small distance $\Delta$ for the barrier certificate to be able to comply with \autoref{def:barrier_sos}.}
+\includegraphics[width=0.42\textwidth]{slide_sos.pdf}
+\caption{The boundaries in slide position of the robotic instrument for each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$,  is visualized for the instrument house.}
 	\label{fig:sos_slide}
 \end{figure}
 
@@ -24,11 +23,11 @@ the closed-loop system is recapitulated as
 %i.e. for the  1D state space system with $x_1\in\mathcal{X}\subset\mathbb{R}$ corresponding to the robot slide joint being the only degree of freedom (see \autoref{fig:safe:overview} for an overview of the slide movement), thus a closed-loop system
 \vspace{-1mm}
 \begin{align}
-\dot{x} = \textbf{A}x+\textbf{B}u &= \textbf{A}x+\textbf{B}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x)\nonumber\\
-&= \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \nonumber\\
+\dot{x}_1 = \textbf{A}x_1+\textbf{B}u &= \textbf{A}x_1+\textbf{B}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x_1)\nonumber\\
+&= \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x_1 + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \nonumber\\
 & = %-\tau^{-1}x+\tau^{-1}u=
 %-\tau^{-1}x+\tau^{-1}(\bar{\mathbf{N}}x_\text{ref}-\textbf{K}x), 
-\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x),
+\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x_1),
 \kk\kk\mm \text{with }\tau=110\,\text{ms}\label{eq:sos_firstorder}
 \end{align}
 
@@ -37,8 +36,9 @@ This system is used in the following subsections in the barrier function search.
 First with a reference in zero giving detailed explanations of the program formulation, and subsequently for the same system, testing for how wide a range of references safety can be guaranteed. Last, a coordinate shift from the position-reference-space to the error-space is performed in order to simplify the search for reference intervals yielding valid solutions.
 
 \subsection{Safety Verification of First Order System with Zero Reference}\label{subsec:zeroref}
-To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position.
-First, define the open-loop system, and design a controller (with pole placement) as described in \autoref{sec:K_Nbar_1D_1storder}.
+To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position. Commands associated with SOSTOOLS is marked in brown in the following code snips. The full code can be found in \autoref{app:sos_noref} and on the attached cd on the path \texttt{matlab\_scripts/sostools/1storder\_noRef.m}
+
+Search for a barrier certificate by first defining the open-loop system, and designing a controller (with pole placement) as described in \autoref{sec:K_Nbar_1D_1storder}.
 \begin{lstlisting}[language=matlab]
 % Time constant from measurement
 tau = 0.11;
@@ -96,7 +96,7 @@ Now declare the polynomial barrier function with the command \texttt{sospolyvar}
 zB = monomials(x1,0:4);
 [prog,Bar] = sospolyvar(prog,zB);
 \end{lstlisting}
-Now the set $\mathcal{X}$ can be defined as the slide region according to \autoref{fig:slide_sos} using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial}, i.e. $q=Z^TQZ$ (so the degree of $q$ is twice the degree of the monomial vector $Z$), and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
+Now the set $\mathcal{X}$ can be defined as the slide region according to \autoref{fig:sos_slide} using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial}, i.e. $q=Z^TQZ$ (so the degree of $q$ is twice the degree of the monomial vector $Z$), and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
 \begin{lstlisting}[language=matlab]
 % Define space X in Rn
 [a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1] m
@@ -107,7 +107,7 @@ zX = monomials(x1,0:4);
 
 prog = sosineq(prog,-diff(Bar,x1)*fx-gX*qX);
 \end{lstlisting}
-Similarly, the unsafe region $\mathcal{X}_u$ is defined according to the SOS inequality in \autoref{cer2_putinar} as the area between slide positions 5-10\,cm as given by \autoref{fig:slide_sos}.
+Similarly, the unsafe region $\mathcal{X}_u$ is defined according to the SOS inequality in \autoref{cer2_putinar} as the area between slide positions 5-10\,cm as given by \autoref{fig:sos_slide}.
 \begin{lstlisting}[language=matlab]
 % Define space Xu in X
 [a,b,c]=parabola(0.05,0.1);
@@ -209,7 +209,7 @@ getqX1 = sosgetsol(prog,qX);
 %1492.0996*x1^3 + 454.0017*x1^2 + 33.7686*x1 - 6.4509e-06
 %\end{lstlisting}
 
-\vspace{-2mm}
+\vspace{-5mm}
 This is indeed the case, and it is thereby verified that a barrier certificate is found for the closed-loop system in \autoref{eq:sos_firstorder}, namely
 \vspace{-2mm}
 \begin{equation}
@@ -223,7 +223,7 @@ gives the solution
 B(x_1) = 290.559\cdot x_1^4 + 112.4642\cdot x_1^3 + 12.2165\cdot x_1^2 - 0.044304
 \end{equation}
 which is also a valid barrier certificate, found in 13 iterations with feasibility ratio 0.9797 and a residual norm of 1.0412e-09.
-The two barrier certificates are depicted in \autoref{fig:1D_1stordersys_noRef}, from which it is seen that  both comply with the requirements for a barrier certificate, i.e. they are positive ($B(x_1)\geq \bar{\epsilon}$) on $\mathcal{X}_u=\{x_1\in [0.05,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,0.05-\Delta]\}$, and their Lie derivatives are nonpositive on $\mathcal{X}=\{x_1\in [-0.1,0.1]\}$.
+The two barrier certificates are depicted in \autoref{fig:1D_1stordersys_noRef}, from which it is seen that  both comply with the requirements for a barrier certificate, i.e. they are positive ($B(x_1)\geq \bar{\epsilon}$) on $\mathcal{X}_u=\{x_1\in [0.05,0.1]\}$ and negative on $\mathcal{X}_0=\{x_1\in [-0.1,0.05-\Delta]\}$, and their Lie derivatives are nonpositive on $\mathcal{X}=\{x_1\in [-0.1,0.1]\}$, in accordance with \autoref{def:barrier_certificate}. It is also seen that the value of each of the barrier certificates on the set $\mathcal{X}$ seem reasonable being neither exceptionally small or large, verifying that the choice of $\bar{\epsilon}$ seems reasonable.
 
 \begin{figure}[htbp]
 \centering%	\hspace*{-12mm}
@@ -232,7 +232,7 @@ The two barrier certificates are depicted in \autoref{fig:1D_1stordersys_noRef},
 	\label{fig:1D_1stordersys_noRef}
 \end{figure}
 
-
+It is noted that the safety verification is accomplished with a fourth order polynomial barrier certificate, while it can be argued that it could be possible with a second order polynomial. This is, however, not important for the safety verification of the system, where the conclusion is that a solution can be found, thus the system is safe.
 
 
 
@@ -245,14 +245,31 @@ The two barrier certificates are depicted in \autoref{fig:1D_1stordersys_noRef},
 
 \subsection{Verifying a Range of Reference Positions for the First Order System}\label{sec:sos_1storder_references}
 
-Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x,x_\text{ref})$.
-The goal is to verify safety of the system in \autoref{eq:sos_firstorder} for a range of references, preferably for all references within the safe position interval, such that the sets would be as depicted in \autoref{fig:sos_Xregion}.
+Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x,x_\text{ref})$, thus implying that augmented state space equation equivalent to \autoref{eq:sos_firstorder}: 
 %However, from \autoref{eq:sos_firstorder} it can be seen that with the unity gain matrix $\bar{\mathbf{N}}$ the system can be  written as
-%\begin{equation}
-%\dot{x} = \tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x)\label{eq:1storder_christoffer}
-%\end{equation}
+\begin{equation}
+\dot{\begin{bmatrix}
+x_1\\x_\text{ref}
+\end{bmatrix}} 
+= \begin{bmatrix}
+\mathbf{A}+\textbf{BK} & \textbf{B}\bar{\mathbf{N}}\\
+0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_\text{ref}
+\end{bmatrix}
+= \begin{bmatrix}
+-\tau^{-1}(\mathbf{K}+1) & \tau^{-1}(\mathbf{K}+1)\\
+0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\x_\text{ref}
+\end{bmatrix}
+\label{eq:1storder_augmented}
+\end{equation}
 
-It can be seen from \autoref{eq:sos_firstorder} that the vector field will be zero when $x=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_dBdx} with a green line. To the upper left of this line the system will have positive time derivative, thus requiring that the derivative of the barrier function with respect to $x_1$ must be negative in this region in order to comply with \autoref{cer3} i.e. $L_{f_{cl}}B(x) \leq 0$. To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region.
+The goal is to verify safety of this system for a range of references, preferably for all references within the safe position interval, such that the sets would be as depicted in \autoref{fig:sos_Xregion}.
+It can be seen from \autoref{eq:1storder_augmented} that the vector field will be zero when $x=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_dBdx} with a green line. To the upper left of this line the system will have positive time derivative, thus requiring that the derivative of the barrier function with respect to $x_1$ must be negative in this region in order to comply with \autoref{cer3} i.e. $L_{f_{cl}}B(x) \leq 0$. To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region.
 
 Requiring a zero level set of the barrier certificate between $x_1=0.05-\Delta$ and $x_1=0.05$, this means that the value of $B(x)$ \textcolor{red}{something something}
 
