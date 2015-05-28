@@ -84,7 +84,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 		Note that each expression in the inequalities in \autoref{def:barrier_sos} must have even degrees in the leading and trailing terms in order for the expressions to be \gls{sos}.
 	\end{itemize}
 	\item \textbf{Solve the SOS Program}\\
-	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Otherwise it can be concluded that safety cannot be guaranteed of the  system under scrutiny. 
+	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Also, adjusting $\Delta$ and $\epsilon$ may increase the probability of finding a solution. Otherwise it can be concluded that safety cannot be guaranteed of the system under scrutiny and the set $\mathcal{X}_0$ may be forced smaller. 
 \end{itemize}
 
 
@@ -102,8 +102,8 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 If no solution is found, the tested closed-loop system $f_{cl}(x)$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(x)$ or \gls{sos} polynomials $q_j(x)$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
 
 When the \gls{sos} program is solved, the list of information printed out in the MATLAB terminal includes a number of useful parameters for evaluating the validity of the solution, summarized in \autoref{tab:sostools_evaluation}.
-If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being one, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to one for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
-The \texttt{residual norm} is the norm of the numerical error in the solution \citep{bib:sostools_manual}, and when numerical problems cause this error to exceed a tolerance set in the SOSTOOLS solver, this is indicated  as a warning of numerical errors with \texttt{numerr = 1}, while a numerical error of two indicates failure of the solver.
+If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being 1, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to 1 for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
+The \texttt{residual norm} is the norm of the numerical error in the solution \citep{bib:sostools_manual}, and when numerical problems cause this error to exceed a tolerance set in the SOSTOOLS solver, this is indicated  as a warning of numerical errors with \texttt{numerr = 1}, while a numerical error of 2 indicates failure of the solver.
 
 %Residual norm: 0.00019444
 %
