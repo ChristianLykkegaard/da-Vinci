@@ -158,11 +158,18 @@ In summary, referring to the requirements for a barrier certificate in \autoref{
 %Note that the inequality is on positivity in \autoref{cer2} whereas it is on nonnegativity (being \gls{sos}) in \autoref{eq:putinar_set_sos}. By introducing an arbitrarily small $\epsilon>0$ the positivity constraint can be cast as the nonnegativity constraint in the  SOS inequality of \autoref{cer2_putinar}. %This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level. 
 
 %\vspace{-15mm}
-With this formulation the Lie derivative is required to be nonpositive on set $\mathcal{X}$ and the barrier certificate is required to be nonpositive on the safe set $\mathcal{X}_0$ and greater than or equal to the constant $\bar{\epsilon}$ on the unsafe set $\mathcal{X}_u$. When defining the sets, the safe and unsafe regions must be separated by some distance $\Delta$.
+With this formulation the Lie derivative is required to be nonpositive on set $\mathcal{X}$ and the barrier certificate is required to be nonpositive on the safe set $\mathcal{X}_0$ and greater than or equal to the constant $\bar{\epsilon}$ on the unsafe set $\mathcal{X}_u$. When defining the sets, the safe and unsafe regions must be separated by some distance $\Delta$. This is illustrated in \autoref{fig:sos_delta1}.
 
-The task of searching for a barrier certificate validating system safety is now a matter of the fairly easy construction of the polynomials $g_j(x)$ to define the desired outline of each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ in SOSTOOLS. However, it is also a matter of deciding the polynomial degree (through monomials) of $B(x)$ and of each of the \gls{sos} polynomials $q_j(x)$. As small a degree "as possible" is desired for all monomials, but it may be necessary to increase the degree iteratively. This introduces numerical errors, which may require that the size of $\bar{\epsilon}$ must be increased. When no solution can be found, it may be necessary to increase the  distance $\Delta$ separating the safe and unsafe regions, i.e. contract the safe region by altering the polynomials $g_j(x)$ outlining the region.
+The task of searching for a barrier certificate validating system safety is now a matter of the fairly easy construction of the polynomials $g_j(x)$ to define the desired outline of each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$, as in the example in \autoref{fig:1stordersys_staticlimits_g}, in SOSTOOLS. However, it is also a matter of deciding the polynomial degree (through monomials) of $B(x)$ and of each of the \gls{sos} polynomials $q_j(x)$. As small a degree "as possible" is desired for all monomials, but it may be necessary to increase the degree iteratively. This introduces numerical errors, which may require that the size of $\bar{\epsilon}$ must be increased. When no solution can be found, it may be necessary to increase the  distance $\Delta$ separating the safe and unsafe regions, i.e. contract the safe region by altering the polynomials $g_j(x)$ outlining the region.
 
 %\textcolor{red}{Bemærk, at denne sætning ikke siger hvor høj grad I skal vælge qerne. (husk at tænke på dette)}
+
+\begin{figure}[H]
+\centering\hspace{10mm}
+\includegraphics[width=0.3\textwidth]{sos_delta.pdf}
+\caption{The value of $B(x)$ on the unsafe set is at least the small positive value $\bar{\epsilon}$, while the value on the safe set is nonpositive. This requires that the two sets are separated by a small distance\,$\Delta$.}
+	\label{fig:sos_delta1}
+\end{figure}
 
 In the following chapter the syntax for SOSTOOLS is introduced and barrier certificates are sought to validate safety of systems, based on linear closed-loop systems representing the da Vinci robot from the preceding chapters.
 
