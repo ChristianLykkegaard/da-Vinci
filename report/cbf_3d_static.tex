@@ -60,17 +60,27 @@ The time constants are measured from \textcolor{red}{appendix ??} and found to:
 \end{flalign*}
 With a sufficient model established the \gls{cbf} can be considered.
 \section{Construction of CBF}
-A candidate barrier certificate is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate CBF. A candidate CBF is proposed of the form:
+Given the reachability of the robotic end effector which is tested to be roughly a square with the measures [0.2 0.2 0.2]\,m centered in (0,0,0), the sets considered can be outlined in \autoref{tab:intervals_3d}.
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{X X X X}
+\rowcolor{HeaderBlue} 
+$\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ & $\mathcal{T}$ \\
+$\mathcal{X} = \{ x \in  [-0.1, 0.1] $,\newline $ y \in [-0.1, 0.1] $,\newline $z \in  [-0.1, 0.1] \}$ & 
+$x \in \{ [-0.03, 0.03] \}$,\newline $y \in \{ [-0.06, 0.06] \}$,\newline $z \in \{ [-0.03, 0.03] \}$ &  lol & lol \\
+\end{tabularx}
+\caption{..}
+\label{tab:intervals_3d}
+\end{table}
+
+A \gls{cbf} is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart or another desired three dimensional region, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate CBF. A candidate CBF is proposed of the form:
 \begin{equation}
-	B_0(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
+	B(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
 \end{equation}
 \begin{tabular}{rl}
 	where&\\
 	$[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid, $\mathbf{c}\in\mathbb{R}^3$ \\
 	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$, an average heart size is [12,6,8]\,cm\\
 \end{tabular}\\
-
-\textcolor{red}{Where should we define the center of the ellipsoid - should be such that the tool can reach all the way around it (but not necessarily below)}
 
 An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, the zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
 
