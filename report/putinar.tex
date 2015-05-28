@@ -1,15 +1,15 @@
-The construction of a valid barrier certificate can be a non-trivial task, as it was seen in the construction of a \gls{cbf} for the second order system in \autoref{subsec:cbf-2order}, and with increasing order of the system for which safety need be guaranteed the difficulty rapidly increases. Hence it is desired to use a more methodical approach to construct barrier certificates, and for this purpose the MATLAB toolbox SOSTOOLS can be used \citep{bib:prajna_framework} (for acquisition, see \autoref{app:sostools}). This toolbox requires that the problem is cast as a \gls{sos} program, which is why this chapter is dedicated to give an introduction to the concept of \gls{sos} and how the barrier certificate definition can be recast as a \gls{sos} problem.
+The construction of a valid barrier certificate can be a non-trivial task, as it was seen in the construction of a \gls{cbf} for the second order system in \autoref{subsec:cbf-2order}. And with increasing order of the system for which safety need to be guaranteed the difficulty rapidly increases. Hence it is desired to use a more methodical approach to construct barrier certificates, and for this purpose the MATLAB toolbox SOSTOOLS can be used \citep{bib:prajna_framework} (for acquisition, see \autoref{app:sostools}). This toolbox requires that the problem is cast as a \gls{sos} program, which is why this chapter is dedicated to give an introduction to the concept of \gls{sos} and how the barrier certificate definition can be recast as an \gls{sos} problem.
 
 %This chapter describes and establishes the theory applied when the analysis approach is adopted, i.e. to analyse if a given closed loop system is safe.
 Now, instead of manually constructing a \gls{cbf} for the open-loop system in order to design a safety controller from it, a barrier certificate for a closed-loop system is sought with SOSTOOLS.
 When a barrier certificate can be found for a closed-loop system $f_{cl}(x)$ according to \autoref{def:barrier_certificate} this signifies a verification that the system, and hence the controller, is safe according to the outlined problem. 
 %Barrier certificates can be used to (in)validate the safety compliance of a controller design by testing if a barrier certificate can be found according to \autoref{eq:barrier_constraints} for the closed-loop system $f_{cl}(x)$. 
-SOSTOOLS can be used to search for a polynomial barrier certificate given that \citep{bib:prajna_framework}
+SOSTOOLS can be used to search for a polynomial barrier certificate given that: \citep{bib:prajna_framework}
 \vspace{-2mm}
 \begin{itemize}
 	\itemsep-0.5mm
-\item the vector field of the closed-loop system is polynomial
-\item the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ can be described as intervals in each of the $n$ dimensions, which can be defined through positivity of polynomials on each interval
+\item The vector field of the closed-loop system is polynomial.
+\item The sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ can be described as intervals in each of the $n$ dimensions, which can be defined through positivity of polynomials on each interval.
 \end{itemize}
 %are described by polynomial (in)equalities, a polynomial barrier certificate can be constructed using \gls{sos} optimization. 
 
@@ -127,6 +127,7 @@ Rearranging \autoref{eq:sos_barrier} to
 \begin{equation}
 \underbrace{q_0(x)}_{\geq 0\,\,\forall \,\,x} = h(x) - \sum _{j=1}^{m}\,\,\,\underbrace{q_j(x)}_{\geq 0\,\,\forall \,\,x}\,\,\,\underbrace{g_j(x)}_{\geq 0 \,\,\forall \,\,x\in\mathbb{K}} \kk \in\Sigma[x]\label{eq:putinar_sos}
 \end{equation} 
+
 \vspace{-1mm}
 however, the right-hand expression will always be nonnegative due to the SOS equality. Using SOSTOOLS  it is possible to solve for the unknown $h$ setting up a number of \gls{sos} inequalities corresponding to defining the right-hand side of \autoref{eq:putinar_sos} as being nonnegative. %:  $expr\in\Sigma[x]$ (corresponding to $expr\geq 0$) on each set $\mathbb{K}$. 
 

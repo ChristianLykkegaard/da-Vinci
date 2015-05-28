@@ -1,21 +1,173 @@
 This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. 
-
-The robotic patient manipulator constitutes four "arms" (see \autoref{fig:master-slave_surgery}) each comprising a number of arm links, whose joints are fixed by electromagnets that are manually released for positioning of these links; followed by the robot "hand" and instrument links, whose joints are available for automated control on the modified AAU da Vinci robot. Only the controllable part of the robotic patient manipulator, as displayed in \autoref{fig:robot_hand_3d}, is considered in the design of the 3D Cartesian space controller. 
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\subbottom[Robotic patient manipulator.]{\includegraphics[width=0.45\textwidth]{rviz_09_17_18_frame1.pdf}\label{fig:rviz_09_17_18_frame}}%
+\subbottom[The Robotic patient manipulator.]{\includegraphics[width=0.45\textwidth]{rviz_09_17_18_frame1.pdf}\label{fig:rviz_09_17_18_frame}}%
 	\hspace*{5mm}
-\subbottom[Robotic "hand" and instrument.]{\includegraphics[width=0.45\textwidth]{robot_hand_unsafe_region.pdf}\label{fig:robot_hand_unsafe_region}}%
+\subbottom[The robot hand and instrument.]{\includegraphics[width=0.45\textwidth]{robot_hand_unsafe_region.pdf}\label{fig:robot_hand_unsafe_region}}%
 \caption{Patient manipulator and a fixed region within the reachable space $\mathcal{X}$ that is unsafe, $\mathcal{X}_u$, marked by a red ellipsoid.}
 \label{fig:robot_hand_3d}
 \end{figure}
+%
+In contrast to \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}, which solely comprise the prismatic slide joint, this chapter concerns the five independent revolute joints as well. Accordingly, this chapter presents the material required to be able to manoeuvre in the 3D Cartesian space and to be able to specify an unsafe set $\mathcal{X}_u$ encircled by an ellipsoid. This implies the topics:
+\begin{itemize}
+\item Development of a sufficient model describing movement in three dimensions.
+\item Construction of a control barrier function fulfilling the demand for an ellipsoid encirclement of $\mathcal{X}_u$.
+\item Development of the control system.
+\item Implementation in MATLAB.
+\item Implementation on the Da Vinci robot. This entails a kinematic description of the robot links and joints such that a translation between the 3D Cartesian space and the 6D joint space can be established.
+\end{itemize}
+\section{Modelling of Robot Hand Movement in 3D}
+The system shall be modelled as a linear state space system on the form:
+\begin{flalign*}
+\dot{\textbf{x}} &= \textbf{A}\,\textbf{x} + \textbf{B}\,\textbf{u} \\
+\textbf{y} &= \textbf{C}\textbf{x}
+\end{flalign*}
+%In order to set up a dynamic model of the da Vinci robot hand, a decision is made to model the three axes as decoupled for initial simplification. \textcolor{red}{Argue why, something about measurement, as movements are composed from changing joint angles obviously the axes are coupled, but it is also dependent on the low level controllers on the FPGA.} Measurements are made for a step input on each of the three axes, as shown in \textcolor{red}{FIGURE}
+The movement en the three dimensional space may be modelled as three decoupled systems. While there may be coupling between the systems, the decoupling simplifies the modelling phase significantly and it is still a realistic version of the real scenario.
+%
+%\textcolor{red}{Make measurement of step for cases: x-axis, y-axis, z-axis, and xyz at the same time. Compare to slide measurement.}
+%
+%It is decided to model the response for each of the three (decoupled) axes as three first order systems, and the open loop system for the robot hand is formulated as:
+\begin{equation}\label{eq:3D_sys_static_openloop}
+\dot{\mathbf{x}}=
+\dot{\begin{bmatrix}
+x_x\\x_y\\x_z
+\end{bmatrix}} =
+\underbrace{\begin{bmatrix}
+-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
+\end{bmatrix}
+\begin{bmatrix}
+x_x\\x_y\\x_z
+\end{bmatrix}}_{f(\mathbf{x})} +
+\underbrace{\begin{bmatrix}
+1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+\end{bmatrix}}_{g(\mathbf{x})}
+\mathbf{u}
+\end{equation}
+\begin{tabular}{rp{12.5cm}} 
+where  &  \\
+$x$ & is the position in the $x$-axis \\
+$y$ & is the position in the $x$-axis \\
+$z$ & is the position in the $x$-axis \\
+$\tau_x$ & is the time constant associated with a step purely in the $x$-axis \\
+$\tau_y$ & is the time constant associated with a step purely in the $y$-axis \\
+$\tau_z$ & is the time constant associated with a step purely in the $z$-axis 
+\end{tabular}\\
 
-The controller is designed for and tested on the da Vinci robot comprising the prismatic slide joint as described in \autoref{chap:cbf_1d_static} as well as five independent revolute joints. In order to design a controller in 3D Cartesian space for the robot, a kinematic description of the robot links and joints is necessary as a translation between the 3D Cartesian space and the 6D joint space.
-Hence, before modelling the system and designing a controller, the kinematics of the AAU da Vinci robot is presented in the following section along with considerations for the definition of the coordinate frames and the transformation between them constituting the kinematic description of the robot.
+The time constants are measured from \textcolor{red}{appendix ??} and found to:
+\begin{flalign*}
+\tau_x = 0.110\,\text{s} \mm , \mm \tau_y = 0.110\,\text{s} \mm , \mm \tau_z = 0.110\,\text{s}
+\end{flalign*}
+With a sufficient model established the \gls{cbf} can be considered.
+\section{Construction of CBF}
+A candidate barrier certificate is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate CBF. A candidate CBF is proposed of the form:
+\begin{equation}
+	B_0(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
+\end{equation}
+\begin{tabular}{rl}
+	where&\\
+	$[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid, $\mathbf{c}\in\mathbb{R}^3$ \\
+	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$, an average heart size is [12,6,8]\,cm\\
+\end{tabular}\\
+
+\textcolor{red}{Where should we define the center of the ellipsoid - should be such that the tool can reach all the way around it (but not necessarily below)}
+
+An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, the zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
+
+\begin{figure}[htbp]
+	\centering
+	\hspace*{-15mm}
+	\includegraphics[width=0.7\textwidth]{zerolevelset_3d.pdf}
+	\caption{Example of a CBF on the form described in \autoref{eq:barrier_3d}, here with $\mathbf{c}= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $\mathbf{r}=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$. The zero level set is indicated by the red ellipsoid, while the black ellipsoid marks the one level set, indicating that the enclosed  region is the unsafe set $\mathcal{X}_u$).}
+	\label{fig:zerolevelset_3d}
+\end{figure}
+
+The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static_openloop}. This is done by splitting the constraint up into the combined constraints on $L_gB(\mathbf{x})$ and $L_fB(\mathbf{x})$ from \autoref{req2}, first testing where $L_gB_0(\mathbf{x})=0$:
+\begin{align}
+	L_gB_0(\mathbf{x}) = \frac{dB_0(\mathbf{x})}{d\mathbf{x}}g(\mathbf{x}) &= 
+	\begin{bmatrix} 
+		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
+	\end{bmatrix}
+	\begin{bmatrix}
+		1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+	\end{bmatrix} \nonumber\\
+	&= 2
+	\begin{bmatrix} 
+		\frac{1}{r_x^2\tau_x}(c_x-x_x) & \frac{1}{r_y^2\tau_y}(c_y-x_y) & \frac{1}{r_z^2\tau_z}(c_z-x_z) 
+	\end{bmatrix}
+\end{align}
+It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
+\begin{align}
+	L_fB_0(\mathbf{x}) &= \frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
+	\begin{bmatrix} 
+		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
+	\end{bmatrix}
+	\begin{bmatrix}
+		-1/\tau_x& 0 & 0 \\ 0& -1/\tau_y & 0 \\0& 0& -1/\tau_z
+	\end{bmatrix} 
+	\begin{bmatrix}
+		x_x\\x_y\\x_z
+	\end{bmatrix}\nonumber\\
+	& \phantom{=\frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x})} =
+	-2\left(
+	\frac{1}{r_x^2\tau_x}(c_xx_x-x_x^2) +\frac{1}{r_y^2\tau_y}(c_yx_y-x_y^2) + \frac{1}{r_z^2\tau_z}(c_zx_z-x_z^2) \right)\\
+	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
+\end{align}
+It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
 
 
-\section{Kinematics of the AAU da Vinci Robot}
+
+
+\section{Control Design for 3D System}
+Based on the modelled decoupled first order systems, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
+\begin{equation}\label{eq:3D_sys_static}
+\small
+\dot{\begin{bmatrix}
+	x_x\\x_y\\x_z
+	\end{bmatrix}} =
+\underbrace{\begin{bmatrix}
+	-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_x\\x_y\\x_z
+	\end{bmatrix}}_{f(\mathbf{x})} +
+\underbrace{\begin{bmatrix}
+	1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+	\end{bmatrix}}_{g(\mathbf{x})}
+\underbrace{\left(\begin{bmatrix}
+	\bar{\mathbf{N}}_x & 0 & 0 \\0 & \bar{\mathbf{N}}_y & 0 \\0& 0& \bar{\mathbf{N}}_z
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_\text{ref}\\y_\text{ref}\\z_\text{ref}
+	\end{bmatrix}
+	-
+	\begin{bmatrix}
+	\mathbf{K}_x & 0 & 0 \\0 & \mathbf{K}_y & 0 \\0& 0&  \mathbf{K}_z
+	\end{bmatrix}
+	\begin{bmatrix}
+	x_x\\x_y\\x_z
+	\end{bmatrix}\right)}_{\tilde{\mathbf{u}}}
+\end{equation}
+\begin{tabular}{rl}
+where & \\
+$\tau$ & is the time constant given in \autoref{subsec:model_1d}, $\tau = 110$\,ms \textcolor{red}{NEW MEAS!}\\
+$\bar{\mathbf{N}}_i$ & are the system gains for each of the decoupled systems, computed according to \autoref{eq:barm_1}\\
+$\mathbf{K}_i$ & are the controller gains for each of the decoupled systems, computed according to \autoref{eq:K_1}\\
+\end{tabular}\\
+
+\textcolor{red}{pick  values for K and N }
+
+This position controller is used on the safe set $\mathcal{X}_0$, and when the state enters the transition area $\mathcal{T}$ (as defined in \autoref{eq:control_for_safety}) close to the set $\mathcal{X}_u$, the CBF should be used and the two controllers weighted with $\sigma$ as described in \autoref{eq:control_law}. The safe controller or CBF is designed in terms of a valid barrier certificate as defined in \autoref{eq:control_law_safety}, hence a candidate barrier certificate must be constructed.
+
+
+
+
+THIS IS ONLY POSITION, NOT ORIENTATION
+
+%
+%Hence, before modelling the system and designing a controller, the kinematics of the AAU da Vinci robot is presented in the following section along with considerations for the definition of the coordinate frames and the transformation between them constituting the kinematic description of the robot.
+\section{Implementation of the da Vinci Robot}
+\subsection{Kinematics of the AAU da Vinci Robot}
 A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $T$, containing the orthonormal rotation matrix $R$ and the translation vector $p$ of the frame origin, as 
 \begin{equation}
 ^j_iT = 
@@ -229,133 +381,4 @@ Three dimensional positions of the tool tip is described in a frame oriented as 
 
 
 
-
-\section{Modelling of Robot Hand Movement in 3D}
-In order to set up a dynamic model of the da Vinci robot hand, a decision is made to model the three axes as decoupled for initial simplification. \textcolor{red}{Argue why, something about measurement, as movements are composed from changing joint angles obviously the axes are coupled, but it is also dependent on the low level controllers on the FPGA.} Measurements are made for a step input on each of the three axes, as shown in \textcolor{red}{FIGURE}
-
-\textcolor{red}{Make measurement of step for cases: x-axis, y-axis, z-axis, and xyz at the same time. Compare to slide measurement.}
-
-It is decided to model the response for each of the three (decoupled) axes as three first order systems, and the open loop system for the robot hand is formulated as:
-\begin{equation}\label{eq:3D_sys_static_openloop}
-\dot{\mathbf{x}}=
-\dot{\begin{bmatrix}
-x_x\\x_y\\x_z
-\end{bmatrix}} =
-\underbrace{\begin{bmatrix}
--1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
-\end{bmatrix}
-\begin{bmatrix}
-x_x\\x_y\\x_z
-\end{bmatrix}}_{f(\mathbf{x})} +
-\underbrace{\begin{bmatrix}
-1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
-\end{bmatrix}}_{g(\mathbf{x})}
-\mathbf{u}(\mathbf{x})
-\end{equation}
-with time constant from \textcolor{red}{MEASUREMENT}
-
-\section{Construction of CBF}
-A candidate barrier certificate is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid representing the heart. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the candidate CBF. A candidate CBF is proposed of the form:
-\begin{equation}
-	B_0(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
-\end{equation}
-\begin{tabular}{rl}
-	where&\\
-	$[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid, $\mathbf{c}\in\mathbb{R}^3$ \\
-	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$, an average heart size is [12,6,8]\,cm\\
-\end{tabular}\\
-
-\textcolor{red}{Where should we define the center of the ellipsoid - should be such that the tool can reach all the way around it (but not necessarily below)}
-
-An example of a function of this form is visualized in \autoref{fig:zerolevelset_3d}, the zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
-
-\begin{figure}[htbp]
-	\centering
-	\hspace*{-15mm}
-	\includegraphics[width=0.7\textwidth]{zerolevelset_3d.pdf}
-	\caption{Example of a CBF on the form described in \autoref{eq:barrier_3d}, here with $\mathbf{c}= [0.1,\,\,\,\, 0,\,\,\,\, -0.05]$ and $\mathbf{r}=[0.2,\,\,\,\, 0.1,\,\,\,\, 0.1]$. The zero level set is indicated by the red ellipsoid, while the black ellipsoid marks the one level set, indicating that the enclosed  region is the unsafe set $\mathcal{X}_u$).}
-	\label{fig:zerolevelset_3d}
-\end{figure}
-
-The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static_openloop}. This is done by splitting the constraint up into the combined constraints on $L_gB(\mathbf{x})$ and $L_fB(\mathbf{x})$ from \autoref{req2}, first testing where $L_gB_0(\mathbf{x})=0$:
-\begin{align}
-	L_gB_0(\mathbf{x}) = \frac{dB_0(\mathbf{x})}{d\mathbf{x}}g(\mathbf{x}) &= 
-	\begin{bmatrix} 
-		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
-	\end{bmatrix}
-	\begin{bmatrix}
-		1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
-	\end{bmatrix} \nonumber\\
-	&= 2
-	\begin{bmatrix} 
-		\frac{1}{r_x^2\tau_x}(c_x-x_x) & \frac{1}{r_y^2\tau_y}(c_y-x_y) & \frac{1}{r_z^2\tau_z}(c_z-x_z) 
-	\end{bmatrix}
-\end{align}
-It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
-\begin{align}
-	L_fB_0(\mathbf{x}) &= \frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
-	\begin{bmatrix} 
-		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
-	\end{bmatrix}
-	\begin{bmatrix}
-		-1/\tau_x& 0 & 0 \\ 0& -1/\tau_y & 0 \\0& 0& -1/\tau_z
-	\end{bmatrix} 
-	\begin{bmatrix}
-		x_x\\x_y\\x_z
-	\end{bmatrix}\nonumber\\
-	& \phantom{=\frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x})} =
-	-2\left(
-	\frac{1}{r_x^2\tau_x}(c_xx_x-x_x^2) +\frac{1}{r_y^2\tau_y}(c_yx_y-x_y^2) + \frac{1}{r_z^2\tau_z}(c_zx_z-x_z^2) \right)\\
-	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
-\end{align}
-It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
-
-
-
-
-\section{Control Design for 3D System}
-Based on the modelled decoupled first order systems, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
-\begin{equation}\label{eq:3D_sys_static}
-\small
-\dot{\begin{bmatrix}
-	x_x\\x_y\\x_z
-	\end{bmatrix}} =
-\underbrace{\begin{bmatrix}
-	-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_x\\x_y\\x_z
-	\end{bmatrix}}_{f(\mathbf{x})} +
-\underbrace{\begin{bmatrix}
-	1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
-	\end{bmatrix}}_{g(\mathbf{x})}
-\underbrace{\left(\begin{bmatrix}
-	\bar{\mathbf{N}}_x & 0 & 0 \\0 & \bar{\mathbf{N}}_y & 0 \\0& 0& \bar{\mathbf{N}}_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_\text{ref}\\y_\text{ref}\\z_\text{ref}
-	\end{bmatrix}
-	-
-	\begin{bmatrix}
-	\mathbf{K}_x & 0 & 0 \\0 & \mathbf{K}_y & 0 \\0& 0&  \mathbf{K}_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_x\\x_y\\x_z
-	\end{bmatrix}\right)}_{\tilde{\mathbf{u}}}
-\end{equation}
-\begin{tabular}{rl}
-where & \\
-$\tau$ & is the time constant given in \autoref{subsec:model_1d}, $\tau = 110$\,ms \textcolor{red}{NEW MEAS!}\\
-$\bar{\mathbf{N}}_i$ & are the system gains for each of the decoupled systems, computed according to \autoref{eq:barm_1}\\
-$\mathbf{K}_i$ & are the controller gains for each of the decoupled systems, computed according to \autoref{eq:K_1}\\
-\end{tabular}\\
-
-\textcolor{red}{pick  values for K and N }
-
-This position controller is used on the safe set $\mathcal{X}_0$, and when the state enters the transition area $\mathcal{T}$ (as defined in \autoref{eq:control_for_safety}) close to the set $\mathcal{X}_u$, the CBF should be used and the two controllers weighted with $\sigma$ as described in \autoref{eq:control_law}. The safe controller or CBF is designed in terms of a valid barrier certificate as defined in \autoref{eq:control_law_safety}, hence a candidate barrier certificate must be constructed.
-
-
-
-
-THIS IS ONLY POSITION, NOT ORIENTATION
 
