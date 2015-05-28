@@ -112,12 +112,17 @@ h = q_0+\sum\limits_{j=1}^{m}q_jg_j
 \end{equation}
 \end{thm}
 
-\vspace{-14mm}
+\vspace{-16mm}
 %\section{Using Sums of Squares to Construct a Barrier Certificate}
 %\vspace*{-7mm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{1stordersys_staticlimits_g.pdf}
+\caption{Example of $g$-polynomials defining each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ by their nonnegativity, with a distance $\Delta$ between the safe and unsafe sets.}
+\label{fig:1stordersys_staticlimits_g}
+\end{figure}
 
-
-In \autoref{eq:setK} the region of nonnegativity of the polynomial(s) $(g_j)_{j=1}^m$ define the extent of the set $\mathbb{K}$, the $g$s being  polynomials in the state variables $x$ as defined by \autoref{eq:polynomials_g}, e.g. in 1D Cartesian space $g(x)$ may be a parabola which is positive-valued on the interval $x\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{x\in[a,b]\}$. In this way appropriate polynomials $g_j$ can be constructed  to define each of the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ as given by \autoref{def:barrier_certificate}.
+In \autoref{eq:setK} the region of nonnegativity of the polynomial(s) $(g_j)_{j=1}^m$ define the extent of the set $\mathbb{K}$, the $g$s being  polynomials in the state variables $x$ as defined by \autoref{eq:polynomials_g}, e.g. in 1D Cartesian space $g(x)$ may be a parabola which is positive-valued on the interval $x\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{x\in[a,b]\}$. In this way appropriate polynomials $g_j$ can be constructed  to define each of the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ as given by \autoref{def:barrier_certificate}. An example of a polynomial $g_1$ for each of the sets is sketched in \autoref{fig:1stordersys_staticlimits_g}.
 
 The variables $(q_j)_{j=1}^m$ in \autoref{eq:putinar_set_sos} are \gls{sos} and thereby nonnegative per definition. Hence from the definition of the $g$s and $q$s it can be seen from \autoref{eq:sos_barrier} that the polynomial $h$ is positive on the set $\mathbb{K}$.
 % as defined by  being positive  in the region $\mathbb{K}$.
@@ -135,7 +140,7 @@ however, the right-hand expression will always be nonnegative due to the SOS equ
 \vspace{-2mm}
 Now \autoref{eq:putinar_sos} can be seen as a template for the reformulation of the requirements for a barrier certificate in \autoref{def:barrier_certificate}.
 Setting up each of the requirements for the barrier certificate $B(x)$ on each of the  semialgebraic sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$, is a matter of defining one or more polynomials $g_j(x)$ for each set such that the intersection of the nonnegative regions of the polynomials outline the set.
-E.g. in order to define the region $\mathcal{X}_u\subset\mathcal{X}\subset\mathbb{R}$ construct a polynomial $g(x)$ such that it is positive within the unsafe interval and its zero level set constitutes the desired border of the region. If several polynomials $g_j(x)$ are used to define $\mathcal{X}_u$, the set is defined by the nonnegative intersection region, i.e. the subset of the state-space where all of the $g_j(x)$s are nonnegative.
+E.g. in order to define the region $\mathcal{X}_u\subset\mathcal{X}\subset\mathbb{R}$ construct a polynomial $g(x)$ such that it is positive within the unsafe interval and its zero level set constitutes the desired border of the region. An example of a polynomial $g(x)$ defining the region $\mathcal{X}_u$ is seen in \autoref{fig:1stordersys_staticlimits_g} as the red curve. If several polynomials $g_j(x)$ are used to define $\mathcal{X}_u$, the set is defined by the nonnegative intersection region, i.e. the subset of the state-space where all of the $g_j(x)$s are nonnegative.
 
 When the polynomials $g_j(x)$ have been defined for each of the sets, the polynomial $h(x)$ in \autoref{eq:putinar_sos} is substituted according to \autoref{def:barrier_certificate}, such that $h(x)\geq 0$ on the relevant set. That is, when defining $\mathcal{X}$ according to \autoref{cer3}, the polynomial $h(x)$ can be written as $-L_{f_{cl}}B(x)$ and when defining $\mathcal{X}_0$ use $h(x)=-B(x)$ according to \autoref{cer1}. However, when defining $\mathcal{X}_u$ according to \autoref{cer2}, the positivity constraint on $B(x)$ has to be transformed into a nonnegativity constraint. This can be done by introducing a small scalar value $\bar{\epsilon}>0$, such that $B(x)\geq \bar{\epsilon} $ or identically $B(x)-\bar{\epsilon}\geq 0$ which can now be substituted for $h(x)$.
 
@@ -152,7 +157,7 @@ In summary, referring to the requirements for a barrier certificate in \autoref{
 \end{defn}
 %Note that the inequality is on positivity in \autoref{cer2} whereas it is on nonnegativity (being \gls{sos}) in \autoref{eq:putinar_set_sos}. By introducing an arbitrarily small $\epsilon>0$ the positivity constraint can be cast as the nonnegativity constraint in the  SOS inequality of \autoref{cer2_putinar}. %This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level. 
 
-\vspace{-15mm}
+%\vspace{-15mm}
 With this formulation the Lie derivative is required to be nonpositive on set $\mathcal{X}$ and the barrier certificate is required to be nonpositive on the safe set $\mathcal{X}_0$ and greater than or equal to the constant $\bar{\epsilon}$ on the unsafe set $\mathcal{X}_u$. When defining the sets, the safe and unsafe regions must be separated by some distance $\Delta$.
 
 The task of searching for a barrier certificate validating system safety is now a matter of the fairly easy construction of the polynomials $g_j(x)$ to define the desired outline of each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ in SOSTOOLS. However, it is also a matter of deciding the polynomial degree (through monomials) of $B(x)$ and of each of the \gls{sos} polynomials $q_j(x)$. As small a degree "as possible" is desired for all monomials, but it may be necessary to increase the degree iteratively. This introduces numerical errors, which may require that the size of $\bar{\epsilon}$ must be increased. When no solution can be found, it may be necessary to increase the  distance $\Delta$ separating the safe and unsafe regions, i.e. contract the safe region by altering the polynomials $g_j(x)$ outlining the region.
