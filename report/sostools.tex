@@ -26,7 +26,7 @@ An overview of necessary \gls{sos} functions is given in \autoref{tab:sostools_s
 		\texttt{[prog,B] = sospolyvar(prog,Z);} & Parametrize a polynomial \texttt{B} in the \gls{sos} program \texttt{prog}. The degree of the  polynomial is defined by the monomial vector \texttt{Z} of degree \texttt{deg} (i.e. deg(\texttt{B}) $=$ \texttt{deg})\\
 		\rowcolor{textBlue}
 		%\texttt{prog = soseq(prog,B-q);} & Declare the equality constraint \texttt{B-q} $=0$ in the \gls{sos} program \texttt{prog}\\
-		\texttt{prog = sosineq(prog,B-q);} & Declare the inequality constraint \texttt{B-q} $\geq 0$ (or more exact: \texttt{B-q} $\in\Sigma[x_1]$) in the \gls{sos} program \texttt{prog}\\
+		\texttt{prog = sosineq(prog,-B-q$\cdot$g);} & Declare the inequality constraint, e.g. \texttt{-B-q$\cdot$g} (or more exact: \texttt{-B-q$\cdot$g} $\in\Sigma[x_1]$) in the \gls{sos} program \texttt{prog}\\
 		%\rowcolor{textBlue}
 		\texttt{prog = sossolve(prog);} & Solve the \gls{sos} program \texttt{prog} i.e. find coefficients for all polynomials conforming with all constraints \\
 		\rowcolor{textBlue}
@@ -44,7 +44,7 @@ An \gls{sos} program is initialized with the command \texttt{sosprogram}, and po
 %
 %where \texttt{degrees} is the degrees of variables desired in the monomial; \texttt{[2 4]} would in this case give that \verb|Z = [x1^2; x1^4]| while \texttt{degrees = 0:2} would result in \verb|Z = [1; x1; x1^2]|. Declaring an SOS polynomial is done similarly to declaring an SOS variable
 %
-When the necessary SOS variables and polynomials are defined, the inequalities in \autoref{def:barrier_sos} can be defined with the function \texttt{sosineq}, and when all constraints are set up, the program is (attempted to be) solved by calling \texttt{sossolve}. This will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the function \texttt{sosgetsol}.
+When the necessary SOS variables and polynomials are defined, the inequalities in \autoref{def:barrier_sos} can be defined with the function \texttt{sosineq}, and when all constraints are set up, the program is (attempted to be) solved by calling \texttt{sossolve}. This will return an overview of the precision of the solution (if any was found) as a residual error norm, number of iterations and time elapsed for solving the problem. To get the solution (coefficients) found for any of the SOS variables or polynomials, call the function \texttt{sosgetsol} (more about evaluating the solution is found in \autoref{subsec:eval_sos}).
 
 
 
@@ -84,7 +84,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 		Note that each expression in the inequalities in \autoref{def:barrier_sos} must have even degrees in the leading and trailing terms in order for the expressions to be \gls{sos}.
 	\end{itemize}
 	\item \textbf{Solve the SOS Program}\\
-	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Otherwise it can be concluded that safety cannot be guaranteed of the  system under scrutiny. 
+	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, increasing the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Also, adjusting $\Delta$ and $\epsilon$ may increase the probability of finding a solution. Otherwise it can be concluded that safety cannot be guaranteed of the system under scrutiny and the set $\mathcal{X}_0$ may be forced smaller. 
 \end{itemize}
 
 
@@ -98,12 +98,12 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 %\textcolor{red}{Og hvordan bruger I så det. Kør eksemplet videre, så det er klart hvordan (8.2e) oversættes til SOS program. Jeg synes I skal køre eksemplet hele vejen igennem og idregne det i SOSTOOLS. På denne måde overbeviser i læseren og, at I kan oversætte teorien til praktisk implementation - Og dette giver points! }
 
 
-\subsection{Evaluating the SOSTOOLS Solution}
+\subsection{Evaluating the SOSTOOLS Solution}\label{subsec:eval_sos}
 If no solution is found, the tested closed-loop system $f_{cl}(x)$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(x)$ or \gls{sos} polynomials $q_j(x)$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
 
 When the \gls{sos} program is solved, the list of information printed out in the MATLAB terminal includes a number of useful parameters for evaluating the validity of the solution, summarized in \autoref{tab:sostools_evaluation}.
-If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being one, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to one for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
-The \texttt{residual norm} is the norm of the numerical error in the solution \citep{bib:sostools_manual}, and when numerical problems cause this error to exceed a tolerance set in the SOSTOOLS solver, this is indicated  as a warning of numerical errors with \texttt{numerr = 1}, while a numerical error of two indicates failure of the solver.
+If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being 1, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to 1 for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
+The \texttt{residual norm} is the norm of the numerical error in the solution \citep{bib:sostools_manual}, and when numerical problems cause this error to exceed a tolerance set in the SOSTOOLS solver, this is indicated  as a warning of numerical errors with \texttt{numerr = 1}, while a numerical error of 2 indicates failure of the solver.
 
 %Residual norm: 0.00019444
 %
