@@ -424,39 +424,66 @@ As it is seen from \autoref{tab:sostools_varying_param} there are quite a few tu
 %\begin{flalign*}
 %\dot{x} = \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \kk \Leftrightarrow \kk \dot{x} = \tau^{-1}(\textbf{K}+1)\underbrace{(x_\text{ref} - x)}_{x_\text{err}}
 %\end{flalign*}
-Hence instead of formulating the barrier certificate in terms of the robot position and the position reference as in \autoref{eq:sos_firstorder}, the problem has been reduced to one dimension  through a coordinate shift to the error state: % it can plainly be formulated as the error between the two:
+Hence instead of formulating the barrier certificate in terms of the robot position and the position reference as in \autoref{eq:sos_firstorder}, the problem can be reduced to one dimension  through a coordinate shift to the error state as seen in \autoref{fig:sos_error_2d}, the error being: % it can plainly be formulated as the error between the two:
+\vspace{-3mm}
 \begin{equation*}
 x_\text{err}=x_\text{ref}-x
 \end{equation*}
+
+\vspace{-5mm}
 giving the error dynamics
+\vspace{-3mm}
 \begin{align}
 \dot{x}_\text{err} = -\dot{x} &= -\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x) \nonumber\\
 &= -\tau^{-1}(\mathbf{K}+1)x_\text{err}
 \end{align}
-Now safety can  be tested for relative positions instead of absolute. It is still assumed that any reference given is given outside the unsafe area, which according to \autoref{tab:intervals} is the absolute slide positions $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$, and it is still the goal to determine how close to the unsafe set references can be given while still guaranteeing safety.
 
+\vspace{-2mm}
+Now safety can  be tested for relative positions instead of absolute. 
+%It is still assumed that any reference given is given outside the unsafe area, which according to \autoref{tab:intervals} is the absolute slide positions $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$, and it is still the goal to determine how close to the unsafe set references can be given while still guaranteeing safety.
 %The error will be negative when the end effector is above the reference, and 
-As the unsafe region is the upper part of the interval $\mathcal{X}$, it is required to restrict the error in the negative direction, corresponding to restricting how much the end effector position is allowed to be above (more positive than) the reference. 
-If a reference is given at a distance $\delta_\text{err}$ from the unsafe region starting at 5\,cm, it is required that the error does not exceed $-\delta_\text{err}$ in the negative direction. This is illustrated in \autoref{fig:sos_error_2d}. Thus testing how large an interval of allowed references can be given with guaranteed system safety, corresponds to testing how small an (absolute) value of $-\delta_\text{err}$ outlining the unsafe region of the error state system, for which safety can be guaranteed. This is illustrated in \autoref{fig:sos_error_1d}.
+As seen from \autoref{fig:sos_slide}, the unsafe region is the upper part of the interval $\mathcal{X}$, which means that for references given outside the unsafe set, unsafety of the system will only occur if the robot end-effector position is above the reference, corresponding to a negative error. This is illustrated in \autoref{fig:sos_delta_error}.
+Hence it is required to restrict the error in the negative direction to some value -$\delta_\text{err}$, thus restricting the upper value of allowed (safe) references to a distance $\delta_\text{err}$ from the unsafe region, as sketched in \autoref{fig:sos_errorref_1d_new}. %corresponding to restricting how much the end effector position is allowed to be above (more positive than) the reference. 
+
+%If a reference is given at a distance $\delta_\text{err}$ from the unsafe region starting at 5\,cm, it is required that the error does not exceed $-\delta_\text{err}$ in the negative direction. This is illustrated in \autoref{fig:sos_error_2d}. Thus testing how large an interval of allowed references can be given with guaranteed system safety, corresponds to testing how small an (absolute) value of $-\delta_\text{err}$ outlining the unsafe region of the error state system, for which safety can be guaranteed. This is illustrated in \autoref{fig:sos_error_1d}.
 
 
 
-\begin{figure}[b]
+\begin{figure}[H]
 \centering
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_error_2d.pdf}\label{fig:sos_error_2d}}%
 \hspace{3mm}
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_delta_error.pdf}\label{fig:sos_delta_error}}%
 \hspace{3mm}
 \subbottom[]{\includegraphics[width=0.3\textwidth]{sos_errorref_1d_new.pdf}\label{fig:sos_errorref_1d_new}}%
-\caption{With references given outside the unsafe region, system safety can be guaranteed if the error is certified to stay above the value $-\delta_\text{err}$. When this is the case, system safety is guaranteed for all references up to a safety distance of $\delta_\text{err}$ from the unsafe set.}
+\caption{With references given outside the unsafe region, system safety can be guaranteed if the error is certified to stay above the value -$\delta_\text{err}$. When this is the case, system safety is guaranteed for all references up to a safety distance of $\delta_\text{err}$ from the unsafe set.}
 	\label{fig:sets_error}
 \end{figure}
 
-When restricting the error this is in principle done for any reference, thus if a reference is given far away from the unsafe area, the end effector is still not allowed to be more than the small distance $\delta_\text{err}$ above the reference. 
+When restricting the error to a lower limit -$\delta_\text{err}$, this restriction corresponds to not allowing the end-effector position more than the distance $\delta_\text{err}$ above the reference anywhere outside the unsafe region. However, if a barrier certificate can be found for the error state system with unsafe set being values below -$\delta_\text{err}$, this means that safety of the system in \autoref{eq:sos_firstorder} can be guaranteed for references up to  the distance $\delta_\text{err}$ from the unsafe region.
+
+%this is in principle done for any reference, thus if a reference is given far away from the unsafe area, the end effector is still not allowed to be more than the small distance $\delta_\text{err}$ above the reference. 
 
 %In the error space this means that the error must not go below $-\delta_\text{err}$. If a barrier certificate can be found for unsafe errors of $-\delta_\text{err}$ and below ($\mathcal{X}_u=\{x_\text{err}\in [-??,-\delta_\text{err}]\}$), it can be guaranteed that the robot position will never be more than a distance $\delta_\text{err}$ above the reference, and hence it is verified that references can be given as long as the reference is at least a distance $\delta_\text{err}$ from the unsafe set.
 
-Due to the underlying low-level controllers in the system (see \autoref{fig:overview}), the system equation in \autoref{eq:sos_firstorder} is only valid for small steps of less than 3\,cm. Therefore the tests on the error state system in SOSTOOLS are made on a set $\mathcal{X}=\{x_\text{err}\in[-0.03,0.03] \}$, thus testing for how small a value $\delta_\text{err}$ for which a solution can be found when the unsafe set is $\mathcal{X}_u=\{x_\text{err}\in[-0.03,-\delta_\text{err}] \}$, as illustrated in \autoref{fig:sos_errorref_1d}. A valid solution will certify that steps in positive direction (upwards) of 3\,cm is acceptable, and will never yield an error below $-\delta_\text{err}$, and that references can safely be given that have a distance of at least $\delta_\text{err}$ to the unsafe positions, i.e. safe references are references below 5\,cm $-\delta_\text{err}$. For references below the end effector position no barrier certificate is needed, although the certificate found does allow steps in downwards direction of up to $\delta_\text{err}$. \textcolor{red}{Er ikke sikker p\aa  det giver mening med stepst\o rrelser, er det steady-state fejlen vi ser p\aa ?}
+The system equation in \autoref{eq:sos_firstorder} is valid for small steps of approximately 5\,mm, thus the set to be considered in the error state space is chosen to $\pm 3$\,cm. This gives the set definitions for the error state system:
+\vspace{-3mm}
+\begin{itemize}
+\itemsep-0.7mm
+\item The set considered is well over the usual reference step size of approximately 5\,mm, $\mathcal{X}=\{x_\text{err}\in[-0.03,0.03] \}$.
+\item The unsafe set includes values below -$\delta_\text{err}$, $\mathcal{X}_u=\{x_\text{err}\in [-0.03,-\delta_\text{err}] \}$.
+\item The safe set is a distance $\Delta$ from the unsafe set, where $\Delta<\delta_\text{err}$ such that the safe set will include $x_\text{err}=0$, $\mathcal{X}_0=\{x_\text{err}\in [-\delta_\text{err}+\Delta,0.03] \}$
+\end{itemize}
+
+%Due to the underlying low-level controllers in the system (see \autoref{fig:overview}), the system equation in \autoref{eq:sos_firstorder} is only valid for small steps of less than 3\,cm. Therefore the tests on the error state system in SOSTOOLS are made on a set $\mathcal{X}=\{x_\text{err}\in[-0.03,0.03] \}$, thus testing for how small a value $\delta_\text{err}$ for which a solution can be found when the unsafe set is $\mathcal{X}_u=\{x_\text{err}\in[-0.03,-\delta_\text{err}] \}$, as illustrated in \autoref{fig:sos_errorref_1d}. 
+A valid solution will certify that steps in positive direction (upwards) of 3\,cm is acceptable, and will never yield an error below $-\delta_\text{err}$, and that references can safely be given that have a distance of at least $\delta_\text{err}$ to the unsafe positions, hence certifying safety of the system: %i.e. safe references are references below 5\,cm $-\delta_\text{err}$. For references below the end effector position no barrier certificate is needed, although the certificate found does allow steps in downwards direction of up to $\delta_\text{err}$. \textcolor{red}{Er ikke sikker p\aa  det giver mening med stepst\o rrelser, er det steady-state fejlen vi ser p\aa ?}
+\vspace{-3mm}
+\begin{itemize}
+	\itemsep-0.7mm
+	\item The set considered is the set described in \autoref{fig:sos_slide}, $\mathcal{X}=\{x\in[-0.1,0.1] \}$.
+	\item The unsafe set is also seen in \autoref{fig:sos_slide}, $\mathcal{X}_u=\{x\in [0.05,0.1] \}$.
+	\item The safe set for the references is $\mathcal{X}_0=\{x_\text{ref}\in [-0.1,0.05-\delta_\text{err}] \}$ ensuring that $\mathcal{X}_0\subseteq\mathcal{X}\setminus\mathcal{X}_u$.
+\end{itemize}
 
 Again the parameters given in \autoref{tab:sostools_varying_param} are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution, the findings conforming with the previous conclusions, the additional conclusions listed in \autoref{tab:sostools_varying_param_error}.
 
