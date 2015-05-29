@@ -171,3 +171,22 @@ Relating the relative position to the absolute positions, this certificate guara
 
 
 \section{Conclusion on the Use of SOSTOOLS}\label{sec:sos_conclusion}
+
+To wrap up the approach of using the MATLAB toolbox SOSTOOLS in the construction of barrier certificates presented in this chapter, the following closing considerations are regarded:
+
+\begin{itemize}
+\item Formulating and setting up the constraints for a barrier certificate has successfully been implemented in SOSTOOLS. An overview has been gained into the evaluation of solutions, and barrier certificates validating safety for first and second order systems have been constructed. Furthermore, a thorough step-by-step guide has been compiled which can be used as a launch pad for future students at Aalborg University in using the toolbox for system safety validation. 
+%Hul igennem, udførlig guide til hvordan man bruger det, gjort det mere tilgængeligt for andre, de første til at beskrive sostools på aau
+
+\item Safety validation of  higher dimension systems can be seen as a natural extension of the tested systems, and it is considered a relatively staightforward task to expand the 1D system to a 3D system, such as the system presented in \autoref{chap:cbf_3d_static}, and test for safety using the same principles for the parameters. It is expected that dynamic barrier certificates such as the one described in \autoref{chap:cbf_1d_dynamic}, can be found with SOSTOOLS, as it has been proven to exist.
+%det er relativt let at udvide og teste scenariet i 3d, samme principper, og til dynamisk system med hjerte og det vides fra analysen i kapitel blabla at det er muligt
+
+\item It is deemed an elaborate approach to use SOSTOOLS for constructing barrier certificates for systems of low dimension, such as the ones considered in this chapter, and it is assessed that the manual construction of \glspl{cbf} presented in chapters \ref{chap:cbf} through \ref{chap:cbf_3d_static} is the most efficient approach for systems of a dimensionality allowing for intuitive visualization of the barrier function.
+It is, however, also assessed that when physical visualization of the problem is not possible, an approach such as using SOSTOOLS may be the only feasible way of constructing a barrier certificate and validating safety of a system.
+%brugbart for systemer af større dimensioner, når det kan visualiseres i lave dimensioner er det enklere at konstruere manuelt som det er gjort i CBF, så det kan bruges til at verificere safety når det er udelukket at gøre intuitivt
+\end{itemize}
+
+This concludes the analysis of barrier certificate search with SOSTOOLS.
+
+
+
