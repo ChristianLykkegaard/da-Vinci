@@ -1,4 +1,4 @@
-This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus simulating a heart or another vital untouchable organ.
+This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus representing a heart or another vital sensitive organ which can not be cut under no circumstances.
 \begin{figure}[H]
 \centering
 \subbottom[The Robotic patient manipulator.]{\includegraphics[width=0.45\textwidth]{rviz_09_17_18_frame1.pdf}\label{fig:rviz_09_17_18_frame}}%
@@ -13,7 +13,7 @@ Given the reachability of the robotic end effector which is tested to be roughly
 \rowcolor{HeaderBlue} 
 $\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ & $\mathcal{T}$ \\
 $\mathcal{X} = \{ x \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline $ {\color{white}{mmm}} y \in [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline ${\color{white}{mmm}} z \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] \}$ & 
-$\mathcal{X}_u = \{x \in [-r_x, r_x] $,\newline $ {\color{white}{mmmn}}y \in [-r_y, r_y] $,\newline ${\color{white}{mmmn}}z \in [-r_z, r_z] \}$  &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ consist of a layer around the ellipsoid with $\text{thickness}=1$.\\
+$\mathcal{X}_u$ consist of an ellipsoid with semi-axes $r_x,r_y,r_z$. &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ consist of a layer around the ellipsoid with $\text{thickness}=1$.\\
 \end{tabularx}
 \caption{Sets considered in this chapter, where $r_x=0.03$\,m, $r_y=0.06$\,m, $r_z=0.03$\,m are lengths of the semi-axes of an ellipsoid and $\bar{\Lambda}_\text{lim}=0.1$m being the extremity of the box encircling the reachable space.}
 \label{tab:intervals_3d}
@@ -79,7 +79,7 @@ A \gls{cbf} is proposed that complies with the first two constraints in \autoref
 \begin{tabular}{rl}
 	where&\\
 	$[c_x\,\, c_y\,\, c_z]$ & is the coordinate of the center of the ellipsoid, $\mathbf{c}\in\mathbb{R}^3$ \\
-	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$, an average heart size is [12,6,8]\,cm\\
+	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$ \\
 \end{tabular}\\
 
 The \gls{cbf} is visualized in \autoref{fig:zerolevelset_3d}. The zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
@@ -99,7 +99,7 @@ The \gls{cbf} is visualized in \autoref{fig:zerolevelset_3d}. The zero level set
 %	\label{fig:zerolevelset_3d}
 %\end{figure}
 %The third constraint in \autoref{def:barrier_certificate} is tested for a barrier certificate of this form with the system in \autoref{eq:3D_sys_static_openloop}. This is done by splitting the constraint up into the combined constraints on $L_gB(\mathbf{x})$ and $L_fB(\mathbf{x})$ from \autoref{req2}, first testing where $L_gB_0(\mathbf{x})=0$:
-As suggested in \autoref{req2}, if $L_fB(\textbf{x})\neq 0 \forall x$ then safety can always be guaranteed. Thus testing $L_fB(\textbf{x})$:
+As suggested in \autoref{req2}, if $L_fB(\textbf{x})\neq 0\,\, \forall \, \textbf{x}$ then safety can always be guaranteed. Thus testing $L_fB(\textbf{x})$:
 \begin{flalign}
 	L_gB(\textbf{x}) = \frac{dB(\mathbf{x})}{d\mathbf{x}}g(\mathbf{x})\Bigm|_{g(\textbf{x})=\textbf{B}} &= \begin{bmatrix}
 	 \dfrac{\partial B(\textbf{x})}{\partial x_x} & \dfrac{\partial B(\textbf{x})}{\partial x_y} & \dfrac{\partial B(\textbf{x})}{\partial x_z}
@@ -108,19 +108,27 @@ As suggested in \autoref{req2}, if $L_fB(\textbf{x})\neq 0 \forall x$ then safet
 	\end{bmatrix}	\nonumber \\
 	 &= 
 	\begin{bmatrix} 
-		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
+		\dfrac{2}{r_x^2}(c_x-x_x) & \dfrac{2}{r_y^2}(c_y-x_y) & \dfrac{2}{r_z^2}(c_z-x_z) 
 	\end{bmatrix}
 	\begin{bmatrix}
 		1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
 	\end{bmatrix} \nonumber\\
 	&= 2
 	\begin{bmatrix} 
-		\frac{1}{r_x^2\tau_x}(c_x-x_x) & \frac{1}{r_y^2\tau_y}(c_y-x_y) & \frac{1}{r_z^2\tau_z}(c_z-x_z) 
-	\end{bmatrix}
+		\dfrac{1}{r_x^2\tau_x}(c_x-x_x) & \dfrac{1}{r_y^2\tau_y}(c_y-x_y) & \dfrac{1}{r_z^2\tau_z}(c_z-x_z)  
+	\end{bmatrix} \\
+	& \neq 0 \mm \forall \mm c_x \neq x_x, \mm c_y \neq x_y , \mm c_z \neq x_z  \nonumber
 \end{flalign}
-It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
-\begin{align}
-	L_fB_0(\mathbf{x}) &= \frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
+It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. While $L_gB(\textbf{x}) = 0$ implies the demand $L_fB(\textbf{x}) \leq 0$, it causes no issue in this specific case. Simply subtract a small region around the center of the ellipsoid, call it $\mathcal{S}=\{ x_x = [-\delta,<,\,\,\,\, -\delta], \,\, x_y = [-\delta\,\,\,\,\, -\delta]\,\, x_z = [-\delta\,\,\,\,\, -\delta] \}$ where $\delta$ is some small scaler, from $\mathcal{X}$ such that $\bar{\mathcal{X}} = \mathcal{X} \backslash \mathcal{S}$. Thus $B(\textbf{x})$ is valid on $\bar{\mathcal{X}}$.
+
+Having $L_gB(\textbf{x}) \neq 0\,\, \forall x \in \bar{\mathcal{X}}$, the control design can be initiated.
+\section{Control Design}
+The control design is built upon the control law stated in \autoref{eq:control_law_safety}. The control law presented in \autoref{chap:cbf_3d_static} suggest a smooth transition between safety controller and non-safety controller, just as presented in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}.
+
+%This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
+
+\begin{flalign}
+	L_fB(\mathbf{x}) &= \frac{dB(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
 	\begin{bmatrix} 
 		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
 	\end{bmatrix}
@@ -130,17 +138,14 @@ It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_
 	\begin{bmatrix}
 		x_x\\x_y\\x_z
 	\end{bmatrix}\nonumber\\
-	& \phantom{=\frac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x})} =
+	& \phantom{=\dfrac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x})} =
 	-2\left(
 	\frac{1}{r_x^2\tau_x}(c_xx_x-x_x^2) +\frac{1}{r_y^2\tau_y}(c_yx_y-x_y^2) + \frac{1}{r_z^2\tau_z}(c_zx_z-x_z^2) \right)\\
 	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
-\end{align}
+\end{flalign}
 It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
 
 
-
-
-\section{Control Design for 3D System}
 Based on the modelled decoupled first order systems, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
 \begin{equation}\label{eq:3D_sys_static}
 \small
