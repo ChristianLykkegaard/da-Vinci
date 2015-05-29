@@ -58,9 +58,9 @@ x_x\\x_y\\x_z
 \end{equation}
 \begin{tabular}{rp{12.5cm}} 
 where  &  \\
-$x$ & is the position in the $x$-axis \\
-$y$ & is the position in the $x$-axis \\
-$z$ & is the position in the $x$-axis \\
+$x_x$ & is the position in the $x$-axis \\
+$x_y$ & is the position in the $x$-axis \\
+$x_z$ & is the position in the $x$-axis \\
 $\tau_x$ & is the time constant associated with a step purely in the $x$-axis \\
 $\tau_y$ & is the time constant associated with a step purely in the $y$-axis \\
 $\tau_z$ & is the time constant associated with a step purely in the $z$-axis 
@@ -83,11 +83,12 @@ A \gls{cbf} is proposed that complies with the first two constraints in \autoref
 \end{tabular}\\
 
 The \gls{cbf} is visualized in \autoref{fig:zerolevelset_3d}. The zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
+\vspace{-0.5cm}
 \begin{figure}[H]
 \centering
 	\hspace*{-3cm}
 	\includegraphics[width=1.3\textwidth]{cbf_3d_init.eps}
-	\caption{BF on the form described in with center $\mathbf{c}= [0,\,\,\,\, 0\,\,\,\, -0]$ and $\mathbf{r}=[0.03,\,\,\,\, 0.05,\,\,\,\, 0.03]$.}
+	\caption{CBF on the form described in with center $\mathbf{c}= [0,\,\,\,\, 0,\,\,\,\, 0]$ and $\mathbf{r}=[0.03,\,\,\,\, 0.05,\,\,\,\, 0.03]$.}
 	\label{fig:zerolevelset_3d}
 \end{figure}
 %
@@ -116,21 +117,58 @@ As suggested in \autoref{req2}, if $L_fB(\textbf{x})\neq 0\,\, \forall \, \textb
 	&= 2
 	\begin{bmatrix} 
 		\dfrac{1}{r_x^2\tau_x}(c_x-x_x) & \dfrac{1}{r_y^2\tau_y}(c_y-x_y) & \dfrac{1}{r_z^2\tau_z}(c_z-x_z)  
-	\end{bmatrix} \\
+	\end{bmatrix} \label{eq:LgB_3d} \\
 	& \neq 0 \mm \forall \mm c_x \neq x_x, \mm c_y \neq x_y , \mm c_z \neq x_z  \nonumber
 \end{flalign}
-It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. While $L_gB(\textbf{x}) = 0$ implies the demand $L_fB(\textbf{x}) \leq 0$, it causes no issue in this specific case. Simply subtract a small region around the center of the ellipsoid, call it $\mathcal{S}=\{ x_x = [-\delta,<,\,\,\,\, -\delta], \,\, x_y = [-\delta\,\,\,\,\, -\delta]\,\, x_z = [-\delta\,\,\,\,\, -\delta] \}$ where $\delta$ is some small scaler, from $\mathcal{X}$ such that $\bar{\mathcal{X}} = \mathcal{X} \backslash \mathcal{S}$. Thus $B(\textbf{x})$ is valid on $\bar{\mathcal{X}}$.
-
-Having $L_gB(\textbf{x}) \neq 0\,\, \forall x \in \bar{\mathcal{X}}$, the control design can be initiated.
+It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. While $L_gB(\textbf{x}) = 0$ implies the demand $L_fB(\textbf{x}) \leq 0$, it causes no issue in this specific case. Simply subtract a small region around the center of the ellipsoid, call it $\mathcal{S}=\{ x_x = [-\delta\,\,\,\,\,\, -\delta], \,\, x_y = [-\delta\,\,\,\,\, -\delta]\,\, x_z = [-\delta\,\,\,\,\, -\delta] \}$ where $\delta$ is some small scalar, from $\mathcal{X}$ such that $\bar{\mathcal{X}} = \mathcal{X} \backslash \mathcal{S}$. Thus $B(\textbf{x})$ is valid on $\bar{\mathcal{X}}$. These considerations are valid as no trajectory under any circumstances will penetrate the surface of the ellipsoid, thus no reason to include the interior in $\mathcal{X}$. With $L_gB(\textbf{x}) \neq 0\,\, \forall x \in \bar{\mathcal{X}}$, the control design can be initiated.
 \section{Control Design}
-The control design is built upon the control law stated in \autoref{eq:control_law_safety}. The control law presented in \autoref{chap:cbf_3d_static} suggest a smooth transition between safety controller and non-safety controller, just as presented in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}.
-
-%This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
-
+The control design is built upon the control law from \autoref{eq:control_law}, i.e:
 \begin{flalign}
-	L_fB(\mathbf{x}) &= \frac{dB(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x}) = 
+\textbf{u}(\textbf{x},\tilde{\textbf{u}}) &= \sigma(\textbf{x})k_0(\textbf{x})+(1-\sigma(\textbf{x}))\tilde{\textbf{u}}(\textbf{x}) \label{eq:3d_main_contr} \\
+&\text{with:} \nonumber \\
+\tilde{\textbf{u}}(\textbf{x}) &= \bar{\textbf{N}}x_\text{ref} - \textbf{K}\textbf{x} \label{eq:normal_control_3d}
+\end{flalign}
+\begin{tabular}{rp{12.5cm}} 
+where  &  \\
+$\textbf{u}(\textbf{x},\tilde{\textbf{u}})$ & is the control input where safety ensured \\
+$\tilde{\textbf{u}}(\textbf{x}) $ & is the input where no safety is considered \\
+$k_0(\textbf{x})$ & is the controller ensuring safety \\
+$\sigma(\textbf{x})$ & founds a linear combination between the two control laws \\
+$\bar{\textbf{N}}$ & ensures unity gain from reference input to output \\
+$\textbf{K}$ & is the controller where no safety is considered \\
+$\textbf{x}$ & is the state vector containing $x_x,x_y,x_z$
+\end{tabular}\\
+
+The input $\tilde{\textbf{u}}$ is used in the safe area and thus found according to regular pole placement where stability is the main design consideration, thus the MATLAB command \texttt{acker} is simply used to places the poles faster than the system itself and in the left half plane in the complex frequency domain. Thus:
+\begin{flalign}
+\textbf{K} = \texttt{acker}\left(\textbf{A},\textbf{B},\begin{bmatrix}
+-15 & -15 & -15
+\end{bmatrix}\right) =  \begin{bmatrix}
+0.65 & 0 & 0 \\
+0 & 0.65 & 0 \\
+0 & 0 & 0.65
+\end{bmatrix}
+\label{eq:k_3d}
+\end{flalign}
+The matrix $\bar{\textbf{N}}$ is found as \citep{bib:Nbar}:
+\vspace*{-3mm}
+\begin{flalign}
+\bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} = \begin{bmatrix}
+1.65 & 0 & 0 \\
+0 & 1.65 & 0 \\
+0 & 0 & 1.65
+\end{bmatrix}
+\label{eq:nbar_3d}
+\end{flalign}
+
+The safety controller $k_0(\textbf{x})$ require both $L_gB(\textbf{x})$ and $L_fB(\textbf{x})$. With $L_gB(\textbf{x})$ found in \autoref{eq:LgB_3d}, $L_fB(\textbf{x})$ is found to:
+%This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
+\begin{flalign}
+	L_fB(\mathbf{x}) &= \frac{\partial B(\mathbf{x})}{\partial \mathbf{x}}f(\mathbf{x})\Bigm|_{f(\textbf{x})= \textbf{A}\textbf{x}} = \begin{bmatrix}
+	 \dfrac{\partial B(\textbf{x})}{\partial x_x} & \dfrac{\partial B(\textbf{x})}{\partial x_y} & \dfrac{\partial B(\textbf{x})}{\partial x_z}
+\end{bmatrix} \textbf{A}\textbf{x} \nonumber \\ &= 
 	\begin{bmatrix} 
-		\frac{2}{r_x^2}(c_x-x_x) & \frac{2}{r_y^2}(c_y-x_y) & \frac{2}{r_z^2}(c_z-x_z) 
+		\dfrac{2}{r_x^2}(c_x-x_x) & \dfrac{2}{r_y^2}(c_y-x_y) & \dfrac{2}{r_z^2}(c_z-x_z) 
 	\end{bmatrix}
 	\begin{bmatrix}
 		-1/\tau_x& 0 & 0 \\ 0& -1/\tau_y & 0 \\0& 0& -1/\tau_z
@@ -138,58 +176,132 @@ The control design is built upon the control law stated in \autoref{eq:control_l
 	\begin{bmatrix}
 		x_x\\x_y\\x_z
 	\end{bmatrix}\nonumber\\
-	& \phantom{=\dfrac{dB_0(\mathbf{x})}{d\mathbf{x}}f(\mathbf{x})} =
+	 &=
 	-2\left(
-	\frac{1}{r_x^2\tau_x}(c_xx_x-x_x^2) +\frac{1}{r_y^2\tau_y}(c_yx_y-x_y^2) + \frac{1}{r_z^2\tau_z}(c_zx_z-x_z^2) \right)\\
-	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
+	\frac{1}{r_x^2\tau_x}(c_xx_x-x_x^2) +\frac{1}{r_y^2\tau_y}(c_yx_y-x_y^2) + \frac{1}{r_z^2\tau_z}(c_zx_z-x_z^2) \right)
+	\label{eq:Lf_3d}
+%	\\	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
 \end{flalign}
-It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
-
-
-Based on the modelled decoupled first order systems, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
-\begin{equation}\label{eq:3D_sys_static}
-\small
-\dot{\begin{bmatrix}
-	x_x\\x_y\\x_z
-	\end{bmatrix}} =
-\underbrace{\begin{bmatrix}
-	-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_x\\x_y\\x_z
-	\end{bmatrix}}_{f(\mathbf{x})} +
-\underbrace{\begin{bmatrix}
-	1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
-	\end{bmatrix}}_{g(\mathbf{x})}
-\underbrace{\left(\begin{bmatrix}
-	\bar{\mathbf{N}}_x & 0 & 0 \\0 & \bar{\mathbf{N}}_y & 0 \\0& 0& \bar{\mathbf{N}}_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_\text{ref}\\y_\text{ref}\\z_\text{ref}
-	\end{bmatrix}
-	-
-	\begin{bmatrix}
-	\mathbf{K}_x & 0 & 0 \\0 & \mathbf{K}_y & 0 \\0& 0&  \mathbf{K}_z
-	\end{bmatrix}
-	\begin{bmatrix}
-	x_x\\x_y\\x_z
-	\end{bmatrix}\right)}_{\tilde{\mathbf{u}}}
-\end{equation}
-\begin{tabular}{rl}
-where & \\
-$\tau$ & is the time constant given in \autoref{subsec:model_1d}, $\tau = 110$\,ms \textcolor{red}{NEW MEAS!}\\
-$\bar{\mathbf{N}}_i$ & are the system gains for each of the decoupled systems, computed according to \autoref{eq:barm_1}\\
-$\mathbf{K}_i$ & are the controller gains for each of the decoupled systems, computed according to \autoref{eq:K_1}\\
+The control law presented in \autoref{chap:cbf_3d_static} suggest a smooth transition on $\mathcal{T}$, just as derived in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}. This obeys with the desire to cover the ellipsoid with a 1\,cm thick rim (from \autoref{tab:intervals_3d}), such that the scalar $\epsilon > 0$ is introduced according to \autoref{eq:smoothness}, i.e.:
+\begin{flalign}
+\sigma(\textbf{x}) = 
+\begin{cases}
+0 & \text{if} \mm B(\textbf{x}) \leq -\epsilon \\
+-2  \left( \dfrac{B(\textbf{x})}{\epsilon} \right)^3 - 3\left( \dfrac{B(\textbf{x})}{\epsilon} \right)^2 +1 \kk &\text{if} \mm B(\textbf{x}) \in (-\epsilon,0) \\
+1  &\text{if} \mm B(\textbf{x}) \geq 0
+\end{cases}
+\label{eq:smoothness_3d}
+\end{flalign} 
+Where $\epsilon$ can be found by considering the CBF:
+\begin{flalign}
+ \epsilon =	B(\mathbf{x})_{\left\vert \scriptsize \begin{matrix}
+  \hspace{-0.8cm} x_z = 0 \\
+ \hspace{0.1cm} x_x = r_x + 0.01 \\
+ \hspace{-0.8cm} x_y = 0
+\end{matrix}\right.} = -\left(  \left(\frac{r_x+0.01-c_x}{r_x}\right)^2 + \left(\frac{c_y}{r_y}\right)^2 + \left(\frac{c_z}{r_z}\right)^2 - 1 \right)_{\left\vert \scriptsize \begin{matrix}
+\hspace{0.1cm} r_x  = 0.03 \\
+\hspace{0.1cm} r_y = 0.06 \\
+\hspace{0.1cm} r_z = 0.03 \\
+\hspace{-0.3cm} c_x = 0 \\
+\hspace{-0.3cm} c_y = 0 \\
+\hspace{-0.3cm} c_z = 0
+\end{matrix} \right.} = 0.778 
+\label{eq:epsilon_3d}
+\end{flalign}
+Note that setting $x_x = r_x+0.01$ and  $x_y=x_z = 0$ ensures that a 1\,cm thick layer arise around the ellipsoid. Thus, from \autoref{eq:control_law_safety}, the non-linear controller ensuring safety can be found as:
+\begin{flalign}
+k_0(x) = \begin{cases}
+-\dfrac{L_fB(x)+ \sqrt{(L_fB(x))^2 + \kappa^2L_gB(x)(L_gB(x))^T}}{L_gB(x)(L_gB(x))^T}(L_gB(x))^T &\text{if} \mm L_gB(x) \neq 0 \\
+0  &\text{if} \mm L_gB(x) = 0
+\end{cases}
+\label{eq:ko_3d}
+\end{flalign}
+The control law can thereby be summarized.
+\begin{recap}[Control Law for Safety Controller in the Euclidean Space]
+Using \autoref{eq:3d_main_contr}, the control law can be summarized as:
+\begin{flalign}
+\textbf{u}(\mathbf{x},\tilde{\textbf{u}}) = \sigma(\mathbf{x})k_0(\mathbf{x}) + (1-\sigma(\mathbf{x}))\tilde{\textbf{u}}(\mathbf{x})
+\end{flalign}
+\begin{tabular}{rp{12.5cm}} 
+where  &  \\
+$\sigma(\mathbf{x})$ & is calculated in \autoref{eq:smoothness_3d} with $\epsilon$ from \autoref{eq:epsilon_3d} \\
+$k_0(\textbf{x})$ & is calculated from \autoref{eq:ko_3d} with Lie derivatives from \ref{eq:LgB_3d} and \ref{eq:Lf_3d} \\
+$\tilde{\textbf{u}}(\textbf{x})$ & is calculated from \autoref{eq:normal_control_3d} with $\bar{\textbf{N}}$ from \ref{eq:k_3d} and $\textbf{K}$ from \ref{eq:nbar_3d}
 \end{tabular}\\
+\end{recap}
+\section{MATLAB Implementation}
+The MATLAB implementation can be found in found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/safe\_3d/safety\_in\_3d.m}. The implementation is built upon these considerations:
+\begin{itemize}
+\item Forward Euler extrapolation.
+\item Sampling time $f_s= 2\,$kHz.
+\item Simulation time at 10\,s.
+\item Various setpoints are given to illustrate how the controller ensures that the trajectory is redirected in alternative paths to ensure that the ellipsoid is not penetrated at any time.
+\end{itemize}
+The trajectory (blue) along with the immediate trajectory (red) determined from the setpoints given (blue stars) and the unsafe set outlined by $B(\textbf{x})$ as an ellipsoid (green) are plotted in \autoref{fig:traj3d_1}. The black circle indicates the initial position (outside $\mathcal{X}_u$) of the trajectory and the destination coordinate is indicated as a green circle.
+\begin{figure}[H]
+\centering
+	\hspace*{-2cm}
+	\includegraphics[width=1.4\textwidth]{traj_3d_1.eps}
+	\caption{Result of the MATLAB implementation of the safe controller which allows manoeuvring in the euclidean space with an ellipsoid as CBF outlining $\mathcal{X}_u$. The trajectory (blue) along with the immediate trajectory (red) determined from the setpoints given (blue stars). The black circle indicates initial position and the green circle indicates the destination.}
+	\label{fig:traj3d_1}
+\end{figure}
+It is from \autoref{fig:traj3d_1} seen how the controller ensures that the state will never enter the interior of the ellipsoid which indeed was the purpose of the controller. It is also seen how the controller ensures a smooth and elegant detour to reach the desired setpoint while ensuring safety. If a setpoint is given in the interior of $B(\textbf{x})$, the state will settle at the shortest safe distance from that setpoint. It is finally seen how setpoints in the safe area are reached without any problems.
 
-\textcolor{red}{pick  values for K and N }
+The state trajectory is also plotted in \autoref{fig:traj3d_2} where $x,y,z$ are plotted individually which makes it slightly easier to see the effect of $\sigma(\textbf{x})$. 
+\begin{figure}[H]
+\centering
+	\includegraphics[width=1\textwidth]{traj_3d_2.eps}
+	\caption{The same trajectory as depicted in \autoref{fig:traj3d_1}. It is here seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.}
+	\label{fig:traj3d_2}
+\end{figure}
+It is from \autoref{fig:traj3d_2} seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.
+%It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
 
-This position controller is used on the safe set $\mathcal{X}_0$, and when the state enters the transition area $\mathcal{T}$ (as defined in \autoref{eq:control_for_safety}) close to the set $\mathcal{X}_u$, the CBF should be used and the two controllers weighted with $\sigma$ as described in \autoref{eq:control_law}. The safe controller or CBF is designed in terms of a valid barrier certificate as defined in \autoref{eq:control_law_safety}, hence a candidate barrier certificate must be constructed.
-
-
-
-
-THIS IS ONLY POSITION, NOT ORIENTATION
+%\newpage
+%Based on the modelled decoupled first order systems, identical linear position controllers as in \autoref{eq:utilde} are used for each axis, calculated as presented in \autoref{sec:K_Nbar_1D_1storder}, which results in the closed-loop system on the safe region $\mathcal{X}_0$ on the form
+%\begin{equation}\label{eq:3D_sys_static}
+%\small
+%\dot{\begin{bmatrix}
+%	x_x\\x_y\\x_z
+%	\end{bmatrix}} =
+%\underbrace{\begin{bmatrix}
+%	-1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
+%	\end{bmatrix}
+%	\begin{bmatrix}
+%	x_x\\x_y\\x_z
+%	\end{bmatrix}}_{f(\mathbf{x})} +
+%\underbrace{\begin{bmatrix}
+%	1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
+%	\end{bmatrix}}_{g(\mathbf{x})}
+%\underbrace{\left(\begin{bmatrix}
+%	\bar{\mathbf{N}}_x & 0 & 0 \\0 & \bar{\mathbf{N}}_y & 0 \\0& 0& \bar{\mathbf{N}}_z
+%	\end{bmatrix}
+%	\begin{bmatrix}
+%	x_\text{ref}\\y_\text{ref}\\z_\text{ref}
+%	\end{bmatrix}
+%	-
+%	\begin{bmatrix}
+%	\mathbf{K}_x & 0 & 0 \\0 & \mathbf{K}_y & 0 \\0& 0&  \mathbf{K}_z
+%	\end{bmatrix}
+%	\begin{bmatrix}
+%	x_x\\x_y\\x_z
+%	\end{bmatrix}\right)}_{\tilde{\mathbf{u}}}
+%\end{equation}
+%\begin{tabular}{rl}
+%where & \\
+%$\tau$ & is the time constant given in \autoref{subsec:model_1d}, $\tau = 110$\,ms \textcolor{red}{NEW MEAS!}\\
+%$\bar{\mathbf{N}}_i$ & are the system gains for each of the decoupled systems, computed according to \autoref{eq:barm_1}\\
+%$\mathbf{K}_i$ & are the controller gains for each of the decoupled systems, computed according to \autoref{eq:K_1}\\
+%\end{tabular}\\
+%
+%\textcolor{red}{pick  values for K and N }
+%
+%This position controller is used on the safe set $\mathcal{X}_0$, and when the state enters the transition area $\mathcal{T}$ (as defined in \autoref{eq:control_for_safety}) close to the set $\mathcal{X}_u$, the CBF should be used and the two controllers weighted with $\sigma$ as described in \autoref{eq:control_law}. The safe controller or CBF is designed in terms of a valid barrier certificate as defined in \autoref{eq:control_law_safety}, hence a candidate barrier certificate must be constructed.
+%
+%
+%
+%
+%THIS IS ONLY POSITION, NOT ORIENTATION
 
 %
 %Hence, before modelling the system and designing a controller, the kinematics of the AAU da Vinci robot is presented in the following section along with considerations for the definition of the coordinate frames and the transformation between them constituting the kinematic description of the robot.
@@ -407,5 +519,6 @@ The \gls{kdl} \gls{ik} position solver uses the Newton-Raphson iterative numeric
 Three dimensional positions of the tool tip is described in a frame oriented as the inertial frame and offset such that a robot configuration with all free angles and slide set to zero equals a position of the tool tip in [0,0,0].
 
 
-
+\section{Conclusion for Safety in the Euclidean Space}
+only position, not orientation
 
