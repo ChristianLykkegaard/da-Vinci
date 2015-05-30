@@ -1,45 +1,60 @@
 This chapter intends to implement and analyse a controller ensuring safety if the demands from \autoref{def:cbf} %{req1}, \ref{req2} and \ref{req3} 
-are obeyed. This shall first be tested on the slide movement on the Da Vinci surgical robot as it comprises a prismatic joint and a 1:1 mapping from slide $joint\_angle$ to 1D position. Hence any inverse kinematics solver can be bypassed in the early phase of this project which is an important simplification to eliminate initial complications.
+are obeyed. This shall first be tested on the slide movement on the da Vinci surgical robot as it comprises a prismatic joint and a 1:1 mapping from slide $joint\_angle$ to 1D position. Hence any inverse kinematics solver can be bypassed in the early phase of this project which is an important simplification to eliminate initial complications.
 
 The slide movement is visualized in \autoref{fig:slidefig} and an overview of terms used in this section is found in \autoref{fig:safe:overview}, which also encompasses  the case study considered in this chapter. It puts forth the demands that the upper slide region, i.e. the interval $[\Lambda_{h+},\Lambda_\text{lim+}]$ is an unsafe area and the rest is considered safe. Furthermore, everything outside the slide physical limits, i.e. $[-\infty,\Lambda_\text{lim-}]$ and $[\Lambda_\text{lim+},\infty]$ is also considered unsafe. This case study is purely made up with the purpose to demonstrate the use of a safety controller.
 \begin{figure}[H]
 \centering
 \subbottom[Illustration of slide movement.]{\includegraphics[width=0.46\textwidth]{slidemovefigure.pdf}\label{fig:slidefig}}%
 \subbottom[Boundaries used in this section.]{\includegraphics[width=0.42\textwidth]{slide_overview.pdf}\label{fig:safe:overview}}%
-\caption{The slide position of the robotic instrument is visualized for the instrument house. As the remaining robot joints are not considered in this chapter, there is a one-to-one translation between instrument house position and instrument tip position. Slide house position in $d_0$ corresponds to tool tip position in zero in the $z$-dimension.}
+\caption{The slide position of the robotic instrument is visualized for the instrument house. As the remaining robot joints are not considered in this chapter, there is a one-to-one correspondence between instrument house position and instrument tip position. Slide house position in $d_0$ corresponds to tool tip position in zero in the $z$-dimension.}
 \label{fig:slide}
 \end{figure}
-The boundaries for the slide position are summed up in \autoref{tab:intervals}.
+
+\vspace{-1mm}
+The boundaries for the \gls{cbf} sets in slide position are summed up in \autoref{tab:intervals}.
+
+\vspace{-1mm}
 \begin{table}[H]
 	\begin{tabularx}{\textwidth}{X X X }
 \rowcolor{HeaderBlue} 
 $\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ \\
-$x \in \{[\Lambda_{\text{lim}-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{\text{lim}+}]\}$  & $x \in \{[\Lambda_{\text{lim}-},\Lambda_{h-}],[\Lambda_{h+},\Lambda_{\text{lim}+}]\} $ & $x \in \{[\Lambda_{h-},\Lambda_{s-}],[\Lambda_{s+},\Lambda_{h+}]\}$  \\
+$ \mathcal{X}=\{\mathbf{x} \in[\Lambda_{\text{lim}-},\Lambda_{s-}] \cup$ \newline $\phantom{\mathcal{X}=\{\mathbf{x} \in} \,\, [\Lambda_{s+},\Lambda_{\text{lim}+}]\}$  & $\mathcal{X}_u = \{\mathbf{x} \in [\Lambda_{\text{lim}-},\Lambda_{h-}] \cup$ \newline $\phantom{\mathcal{X}_u=\{\mathbf{x} \in} \,\, [\Lambda_{h+},\Lambda_{\text{lim}+}]\} $ & $\mathcal{X}_0 = \{\mathbf{x} \in [\Lambda_{h-},\Lambda_{s-}] \cup$ \newline $\phantom{\mathcal{X}_0=\{\mathbf{x} \in} \,\, [\Lambda_{s+},\Lambda_{h+}]\}$  \\
 \end{tabularx}
-\caption{Global state intervals for the position where: $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition line and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. The interval $x \in [\Lambda_{s-},\Lambda_{s+}] = \mathcal{Y}$ is safe thus $\tilde{u}(x)$ stated in \autoref{eq:utilde} can be used in this region.}
+\caption{\gls{cbf} state intervals for the robotslide position, with limits as given in \autoref{fig:safe:overview} i.e. $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition line and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. }
 \label{tab:intervals}
 \end{table}
+The interval $\mathbf{x} \in [\Lambda_{s-},\Lambda_{s+}] = \mathcal{Y}$ is safe thus $\tilde{u}(\mathbf{x})$ stated in \autoref{eq:utilde} can be used in this region.
 As the control law stated in \autoref{eq:control_law} utilizes Lie derivatives, a system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
+
 \section{Modelling of Slide Movement}\label{sec:model_slide}
-To obtain a model of the slide movement, the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros} (topics are ROS syntax for communication lines, see \autoref{app:ros} for an introduction to ROS). The experiment is described in further details in \autoref{app:meas}, and the result is plotted in \autoref{fig:stepresponseslide}. 
+
+\vspace{-2mm}
+To obtain a model of the slide movement (along the 3D $z$-axis), the step response will be measured.  This can be done by subscribing to the \texttt{joint\_state} topic in \gls{ros} (topics are ROS syntax for communication lines, see \autoref{app:ros} for an introduction to ROS). The experiment is described in further details in \autoref{app:meas}, and the result is plotted in \autoref{fig:stepresponseslide}. 
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.6]{step_slide.eps}
 \caption{Step response from 0\,mm to 5\,mm. Plot details and measurements can be found in \autoref{app:cd} as \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}. The experiment is described in \autoref{app:meas}.}
 \label{fig:stepresponseslide}
 \end{figure}
-The system can clearly be approximated with an underdamped second order model, however, for initial simplicity, merely a simple first order model of the slide movement is used. It shall, however, also be approximated as a second order system. This introduces a number of other challenges which is the reason for initial simplicity. These models will throughout this chapter be referred to as:
+The system can clearly be approximated with an underdamped second order model. For initial simplicity, however, a simple first order model of the slide movement is used, followed by the second order system approximation. This introduces a number of other challenges which is the reason for initial simplicity. These models of the robot slide movement  will throughout this chapter be referred to as the first and second order models, and are treated in the following way:
+\vspace{-2.5mm}
 \begin{itemize}
-\item One dimensional (1D) slide movement along the $z$-axis based on \underline{position} only, hence a first order system model.
-\item One dimensional (1D) slide movement along the $z$-axis based on \underline{position and velocity}, hence a second order system model.
+	\itemsep-0.8mm
+\item The first order system model based on \textit{position} only is presented in \autoref{subsec:model_1d}. Its \gls{cbf} is constructed in \autoref{subsec:cbf-1order}, the controller designed in \autoref{sec:K_Nbar_1D_1storder}, \autoref{subsec:matlab-results-1order} shows the MATLAB implementation and finally the implementation on the da Vinci robot is presented in \autoref{subsec:implement-davinci-1d}.
+\item The second order system model based on \textit{position and velocity} is presented in \autoref{subsec:model_2d}. Its \gls{cbf} is constructed in \autoref{subsec:cbf-2order}, the controller designed in \autoref{sec:K_Nbar_1D_2ndorder}, its MATLAB implementation is presented in \autoref{subsec:matlab-resutls-2-order} and finally \autoref{subsec-implement-2dmodel} documents the implementation on the da Vinci robot.
 \end{itemize}
-A first order approximation of the state space system will be modelled first. 
+%A first order approximation of the state space system will be modelled first. 
+
 \subsection{1D Model based on Position}\label{subsec:model_1d}
-The system can be approximated to a linear first order system with a dominating time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide}:
+\vspace{-1mm}
+The system can be approximated with a linear first order system with a  time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide} as the time lapse from the step is applied until the state has travelled 63.2\,\% of the distance to the reference:
+\vspace{-3mm}
 \begin{flalign*}
 \tau_s = 110\, \text{ms}
 \end{flalign*} 
+
+\vspace{-3mm}
 A linear system can be outlined as:
 \begin{flalign}
 Y(s) &= \dfrac{1}{\tau_s s + 1}U(s) \nonumber\\
@@ -47,14 +62,15 @@ Y(s) &= \dfrac{1}{\tau_s s + 1}U(s) \nonumber\\
 & \dot{x} = \underbrace{-\tau_s^{-1}\,x}_{\mathbf{A}x} + \underbrace{\tau_s^{-1}}_{\mathbf{B}} u
 \label{eq:1storder_1D_ss}
 \end{flalign}
-The system matrix $A$ and the input matrix $B$ can be read from the above equation:
+The system matrix \textbf{A}, input matrix \textbf{B}, output matrix \textbf{C} and feedthrough matrix \textbf{D} can be read from the above equation:
 \begin{flalign}
-\mathbf{A} = - \tau_s^{-1} =  \kk \wedge \kk \mathbf{B} = \tau_s^{-1} \kk \wedge \kk \mathbf{C} = 1 \kk \wedge \kk \mathbf{D} = 0
+\mathbf{A} = - \tau_s^{-1},  \kk  \kk \mathbf{B} = \tau_s^{-1}, \kk  \kk \mathbf{C} = 1 \kk \text{and} \kk \mathbf{D} = 0
 \end{flalign}
-Which completes the first order approximation.
+This completes the first order approximation.
 
 \subsection{1D Model based on Position and Velocity}\label{subsec:model_2d}
-The second order approximation is based on the form:
+\vspace{-1mm}
+The second order approximation has the form:
 \begin{flalign}
 \dfrac{Y(s)}{U(s)} = \dfrac{\omega_n^2}{s^2 + 2\zeta \omega_n s + \omega_n^2}
 \label{eq:2order}
@@ -68,10 +84,10 @@ $U(s)$ & is the input in the Laplace domain  & [m] \\
 $s$ & is the Laplace operator  & [rad/s] \\
 \end{tabular}\\
 
-The model can unambiguously be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep{bib:dynamicsystems}. They are measured (conservatively) from \autoref{fig:stepresponseslide} with the purpose to find $\omega_n$ and $\zeta$:
+The model can unambiguously be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep[ pp. 134-136]{bib:dynamicsystems}. They are measured  from \autoref{fig:stepresponseslide} with the purpose to find $\omega_n$ and $\zeta$:
 \begin{flalign*}
 \omega_n &= \dfrac{1.8}{t_r} = \dfrac{1.8}{0.106\,\text{s}} = 17 \,\text{rad/s} \\
-\zeta &= \dfrac{-1}{\omega_n \cdot t_s}\log (0.05) = \dfrac{-1}{17 \cdot 0.320}\log(0.05) = 0.55
+\zeta &= \dfrac{-1}{\omega_n \cdot t_s}\log (5\,\%) = \dfrac{-1}{17 \cdot 0.320}\log(0.05) = 0.55
 \end{flalign*}
 \Autoref{eq:2order} can be transformed into state space form: 
 \begin{subequations}
@@ -79,7 +95,9 @@ The model can unambiguously be approximated from the rise time $t_r$, settling t
 Y(s)s^2 + 2\zeta \omega_n Y(s) s + \omega_n^2 Y(s) - \omega_n^2 U(s)  &= 0 \\
 \ddot{y}(t) + 2\zeta \omega_n \dot{y}(t) + \omega_n^2 y(t) - \omega_n^2 u(t) &= 0 
 \end{flalign*}
-Choose $y(t) = x_1(t) =$ position, and let $\dot{x}_1(t) = x_2(t)$
+
+\vspace{-4mm}
+Choose $y(t) = x_1(t)$ to represent the position, and let $\dot{x}_1(t) = x_2(t)$
 \begin{flalign}
 \begin{bmatrix}
 \dot{x}_1(t)\\\dot{x}_2(t)
@@ -106,39 +124,47 @@ x_1(t) \\ x_2(t)
 \begin{tabular}{rll} 
 where  & & \\
 \gls{x1}$(t)$ & is the position& [m] \\
-\gls{x2}$(t) = \dot{x}_1(t)$ &is the velocity  & [m/s] \\
+\gls{x2}$(t)$ &is the velocity  & [m/s] \\
 $y(t)$ & is the output (slide position)  & [m] \\
 $u(t)$ & is the control input  & [$\cdot$]\\
 \end{tabular}\\
 
-Thus the linear system matrices can be outlined as:
+Thus the linear system matrices are:
 \begin{flalign}
 \mathbf{A} = \begin{bmatrix}
 0 & 1\\
  -\omega_n^2   & -2\zeta \omega_n 
-\end{bmatrix} \kk \wedge \kk \mathbf{B} = \begin{bmatrix}
+\end{bmatrix}, \kk  \kk \mathbf{B} = \begin{bmatrix}
 0 \\ \omega_n^2
-\end{bmatrix} \kk \wedge \kk \mathbf{C} = \begin{bmatrix}
+\end{bmatrix}, \kk  \kk \mathbf{C} = \begin{bmatrix}
 1 & 0
-\end{bmatrix} \kk \wedge \kk \mathbf{D} = 0 \label{eq:system:2}
+\end{bmatrix} \kk \text{and} \kk \mathbf{D} = 0 \label{eq:system:2}
 \end{flalign}
 Which completes the second order model.
 
 \section{Construction of CBF}\label{sec:construct_cbf}
-To illustrate the usefulness of \glspl{cbf}, a palpable example hereof will be created with direct application to the Da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
+\vspace{-2mm}
+To illustrate the usefulness of \glspl{cbf}, a palpable example hereof will be created with direct application to the da Vinci robot. This example does not directly constitute application to a patient but favour the theory in a neat and comprehensible sense and secure a way to visually and physically verify the method.
 %
 %Consider the state intervals defined in \autoref{tab:intervals}.
 %
 %
 \subsection{Construction of CBF based on First Order Model}\label{subsec:cbf-1order}
+\vspace{-2mm}
 In this subsection, the state vector $x \in \mathbb{R}$ consists of the position only. Thus, a parabola is now introduced as \gls{cbf} as it allows an easy way to define $\mathcal{X}_u$ and $\mathcal{X}_0$ from \autoref{tab:intervals}. %A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
+\vspace{-2mm}
 \begin{flalign}
 B(x) &= ax^2+bx+c \label{eq:cbf1} 
 \end{flalign}
-The parameters $a$, $b$ and $c$ can be easily chosen to fulfil the requirements in \autoref{cer1} and \ref{cer2} for a barrier function, thereby fulfilling the parallel requirements for the \gls{cbf} in \autoref{req1} and \ref{req3}. From \autoref{req2} it is required that either $L_gB(x) \neq 0 \,\,\,\forall x\in \mathcal{X}$, or that $L_fB(x)<0$ when $L_gB(x) = 0$, as the input in that case will be insignificant. Analysing $L_gB(x) = 0$
+
+\vspace{-4mm}
+The parameters $a$, $b$ and $c$ can be easily chosen to fulfil the requirements in \autoref{cer1} and \ref{cer2} for a barrier function, thereby fulfilling the parallel requirements for the \gls{cbf} in \autoref{req1} and \ref{req3}. From \autoref{req2} it is required that either $L_gB(x) \neq 0 \,\,\,\forall x\in \mathcal{X}$, or that $L_fB(x)<0$ when $L_gB(x) = 0$, as the input in that case will not have any influence on the state. Analysing $L_gB(x) = 0$
+\vspace{-1mm}
 \begin{flalign*}
 	L_gB(x) \Bigm|_{g(x)=\mathbf{B}} = ( 2ax + b ) \cdot \tau^{-1} = 0 \kk \Rightarrow \kk x = \dfrac{-b}{2a}\label{eq:LgB_1D}
 \end{flalign*}
+
+\vspace{-3mm}
 it is seen that this is only the case in $x = \tfrac{-b}{2a}$ which is indeed the critical point for a one dimensional parabola. As is the case for Lyapunov functions (see  \autoref{eq:lyap_vdot_minus_criticalpoint}) in the critical point the requirement on the derivative is relaxed to  $L_fB(x) \leq 0$.   
 \begin{flalign}
 L_fB(x) = \dfrac{d}{dx}B(x)f(x)\Bigm|_{f(x)=\mathbf{A}x}  &= (2ax+b)(-\tau^{-1}x) = -2\tau^{-1}ax^2-\tau^{-1}bx \nonumber\\
@@ -152,13 +178,13 @@ L_fB(x)\Bigm|_{x= \frac{-b}{2a}} &= -2\tau^{-1}a\left(\frac{-b}{2a}\right)^2-\ta
 \label{eq:interval1}
 \end{flalign}
 Hence the \gls{cbf} is valid for all choices of $a,b$. The scalar $c$ must be less than zero to comply with \autoref{req3}.
-At this point in time, three equations with three unknowns can be outlined to fulfil the initial demand in \autoref{fig:safe:overview}.
+At this point in time, three equations with three unknowns can be outlined to fulfil the initial demand in \autoref{fig:safe:overview}. The value of $B(x)$ in the vertex of the parabola is within the safe region, and can thus be chosen as any \textit{negative} real number, here chosen to be -0.025.
 \begin{flalign*}
  \left.
  \begin{aligned}
 a\,\Lambda_{h+}^2 + b\,\Lambda_{h+} + c = 0 \\
 a\,\Lambda_{h-}^2 + b\,\Lambda_{h-} + c = 0 \\
-a\left( \frac{\Lambda_{h-}+\Lambda_{h+}}{2}\right)^2 + b\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}\right) + c = \underbrace{-0.025}_\text{any constant $<0$} 
+a\left( \frac{\Lambda_{h-}+\Lambda_{h+}}{2}\right)^2 + b\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}\right) + c = -0.025
 \end{aligned}
 \mm \right\}
  \qquad \begin{matrix}
@@ -184,20 +210,26 @@ The \gls{cbf} is plotted in \autoref{fig:barrierfunction} from which it is seen 
 % This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
 
 \subsection{Construction of CBF Based on Second Order model}\label{subsec:cbf-2order}
-Consider now for the second order system the same candidate \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(x_1)$ is a function of position only, such that the CBF is:
+\vspace{-2mm}
+Consider now for the second order system the same candidate \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(\mathbf{x})$ is a function of position only, such that the CBF is:
+\vspace{-2mm}
 \begin{flalign*}
-B(x_1) = a\,x_1^2+ b\,x_1 + c
+B(\mathbf{x}) = a\,x_1^2+ b\,x_1 + c
 \end{flalign*}
+
+\vspace{-4mm}
 For this system model the Lie derivative $L_gB(\mathbf{x})=0\,\,\forall \mathbf{x}$:
+\vspace{-2mm}
 \begin{flalign*}
-L_gB(\mathbf{x}) = \dfrac{d B(x_1)}{d \mathbf{x}}g(\mathbf{x}) \Bigm|_{g(\mathbf{x})=\mathbf{B}} =  
+L_gB(\mathbf{x}) = \dfrac{d B(\mathbf{x})}{d \mathbf{x}}g(\mathbf{x}) \Bigm|_{g(\mathbf{x})=\mathbf{B}} =  
 \begin{bmatrix}
-\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
+\dfrac{\partial B(\mathbf{x})}{\partial x_1} & \dfrac{\partial B(\mathbf{x})}{\partial x_2} 
 \end{bmatrix}\begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} = 0 \label{eq:LgB_secondorder_invalid}
 \end{flalign*}
 This puts forth the requirement that $L_fB(\mathbf{x})<0\,\,\, \forall \, \mathbf{x}$. Accordingly:
+\vspace{-2mm}
 \begin{flalign*}
 L_fB(\mathbf{x}) = \dfrac{d B(x_1)}{d \mathbf{x}}f(\mathbf{x}) \Bigm|_{f(\mathbf{x})=\mathbf{Ax}} &= 
 \begin{bmatrix}
@@ -210,15 +242,15 @@ L_fB(\mathbf{x}) = \dfrac{d B(x_1)}{d \mathbf{x}}f(\mathbf{x}) \Bigm|_{f(\mathbf
 x_1 \\ x_2
 \end{bmatrix} \nonumber \\
 &= (2ax_1+b) x_2 - 0\cdot(\omega_n^2 x_1 + 2\zeta \omega_n x_2) \nonumber \\
-&= 2ax_1x_2 + bx_2
+&= (2ax_1 + b)x_2
 \label{eq:2d_x1}
 \end{flalign*}
-Note that the velocity appears in both terms. As the velocity can be both decreasing and increasing for all positions, this demand is impossible to fulfil with this candidate \gls{cbf}  and it is therefore invalid. A solution may be to include the velocity in the barrier function. 
+As the velocity can be both decreasing and increasing for all positions, this demand is impossible to fulfil with this candidate \gls{cbf}  and it is therefore invalid. A solution is to include the velocity in the barrier function. 
 
-Safety constraints on velocity are not of any significant importance as such, but they are necessary for $L_gB(\mathbf{x})$ to obtain values different from zero as opposed to the Lie derivative of the invalid \gls{cbf} $B(x_1)$.
+Safety constraints on velocity are not of any significant importance as such, but they are necessary for $L_gB(\mathbf{x})$ to obtain values different from zero as opposed to the Lie derivative of the invalid \gls{cbf} presented above.
 Consider instead the elliptic paraboloid as \gls{cbf}:
 \begin{flalign}
-B(x_1,x_2) =  \left( \dfrac{(x_1-x_{10})^2}{a_2^2} + \dfrac{(x_2-x_{20})^2}{b_2^2} \right) c_1 + c_2
+B(\mathbf{x}) =  \left( \dfrac{(x_1-x_{10})^2}{a_2^2} + \dfrac{(x_2-x_{20})^2}{b_2^2} \right) c_1 + c_2
 \label{eq:cbf2}
 \end{flalign}
 \begin{tabular}{rp{13.7cm}l} 
@@ -241,6 +273,9 @@ M_{0} &= 4
 %\Lambda_{x2-} &= -4 \kk \text{denotion of the lowest value where $B(0,x_2)=0$} \\
 %\Lambda_{x2+} &= 4 \kk \text{denotion of the highest value where $B(0,x_2)=0$} 
 \end{flalign*}
+where ${M}_0$ denotes the semimajor axis of the zero level set of the \gls{cbf}.
+Note that $x_{20}$ ensures velocity equilibrium in 0\,m/s and note that the velocity outermost points are determined far bigger than the robot's physical limits to ensure that all position values on the interval  $[-0.1\,\,\,\,0.05]$ are considered safe (almost) independently of the velocity. % $\mathcal{X}_0 \notin \mathcal{X}_u $. 
+This is sketched in \autoref{fig:cbf_2ndorder} along with the chosen values.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{cbf_2ndorder.pdf}
@@ -248,16 +283,13 @@ M_{0} &= 4
 	\label{fig:cbf_2ndorder}
 \end{figure}
 
-where ${M}_0$ denotes the semimajor axis of the zero level set of the \gls{cbf}.
-Note that $x_{20}$ ensures velocity equilibrium in 0\,m/s and note that the velocity outermost points are determined far bigger than the robot's physical limits to ensure that all position values on the interval  $[-0.1\,\,\,\,0.05]$ are considered safe (almost) independently of the velocity. % $\mathcal{X}_0 \notin \mathcal{X}_u $. 
-This is sketched in \autoref{fig:cbf_2ndorder} along with the chosen values.
+Having chosen the coordinates $x_{10}$ and $x_{20}$ for the critical point, an arbitrary negative value is chosen for $B(x_{10},x_{20})$. Using the four known coordinates from the zero level set $(\Lambda_{h+},x_{20})$, $(\Lambda_{h-},x_{20})$, $(x_{10},-M_0)$ and $(x_{10},M_0)$, five equations with four unknowns can be outlined with the below numerical values.
 
-Having chosen the coordinates $x_{10}$ and $x_{20}$ for the critical point, an arbitrary negative value is chosen for $B(x_{10},x_{20})$, and using the four known coordinates from the zero level set $(\Lambda_{h+},x_{20})$, $(\Lambda_{h-},x_{20})$, $(x_{10},-M_0)$ and $(x_{10},M_0)$, five equations with four unknowns can be outlined with the below numerical values.
 \vspace{-3mm}
 \begin{flalign*}
 \hspace{5mm} \left.
 \begin{aligned}
-\left( \dfrac{\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}-x_{10}\right)^2}{a_2^2} + \frac{(0-x_{20})^2}{b_2^2} \right)c_1 + c_2 =  \underbrace{-1.000}_\text{any constant $<0$} \\
+\left( \dfrac{\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}-x_{10}\right)^2}{a_2^2} + \frac{(0-x_{20})^2}{b_2^2} \right)c_1 + c_2 =  {-1.000} \\
 \left(\dfrac{(\Lambda_{h+}-x_{10})^2}{a_2^2} +\frac{(0-x_{20})^2}{b_2^2}\right) c_1 + c_2 = 0 \\
  \left(\dfrac{(\Lambda_{h-}-x_{10})^2}{a_2^2}+\frac{(0-x_{20})^2}{b_2^2}\right) c_1 + c_2 = 0 \\
  \left(\dfrac{\left(\frac{\Lambda_{h-}+\Lambda_{h+}}{2}-x_{10}\right)^2}{a_2^2} +\dfrac{(4-x_{20})^2}{b_2^2} \right)c_1 + c_2 = 0 \\
@@ -279,8 +311,8 @@ c_2 &=& -1.000
 \end{flalign*}
 The Lie derivatives can now be calculated as:
 \begin{flalign}
-L_gB(\mathbf{x}) &= \dfrac{d B(x_1,x_2)}{d \mathbf{x}}  g(\mathbf{x}) \Big|_{g(\mathbf{x})=\textbf{B}} = \begin{bmatrix}
-\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_2}
+L_gB(\mathbf{x}) &= \dfrac{d B(\mathbf{x})}{d \mathbf{x}}  g(\mathbf{x}) \Big|_{g(\mathbf{x})=\textbf{B}} = \begin{bmatrix}
+\dfrac{\partial B(\mathbf{x})}{\partial x_1} & \dfrac{\partial B(\mathbf{x})}{\partial x_2}
 \end{bmatrix}  \begin{bmatrix}
 0 \\ \omega_n^2
 \end{bmatrix} \nonumber \\
@@ -319,53 +351,59 @@ x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 &= 2c_1\left( \dfrac{x_1-x_{10}}{a_2^2} - \dfrac{\omega_n^2 x_1 +2\zeta \omega_n x_2}{b_2^2} \right) x_2 \Big|_{x_{2} = 0} = 0
 \label{eq:LfB_2}
 \end{flalign}
-It is noted that $L_fB(\mathbf{x}) = 0$ for $x_2 = 0$ which implies stability but not asymptotic stability. That is in general not good for physical systems and does not fulfil \autoref{req2}. It does, however, fulfil \autoref{req2_weak} thus proving $B(x_1,x_2)$ to be a weak \gls{cbf}. %However, an engineering reflection and decision is taken at this point.
-Note that when the velocity is zero, the slide movement is steady, although only marginally stable. %At this point $k_0(x)=0$, which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. 
-As an engineering reflection it is considered that when the state leaves the marginally stable equilibrium, $x_2 \neq 0$, and the safety controller  will ensure that the state will increase its distance to the unsafe set and go towards its stable equilibrium in $(x_{10},x_{20})=(-0.025,0)$. 
+It is noted that $L_fB(\mathbf{x}) = 0$ for all points $(x_1,0)$ (i.e. at zero velocity) which % implies stability but not asymptotic stability. That is in general not good for physical systems and 
+does not fulfil \autoref{req2}. It does, however, fulfil \autoref{req2_weak} thus proving $B(\mathbf{x})$ from \autoref{eq:cbf2} to be a weak \gls{cbf}. %However, an engineering reflection and decision is taken at this point.
+Note that when the velocity is zero, the slide movement is stable, although only marginally stable. %At this point $k_0(x)=0$, which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. 
+As an engineering reflection it is considered that when the state leaves the marginally stable equilibrium, $x_2 \neq 0$,  the safety controller  will ensure that the state will increase its distance to the unsafe set and move towards its stable equilibrium in $(x_{10},x_{20})=(-0.025,0)$. 
 %It implies hereafter $x_2 \neq 0$ again which is sufficient for the safety controller. %That is in this case a good thing as the slide will move back to the safe region and away from $\Lambda_{h-}$ and $\Lambda_{h+}$. Lastly, the velocity will never be truly zero due to the finite resolution, i.e. a finite sampling rate. For these reasons, the \gls{cbf} from \autoref{eq:cbf2} is accepted, well aware that the \gls{cbf} is insufficient,. It is, however, important to keep in mind that this is a dangerous decision. {\color{green}{RAFAL: Er det overhovedet OK at sige s\aa dan?}}
 
 
 \begin{figure}[H]
-\hspace*{-2mm}
-	\includegraphics[width=1.02\textwidth]{cbf_2d.eps}
+\hspace*{-5mm}
+	\includegraphics[width=1.1\textwidth]{cbf_2d.eps}
 	\vspace*{-11mm}
-	\caption{CBF for the second order system model. Plot details and MATLAB script can be found in \autoref{app:cd} as \texttt{matlab\_scripts/plot\_cbf\_2d/plot\_cbf\_2d.m}}
+	\caption{CBF for the second order system model. In the right plot the curve is seen from "above" for comparison with \autoref{fig:cbf_2ndorder}. Plot details and MATLAB script can be found in \autoref{app:cd} on the path \texttt{matlab\_scripts/plot\_cbf\_2d/plot\_cbf\_2d.m}}
 	\label{fig:barrierfunction_2d}
 \end{figure}
-The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}, from which it is seen how $B(x_1,x_2)<0$ only within the specified regions, i.e. $x_2 \in [-M_0,M_0]$ and $x_1 \in [\Lambda_{h-},\Lambda_{h+}]$. %, and thus everything else is unsafe, i.e. $B(x) > 0$. 
-It is also seen that for small velocities (physically $x_{2,\text{max}}\approx 1$\,m/s) the \gls{cbf} is approximately vertical in the boundaries of $x_1$ %when the big numerical difference in the axes is taken into account.
-leaving $\mathcal{X}_0$ almost independent of the velocity, as prescribed in \autoref{fig:cbf_2ndorder}.
+The elliptic paraboloid with its proper boundaries is plotted in \autoref{fig:barrierfunction_2d}, from which it is seen how $B(\mathbf{x})<0$ only within the specified region, and positive for all $\mathbf{x}\in [\Lambda_{h-},\Lambda_{h+}]\times[-M_0,M_0] $. %, and thus everything else is unsafe, i.e. $B(x) > 0$. 
+It is also seen that for small velocities (physically $x_{2,\text{max}}\approx 0.5$\,m/s) the \gls{cbf} forms a nearly square subset of the safe set, i.e. $\{\mathbf{x}\in[-0.1,0.05]\times[-0.5,0.5] \}$, %is approximately vertical in the boundaries of $x_1$ %when the big numerical difference in the axes is taken into account.
+leaving $\mathcal{X}_0$ almost independent of the velocity in this area, as prescribed in \autoref{fig:cbf_2ndorder}.
 
+\vspace{5mm}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.95\textwidth]{cbf_example_sinus.eps}
+	\includegraphics[width=\textwidth]{cbf_example_sinus.eps}
 	\caption{CBF. Example to demonstrate how other CBFs suffer when $x_2 = 0$.}
 	\vspace{-7mm}
 	\label{fig:barrierfunction_example_sinus}
 \end{figure}
-\vspace{5mm}
+\vspace{8mm}
 
 \textbf{\underline{\textit{Remark:}}} The issue caused by $x_2=0$ is not only the case for this specific \gls{cbf} but for many \gls{cbf}s. Take for example another CBF that could fulfil the position requirements from \autoref{tab:intervals}:
 \begin{flalign*}
-B(x_1,x_2) = \cos (c_3 x_1 + c_4) \cdot \cos (c_5 x_2 + c_6)
+B(\mathbf{x}) = \cos (c_3 x_1 + c_4) \cdot \cos (c_5 x_2 + c_6)
 \end{flalign*}
 It turns out that the coefficients $c_3 = 21.00, c_4 = 119.91, c_5 = 0.50, c_6 = 3.15$ induce a CBF with the same properties as the one depicted in \autoref{fig:barrierfunction_2d}. The \gls{cbf} is outlined graphically in \autoref{fig:barrierfunction_example_sinus}.
 
-Thus $L_gB(x_1,x_2)$ can be found as:
+
+Thus $L_gB(\mathbf{x})$ can be found as:
+\vspace{-3mm}
 \begin{flalign*}
-L_gB(x_1,x_2) = -c_5 \omega_n^2 \cos (c_3 x_1+c_4)\sin(c_5 x_2+c_6)
+L_gB(\mathbf{x}) = -c_5 \omega_n^2 \cos (c_3 x_1+c_4)\sin(c_5 x_2+c_6)
 \end{flalign*}
-Now note that $L_gB(x_1,x_2) = 0$ when $c_6+c_5x_2 = i\pi$, $i\in\mathbb{Z}$, which is true for e.g. $x_2 \approx 0$. This implies the requirement that $L_fB(x_1,x_2) < 0$ whenever $x_2 \approx 0$. % As $L_gB(x_1,x_2) \neq 0 \,\, \forall \,\, x_2 \approx 0$, requirements for $L_fB(x_1,x_2)$ is necessary. 
-However, taking a look at $L_fB(x_1,x_2)$:
+
+\vspace{-3mm}
+Now note that $L_gB(\mathbf{x}) = 0$ when $c_6+c_5x_2 = i\pi$, $i\in\mathbb{Z}$, which is true for e.g. $x_2 \approx 0$. This implies the requirement that $L_fB(\mathbf{x}) < 0$ whenever $x_2 \approx 0$. % As $L_gB(x_1,x_2) \neq 0 \,\, \forall \,\, x_2 \approx 0$, requirements for $L_fB(x_1,x_2)$ is necessary. 
+However, taking a look at $L_fB(\mathbf{x})$:
 \begin{flalign*}
-L_fB(x_1,x_2) = 
+L_fB(\mathbf{x}) = 
 c_5\cos (c_3 x_1+c_4 ) \sin(c_5 x_2+c_6)( \omega_n^2 x_1 + 2  \zeta \omega_n x_2) - c3 x_2 \cos( c_5 x_2+c_6) \sin( c_3 x_1+c_4)
 \end{flalign*}
-quickly poses the fact that $L_fB(x_1,x_2 )$ is not necessarily negative for $x_2 \approx 0$ due to the sign alternation caused by the term $\sin(c_3 x_1+c_4)$ in the boundaries.
+quickly poses the fact that $L_fB(\mathbf{x})$ is not necessarily negative for $x_2 \approx 0$ due to the sign alternation caused by the term $\sin(c_3 x_1+c_4)$ in the boundaries.
 
 \section{Control Design}
 \vspace*{-1mm}
-This section constitutes the design of the two controllers. The controller based on the first order approximation is straight forward whereas the controller based on the second order approximation requires an observer because the velocity cannot be measured.
+This section constitutes the design of the two controllers. The controller based on the first order approximation is straight forward whereas the controller based on the second order approximation requires an observer because  velocity  measurements are not available through ROS in the current setup.
 \subsection{Control Design based on First Order
 	\vspace*{-1mm} Model}\label{sec:K_Nbar_1D_1storder}
 To be able to find $k_0(x)$ from \autoref{eq:control_for_safety}, the constant $\epsilon$ used in \autoref{eq:smoothness} must be found. It can be determined from the \gls{cbf} from \autoref{eq:cbf1} such that it complies with the requirements from \autoref{tab:intervals}:
@@ -373,7 +411,7 @@ To be able to find $k_0(x)$ from \autoref{eq:control_for_safety}, the constant $
 \epsilon = |B(\Lambda_{s+})| = |B(\Lambda_{s-})| = 0.00249
 \label{eq:epsilon}
 \end{flalign}
-Utilizing $\sigma(x)$ as described in \autoref{eq:smoothness} secures a neat way to incorporate the transition between $\Lambda_s$ and $\Lambda_h$ because the safety controller $k_0(x)$ gradually takes over when the trajectory exceeds $\Lambda_s$. \Autoref{fig:epsilon_plot} illustrates how $\epsilon$ and $B(x)$ are connected.
+Utilizing $\sigma(x)$ as described in \autoref{eq:smoothness} secures a neat way to incorporate the transition between the position controller and the safety controller $k_0(x)$, the latter which which gradually takes over when the trajectory exceeds $\Lambda_s$  and has fully taken over when the trajectory reaches $\Lambda_h$. \Autoref{fig:epsilon_plot} illustrates how $\epsilon$ and $B(x)$ are connected.
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.55]{epsilon_plot.eps}
@@ -479,7 +517,7 @@ A necessary condition for a controller is that the system is controllable:
 \end{flalign*} 
 
 \vspace{-3mm}
-To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, $\epsilon$ is found as the level set value of $B(x_1,x_2)$ at the position soft limit with zero velocity:
+To design the smoothing in the transition space $\mathcal{T}$ for the second order approximation, $\epsilon$ is found as the level set value of $B(\mathbf{x})$ at the position soft limit with zero velocity:
 \vspace{-1mm}
 \begin{flalign}
 	\epsilon = |B(\Lambda_{s+},x_{20})| = |B(\Lambda_{s-},x_{20})| = 0.2489
@@ -495,22 +533,22 @@ To design the smoothing in the transition space $\mathcal{T}$ for the second ord
 %1  &\text{if} \mm B(x_1) \geq 0
 %\end{cases}
 %\end{flalign} 
-\vspace{-2mm}
+\vspace{-3mm}
 At this point, two cases will be considered:
-\vspace{-1mm}
+\vspace{-3mm}
 \begin{itemize}
 	\itemsep-1mm
 \item \textbf{1.} Construction of $\mathbf{K}$ and $\bar{\mathbf{N}}$ in a similar way as in \autoref{sec:K_Nbar_1D_1storder}. This is possible in an ideal simulation because the velocity can be extrapolated by means of the forward Euler approach (ideal design).
 \item \textbf{2.} Development of an observer to estimate the velocity based on the model and position measurements. This is necessary on a real system.
 \end{itemize}
-\vspace{-3mm}
 
-\subsubsection{Design with the intention to simulate with Forward Euler}
+\vspace{-3mm}
+\subsubsection{Controller Design for MATLAB Simulation}
 \vspace{-2mm}
 The design of $\mathbf{K}$ and $\bar{\mathbf{N}}$ will follow the exact same procedure as described for the first order model except now $\mathbf{K} \in \mathbb{R}^{1 \times 2}$, while $\bar{\mathbf{N}}$ remains as a scalar. The entire design procedure is therefore not elaborated.  
 
 However, it is of interest to slow down the system dynamics slightly compared to the controller based on a first order system. This is to enter the transition region with a lower velocity and thereby allow the safety controller some transition space to navigate the trajectory back to its safe area. The eigenvalues of the second order system is found to:
-\vspace{-3mm}
+\vspace{-4mm}
 \begin{flalign*}
 \lambda_\text{2nd order system} = \begin{cases}
 -10.295 -14.765\,j \\
@@ -518,8 +556,9 @@ However, it is of interest to slow down the system dynamics slightly compared to
 \end{cases}
 \end{flalign*}
 
-\vspace{-2mm}
+\vspace{-3mm}
 The feedback vector can be found with the MATLAB command \texttt{acker} based on pole placement slightly faster than the system itself.
+\vspace{-2mm}
 \begin{flalign}
 \mathbf{K} = \texttt{acker(A,B,C,D,[-40 -50])} = \begin{bmatrix}
 5.173  &  0.214
@@ -527,17 +566,20 @@ The feedback vector can be found with the MATLAB command \texttt{acker} based on
 \label{eq:K_2}
 \end{flalign}
 
-\vspace{-2mm}
+\vspace{-3mm}
 The DC gain can now be corrected with:
 \vspace{-1mm}
 \begin{flalign}
 \bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} =  - \left( \mathbf{C}\,(\mathbf{A}-\mathbf{B}\,\mathbf{K})^{-1}\,\mathbf{B} \right)^{-1} = 6.173
 \label{eq:Nbar_2}
 \end{flalign}
+
+\vspace{-3mm}
 These matrices are used in the MATLAB simulation.
 
-\subsubsection{Observer Design}
+\subsubsection{Observer Design for Implementation on the da Vinci Robot}
 \vspace{-2mm}
+As the \gls{cbf} and hence the safety controller are functions of both position and velocity of the end-effector, measurements of both are needed. For the present setup, however, velocity measurements are not available through ROS, and thus an observer is designed to estimate the velocity.
 A necessary condition for an observer is that the system is observable:
 \begin{flalign*}
  \mathbf{\mathcal{O}}= \begin{bmatrix}
@@ -586,7 +628,7 @@ The augmented (discrete) system with $\mathbf{x}_\text{augmented}\in\mathbb{R}^4
 \hat{\mathbf{x}}(k+1)
 \end{bmatrix} &= \underbrace{\begin{bmatrix}
 \boldsymbol\Gamma & \boldsymbol\Phi \mathbf{K}_d \\
-\mathbf{L}_d \mathbf{C} & \boldsymbol\Gamma + \boldsymbol\Phi \mathbf{K}_d + \mathbf{L}_d \mathbf{C} 
+-\mathbf{L}_d \mathbf{C} & \boldsymbol\Gamma + \boldsymbol\Phi \mathbf{K}_d + \mathbf{L}_d \mathbf{C} 
 \end{bmatrix} }_{\boldsymbol\Gamma_{cl}}\begin{bmatrix}
 \mathbf{x}(k) \\ \hat{\mathbf{x}}(k)
 \end{bmatrix} + \underbrace{\begin{bmatrix}
@@ -598,36 +640,38 @@ The augmented (discrete) system with $\mathbf{x}_\text{augmented}\in\mathbb{R}^4
 \mathbf{x}(k) \\ \hat{\mathbf{x}}(k)
 \end{bmatrix}
 \end{flalign*}
+
+\vspace{-3mm}
 The discrete matrices $\boldsymbol\Gamma$ and $\boldsymbol\Phi$ can be found as \citep{bib:discrete_sampling}:
 \begin{flalign}
-\boldsymbol\Gamma &= \text{expm} (\mathbf{A}\, T_s) = \begin{bmatrix}
+\boldsymbol\Gamma &= \text{e}^{\mathbf{A}\, T_s} = \begin{bmatrix}
 0.986 & 0.009 \\
 -2.623 & 0.817
 \end{bmatrix} \label{eq:Gamma_2}  \\
- \boldsymbol\Phi &= \int_0^{T_s}  \text{expm} (\mathbf{A}\, \mu) \, d \mu \cdot\mathbf{B} = \begin{bmatrix}
+ \boldsymbol\Phi &= \int_0^{T_s}  \text{e}^{\mathbf{A}\, \mu} \, d \mu \cdot\mathbf{B} = \begin{bmatrix}
 0.014 \\
 2.623 
 \end{bmatrix} \label{eq:Phi_2} 
 \end{flalign}
 \begin{tabular}{rl} 
 where  &  \\
-\text{expm}& is the matrix exponential \\
+e& is the matrix exponential \\
 $T_s$&  is the sampling time, $T_s=100\,$ms\\
 \end{tabular}\\
 
 The sampling time $T_s$ is according to Assistant Engineer Simon Jensen limited to 100\,Hz caused by the TCP/IP communication channel between ROS and the underlying hardware as seen in \autoref{fig:overview}.
 
 The feedback matrix and  the observer gain can now be found. They will again be calculated in MATLAB, as the design procedure follow the exact same as in \autoref{sec:K_Nbar_1D_1storder}. The poles ($p_i$) will be placed from the below considerations:
-\vspace{-2mm}
+\vspace{-3mm}
 \begin{itemize}
-	\itemsep-0.5mm
+	\itemsep-0.7mm
 \item No overshoot in the closed loop step response, i.e. Im($p_i)=0$.
 \item Asymptotic stability, i.e. $|p_i| < 1 $
 \item Slow closed loop step response
 \item Positive feedback, i.e. the controller and observer gains must be negative
 \item An observer significantly faster than the closed loop system $\Gamma + \Phi \mathbf{K}_d$
 \end{itemize}
-\vspace{-5mm}
+\vspace{-7mm}
 \begin{flalign}
 \mathbf{K}_d &= -\texttt{acker}\left( \Gamma,\Phi,\begin{bmatrix}
 0.5 & 0.35
@@ -641,29 +685,32 @@ The feedback matrix and  the observer gain can now be found. They will again be 
  -68.184
  \end{bmatrix} \label{eq:Ld_2}
 \end{flalign}
-\vspace{-5mm}
 
-The matrix $\mathbf{M}$ introduces zeros in the closed loop transfer function  $\mathbf{y}(k)/x_\text{ref}$. These can be eliminated by designing the zeros close to the cut-off frequency, i.e the characteristic polynomial of the matrix $\Gamma_{za}+\tilde{\mathbf{M}}\mathbf{C}_{za}$ has zeros close to the cut-off frequency, where $\Gamma_{za}=\Gamma+\Phi \mathbf{K}_d + \mathbf{L}_d \mathbf{C}$ and $\mathbf{C}_{za}=-\mathbf{K}_d$ \citep{bib:Nbar}. The MATLAB function  \texttt{acker} can again be used:
+\vspace{-5mm}
+The matrix $\mathbf{M}$ introduces zeros in the closed loop transfer function  $\mathbf{y}(k)/x_\text{ref}$, which can be eliminated by designing the zeros close to the cut-off frequency. This means that the characteristic polynomial of the matrix $\Gamma_{za}+\tilde{\mathbf{M}}\mathbf{C}_{za}$ has zeros close to the cut-off frequency, where $\Gamma_{za}=\Gamma+\Phi \mathbf{K}_d + \mathbf{L}_d \mathbf{C}$ and $\mathbf{C}_{za}=-\mathbf{K}_d$ \citep{bib:Nbar}. The MATLAB function  \texttt{acker} can again be used:
 \vspace{-2mm}
 \begin{flalign*}
-\tilde{\mathbf{M}} = - \texttt{acker}\left( \mathbf{A}_{za}^T, \Phi_{za}^T, \begin{bmatrix}
+\tilde{\mathbf{M}} = - \texttt{acker}\left( \Gamma_{za}^T, \mathbf{C}_{za}^T, \begin{bmatrix}
 0.01 & 0.02
 \end{bmatrix} \right) = \begin{bmatrix}
   0.014 \\
    2.623
    \end{bmatrix}
 \end{flalign*}
-\vspace{-2mm}
-To ensure unity gain, the $\mathbf{N}$ matrix can be computed as \citep{bib:Nbar}:
-\vspace{-0.2cm}
+
+\vspace{-4mm}
+To ensure unity gain between reference and system state, the $\mathbf{N}$ matrix can be computed as \citep{bib:Nbar}:
+\vspace{-5mm}
 \begin{flalign}
 \mathbf{N} &= - \left( \mathbf{C}_{cl} \Gamma_{cl}^{-1} \tilde{\Phi}_{cl} \right)^{-1} \kk \text{where} \mm \tilde{\Phi} = \begin{bmatrix}
 \Phi \\ \tilde{M}
 \end{bmatrix} \nonumber \\
 \mathbf{N} &= 13.739 \label{eq:N_2}
 \end{flalign}
-\vspace{-0.2cm}
-The other matrix $\mathbf{M}$ ensuring unity gain, can now be calculated as \citep{bib:Nbar}:
+
+\vspace{-4mm}
+The  matrix $\mathbf{M}$ ensuring unity gain between reference and observer state, can now be calculated as \citep{bib:Nbar}:
+\vspace{-4mm}
 \begin{flalign}
 \mathbf{M} = \tilde{\mathbf{M}}\mathbf{N} = \begin{bmatrix}
  0.186 \\
@@ -672,7 +719,7 @@ The other matrix $\mathbf{M}$ ensuring unity gain, can now be calculated as \cit
 \label{eq:M_2}
 \end{flalign}
 \vspace{-0.2cm}
-Thereby, all unknowns from \autoref{eq:observer} is calculated.
+Thereby, all unknowns from \autoref{eq:observer} are calculated.
 
 \begin{recap}[Control Law for Second Order Approximation]
 	The complete controller based on the second order system approximation is now designed as:
@@ -694,4 +741,4 @@ $\mathbf{C}$ & is found in \autoref{eq:system:2}
 \end{tabular}
 \vspace*{-5mm}
 \end{recap}
-This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the Da Vinci robot in \gls{ros}. The MATLAB implementation is outlined first. 
+This completes the control design. The implementation constitutes both a MATLAB simulation and an actual implementation on the da Vinci robot in \gls{ros}. The MATLAB implementation is outlined first. 

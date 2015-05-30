@@ -107,18 +107,20 @@ It is seen how $L_gB(\mathbf{x}) = 0$ and $L_fB(\mathbf{x}) = 0$ at the same tim
 %\end{figure}
 %It is from \autoref{fig:control2} noted how the control signal fluctuates heavily. This is because the position gradient (the velocity) changes sign constantly in the unsafe region as the trajectory seeks to go either one or the other way due to the safety controller and the setpoint given outside the safe region.
 \subsection{Observer Verification}
+\vspace{-2mm}
 The observer developed in \autoref{sec:K_Nbar_1D_2ndorder} will be verified with a step input at 1\,cm. The estimated position and velocity is plotted with the success criteria that $\hat{x}_1 = x_\text{ref}$ for $t \rightarrow \infty$ and that no overshoot in the position occurs. The velocity must stay within a reasonable velocity span, i.e. below 1\,m/s when the time constant is considered. The error is defined as $\hat{y}$--$y$ and must obviously stay very low in steady state.
 
-The result is plotted in \autoref{fig:observerplot} from which it is seen how the position, velocity and error all complies with the expected outcome and fulfil the requirements.
+The  observer is initialized with an estimation error in both position and velocity, and the result is plotted in \autoref{fig:observerplot}. It is seen how the position, velocity and error all comply with the expected outcome and fulfil the requirements.
 \begin{figure}[H]
 \hspace{-7mm}
-		\includegraphics[width=1.1\textwidth]{observer_plot.eps}
+		\includegraphics[width=1.1\textwidth]{observer.pdf}
 	\caption{Simulation results from the simulink implementation of the observer. Plot details and simulink file can be found in \autoref{app:cd} by running \texttt{run\_observer.m} under the path \texttt{matlab\_scripts/observer/}.}
 	\label{fig:observerplot}
 \end{figure}
 The outlined plots throughout this section concludes the MATLAB simulation. The MATLAB implementation shows the expected scenario, i.e. that the state trajectory complies with the outlined safe and unsafe regions. It shall now be seen how to implement the results on the Da Vinci robot itself.
 
 \section{Implementation on the Da Vinci Robot}\label{sec:davinci-implementation}
+\vspace{-2mm}
 The implementation constitutes the below listed bullet points:
 \vspace{-2mm}
 \begin{itemize}
