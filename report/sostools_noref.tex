@@ -1,7 +1,399 @@
-\section{Zero reference}\label{app:sos_noref}
+\section{Safety Verification of First Order System with Zero Reference}\label{app:sos_noref}
+This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{subsec:zeroref}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_noRef.m}.
 
-\section{Reference interval}\label{app:sos_refinterval}
+\begin{lstlisting}[language=matlab]
+% 1D system WITHOUT REFERENCE
+clear all; clc; 
 
-\section{Error state on first order}\label{app:sos_errorstate_firstorder}
+% Time constant from measurement
+tau = 0.11;
+% State-space matrices for first order system
+A = -1/tau;
+B = 1/tau;
+K = place(A,B,[10*eig(A)]);
 
-\section{Error state on second order}\label{app:sos_errorstate_secondorder}
+% Distance between safe and unsafe regions
+delta = 1e-3;
+
+% Minimum value of the barrier certificate on the set Xu
+epsilon = 1e-3;
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+Xmax = 0.1;
+Xmin = -0.1;
+Xumax = Xmax;
+Xumin = 0.05;
+X0max = Xumin-delta;
+X0min = Xmin;
+
+% Set degree of barier certificare and SOS polynomials
+degB = [0,2:4];
+degq = [0:4];
+
+% =============================================
+% Declare state variable
+pvar x1 
+
+% Initialize the sum of squares program
+prog = sosprogram(x1);
+
+% Vector field dx/dt = fx (closed loop)
+fx = (A-B*K)*x1;
+
+% Declare the polynomial barrier function
+zB = monomials(x1,degB);
+[prog,Bar] = sospolyvar(prog,zB);
+
+% =============================================
+% Define space X in Rn
+[a,b,c] = parabola(Xmin,Xmax); % get coefficients for parabola which is positive for x ? [-0.1,0.1]
+gX = a*x1^2+b*x1+c;
+zX = monomials(x1,degq);
+[prog,qX] = sossosvar(prog,zX);
+
+prog = sosineq(prog,-diff(Bar,x1)*fx-gX*qX);
+
+% Define space Xu in X
+[a,b,c]=parabola(Xumin,Xumax);
+gXu = a*x1^2+b*x1+c;
+zXu = monomials(x1,degq);
+[prog,qXu] = sossosvar(prog,zXu);
+
+prog = sosineq(prog,Bar-epsilon-gXu*qXu);
+
+% Define space X0 in X
+[a,b,c]=parabola(X0min,X0max);
+gX0 = a*x1^2+b*x1+c;
+zX0 = monomials(x1,degq);
+[prog,qX0] = sossosvar(prog,zX0);
+
+prog = sosineq(prog,-Bar-gX0*qX0);
+
+% =============================================
+% Solve for barrier certificate
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bar)
+
+% Get coefficients for the remaining polynomials
+getdBdx = diff(getB,x1)
+getqXu1 = sosgetsol(prog,qXu);
+getqX01 = sosgetsol(prog,qX0);
+getqX1 = sosgetsol(prog,qX);
+
+% Test if the inequalities are SOS
+[Q,~,~] = findsos(getB-epsilon-gXu*getqXu1);
+[Q2,~,~] = findsos(-getB-gX0*getqX01);
+[Q3,~,~] = findsos(-getdBdx*fx-gX*getqX1);
+\end{lstlisting}
+
+\section{Safety Verification of First Order System for Reference Interval}\label{app:sos_refinterval}
+This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{sec:sos_1storder_references}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_withRef.m}.
+
+\begin{lstlisting}[language=matlab]
+% 1D system WITH REFERENCE INTERVAL
+clear all; clc; 
+
+% Time constant from measurement
+tau = 0.11;
+% State-space matrices for first order system
+A = -1/tau;
+B = 1/tau;
+K = 0.2;
+Nbar = K+1;
+
+% Distance between safe and unsafe regions
+delta = 0.015;
+
+% Minimum value of the barrier certificate on the set Xu
+epsilon = 1e-1;
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+Xmin = -0.1;
+Xmax = 0.1;
+Xumin = 0.05;
+Xumax = Xmax;
+X0min = Xmin;
+X0max = Xumin-delta;
+rMin = -0.1;
+rMax = 0.017;
+
+% Set degree of barier certificare and SOS polynomials
+degB = [0:6];
+degq = [0:2];
+
+% =============================================
+% Control Barrier Function Search for 1D system
+pvar x1 xref
+xtilde = [x1; xref];
+
+% Initialize the sum of squares program
+prog = sosprogram(xtilde);
+
+% Vector field dt/dx = fx (closed loop)
+fx = [A-B*K B*Nbar; 0 0]*xtilde;
+
+% Declare the polynomial barrier function
+zB = monomials(xtilde,degB);
+[prog,Bar] = sospolyvar(prog,zB);
+
+% =============================================
+% Define space X in Rn
+[a,b,c] = parabola(Xmin,Xmax); % get coefficients for parabola which is positive for x in [-0.1,0.1]
+gX1 = a*x1^2+b*x1+c;
+zX1 = monomials(xtilde,degq);
+[prog,qX1] = sossosvar(prog,zX1);
+
+[a,b,c] = parabola(rMin,rMax); 
+gX2 = a*xref^2+b*xref+c;
+zX2 = monomials(xtilde,degq);
+[prog,qX2] = sossosvar(prog,zX2);
+
+prog = sosineq(prog,-diff(Bar,x1)*fx-gX1*qX1 - gX2*qX2 );
+
+% Define space Xu in X
+[a,b,c]=parabola(Xumin,Xumax);
+gXu1 = a*x1^2+b*x1+c;
+zXu1 = monomials(xtilde,degq);
+[prog,qXu1] = sossosvar(prog,zXu1);
+
+[a,b,c]=parabola(rMin,rMax);
+gXu2 = a*xref^2+b*xref+c;
+zXu2 = monomials(xtilde,degq);
+[prog,qXu2] = sossosvar(prog,zXu2);
+
+prog = sosineq(prog,Bar-epsilon-gXu1*qXu1-gXu2*qXu2);
+
+% Define space X0 in X
+[a,b,c]=parabola(X0min,X0max);
+gX01 = a*x1^2+b*x1+c;
+zX01 = monomials(xtilde,degq);
+[prog,qX01] = sossosvar(prog,zX01);
+
+[a,b,c]=parabola(rMin,rMax);
+gX02 = a*xref^2+b*xref+c;
+zX02 = monomials(xtilde,degq);
+[prog,qX02] = sossosvar(prog,zX02);
+
+prog = sosineq(prog,-Bar-gX01*qX01-gX02*qX02);
+
+% =============================================
+% Solve for barrier certificate
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bar)
+
+% Get coefficients for the remaining polynomials
+getdBdx = [diff(getB,x1) diff(getB,xref)]
+getqXu1 = sosgetsol(prog,qXu1);
+getqX01 = sosgetsol(prog,qX01);
+getqX1 = sosgetsol(prog,qX1);
+getqXu2 = sosgetsol(prog,qXu2);
+getqX02 = sosgetsol(prog,qX02);
+getqX2 = sosgetsol(prog,qX2);
+
+% Test if the inequalities are SOS
+[Q,~,~] = findsos(getB-epsilon-gXu1*getqXu1-gXu2*getqXu2);
+[Q2,~,~] = findsos(-getB-gX01*getqX01-gX02*getqX02);
+[Q3,~,~] = findsos(-getdBdx*fx-gX1*getqX1-gX2*getqX2);
+\end{lstlisting}
+
+\section{Safety Verification of First Order Error State System}\label{app:sos_errorstate_firstorder}
+This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{sec:sos_1storder_error}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_error.m}.
+
+\begin{lstlisting}[language=matlab]
+% 1D first order system FOR ERROR STATE
+clear all; clc; 
+
+% Time constant from measurement
+tau = 0.11;
+% State-space matrices for first order system
+A = -1/tau;
+B = 1/tau;
+K = 0.2;
+Nbar = K+1;
+
+% Distance between safe and unsafe regions
+delta = 4e-3;
+
+% Minimum value of the barrier certificate on the set Xu
+epsilon = 1e-2;
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+Xmin = -0.03;
+Xmax = 0.03;
+Xumin = Xmin;
+Xumax = -0.009;
+X0min = Xumax+delta;
+X0max = Xmax;
+
+% Set degree of barier certificare and SOS polynomials
+degB = [0:6];
+degq = [0:4];
+
+% =============================================
+% Control Barrier Function Search for 1D system
+pvar xerr
+
+% Initialize the sum of squares program
+prog = sosprogram(xerr);
+
+% Vector field dt/dx = fx (closed loop)
+fx = (A-B*K)*xerr;
+
+% Declare the polynomial barrier function
+zB = monomials(xerr,degB);
+[prog,Bar] = sospolyvar(prog,zB);
+
+% =============================================
+% Define space X in Rn
+[a,b,c] = parabola(Xmin,Xmax); 
+gX1 = a*xerr^2+b*xerr+c;
+zX1 = monomials(xerr,degq);
+[prog,qX1] = sossosvar(prog,zX1);
+
+prog = sosineq(prog,-diff(Bar,xerr)*fx-gX1*qX1);
+
+% Define space Xu in X
+[a,b,c]=parabola(Xumin,Xumax);
+gXu1 = a*xerr^2+b*xerr+c;
+zXu1 = monomials(xerr,degq);
+[prog,qXu1] = sossosvar(prog,zXu1);
+
+prog = sosineq(prog,Bar-epsilon-gXu1*qXu1);
+
+% Define space X0 in X
+[a,b,c]=parabola(X0min,X0max);
+gX01 = a*xerr^2+b*xerr+c;
+zX01 = monomials(xerr,degq);
+[prog,qX01] = sossosvar(prog,zX01);
+
+prog = sosineq(prog,-Bar-gX01*qX01);
+
+% =============================================
+% Solve for barrier certificate
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bar)
+
+% Get coefficients for the remaining polynomials
+getdBdx = diff(getB,xerr)
+getqXu1 = sosgetsol(prog,qXu1);
+getqX01 = sosgetsol(prog,qX01);
+getqX1 = sosgetsol(prog,qX1);
+
+% Test if the inequalities are SOS
+[Q,~,~] = findsos(getB-epsilon-gXu1*getqXu1);
+[Q2,~,~] = findsos(-getB-gX01*getqX01);
+[Q3,~,~] = findsos(-getdBdx*fx-gX1*getqX1);
+\end{lstlisting}
+
+\section{Safety Verification of Second Order Error State System}\label{app:sos_errorstate_secondorder}
+This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{sec:sos_2ndorder_error}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/2ndorder\_error.m}.
+
+\begin{lstlisting}[language=matlab]
+% 1D second order system FOR ERROR STATE
+clear all; clc; 
+
+% Settling and rise time from measurement
+ts = (28-9)*1/50; % 5 percent settling time
+tr = 0.1; % rise time
+wn = 1.8/tr; % natural frequency
+zeta = -1/(wn*ts)*log(0.02); % damping ratio
+
+% State-space matrices for second order system
+A = [0 1; -wn^2 -2*zeta*wn];
+B = [0 wn^2]';
+K = acker(A,B,[-40 -50]);
+
+% Distance between safe and unsafe regions
+delta = 5e-3;
+
+% Minimum value of the barrier certificate on the set Xu
+epsilon = 5e-2;
+
+% Set upper and lower limits for the set intervals X, Xu and X0
+velMin = -0.5;
+velMax = 0.5;
+Xmin = -0.03;
+Xmax = 0.03;
+Xumin = Xmin;
+Xumax = -0.008;
+X0min = Xumax+delta;
+X0max = Xmax;
+
+% Set degree of barier certificare and SOS polynomials
+degB = [0:4];
+degq = [0:1];
+
+% =============================================
+% Control Barrier Function Search for 1D system
+pvar xerr1 xerr2
+xerr = [xerr1; xerr2];
+
+% Initialize the sum of squares program
+prog = sosprogram(xerr);
+
+% Vector field dt/dx = fx (closed loop)
+fx = (A-B*K)*xerr;
+
+% Declare the polynomial barrier function
+zB = monomials(xerr,degB);
+[prog,Bar] = sospolyvar(prog,zB);
+
+% =============================================
+% Define space X in Rn
+[a,b,c] = parabola(Xmin,Xmax); 
+gX1 = a*xerr1^2+b*xerr1+c;
+zX1 = monomials(xerr,degq);
+[prog,qX1] = sossosvar(prog,zX1);
+
+[a,b,c] = parabola(velMin,velMax);
+gX2 = a*xerr2^2+b*xerr2+c;
+zX2 = monomials(xerr,degq);
+[prog,qX2] = sossosvar(prog,zX2);
+
+prog = sosineq(prog,-[diff(Bar,xerr1) diff(Bar,xerr2)]*fx-gX1*qX1-gX2*qX2);
+
+% Define space Xu in X
+[a,b,c]=parabola(Xumin,Xumax);
+gXu1 = a*xerr1^2+b*xerr1+c;
+zXu1 = monomials(xerr,degq);
+[prog,qXu1] = sossosvar(prog,zXu1);
+
+[a,b,c] = parabola(velMin,velMax);
+gXu2 = a*xerr2^2+b*xerr2+c;
+zXu2 = monomials(xerr,degq);
+[prog,qXu2] = sossosvar(prog,zXu2);
+
+prog = sosineq(prog,Bar-epsilon-gXu1*qXu1-gXu2*qXu2);
+
+% Define space X0 in X
+[a,b,c]=parabola(X0min,X0max);
+gX01 = a*xerr1^2+b*xerr1+c;
+zX01 = monomials(xerr,degq);
+[prog,qX01] = sossosvar(prog,zX01);
+
+[a,b,c] = parabola(velMin,velMax);
+gX02 = a*xerr2^2+b*xerr2+c;
+zX02 = monomials(xerr,degq);
+[prog,qX02] = sossosvar(prog,zX02);
+
+prog = sosineq(prog,-Bar-gX01*qX01-gX02*qX02);
+
+% =============================================
+% Solve for barrier certificate
+prog = sossolve(prog);
+getB = sosgetsol(prog,Bar)
+
+% Get coefficients for the remaining polynomials
+getdBdx = [diff(getB,xerr1) diff(getB,xerr2)]
+getqXu1 = sosgetsol(prog,qXu1);
+getqX01 = sosgetsol(prog,qX01);
+getqX1 = sosgetsol(prog,qX1);
+getqXu2 = sosgetsol(prog,qXu2);
+getqX02 = sosgetsol(prog,qX02);
+getqX2 = sosgetsol(prog,qX2);
+
+% Test if the inequalities are SOS
+[Q,~,~] = findsos(getB-epsilon-gXu1*getqXu1-gXu2*getqXu2);
+[Q2,~,~] = findsos(-getB-gX01*getqX01-gX02*getqX02);
+[Q3,~,~] = findsos(-getdBdx*fx-gX1*getqX1-gX2*getqX2);
+\end{lstlisting}
