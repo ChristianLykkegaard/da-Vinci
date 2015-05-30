@@ -17,14 +17,14 @@ Another very elegant and computationally efficient approach to the safe controll
 
 When a barrier certificate can be found for a (closed-loop) dynamical system, the controller is guaranteed to be safe. In the following the notion of safety is defined in order to describe the guarantee extent of a barrier certificate. A general state-space representation of an $n$-dimensional non-linear system is considered:
 \begin{equation}
-\dot{x} = f_{cl}(x) + h(x)\,d = f(x) + g(x)\,u + h(x)\,d
+\dot{\mathbf{x}} = f_{cl}(\mathbf{x}) + h(\mathbf{x})\,\mathbf{d} = f(\mathbf{x}) + g(\mathbf{x})\,\mathbf{u} + h(\mathbf{x})\,\mathbf{d}
 \label{eq:general_statespace}
 \end{equation}
 \begin{tabular}{rl} 
 where &  \\
-\gls{x} &  is the state, $x(t) \in \mathbb{R}^n$\\
-\gls{u} & is the control input, $u(t) \in \mathbb{R}^m$\\
-\gls{d} & is the disturbance input, $d(t) \in D \subseteq \mathbb{R}^p$ \\
+\gls{x} &  is the state, $\mathbf{x}(t) \in \mathbb{R}^n$\\
+\gls{u} & is the control input, $\mathbf{u}(t) \in \mathbb{R}^m$\\
+\gls{d} & is the disturbance input, $\mathbf{d}(t) \in D \subseteq \mathbb{R}^p$ \\
 \gls{f} & is a non-linear function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$\\
 \gls{g} & is a non-linear function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$\\
 \gls{h} & is a non-linear function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$
@@ -70,42 +70,42 @@ A graphical interpretation of \autoref{eq:defsafety} is shown in \autoref{fig:de
 \end{figure}
 %\end{exa}
 
-Disturbances are not considered in the scope of this project, and hence $d\in D$ is considered to be zero in the remainder of this thesis.
+Disturbances are not considered in the scope of this project, and hence $\mathbf{d}\in D$ is considered to be zero in the remainder of this thesis.
 
 For the system in \autoref{eq:general_statespace} safety can be guaranteed if a barrier certificate for the system exists. A barrier certificate is defined as a function of the system state, satisfying a set of inequalities, entailing that its zero level set in the state space forms a barrier between the safe set of initial states $\mathcal{X}_0$ and the unsafe set $\mathcal{X}_u$, thereby certifying system safety \citep{bib:prajna_framework}.
 
 
-If a barrier certificate can be defined, safety can be guaranteed for the closed-loop system in the region $\mathcal{X}$, with unsafe region $\mathcal{X}_u$, defined by positive values of the barrier function, and (safe) initial region $\mathcal{X}_0$, defined by non-positive values of the barrier function. In the below the notation $L_{f_{cl}}B(x)$ denotes the Lie derivative of \gls{bar} along the vector field of the closed-loop system $f_{cl}(x)$, corresponding to the time derivative of the barrier function i.e.
+If a barrier certificate can be defined, safety can be guaranteed for the closed-loop system in the region $\mathcal{X}$, with unsafe region $\mathcal{X}_u$, defined by positive values of the barrier function, and (safe) initial region $\mathcal{X}_0$, defined by non-positive values of the barrier function. In the below the notation $L_{f_{cl}}B(\mathbf{x})$ denotes the Lie derivative of \gls{bar} along the vector field of the closed-loop system $f_{cl}(\mathbf{x})$, corresponding to the time derivative of the barrier function i.e.
 \begin{equation}
-L_{f_{cl}}B(x)=\frac{dB(x)}{dx}f_{cl}(x)=\frac{dB(x)}{dx}\frac{dx(t)}{dt}=\frac{dB(x(t))}{dt}
+L_{f_{cl}}B(\mathbf{x})=\frac{dB(\mathbf{x})}{d\mathbf{x}}f_{cl}(\mathbf{x})=\frac{dB(\mathbf{x})}{d\mathbf{x}}\frac{d\mathbf{x}(t)}{dt}=\frac{dB(\mathbf{x}(t))}{dt}
 \end{equation}
 
 Requiring that the time derivative of the barrier function must be nonpositive on the entire set $\mathcal{X}$ (see \autoref{def:barrier_certificate}) corresponds to the value of the barrier function decreasing over time, hence seeking the minimum of the (convex) barrier certificate. Requiring the trajectory of the state to start within the safe set $\mathcal{X}_0$ this means that the trajectory will never cross the zero level set and enter the unsafe set $\mathcal{X}_u$, as this set only contains values of the barrier function larger than the initial value.
 
 \begin{defn}[Barrier Certificate]\label{def:barrier_certificate}	
-If a barrier certificate can be constructed as a continuous and differentiable function $B(x):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following inequalities  \citep{bib:prajna_framework}:
+If a barrier certificate can be constructed as a continuous and differentiable function $B(\mathbf{x}):\mathcal{X} \rightarrow \mathbb{R}$ adhering to the following inequalities  \citep{bib:prajna_framework}:
 \begin{subequations}\label{eq:barrier_constraints}
 \begin{flalign}
-B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0  \label{cer1}\\
-B(x) &> 0  \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \label{cer2} \\
-L_{f_{cl}}B(x) &\leq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \label{cer3}
+B(\mathbf{x}) &\leq 0 \kk  \forall \hspace{2mm} \mathbf{x} \in \mathcal{X}_0  \label{cer1}\\
+B(\mathbf{x}) &> 0  \kk  \forall \hspace{2mm} \mathbf{x} \in \mathcal{X}_u \label{cer2} \\
+L_{f_{cl}}B(\mathbf{x}) &\leq 0 \kk  \forall \hspace{2mm} \mathbf{x} \in \mathcal{X} \label{cer3}
 \end{flalign}
 \end{subequations}
-Then safety of the closed-loop system $f_{cl}(x)$, as defined in \autoref{def:safety}, is guaranteed. 
+Then safety of the closed-loop system $f_{cl}(\mathbf{x})$, as defined in \autoref{def:safety}, is guaranteed. 
 \end{defn}
 
 
-From \autoref{eq:barrier_constraints} it can be seen that the function $B(x)$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(x)/dx$ must have the opposite sign of the state derivative $dx/dt$ for any state within the region $\mathcal{X}$ where $B(x)$ is defined. 
-Note how according to \autoref{cer3} the barrier certificate requires mere stability and not asymptotic stability ($L_{f_{cl}}B(x)<0$) of the system trajectory. This is rarely enough when dealing with physical systems, however, mathematically it is sufficient.
+From \autoref{eq:barrier_constraints} it can be seen that the function $B(\mathbf{x})$ must be constructed such that its zero level set delimits and separates the safe and the unsafe regions, while the Lie derivative constraint imposes that the derivative $dB(\mathbf{x})/d\mathbf{x}$ must have the opposite sign of the state derivative $d\mathbf{x}/dt$ for any state within the region $\mathcal{X}$, where $B(\mathbf{x})$ is defined. 
+Note how according to \autoref{cer3} the barrier certificate requires mere stability and not asymptotic stability ($L_{f_{cl}}B(\mathbf{x})<0$) of the system trajectory. This is rarely enough when dealing with physical systems, however, mathematically it is sufficient.
 
-Furthermore from \autoref{cer3} it is deduced that a controller incorporating the barrier certificate in its design will ensure stability if $B(x)$ has a finite minimum value. This entails that $B(x) $ is radially unbounded if $\mathcal{X}$ encompasses the entire state-space:
+Furthermore from \autoref{cer3} it is deduced that a controller incorporating the barrier certificate in its design will ensure stability if $B(\mathbf{x})$ has a finite minimum value. This entails that $B(\mathbf{x}) $ is radially unbounded if $\mathcal{X}$ encompasses the entire state-space:
 \begin{equation}
-\underset{x\rightarrow \pm\infty}{\lim} B(x)= \infty \kk \text{if} \kk \mathcal{X}=\mathbb{R}^n
+\underset{\mathbf{x}\rightarrow \pm\infty}{\lim} B(\mathbf{x})= \infty \kk \text{if} \kk \mathcal{X}=\mathbb{R}^n
 \end{equation}
 
 \subsubsection{Nexus to Lyapunov Functions}
 \vspace*{-3mm}
-As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function $V(x)$, a Lyapunov candidate function for a stable system given by
+As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function $V(\mathbf{x})$, a Lyapunov candidate function for a stable system given by
 \vspace*{-5mm}
 %\begin{equation}
 %\dot{x}  = f(x) = \frac{d x}{d t} \qquad
@@ -116,23 +116,28 @@ As it can be seen from \autoref{eq:barrier_constraints} the definition of a barr
 %\end{equation}
 \begin{subequations}\label{eq:lyap}
 \begin{align}
-V(x) &> 0 \kk \forall x \in \mathbb{R}\setminus\{0\}\\
-\dot{V}(x) &\leq 0 \label{eq:lyap_stable}
+V(\mathbf{x}) &> 0 \kk \forall \hspace{2mm}\mathbf{x} \in \mathbb{R}\setminus\{0\}\\
+\dot{V}(\mathbf{x}) &\leq 0 \kk \forall \hspace{2mm}\mathbf{x} \in \mathbb{R} \label{eq:lyap_stable}
 \end{align}	
-and for a system with an asymptotically stable equilibrium in $x=0$, \autoref{eq:lyap_stable} is replaced by
+and for a system with an asymptotically stable equilibrium in $\mathbf{x}=0$, \autoref{eq:lyap_stable} is replaced by
 \vspace*{-2mm}
 \begin{equation}
-\dot{V}(x) < 0 \kk \forall x \in \mathbb{R}\setminus\{0\}\label{eq:lyap_vdot_minus_criticalpoint}
+\dot{V}(\mathbf{x}) < 0 \kk \forall \hspace{2mm}\mathbf{x} \in \mathbb{R}\setminus\{0\}\label{eq:lyap_vdot_minus_criticalpoint}
 \end{equation}
 \end{subequations}
-As such a barrier certificate can be seen as an offset Lyapunov function with negative values in the safe region. The stable focus may also be offset from $x=0$. However, a barrier function may also take other (non-convex) forms. 
+As such a barrier certificate can be seen as an offset Lyapunov function with negative values in the safe region. The stable focus may also be offset from $\mathbf{x}=0$. However, a barrier function may also take other (non-convex) forms. 
 
 
 
-\subsection{Approaches to the Problem}
-Two approaches to the problem of designing/verifying safety controllers through barrer certificates are used in the following. In \autoref{part:cbf} barrier certificates are constructed by hand, and guaranteed safe controllers are designed according to the method given in \citep{bib:org_control}, which is described in \autoref{chap:cbf}. The safe controller is used in combination with a linear state space controller designed through pole placement for setpoint control in the safe region. In \autoref{chap:cbf_1d_static} and \ref{chap:cbf_1d_dynamic} system models of different orders are considered in 1D space, with static and dynamic boundaries (zero level sets) of the barrier function, respectively, while in \autoref{chap:cbf_3d_static} and \ref{chap:cbf_3d_dynamic} systems models are considered in 3D space. \textcolor{red}{Correct this when the chapters are written!}
+\section{Approaches to the Problem of Guaranteeing System Safety}
+Two approaches to the problem of guaranteeing safety of a system through the construction of barrier certificates are used in the following: design of safe controllers and safety verification of control systems.
 
-In \autoref{part:putinar} similar linear state-space controllers are designed for setpoint control and their safety is then validated by the construction of a barrier certificate using Putinar's Positivstellensatz according to \citep{bib:sos_putinar_lasserre}, as described in \autoref{chap:putinar}. Similarly to \autoref{part:cbf} the following chapters verify controller safety for system models of different orders in 1D and 3D space, with static and dynamic boundaries (zero level sets) of the barrier function.
+In \autoref{chap:cbf} a method of designing guaranteed safe controllers from barrier certificates is described, based on \citep{bib:org_control}. This method is used in chapters \ref{chap:cbf_1d_static} through \ref{chap:cbf_3d_static}, where barrier certificates are constructed by hand, and guaranteed safe controllers are designed and implemented on the da Vinci surgical robot. The safe controller is used in combination with a linear state space controller designed through pole placement for setpoint control in the safe region. In \autoref{chap:cbf_1d_static} and \ref{chap:cbf_1d_dynamic} system models of different orders are considered in 1D Cartesian space, with static and dynamic boundaries (zero level sets) of the barrier function, respectively, while in \autoref{chap:cbf_3d_static} a system model is considered in 3D Cartesian space. 
+
+In \autoref{chap:putinar} a recasting of \autoref{def:barrier_certificate}  according to \citep{bib:sos_putinar_lasserre} is presented, allowing for automated construction of barrier certificates with an existing software toolbox for MATLAB. 
+When a barrier certificate can be found using this toolbox, system safety is hereby certified.
+In \autoref{chap:sostools} this method of safety verification is applied to linear position-control systems corresponding to the linear state space controllers presented in \autoref{chap:cbf_1d_static}.
+%Similarly to \autoref{part:cbf} the following chapters verify controller safety for system models of different orders in 1D and 3D space, with static and dynamic boundaries (zero level sets) of the barrier function.
 %\autoref{chap:sos_1d_static} \autoref{chap:sos_1d_dynamic} \autoref{chap:sos_3d_static} \autoref{chap:sos_3d_dynamic}
 
 
