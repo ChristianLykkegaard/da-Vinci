@@ -250,11 +250,23 @@ It is from \autoref{fig:traj3d_1} seen how the controller ensures that the state
 The state trajectory is also plotted in \autoref{fig:traj3d_2} where $x,y,z$ are plotted individually which makes it slightly easier to see the effect of $\sigma(\textbf{x})$. 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=1\textwidth]{traj_3d_2.eps}
+	\includegraphics[width=0.9\textwidth]{traj_3d_2.eps}
 	\caption{The same trajectory as depicted in \autoref{fig:traj3d_1}. It is here seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.}
 	\label{fig:traj3d_2}
 \end{figure}
 It is from \autoref{fig:traj3d_2} seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.
+
+The thickness of 1\,cm, ensured by $\sigma(\textbf{x})$, is visualized in \autoref{fig:traj3d_2:med_sig}.
+\begin{figure}[H]
+\centering
+	\includegraphics[width=1\textwidth]{traj_3d_med_sigma.pdf}
+	\caption{The inner (black) ellipsoid is $\mathcal{X}_u$ and the rim around the inner ellipsoid is $\mathcal{T}$. Thus $\mathcal{X}_0 = \mathcal{X} \backslash \mathcal{X}_u$. The trajectory is initiated from the black circle.}
+	\label{fig:traj3d_2:med_sig}
+\end{figure}
+It is from \autoref{fig:traj3d_2:med_sig} seen that the trajectory starts to be redirected when it enters $\mathcal{T}$ in a smooth manner. The trajectory will always take the shortest safe path.
+
+
+
 %It is seen that $L_fB_0(\mathbf{x})$ complies with the relaxed constraint, and hence this candidate barrier function is validated and will be used in the design of the safety controller.
 
 %\newpage
