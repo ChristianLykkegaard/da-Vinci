@@ -1,14 +1,14 @@
 \glsreset{cbf}
-This chapter establishes the fundamentals for a system ensuring safety when a surgeon operates on a patient with a beating heart. In addition to the safety, it is the objective to found a system such that the surgeon experiences a beating heart as static. As indicated in \autoref{sec:aau_doc}, a proper initial set-up could be a surface mounted on a cylinder moving periodically as a sinusoid (in contrast to a more advanced (realistic) model of the heart, such as the one described in \autoref{app:dynamic_model_heart}). The scheme is outlined in \autoref{fig:dynamic_overview}.
+This chapter establishes the fundamentals for a system ensuring safety when a surgeon operates on a patient with a beating heart. In addition to the safety, it is the objective to establish a system with virtual fixture of the heart, i.e. such that the surgeon experiences the beating heart as static. As suggested by chief surgeon at Aalborg University Hospital, Johan Poulsen (see \autoref{sec:aau_doc}), a proper initial set-up emulating a beating heart could be a surface mounted on a cylinder moving periodically as a sinusoid. This scheme is outlined in \autoref{fig:dynamic_overview} illustrating how the virtual fixture of the heart should be obtained by dynamically positioning the end-effector at a fixed distance from the surface of the heart.
 \vspace{-2mm}
 \begin{figure}[H]
 %\hspace*{-10mm}
 \subbottom[Terms]{\includegraphics[height=4.2cm]{dynamic_boundary_limits.pdf}\label{fig:over_1}} \hspace{0.5cm}
-\subbottom[Time sequence of a tool following a relative reference $d_\text{ref}$]{\includegraphics[height=4.2cm]{dynamic_boundary_sequence.pdf}\label{fig:over_2}}%
-\caption{The objective is to control the distance to the object by following a relative reference $d_\text{ref}$, such that the surgeon experiences the object as static and can operate as if the object was in fact standing still. An overview of terms applied is found in \autoref{fig:over_1}.}
+\subbottom[Time sequence of a tool keeping a fixed distance  $d_\text{ref}$ to a moving surface]{\includegraphics[height=4.2cm]{dynamic_boundary_sequence.pdf}\label{fig:over_2}}%
+\caption{The objective is to attain a virtual fixture of the moving object by controlling the end-effector distance to its surface, such that the surgeon experiences the object as static and can operate as if the object was in fact standing still. An overview of terms applied is found in \autoref{fig:over_1}.}
 \label{fig:dynamic_overview}
 \end{figure}
-Thus a model of a beating heart will first be outlined.
+Thus a model of  heart movement is needed along with a model of the robot dynamics, such that a reference relative to the surface of the heart can be given. These models are presented in the following, after which a \gls{cbf} can be constructed and from this a controller is designed that ensures safety of the system.
 %\begin{figure}[H]
 %	\center
 %		\includegraphics[width=1\textwidth]{dynamic_boundary_sequence.pdf}
@@ -22,9 +22,16 @@ Thus a model of a beating heart will first be outlined.
 %	\caption{lol.}
 %	\label{fig:dynamic_overview_2}
 %\end{figure}
-\subsubsection*{Modelling the Beating Heart}
+\section{Modelling the Dynamics of the System}
+First a model of a beating heart is introduced. This is needed in order to be able to give a dynamic position reference such thath the end-effector can be controlled to keep a fixed distance to the heart surface.
+The the system model from \autoref{sec:model_slide} is recapitulated, and the dynamic reference is introduced through an augmented system.
+
+\subsection{Modelling the Beating Heart as a Sinusoid}
 \vspace{-2mm}
 The simplified heart movement can be represented as a matrix with eigenvalues on the imaginary axis in the complex frequency domain:
+
+\phantom{.}
+\vspace{-15mm}
 \begin{flalign}
 \dot{\textbf{x}}_h =
 \dot{\begin{bmatrix}
@@ -50,22 +57,31 @@ where  &  \\
 \gls{xh20} & is the initial value of $x_{h2}$\\
 \end{tabular}\\
 
-Note that the magnitude of $\omega_h$ determines the frequency and that the initial conditions determines the amplitude of the heart oscillation. The heartbeat will with this system have a natural oscillation around zero. 
-\subsubsection*{Modelling the Robot Slide Movement}
+Note that the magnitude of $\omega_h$ determines the frequency and that the initial conditions determine the amplitude of the heart oscillation, e.g. if $\mathbf{x}_h(0)=[0\mm 2]^T$ this indicates a sine with an amplitude of 2, while $\mathbf{x}_h(0)=[3\mm 0]^T$ corresponds to a cosine with an amplitude of 3. The heartbeat will with this system have a natural oscillation around zero. 
+
+\subsection{Modelling the Robot Slide Movement}
 \vspace{-1mm}
-To model the one dimensional robot movement along the slide axis, the same system model can be used as presented in \autoref{eq:1storder_1D_ss}, i.e.:
-\vspace{-3mm}
+As in \autoref{chap:cbf_1d_static}, the slide movement of the robot is considered the  degree of freedom of the system, illustrated in \autoref{fig:slide}. To model the one dimensional robot movement along the slide axis, the same system model can be used as presented in \autoref{eq:1storder_1D_ss}, i.e.:
+\vspace{-1mm}
 \begin{flalign}
-\dot{x_1} = -\tau^{-1} x_1 + \tau^{-1} u
+\dot{x}_1 = -\tau^{-1} x_1 + \tau^{-1} u
 \label{eq:good_old}
 \end{flalign}
+\vspace{-1mm}
+\begin{tabular}{rll}
+where && \\
+$x_1$ & is the position of the end-effector & [m]\\
+$\tau$ & is the time constant of the first order system, measured in \autoref{fig:stepresponseslide}, $\tau=110$\,ms & [s]\\
+$u$ & is the input to the system & [m]\\
+\end{tabular}\\
+
+The one dimensional model is used to simplify the equations thus precluding complications at this stage. Additionally, the second order model merely proved few advantages in the form of elimination of the overshoot.
 
 \vspace{-1mm}
-The one dimensional model is used to simplify the equations thus precluding complications at this stage. Additionally, the second order model merely proved few advantages in the form of elimination of the overshoot.
-\vspace{-1mm}
 \subsubsection*{Introducing a Dynamic Reference in the Model}
-\vspace{-1mm}
-To be able to guarantee that a given distance is maintained between the heart and the robot end effector, an additional state can be added the system. Thus, a new set of states is introduced representing the movement of the beating heart, the movement of the robot and a relative distance \gls{dref}.
+
+\vspace{-2mm}
+In order to control the robot end effector to maintain a fixed distance to the surface of the heart, an additional state can be added the system. Thus, a new set of states is introduced representing the movement of the beating heart, the movement of the robot and the fixed distance \gls{dref} between the two.
 %\begin{flalign*}
 %\textbf{x} = \begin{bmatrix}
 %x_1 \\ x_{h1} \\ x_{h2} \\ d_\text{ref}
@@ -90,7 +106,8 @@ Combining \autoref{eq:beating_heart_sine} and \autoref{eq:good_old} with the rel
 		1 & 0 & 0 & 0
 		\end{bmatrix}}_\textbf{C} \textbf{x}(t)
 \end{flalign}	
-where the control law is introduced with the relative difference between robot position and heart position, i.e. $x_\text{ref} = x_{h1} + d_\text{ref}$ such that:
+
+The control law is introduced as a linear position controller on the form from \autoref{eq:utilde}, where the position reference follow the dynamic movement of the heart at a fixed distance $d_\text{ref}$ from its surface, i.e. $x_\text{ref} = x_{h1} + d_\text{ref}$ such that:
 \vspace{-3mm}
 \begin{flalign}
 \tilde{u}(\mathbf{x}(t)) &= \bar{\mathbf{N}}x_\text{ref} - \mathbf{K}\,x_1 \nonumber\\
@@ -105,11 +122,11 @@ where the control law is introduced with the relative difference between robot p
 &= \bar{\textbf{K}} \textbf{x}(t)
 \label{eq:utilde_dynamic}
 \end{flalign}
-\begin{tabular}{rl}
+\begin{tabular}{rp{14cm}}
 where &\\
-$\tau$ & is the time constant of the first order system $\tau=0.11$\,s as given in \autoref{sec:model_slide}\\
+%$\tau$ & is the time constant of the first order system $\tau=0.11$\,s as given in \autoref{sec:model_slide}\\
 $\mathbf{K}$ & is the linear system controller designed according to \autoref{eq:K_1}, $\mathbf{K} \in \mathbb{R}$ \\
-$\bar{\textbf{N}}$ & is the system gain found according to \autoref{eq:barm_1}, $\bar{\mathbf{N}} \in \mathbb{R}$ \\
+$\bar{\textbf{N}}$ & is the system gain ensuring unity gain between position and reference, found according to \autoref{eq:barm_1}, $\bar{\mathbf{N}} \in \mathbb{R}$ \\
 \gls{Kbar} & is the augmented feedback vector, $\bar{\textbf{K}} \in \mathbb{R}^{1 \times 4}$
 \end{tabular}\\
 
@@ -138,7 +155,7 @@ Note how the closed loop system can be rewritten in a more intuitive way, such t
 		\end{bmatrix}}_{\bar{\textbf{K}}}
 	\begin{bmatrix}
 	x_1\\x_{h1}\\x_{h2}\\d_\text{ref}
-	\end{bmatrix}}_{\tilde{u}(x)} \\
+	\end{bmatrix}}_{\tilde{u}(x)} \label{eq:cl_4states}\\
 \dot{\begin{bmatrix}
 	x_1\\x_{h1}\\x_{h2}
 	\end{bmatrix}} &=
@@ -165,14 +182,15 @@ Note the eigenvalues of $\textbf{A}_{cl}$:
 \end{flalign*}
 The eigenvalues reveal a stable (controllable) subsystem consisting of the robot end effector and an obviously marginally stable (uncontrollable) subsystem consisting of the beating heart.
 
-This concludes the augmented system. Thus a \gls{cbf} will be constructed.
+This concludes the modelling of the augmented system. In the next section a \gls{cbf} will be constructed.
 \vspace{-1mm}
 \section{Construction of CBF}
 \vspace{-3mm}
-A barrier certificate for \autoref{eq:cl_dynamic} with a zero level set at the surface of the heart, comprises moving boundaries and hence should be a function of both robot and heart position. \Autoref{def:safety} implies that the \gls{cbf} should be constructed with unsafe region $\mathcal{X}_u$ below the surface of the heart, i.e. such that $B(x_1,x_{h1})$ is positive if $x_1<x_{h1}$ and negative otherwise. The coherence is clear:
+A barrier certificate for the system presented in \autoref{eq:cl_4states}, with a zero level set at the surface of the heart, comprises moving boundaries and hence should be a function of both robot and heart position. \Autoref{def:safety} implies that the \gls{cbf} should be constructed with unsafe region $\mathcal{X}_u$ below the surface of the heart, i.e. such that $B(\mathbf{x})$ is positive if $x_1<x_{h1}$ and negative otherwise, with $x_1$ being the position of the robot end effector and $x_{h1}$ being the position of the heart surface. The coherence is clear:
 \vspace{-1mm}
 \begin{equation}
-x_{h1} - x_1 > 0 \kk  \Rightarrow \kk \mathbf{x} \in \mathcal{X}_u \kk\Leftrightarrow\kk B(\mathbf{x}) > 0 \nonumber
+B(\mathbf{x})>0 \mm \forall \,\,\,\mathbf{x}\in \mathcal{X}_u=\{(x_1,x_{h1}) \,\, | \,\, x_{h1}-x_1>0 \}
+%x_{h1} - x_1 > 0 \kk  \Rightarrow \kk \mathbf{x} \in \mathcal{X}_u \kk\Leftrightarrow\kk B(\mathbf{x}) > 0 \nonumber
 %\\
 %-x_1 + x_{h1} &> 0 \kk  \\
 %x_{h1} - x_1 &> 0 
@@ -182,15 +200,16 @@ x_{h1} - x_1 > 0 \kk  \Rightarrow \kk \mathbf{x} \in \mathcal{X}_u \kk\Leftright
 Thus a \gls{cbf} can be constructed as:
 \vspace{-4mm}
 \begin{flalign}
-B(x_1,x_{h1})= \tilde{c}(x_{h1}-x_1)\label{eq:barrier_dynamic}
+B(\mathbf{x})= \tilde{c}(x_{h1}-x_1)\label{eq:barrier_dynamic}
 \end{flalign}
 
 \vspace{-1mm}
-with a positive constant $\tilde{c}>0$. Setting $\tilde{c} = 1$ yields a 1:1 mapping which indeed will be the case here. Thus according to \autoref{def:cbf} this is a valid CBF if $L_gB(\mathbf{x}) \neq 0$ and $\{\mathbf{x} \in \mathcal{X} | B( x_1 , x_{h1}) \leq 0 \} \neq \emptyset$. The latter  is trivial as the safe states are present if $d_\text{ref}>0$. Thus  $L_gB(x_1,x_{h1)}$ is analysed:
+with a positive constant $\tilde{c}>0$, which is chosen to be $\tilde{c}=1$. %Setting $\tilde{c} = 1$ yields a 1:1 mapping which indeed will be the case here. 
+Thus according to \autoref{def:cbf} this is a valid CBF if $L_gB(\mathbf{x}) \neq 0$ and $\{\mathbf{x} \in \mathcal{X} \,\, | \,\, B(\mathbf{x}) \leq 0 \} \neq \emptyset$. The latter  is trivial as the safe states are present whenever $x_1>x_{h1}$. Thus  $L_gB(\mathbf{x})$ is analysed:
 \begin{flalign}
-L_gB(\mathbf{x}) = \frac{d B(x_1,x_{h1})}{ d \textbf{x}}g(\mathbf{x}) \Biggm|_{g(\mathbf{x}) = \textbf{B}}  
+L_gB(\mathbf{x}) = \frac{d B(\mathbf{x})}{ d \textbf{x}}g(\mathbf{x}) \Biggm|_{g(\mathbf{x}) = \textbf{B}}  
 &= \begin{bmatrix}
-\dfrac{\partial B(x_1,x_{h1})}{\partial x_1} & \dfrac{\partial B(x_1,x_{h1})}{\partial x_{h1}} & \dfrac{\partial B(x_1,x_{h1})}{\partial x_{h2}} & \dfrac{\partial B(x_1,x_{h1})}{\partial d_\text{ref}}
+\dfrac{\partial B(\mathbf{x})}{\partial x_1} & \dfrac{\partial B(\mathbf{x})}{\partial x_{h1}} & \dfrac{\partial B(\mathbf{x})}{\partial x_{h2}} & \dfrac{\partial B(\mathbf{x})}{\partial d_\text{ref}}
 \end{bmatrix} \textbf{B} \nonumber \\
 &= \begin{bmatrix}
 -\tilde{c} & \tilde{c} & 0 & 0
@@ -202,11 +221,13 @@ L_gB(\mathbf{x}) = \frac{d B(x_1,x_{h1})}{ d \textbf{x}}g(\mathbf{x}) \Biggm|_{g
 \frac{-1}{\tau} \neq 0 \quad \forall \, \mathbf{x} \in \mathcal{X}
 \label{eq:lgb_dynamic}
 \end{flalign}
-It is seen that $L_gB(\mathbf{x}) \neq 0 \,\, \forall\,\, \mathbf{x} \in \mathcal{X}$. The \gls{cbf} is therefore valid on $\mathcal{X}$.
+It is seen that $L_gB(\mathbf{x}) \neq 0$ for all $\mathbf{x} \in \mathcal{X}$. The \gls{cbf} is therefore valid on $\mathcal{X}$.
+
 \section{Control Design}
+As introduced in \autoref{eq:u_utilde_k0}, the safe set $\mathcal{X}_0$ can be divided into two sections: the transitions space $\mathcal{T}$ close to the unsafe set and the remaining part $\mathcal{Y}=\mathcal{X}_0\setminus\mathcal{T}$. These sections are indicated in \autoref{fig:over_1}.
 The control law is, just as in \autoref{chap:cbf_1d_static}, split in two parts. A linear controller where no safety precautions are taken is used in $\mathcal{Y}$ and a controller ensuring safety is used in $\mathcal{T} \bigcup \mathcal{X}_u$. The controller ensuring safety is defined in \autoref{eq:control_law_safety}.
 
-The transition between the two controllers in $\mathcal{T}$ is determined by $\sigma(\mathbf{x})$ which is defined in \autoref{eq:smoothness}. Thus a scalar $\epsilon$ is required. In this case, $\epsilon$ determines downright when the effect of the safety controller $k_0(\mathbf{x})$ is brought into effect, while the weighting of $k_0(\mathbf{x})$ is determined by $\sigma(\mathbf{x})$. To give the safety controller some margin to force the robot end effector away from $\mathcal{X}_u$, it is reasonable to let $k_0(\mathbf{x})$ take effect when the distance $d_\text{ref}$ reaches 1\,cm, thus:
+The transition between the two controllers on $\mathcal{T}$ is determined by $\sigma(\mathbf{x})$ which is defined in \autoref{eq:smoothness}. Thus a scalar $\epsilon$ is required,  determining when the effect of the safety controller $k_0(\mathbf{x})$ is brought into effect, while the weighting of $k_0(\mathbf{x})$ is determined by $\sigma(\mathbf{x})$. To give the safety controller some margin to force the robot end effector away from $\mathcal{X}_u$, it is reasonable to let $k_0(\mathbf{x})$ take effect when the end effector comes within a distance from the unsafe set of 1\,cm, thus:
 \vspace{-3mm}
 \begin{flalign}
 \epsilon = 0.01\label{eq:epsilon_dynamic}
@@ -225,9 +246,9 @@ The transition between the two controllers in $\mathcal{T}$ is determined by $\s
 %\end{flalign} 
 The safety controller, as defined in \autoref{eq:control_law_safety}, requires  the Lie derivatives of the CBF, where $L_gB(\mathbf{x})$ is found in \autoref{eq:lgb_dynamic}, and $L_fB(\mathbf{x})$ is found as:
 \begin{flalign}
-L_fB(\mathbf{x}) &= \frac{dB(x_1,x_{h1})}{d\textbf{x}}f(\textbf{x})\Bigm|_{f(\textbf{x})=\textbf{A}\textbf{x}} \nonumber \\
+L_fB(\mathbf{x}) &= \frac{dB(\mathbf{x})}{d\textbf{x}}f(\textbf{x})\Bigm|_{f(\textbf{x})=\textbf{A}\textbf{x}} \nonumber \\
 &= \begin{bmatrix}
-\dfrac{\partial  B(x_1,x_{h1})}{\partial x_1 } & \dfrac{\partial  B(x_1,x_{h1})}{\partial x_{1h} } & \dfrac{\partial  B(x_1,x_{h1})}{\partial x_{2h} } & \dfrac{\partial  B(x_1,x_{h1})}{\partial d_\text{ref} }
+\dfrac{\partial  B(\mathbf{x})}{\partial x_1 } & \dfrac{\partial  B(\mathbf{x})}{\partial x_{1h} } & \dfrac{\partial  B(\mathbf{x})}{\partial x_{2h} } & \dfrac{\partial  B(\mathbf{x})}{\partial d_\text{ref} }
 \end{bmatrix}  \begin{bmatrix}
 1/\tau & 0 & 0 & 0 \\
 0 & 0 & \omega_h & 0 \\
@@ -264,16 +285,16 @@ $\tilde{u}(\mathbf{x})$ & is calculated from \autoref{eq:utilde_dynamic}
 \end{recap}
 This completes the control design.
 
-\section{MATLAB Results}
-The results shown are implemented with the following characteristics:
+\section{MATLAB Implementation and Results}
+The results presented in this section are implemented with the following characteristics:
 \vspace{-2mm}
 \begin{itemize}
 	\itemsep-0.7mm
 \item Extrapolation by means of forward Euler.
-\item A sampling rate $f_s=2\,$kHz. The current realistic sampling rate at $f_s=100\,$Hz is not plotted as the forward euler method proofs itself unstable for this system at a 100\,Hz.
-\item Simulation time for 5\,s.
-\item The distance $d_\text{ref}$ is initially set to 3\,cm which is safe. At 2\,s the distance $d_\text{ref}$ is altered to -1\,cm emulating a surgeon who accidentally forced the robot to penetrate the heart. The expected outcome of this is obviously that the safety controller prevents this by ensuring a distance between end effector and the beating heart.
-\item Initial conditions are set such that the robot end effector is positioned at a distance to the heart greater than the desired distance. The expected outcome is that the system will attempt to track the distance $x_1-x_{h1}=d_\text{ref}$.
+\item A sampling rate $f_s=2\,$kHz. The current realistic sampling rate at $f_s=100\,$Hz is not plotted as the forward Euler method proves itself unstable for this system at a 100\,Hz sampling rate.
+\item Simulation time is 5\,s.
+\item The distance $d_\text{ref}$ is initially set to 3\,cm which is safe. At 2\,s the reference distance $d_\text{ref}$ is altered to -1\,cm emulating a surgeon who accidentally forced the robot to penetrate the heart. The expected outcome of this is obviously that the safety controller prevents this by ensuring a distance between end effector and the beating heart.
+\item Initial conditions are set such that the robot end effector is positioned at a distance to the heart greater than the desired distance. The expected outcome is that the system will attempt to track the distance $x_\text{ref}-x_{h1}=d_\text{ref}$.
 \end{itemize}
 The MATLAB implementation itself can be found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_heart/beating\_heart\_controller.m}. The state trajectory is plotted in \autoref{fig:matlab_dynamics}.
 
@@ -284,27 +305,55 @@ The MATLAB implementation itself can be found in \autoref{app:slide_implement_1}
 	\caption{Dynamic system with heart position defined as the zero level set of the CBF. References are given as relative distances to the moving surface. When a reference outside the safe region is given, the safety controller prevents the tool from entering the unsafe region.}
     \label{fig:matlab_dynamics}
 \end{figure}
-It is from \autoref{fig:matlab_dynamics} seen that the robot end effector settles at a distance at $d_\text{ref}=3\,$cm until the simulation reaches 2\,s ($k=4000$). It is, however, seen that $d_\text{ref}$ is not constant which is due to the lack of integral action in the system. This could obviously be resolved by including integral action in the controller.  Then $d_\text{ref}$ changes to -1\,cm which causes the safety controller to react. The state $x_1$ settles at a safe distance from the beating heart which is left untouched, and the simulated controller is thereby verified to work as intended.
+It is from \autoref{fig:matlab_dynamics} seen that the robot end effector settles at a distance at $d_\text{ref}=3\,$cm until the simulation reaches 2\,s ($k=4000$). It is, however, seen that $d_\text{ref}$ is not constant which is due to the lack of integral action in the system. This could obviously be resolved by including integral action in the controller.  At 2\,s $d_\text{ref}$ changes to -1\,cm which causes the safety controller to react. The state $x_1$ settles at a safe distance from the beating heart which is left untouched, and the simulated controller is thereby verified to work as intended.
+
 \vspace{-0.2cm}
-\section{Implementation on the Da Vinci Robot}
+\section{Implementation on the da Vinci Robot}
 \vspace{-0.2cm}
-The algorithm that connect the dots for the beating heart controller is outlined in \autoref{fig:beating_heart_flow}. The developed software can be found in \autoref{app:cd} and in \autoref{app:slide_implement_2}.
+
+For the implementation of the beating heart controller, the setup depicted in \autoref{fig:beatingheart_setup} is used. A tissue phantom representing the heart is mounted on top of a cylinder controlled by a motor to move in a sinusoid. In the motor controller interface the amplitude, frequency and offset of the sinusoid can be set.%
+\begin{figure}[h]
+	\centering
+	\subbottom{\includegraphics[width=0.23\textwidth]{20150531_171620.jpg}}%
+	\hspace{2mm}
+	\subbottom{\includegraphics[width=0.23\textwidth]{20150531_171904.jpg}}%
+	\hspace{2mm}
+	\subbottom{\includegraphics[width=0.23\textwidth]{20150531_171531.jpg}}%
+	\hspace{2mm}
+	\subbottom{\includegraphics[width=0.23\textwidth]{20150531_171804.jpg}}%
+	\caption{Setup of the beating heart implementation. A tissue phantom is mounted on a cylinder controlled by a motor to move as a sinusoid. The robot end-effector is following the movement at a distance $d_\text{ref}$.}
+	\label{fig:beatingheart_setup}
+\end{figure}
+
+The algorithm that implements the beating heart controller is outlined in \autoref{fig:beating_heart_flow}. The developed software can be found in \autoref{app:cd} and in \autoref{app:slide_implement_2}.
+The execution time is not shown here as it is verified in \autoref{fig:exe_1} and \autoref{fig:exe_2} that it is far below the allowed maximum execution time and this controller does not constitute heavier calculations. The measured state trajectory is plotted on \autoref{fig:beating_heart_meas}.%
+
+
+It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1}$ for all $t$ even when the distance $d_\text{ref}$ is set to the unsafe value -2\,cm. It is also seen how $d_\text{ref}$ can be set to various values. The lack of integral action is again exposed in the plot. It is also seen how the trajectory fluctuates significantly more than the simulated response from \autoref{fig:matlab_dynamics} which is due to the far lower sampling rate.
+
 \begin{figure}[H]
 	\center
-		\includegraphics[width=1\textwidth]{flowchart_beating_controller.pdf}
-	\caption{}
-    \label{fig:beating_heart_flow}
+	\includegraphics[width=1.05\textwidth]{meas_beating_heart.eps}
+	\caption{It is seen how $x_1$ moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1}$ for all $t$ even when the distance $d_\text{ref}$ is set to the unsafe value -2\,cm. It is also seen how $d_\text{ref}$ can be set to various values.}
+	\label{fig:beating_heart_meas}
 \end{figure}
-The execution time is not shown here as it is verified in \autoref{fig:traj_meas_1} and \autoref{fig:traj_meas_2} that it is far below the allowed maximum executuion time and this controller does not constitute heavier calculations. The measured state trajectory is plotted on \autoref{fig:beating_heart_meas}.
+
 \begin{figure}[H]
 	\center
-		\includegraphics[width=1\textwidth]{meas_beating_heart.eps}
-	\caption{It is seen how $x_1$ moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1} \,\,\,\forall \, t$ even when the distance $d_\text{ref}$ is set to the unsafe value $-2\,$cm. It is also seen how $d_\text{ref}$ can be set to various values.}
-    \label{fig:beating_heart_meas}
+	\includegraphics[width=1\textwidth]{flowchart_beating_controller.pdf}
+	\vspace{2mm}
+	\caption{Algorithm for dynamic slide safety controller. The source code associated with the algorithm can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032} (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}).}
+	\label{fig:beating_heart_flow}
 \end{figure}
-It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1} \,\,\,\forall \, t$ even when the distance $d_\text{ref}$ is set to the unsafe value $-2\,$cm. It is also seen how $d_\text{ref}$ can be set to various values. The lack of integral action is again exposed in the plot. It is also seen how the trajectory fluctuates significantly more than the simulated response from \autoref{fig:matlab_dynamics} which is due to the far lower sampling rate.
-\subsection{Conclusion for Beating Heart Controller}
-In conclusion, this chapter verifies that the a control barrier function can be found which indeed ensures safety for the controller taking in a relative distance $d_\text{ref}$ as input. It is seen how the developed controller would benefit from a higher sampling rate. It is also seen that the controller suffers from the lack of integral action, and future work on this topic should include integral action as well.
+
+
+
+\vspace{2mm}
+\section{Conclusion for the Beating Heart Controller}
+\vspace{-1mm}
+In conclusion, this chapter verifies that  a control barrier function can be found which indeed ensures safety for the beating heart following  controller, which takes a relative position in the form of the distance to the heart $d_\text{ref}$ as input. It is seen how the developed controller would benefit from a higher sampling rate. It is also seen that the controller suffers from the lack of integral action, and future work on this topic should include integral action as well. 
+
+Finally it is noted that the synchronization of the motor controlled sinusoid movement and the modelled sinusoid implemented on the robot, should be automated for a future test setup through measurements to allow  for model adjustment.
 %\newpage
 %%\begin{flalign}
 %%f_{cl}(x)=\dot{\begin{bmatrix}
