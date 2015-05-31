@@ -46,7 +46,7 @@ The system can clearly be approximated with an underdamped second order model. F
 \end{itemize}
 %A first order approximation of the state space system will be modelled first. 
 
-\subsection{1D Model based on Position}\label{subsec:model_1d}
+\subsection{1D First Order Model based on Position}\label{subsec:model_1d}
 \vspace{-1mm}
 The system can be approximated with a linear first order system with a  time constant \gls{taus}. The time constant is read from \autoref{fig:stepresponseslide} as the time lapse from the step is applied until the state has travelled 63.2\,\% of the distance to the reference:
 \vspace{-3mm}
@@ -68,7 +68,7 @@ The system matrix \textbf{A}, input matrix \textbf{B}, output matrix \textbf{C} 
 \end{flalign}
 This completes the first order approximation.
 
-\subsection{1D Model based on Position and Velocity}\label{subsec:model_2d}
+\subsection{1D Second Order Model based on Position and Velocity}\label{subsec:model_2d}
 \vspace{-1mm}
 The second order approximation has the form:
 \begin{flalign}
@@ -149,7 +149,7 @@ To illustrate the usefulness of \glspl{cbf}, a palpable example hereof will be c
 %Consider the state intervals defined in \autoref{tab:intervals}.
 %
 %
-\subsection{Construction of CBF based on First Order Model}\label{subsec:cbf-1order}
+\subsection{Construction of CBF Based on the First Order Model}\label{subsec:cbf-1order}
 \vspace{-2mm}
 In this subsection, the state vector $x \in \mathbb{R}$ consists of the position only. Thus, a parabola is now introduced as \gls{cbf} as it allows an easy way to define $\mathcal{X}_u$ and $\mathcal{X}_0$ from \autoref{tab:intervals}. %A coordinate shift is performed such that the slide movement occurs along the $x$-axis instead of the $z$-axis. 
 \vspace{-2mm}
@@ -209,7 +209,7 @@ The \gls{cbf} is plotted in \autoref{fig:barrierfunction} from which it is seen 
 % \end{flalign*} 
 % This is again the parabola extremity as it was found in \autoref{eq:interval1} and in fact an allowed exception for condition \autoref{req2} as the system is in its equilibrium.
 
-\subsection{Construction of CBF Based on Second Order model}\label{subsec:cbf-2order}
+\subsection{Construction of CBF Based on the Second Order model}\label{subsec:cbf-2order}
 \vspace{-2mm}
 Consider now for the second order system the same candidate \gls{cbf} as given in \autoref{eq:cbf1}. Note that $B(\mathbf{x})$ is a function of position only, such that the CBF is:
 \vspace{-2mm}
@@ -404,8 +404,9 @@ quickly poses the fact that $L_fB(\mathbf{x})$ is not necessarily negative for $
 \section{Control Design}
 \vspace*{-1mm}
 This section constitutes the design of the two controllers. The controller based on the first order approximation is straight forward whereas the controller based on the second order approximation requires an observer because  velocity  measurements are not available through ROS in the current setup.
-\subsection{Control Design based on First Order
-	\vspace*{-1mm} Model}\label{sec:K_Nbar_1D_1storder}
+
+\subsection{Control Design Based on the First Order Model}\label{sec:K_Nbar_1D_1storder}
+\vspace*{-1mm}
 To be able to find $k_0(x)$ from \autoref{eq:control_for_safety}, the constant $\epsilon$ used in \autoref{eq:smoothness} must be found. It can be determined from the \gls{cbf} from \autoref{eq:cbf1} such that it complies with the requirements from \autoref{tab:intervals}:
 \begin{flalign}
 \epsilon = |B(\Lambda_{s+})| = |B(\Lambda_{s-})| = 0.00249
@@ -503,7 +504,7 @@ This completes the control design based on a first order system approximation.
 
 
 
-\subsection{Control Design Based on a Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
+\subsection{Control Design Based on the Second Order Model}\label{sec:K_Nbar_1D_2ndorder}
 \vspace{-2mm}
 A necessary condition for a controller is that the system is controllable:
 \vspace{-1mm}

@@ -618,11 +618,12 @@ basicstyle=\ttfamily\scriptsize,
 \makeatletter 
 \def\@makechapterhead#1{
    \vspace *{-15mm} % 15                         % afstand fra topmargen til
-\hskip -5mm
-  \rule[4.8mm]{120mm}{0.3mm}             % verste bjlke
+\hskip -3mm
+  \rule[4.8mm]{129mm}{0.3mm}             % verste bjlke
+%  \vskip -2mm
   \hskip 5mm 
-  \huge                                   % formattering af "Kapitel"
-  {\centering \textbf{\@chapapp{} \thechapter}}
+  \LARGE                                   % formattering af "Kapitel"
+  {\centering {\@chapapp{} \thechapter}}
 { 
   \vskip 0 mm                             % afstand mellem topstreg og kaptxt
  \parbox{150mm}{{\bf{\Huge  #1}}}\par     % kaptxt
