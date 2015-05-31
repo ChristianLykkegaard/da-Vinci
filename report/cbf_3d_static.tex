@@ -13,7 +13,7 @@ Given the reachability of the robotic end effector which is tested to be roughly
 \rowcolor{HeaderBlue} 
 $\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ & $\mathcal{T}$ \\
 $\mathcal{X} = \{ x \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline $ {\color{white}{mmm}} y \in [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline ${\color{white}{mmm}} z \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] \}$ & 
-$\mathcal{X}_u$ consist of an ellipsoid with semi-axes $r_x,r_y,r_z$. &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ consist of a layer around the ellipsoid with $\text{thickness}=1$.\\
+$\mathcal{X}_u$ consist of an ellipsoid with semi-axes $r_x,r_y,r_z$. &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ consist of a layer around the ellipsoid with $\text{thickness}=0.01\,$m.\\
 \end{tabularx}
 \caption{Sets considered in this chapter, where $r_x=0.03$\,m, $r_y=0.06$\,m, $r_z=0.03$\,m are lengths of the semi-axes of an ellipsoid and $\bar{\Lambda}_\text{lim}=0.1$m being the extremity of the box encircling the reachable space.}
 \label{tab:intervals_3d}
@@ -317,17 +317,49 @@ It is from \autoref{fig:traj3d_2:med_sig} seen that the trajectory starts to be 
 
 %
 %Hence, before modelling the system and designing a controller, the kinematics of the AAU da Vinci robot is presented in the following section along with considerations for the definition of the coordinate frames and the transformation between them constituting the kinematic description of the robot.
-\section{Implementation of the da Vinci Robot}
+\section{Implementation on the da Vinci Robot}
+In contrast to the MATLAB implementation, the implementation on the da Vinci robot comprises quite some additional topics. The code developed as a result of the implementation can be found in \autoref{app:slide_implement_2}, \autoref{app:auxiliary} and \autoref{app:cd}. It can also be cloned from github with the following git commands:
+
+\texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/Gr1032}
+
+\texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description\newline ---branch reduced\_robot} 
+
+\texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_driver\newline ---branch gr1032}
+
+It is also important to setup the ROS framework as described in \autoref{app:ros}. The implementation of the controller derived in this chapter consist of the topics stated below:
+\begin{itemize}
+\item A description of the kinematic chain which is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described deeper in \autoref{app:ros}.
+\item Integration of an inverse kinematic solver such that a desired $(x,y,x)$ position can be obtained from the six joint angles (see \autoref{fig:naming_convention}), i.e. from:
+\begin{itemize}
+\item \texttt{p4\_hand\_roll}
+\item \texttt{p4\_hand\_pitch}
+\item \texttt{p4\_instrument\_slide}
+\item \texttt{p4\_instrument\_roll}
+\item \texttt{p4\_instrument\_pitch}
+\item \texttt{p4\_instrument\_jaw\_right}
+\end{itemize}
+\item Integration of a forward kinematic solver such that the position can be read from the six angles.
+\item Modify the kinematic chain such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solvers as they wont be able to distinct passive to active. 
+\item Algorithm development such that the above topics are connected and real-time signal processing is ensured. As discussed in \autoref{sec:davinci-implementation}, this should be done in C++. 
+\end{itemize} 
+The main algorithm is outlined in \autoref{gif:3d_flow}.
+\begin{figure}[H]
+\centering
+	\includegraphics[width=1\textwidth]{flowchart_3d_controller.pdf}
+	\caption{Main algorithm for a safe controller in the 3 dimensional euclidean space.}
+	\label{gif:3d_flow}
+\end{figure}
+Thus before proceeding to the actual implementation, a kinematic description is necessary.
 \subsection{Kinematics of the AAU da Vinci Robot}
 A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $T$, containing the orthonormal rotation matrix $R$ and the translation vector $p$ of the frame origin, as 
 \begin{equation}
 ^j_iT = 
 \begin{bmatrix}
-^j_iR & ^j_ip\\
+R & p\\
 0 & 1
 \end{bmatrix}, \label{eq:kin_transformation}
 \qquad \text{where} \qquad
-^j_ip = 
+p = 
 \begin{bmatrix}
 a\\b\\d
 \end{bmatrix}
@@ -358,10 +390,17 @@ and the simplest rotation matrices $R$ are rotations about a single axis, which 
 	\label{eq:RxRyRz_chapter}
 	\end{equation}
 \end{small}
+\begin{tabular}{rp{12.5cm}} 
+where  &  \\
+$\alpha, \beta, \theta$ & are angles \\
+$R_x(\alpha)$ & is rotation around the $x$-axis  \\
+$R_y(\beta)$ & is rotation around the $y$-axis  \\
+$R_z(\theta)$ & is rotation around the $z$-axis  
+\end{tabular}\\
 
 For the robotic patient manipulator comprising a number of links, coordinate frames are defined for each degree of freedom, i.e. placed in each joint such that one of the frame axes is the axis of free rotation or translation. The kinematic chain is now the sequence of alternate links and joints starting from the link fixed in inertial space and ending at the tip of the robotic tool. The link preceding a joint is its parent link, while the link succeeding it is its child link. The transformation between any two frames is given as the product of the transformation matrices in the kinematic chain between them. An example of a sequence of transformations can be seen in \autoref{app:kinematic_model_robot}.
 
-For the resolution of frame definitions it is preferred to adapt the  robot coordinate frame convention \gls{dh} because it is one of the most widespread kinematic descriptions in the robot kinematics community, and because it describes transformations between two successive frames in the kinematic chain on a succinct and standardized form
+For the resolution of frame definitions it is preferred to adapt the  robot coordinate frame convention \gls{dh} because it is one of the most widespread kinematic descriptions in the robot kinematics community, and because it describes transformations between two successive frames in the kinematic chain on a succinct and standardized form, i.e.:
 \begin{equation}
 \hspace*{-2mm}
 \small
@@ -386,7 +425,7 @@ In the \gls{dh} kinematic description each frame is fixed with respect to its pa
 %	\item parameter $\alpha_i$ is the angle from $z_{i-1}$ to $z_i$ about $x_i$
 %\end{itemize}
 
-In the robot description in \gls{ros}, however, the kinematics are described in the \texttt{xacro} files on the form
+In the robot description in \gls{ros} (the implementation framework), however, the kinematics are described in the \texttt{xacro} files on the form
 \begin{equation}
 \hspace*{-2mm}
 \small
@@ -413,8 +452,8 @@ rpy="1.5708 0 0" />
 ...
 </joint>
 \end{lstlisting}
-
-A compromise is made, defining a new set of frames for the da Vinci kinematics, adhering to the \gls{dh} constraint that each free rotation/translation is about/along the local $z$-axis. The new kinematic frames are visualized in \autoref{fig:p4_hand_compromise_frames_chapter}, the parameters listed in table \ref{tab:new_kin_short}. Furthermore, for simplification of the inverse kinematics solver, the two passive joints mimicking the hand pitch movement are removed from the existing kinematic chain, visualized in \autoref{fig:p4_hand_xacro_frames_chapter}, and parameters listed in table \ref{tab:old_kin_short} for comparison.  
+\subsection{The KDL Kinematic Solver and its Constraints}
+A compromise is made, defining a new set of frames for the da Vinci kinematics, adhering to the \gls{dh} constraint that each free rotation/translation is about/along the local $z$-axis. The new kinematic frames are visualized in \autoref{fig:p4_hand_compromise_frames_chapter}, the parameters listed in table \ref{tab:new_kin_short}. Furthermore, (VIGtIGT) for simplification of the inverse kinematics solver, the two passive joints mimicking the hand pitch movement are removed from the existing kinematic chain, visualized in \autoref{fig:p4_hand_xacro_frames_chapter}, and parameters listed in table \ref{tab:old_kin_short} for comparison.  
 
 
 
