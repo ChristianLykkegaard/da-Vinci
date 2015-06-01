@@ -4,7 +4,7 @@
     basicstyle=\scriptsize\color{black}\ttfamily
 }
 \vspace{10mm}
-\section{Step Response of the da Vinci Robot in 3D Cartesian Space}
+\section{Step Response of the da Vinci Robot in 3D Cartesian Space}\label{sec:step_3d}
 This test is carried out in a similar manner as the test in \autoref{app:meas_1}, now subscribing to the full \texttt{joint\_state} topic (\texttt{rostopic echo joint\_states}) as described in \autoref{app:meas_1}. This displays the measurements of the joint angles from the potentiometers, that correspond to angles in radians (and for \texttt{instrument\_slide}: in meters), secured by the calibration of the motor gearings. An example of a measurement can be seen in \autoref{app:meas_1}.
 
 The measurements are copied directly from the terminal output, and the joint measurements extracted from this string. Use the MATLAB script and the recorded measurement data found in \autoref{app:cd} under the path \texttt{matlab\_scripts/step\_3d/3d\_time\_const\_measurement.m}, to plot the recorded step responses. The step responses for steps in the $x$, $y$ and $z$ direction are shown in \autoref{fig:stepresponses_3d}.

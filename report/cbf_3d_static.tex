@@ -1,4 +1,4 @@
-This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus representing a heart or another vital sensitive organ which can not be cut under no circumstances.
+This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus representing a heart or another vital sensitive organ which can not be cut under no circumstances. An important simplification is made throughout the entire chapter, i.e. the orientation of the hand is not considered.
 \begin{figure}[H]
 \centering
 \subbottom[The Robotic patient manipulator.]{\includegraphics[width=0.45\textwidth]{rviz_09_17_18_frame1.pdf}\label{fig:rviz_09_17_18_frame}}%
@@ -40,22 +40,22 @@ The movement en the three dimensional space may be modelled as three decoupled s
 %\textcolor{red}{Make measurement of step for cases: x-axis, y-axis, z-axis, and xyz at the same time. Compare to slide measurement.}
 %
 %It is decided to model the response for each of the three (decoupled) axes as three first order systems, and the open loop system for the robot hand is formulated as:
-\begin{equation}\label{eq:3D_sys_static_openloop}
+\begin{flalign}\label{eq:3D_sys_static_openloop}
 \dot{\mathbf{x}}=
 \dot{\begin{bmatrix}
 x_x\\x_y\\x_z
 \end{bmatrix}} =
-\underbrace{\begin{bmatrix}
+\underbrace{\underbrace{\begin{bmatrix}
 -1/\tau_x & 0 & 0\\0 & -1/\tau_y & 0 \\ 0 & 0 & -1/\tau_z
-\end{bmatrix}
+\end{bmatrix}}_{\textbf{A}}
 \begin{bmatrix}
 x_x\\x_y\\x_z
 \end{bmatrix}}_{f(\mathbf{x})} +
 \underbrace{\begin{bmatrix}
 1/\tau_x& 0 & 0 \\ 0& 1/\tau_y & 0 \\0& 0& 1/\tau_z
-\end{bmatrix}}_{g(\mathbf{x})}
+\end{bmatrix}}_{g(\mathbf{x}) = \textbf{B}}
 \mathbf{u}
-\end{equation}
+\end{flalign}
 \begin{tabular}{rp{12.5cm}} 
 where  &  \\
 $x_x$ & is the position in the $x$-axis \\
@@ -66,9 +66,9 @@ $\tau_y$ & is the time constant associated with a step purely in the $y$-axis \\
 $\tau_z$ & is the time constant associated with a step purely in the $z$-axis 
 \end{tabular}\\
 
-The time constants are measured from \textcolor{red}{appendix ??} and found to:
+The time constants are measured from \autoref{sec:step_3d} and found to:
 \begin{flalign*}
-\tau_x = 0.110\,\text{s} \mm , \mm \tau_y = 0.110\,\text{s} \mm , \mm \tau_z = 0.110\,\text{s}
+\tau_x = 0.070\,\text{s} \mm , \mm \tau_y = 0.100\,\text{s} \mm , \mm \tau_z = 0.040\,\text{s}
 \end{flalign*}
 With a sufficient model established the \gls{cbf} can be considered.
 \section{Construction of CBF}
@@ -144,9 +144,9 @@ The input $\tilde{\textbf{u}}$ is used in the safe area and thus found according
 \textbf{K} = \texttt{acker}\left(\textbf{A},\textbf{B},\begin{bmatrix}
 -15 & -15 & -15
 \end{bmatrix}\right) =  \begin{bmatrix}
-0.65 & 0 & 0 \\
-0 & 0.65 & 0 \\
-0 & 0 & 0.65
+0.050 & 0 & 0 \\
+0 & 0.500 & 0 \\
+0 & 0 & -0.385
 \end{bmatrix}
 \label{eq:k_3d}
 \end{flalign}
@@ -154,9 +154,9 @@ The matrix $\bar{\textbf{N}}$ is found as \citep{bib:Nbar}:
 \vspace*{-3mm}
 \begin{flalign}
 \bar{\mathbf{N}} = - \left( \mathbf{C}\,\mathbf{A}_{cl}^{-1}\,\mathbf{B} \right)^{-1} = \begin{bmatrix}
-1.65 & 0 & 0 \\
-0 & 1.65 & 0 \\
-0 & 0 & 1.65
+1.050 & 0 & 0 \\
+0 & 1.500 & 0 \\
+0 & 0 & 0.615
 \end{bmatrix}
 \label{eq:nbar_3d}
 \end{flalign}
@@ -210,9 +210,9 @@ Where $\epsilon$ can be found by considering the CBF:
 \end{flalign}
 Note that setting $x_x = r_x+0.01$ and  $x_y=x_z = 0$ ensures that a 1\,cm thick layer arise around the ellipsoid. Thus, from \autoref{eq:control_law_safety}, the non-linear controller ensuring safety can be found as:
 \begin{flalign}
-k_0(x) = \begin{cases}
--\dfrac{L_fB(x)+ \sqrt{(L_fB(x))^2 + \kappa^2L_gB(x)(L_gB(x))^T}}{L_gB(x)(L_gB(x))^T}(L_gB(x))^T &\text{if} \mm L_gB(x) \neq 0 \\
-0  &\text{if} \mm L_gB(x) = 0
+k_0(\textbf{x}) = \begin{cases}
+-\dfrac{L_fB(\textbf{x})+ \sqrt{(L_fB(\textbf{x}))^2 + \kappa^2L_gB(\textbf{x})(L_gB(\textbf{x}))^T}}{L_gB(\textbf{x})(L_gB(\textbf{x}))^T}(L_gB(\textbf{x}))^T &\text{if} \mm L_gB(\textbf{x}) \neq 0 \\
+0  &\text{if} \mm L_gB(\textbf{x}) = 0
 \end{cases}
 \label{eq:ko_3d}
 \end{flalign}
@@ -250,13 +250,13 @@ It is from \autoref{fig:traj3d_1} seen how the controller ensures that the state
 The state trajectory is also plotted in \autoref{fig:traj3d_2} where $x,y,z$ are plotted individually which makes it slightly easier to see the effect of $\sigma(\textbf{x})$. 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.9\textwidth]{traj_3d_2.eps}
-	\caption{The same trajectory as depicted in \autoref{fig:traj3d_1}. It is here seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.}
+	\includegraphics[width=1\textwidth]{traj_3d_2.eps}
+	\caption{The same trajectory as depicted in \autoref{fig:traj3d_1}. It is seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.}
 	\label{fig:traj3d_2}
 \end{figure}
-It is from \autoref{fig:traj3d_2} seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.
+It is from \autoref{fig:traj3d_2} seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$; the position is adjusted accordingly. Additionally,  \autoref{fig:traj3d_2} is the only plot where the actual dynamics can be seen, which as expected, comprise a first order approximation in both $x,\,y$ and $z$. It is also seen how the dynamics are completely changed when the trajectory enters $\mathcal{T}$, hence causing a highly non-linear system, for which it actually is very difficult to predict the exact behaviour, except it will escape the unsafe area.
 
-The thickness of 1\,cm, ensured by $\sigma(\textbf{x})$, is visualized in \autoref{fig:traj3d_2:med_sig}.
+The thickness of 1\,cm, outlining $\mathcal{T}$, ensured by $\sigma(\textbf{x})$, is visualized in \autoref{fig:traj3d_2:med_sig} along with the simulated trajectory.
 \begin{figure}[H]
 \centering
 	\includegraphics[width=1\textwidth]{traj_3d_med_sigma.pdf}
@@ -319,16 +319,14 @@ It is from \autoref{fig:traj3d_2:med_sig} seen that the trajectory starts to be 
 %Hence, before modelling the system and designing a controller, the kinematics of the AAU da Vinci robot is presented in the following section along with considerations for the definition of the coordinate frames and the transformation between them constituting the kinematic description of the robot.
 \section{Implementation on the da Vinci Robot}
 In contrast to the MATLAB implementation, the implementation on the da Vinci robot comprises quite some additional topics. The code developed as a result of the implementation can be found in \autoref{app:slide_implement_2}, \autoref{app:auxiliary} and \autoref{app:cd}. It can also be cloned from github with the following git commands:
-
-\texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/Gr1032}
-
-\texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_description\newline ---branch reduced\_robot} 
-
-\texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/davinci\_driver\newline ---branch gr1032}
-
+\begin{itemize}
+\item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/Gr1032}
+\item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/\newline davinci\_description ---branch reduced\_robot} 
+\item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/\newline davinci\_driver ---branch gr1032}
+\end{itemize}
 It is also important to setup the ROS framework as described in \autoref{app:ros}. The implementation of the controller derived in this chapter consist of the topics stated below:
 \begin{itemize}
-\item A description of the kinematic chain which is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described deeper in \autoref{app:ros}.
+\item A description of the kinematic chain. This is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described deeper in \autoref{app:ros}.
 \item Integration of an inverse kinematic solver such that a desired $(x,y,z)$ position can be obtained from the six active joint angles (see \autoref{fig:naming_convention}), i.e. from:
 \begin{itemize}
 \item \texttt{p4\_hand\_roll}
@@ -339,22 +337,22 @@ It is also important to setup the ROS framework as described in \autoref{app:ros
 \item \texttt{p4\_instrument\_jaw\_right}
 \end{itemize}
 \item Integration of a forward kinematic solver such that the position can be read from the six angles.
-\item Modification of the kinematic chain such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solvers as they wont be able to distinct passive to active. 
-\item Algorithm development such that the above topics are connected and real-time signal processing is ensured. As discussed in \autoref{sec:davinci-implementation}, this should be done in C++. 
+\item An original description of the kinematic chain is present at the Robotic Surgery Group - Aalborg University at github. However, a modification of the kinematic chain is required such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solver as it will not be able to distinct passive to active. 
+\item Algorithm development such that the above topics are connected and real-time signal processing is ensured. As discussed in \autoref{sec:davinci-implementation}, this should be done in C++ in the ROS framework. 
 \end{itemize} 
 Thus before proceeding to the actual implementation, a kinematic description is necessary.
 \subsection{Kinematics of the AAU da Vinci Robot}\label{britt}
 The upcoming subsection will first describe how kinematics in general are defined, then how the kinematics are desired to be defined followed by the original kinematic description (the structure of the \texttt{xacro} files when this project was initiated). It concludes with a necessary modification of the original kinematic description such that a sufficiently fast solver can be applied. 
 \subsubsection{How a Kinematic Description is Defined}
-A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $T$, containing the orthonormal rotation matrix $R$ and the translation vector $p$ of the frame origin, as 
+A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $\textbf{T}$, containing the orthonormal rotation matrix $R$ and the translation vector $\textbf{p}$ of the frame origin, as 
 \begin{equation}
-^j_iT = 
+^j_i\textbf{T} = 
 \begin{bmatrix}
 R & p\\
 0 & 1
 \end{bmatrix}, \label{eq:kin_transformation}
 \qquad \text{where} \qquad
-p = 
+\textbf{p} = 
 \begin{bmatrix}
 a\\b\\d
 \end{bmatrix}
@@ -362,21 +360,21 @@ a\\b\\d
 and the simplest rotation matrices $R$ are rotations about a single axis, which can be combined to obtain an arbitrary rotation
 \begin{small}
 	\begin{equation}
-	R_x(\alpha) = 
+	\textbf{R}_x(\alpha) = 
 	\begin{bmatrix}
 	1 & 0 & 0\\
 	0 & \cos\alpha & -\sin\alpha\\
 	0 & \sin\alpha & \cos\alpha
 	\end{bmatrix} 
 	\qquad
-	R_y(\beta) = 
+	\textbf{R}_y(\beta) = 
 	\begin{bmatrix}
 	\cos\beta & 0 & \sin\beta \\
 	0 & 1 & 0\\
 	-\sin\beta & 0 & \cos\beta
 	\end{bmatrix}
 	\qquad
-	R_z(\theta) = 
+	\textbf{R}_z(\theta) = 
 	\begin{bmatrix}
 	\cos\theta & -\sin\theta & 0\\
 	\sin\theta & \cos\theta & 0\\
@@ -388,9 +386,9 @@ and the simplest rotation matrices $R$ are rotations about a single axis, which 
 \begin{tabular}{rp{12.5cm}} 
 where  &  \\
 $\alpha, \beta, \theta$ & are angles \\
-$R_x(\alpha)$ & is rotation around the $x$-axis  \\
-$R_y(\beta)$ & is rotation around the $y$-axis  \\
-$R_z(\theta)$ & is rotation around the $z$-axis  
+$\textbf{R}_x(\alpha)$ & is rotation around the $x$-axis  \\
+$\textbf{R}_y(\beta)$ & is rotation around the $y$-axis  \\
+$\textbf{R}_z(\theta)$ & is rotation around the $z$-axis  
 \end{tabular}\\
 
 For the robotic patient manipulator comprising a number of links, coordinate frames are defined for each degree of freedom, i.e. placed in each joint such that one of the frame axes is the axis of free rotation or translation. The kinematic chain is now the sequence of alternate links and joints starting from the link fixed in inertial space and ending at the tip of the robotic tool. The link preceding a joint is its parent link, while the link succeeding it is its child link. The transformation between any two frames is given as the product of the transformation matrices in the kinematic chain between them. An example of a sequence of transformations can be seen in \autoref{app:kinematic_model_robot}.
@@ -399,13 +397,13 @@ For the resolution of frame definitions it is preferred to adapt the  robot coor
 \begin{equation}
 \hspace*{-2mm}
 \small
-^{i-1}_{\phantom{-1}i} T =
+^{i-1}_{\phantom{-1}i} \textbf{T} =
 \begin{bmatrix}
-R_z(\theta_i) & \begin{bmatrix}0\\ 0\\ d_i\end{bmatrix}\\
+\textbf{R}_z(\theta_i) & \begin{bmatrix}0\\ 0\\ d_i\end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-R_x(\alpha_i) & \begin{bmatrix}a_i\\ 0\\ 0\end{bmatrix}\\
+\textbf{R}_x(\alpha_i) & \begin{bmatrix}a_i\\ 0\\ 0\end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \label{eq:dh}
@@ -424,18 +422,18 @@ In the robot description in \gls{ros} (the implementation framework), however, t
 \begin{equation}
 \hspace*{-2mm}
 \small
-^{i-1}_{\phantom{-1}i}T =
+^{i-1}_{\phantom{-1}i}\textbf{T} =
 \begin{bmatrix}
-R_z(\text{yaw})R_y(\text{pitch})R_x(\text{roll}) & \begin{bmatrix}a_i\\ b_i\\ d_i\end{bmatrix}\\
+\textbf{R}_z(\text{yaw})\textbf{R}_y(\text{pitch})\textbf{R}_x(\text{roll}) & \begin{bmatrix}a_i\\ b_i\\ d_i\end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-R_z(\theta_i^*)R_y(\beta_i^*)R_x(\alpha_i^*) & \begin{bmatrix}a_i^*\\ b_i^*\\ d_i^* \end{bmatrix}\\
+\textbf{R}_z(\theta_i^*)\textbf{R}_y(\beta_i^*)\textbf{R}_x(\alpha_i^*) & \begin{bmatrix}a_i^*\\ b_i^*\\ d_i^* \end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \label{eq:xacro_transformation_chapter}
 \end{equation}
-Here fixed translations are implemented first, then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation), and finally the free rotation or translation (denoted by $^*$ in \autoref{eq:xacro_transformation_chapter}) about/along one of the rotated axes. Furthermore, the convention here is that each frame (joint) is fixed in its child link (corresponding to the fixed rotations preceding the free rotation), and not in its parent link as in the DH convention. The transformation  $^{i-1}_{\phantom{-1}i} T$ is implemented in joint $i$ in the \texttt{xacro} file  as (for joint 8)
+Here fixed translations are implemented first, then RPY rotations (extrinsic roll (about $x$-axis), pitch (about $y$-axis), yaw (about $z$-axis) rotation), and finally the free rotation or translation (denoted by $^*$ in \autoref{eq:xacro_transformation_chapter}) about/along one of the rotated axes. Furthermore, the convention here is that each frame (joint) is fixed in its child link (corresponding to the fixed rotations preceding the free rotation), and not in its parent link as in the DH convention. The transformation  $^{i-1}_{\phantom{-1}i} \textbf{T}$ is implemented in joint $i$ in the \texttt{xacro} file  as (for joint 8)
 \begin{lstlisting}[language=xml]
 <joint name="p4_hand_pitch"  type="revolute">
 <origin
@@ -447,7 +445,7 @@ rpy="1.5708 0 0" />
 ...
 </joint>
 \end{lstlisting}
-Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggest that $R_z(\theta_i)^* = 1$ and $R_x(\theta_i)^*  = R_y(\beta_i)^* = 0$ and $a_i^* = b_i^* = d_i^* = 0$ 
+Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggest that $\textbf{R}_z(\theta_i)^* = 1$ and $\textbf{R}_x(\theta_i)^*  = \textbf{R}_y(\beta_i)^* = 0$ and $a_i^* = b_i^* = d_i^* = 0$ 
 \subsubsection{Modifying the Kinematic Description to fit the Kinematic Solver}
 The indisputable most important application of the kinematic description, is to use it for \gls{fk} and  \gls{ik}. The \gls{ik} is not a trivial task and can be implemented in different ways. Three candidate technologies are described in \autoref{tab:cand_ik}.
 \begin{table}[H]
@@ -462,21 +460,19 @@ The indisputable most important application of the kinematic description, is to 
 	\caption{Candidate technologies to implement inverse kinematics and forward kinematics.}
 \label{tab:cand_ik}
 \end{table}
-Weighting the advantages and disadvantages from \autoref{tab:cand_ik}, a proper solver is chosen as the KDL solver.
-
-The original kinematic description/chain needs to be modified to exclude all passive joints such that it only describes the active joints. This is necessary for the KDL solver as it otherwise will attempt to adjust passive joints. A simplified overview of the problem and how it is solved is outlined in \autoref{fig:simple_oveview_ik_solve}
-
+Weighting the advantages and disadvantages from \autoref{tab:cand_ik}, a proper solver is chosen as the KDL solver. Thus, the original kinematic description/chain needs to be modified to exclude all passive joints such that it only describes the active joints. This is necessary for the KDL solver as it otherwise will attempt to control passive joints. A simplified overview of the problem and how it is solved is outlined in \autoref{fig:simple_oveview_ik_solve}
+%
 \begin{figure}[H]
 \centering
-	%\includegraphics[width=1\textwidth]{traj_3d_med_sigma.pdf}
-	HER KOMMER EN FIGURE MED ET SIMPELT OVERVIEW OVER HVILKE JOINTS DER ER BYPASSED
-	\caption{..}
+	\includegraphics[width=0.8\textwidth]{simple_kinematics.pdf}
+	\caption{Modified kinematic chain. The two mimic joints (green) must be bypassed.}
 	\label{fig:simple_oveview_ik_solve}
 \end{figure}
+%
+The new modified set of frames is defined for the da Vinci kinematics, adhering to the \gls{dh} constraint such that each free rotation/translation is about/along the local $z$-axis i.e. in conclusion the set of frames is modified to comply with the KDL solvers needs, i.e. a kinematic chain consisting of purely active joints.
 
-The new modified set of frames is defined for the da Vinci kinematics, adhering to the \gls{dh} constraint such that each free rotation/translation is about/along the local $z$-axis. The new kinematic chain is modified to comply with the KDL solvers needs, i.e. a kinematic chain consisting of purely active joints.
-
-The distinction between the new modified kinematic description and the original frames are visualized in a simple manner in \autoref{fig:simple_oveview_ik_solve}. The new modified kinematics are depicted more thoroughly in \autoref{fig:p4_hand_compromise_frames_chapter}. The parameters associated with the new modified description are listed in table \ref{tab:new_kin_short}. The original kinematics, containing the two passive joints mimicking the hand pitch movement (which are removed from the original kinematic chain), are visualized in \autoref{fig:p4_hand_xacro_frames_chapter} and the associated parameters are listed in table \ref{tab:old_kin_short} for comparison.  
+%The distinction between the new modified kinematic description and the original frames are visualized in a simple manner in \autoref{fig:simple_oveview_ik_solve}. 
+The new modified kinematic description is depicted more thoroughly in \autoref{fig:p4_hand_compromise_frames_chapter}. The parameters associated with these are listed in table \ref{tab:new_kin_short}. The original kinematic description, containing the two passive joints mimicking the hand pitch movement are depicted in \autoref{fig:p4_hand_xacro_frames_chapter} and the associated parameters are listed in table \ref{tab:old_kin_short} for comparison.  
 
 \begin{table}[H]
 	\small
@@ -496,7 +492,7 @@ The distinction between the new modified kinematic description and the original 
 		14R & 0 & 0 & 0.009 & $\pi/2$ & $\pi/2$ & 0 & $\phantom{-}\theta_{14R}^*$ & \texttt{instrument\_jaw\_right} \\
 	\end{tabular}\label{tab:old_kin_short}}
 	\vspace*{1mm}
-\subbottom[New robot hand kinematics excluding mimicking joints, corresponding to \autoref{fig:p4_hand_compromise_frames_chapter}.]{%
+\subbottom[New modified robot hand kinematics excluding mimicking joints, corresponding to \autoref{fig:p4_hand_compromise_frames_chapter}.]{%
 	\begin{tabular}{r | rrr | ccc | c l}\hline
 		& \multicolumn{3}{c|}{fixed translation  [m]} & \multicolumn{3}{c|}{fixed rotation [rad]} & freedom & \\
 		frame  & $a$ ($x$)  & $b$ ($y$)  & $d$ ($z$)  & roll  & pitch & yaw & $\theta^*$ or $d^*$ & joint name\\\hline
@@ -511,9 +507,15 @@ The distinction between the new modified kinematic description and the original 
 	\caption{Parameters and variables (marked with $^*$) for the robot kinematic description implemented in \gls{ros} and visualized in \autoref{fig:robot_hand_kinematics}. Free angles are named with $\alpha$ being a rotation about the $+x$-axis, $\beta$ about the $+y$-axis and $\theta$ about the $+z$-axis.}
 	\label{tab:xacro_param_short}
 \end{table}
-All variables from \autoref{eq:xacro_transformation_chapter} are outlined in \autoref{tab:old_kin_short}. All values are measured on the da Vinci robot in the AAU control and surgery laboratory. It is in \autoref{tab:xacro_param_short} seen how the two mimic joints for \texttt{hand\_pitch} are excluded. It is also seen how the variables are modified to follow the \gls{dh} standard as close as possible (the two matrices in \autoref{eq:xacro_transformation_chapter} are interchanged in the DH convention).
+The values are measured on the da Vinci robot in the AAU control and surgery laboratory. % It is in \autoref{tab:xacro_param_short} seen how the two mimic joints for \texttt{hand\_pitch} are excluded.
+Note that the new set of frames does not adhere to the \gls{dh} standard completely, but they follow it as close as possible (the two matrices in \autoref{eq:xacro_transformation_chapter} are interchanged in the DH convention). The reason that the DH convention is not implemented fully is the underlying structure in the way the URDF file is read. This is not straightforward to correct. The modified frames are tested and verified in \autoref{sec:app_activejoints_kinematics}.
 
-
+At this point, all variables from \autoref{eq:xacro_transformation_chapter} are outlined in table \ref{tab:old_kin_short} and implemented in the belonging \texttt{xacro} files in the \texttt{davinci\_description} package, i.e.:
+\begin{itemize}
+\item \texttt{robot/remote\_center\_manipulator.xacro} containing all joints associated with \texttt{p4\_hand}
+\item \texttt{robot/instruments/needle\_driver.xacro} containing all joints associated with \texttt{p4\_instrument}
+\end{itemize}
+%
 \begin{figure}[H]
 \hspace*{-15mm}
 \begin{minipage}{1.15\textwidth}
@@ -524,6 +526,8 @@ All variables from \autoref{eq:xacro_transformation_chapter} are outlined in \au
 	\label{fig:robot_hand_kinematics}
 \end{minipage}
 \end{figure}
+In conclusion a three dimensional position of the tool tip is described in a frame oriented as the inertial frame and offset such that a robot configuration with all free angles and slide set to zero equals a position of the tool tip in [0,0,0].
+
 For more details on the original and new kinematic descriptions implemented in \gls{ros}; including all measurements of parameters, gearing ratios, code for testing the kinematic description in MATLAB, and measurements of distances for different configurations; please refer to \autoref{sec:existing_kinematics} and \ref{sec:app_activejoints_kinematics} in \autoref{app:kinematic_model_robot}.
 
 
@@ -538,23 +542,23 @@ For more details on the original and new kinematic descriptions implemented in \
 \subsubsection{Employing Inverse Kinematics for a Controller in 3D Cartesian Space}
 The controller relies on the use of inverse kinematics for the (ambiguous) mapping from 3D Cartesian space to 6D joint space. The inverse of the kinematic transformation matrix presented in \autoref{eq:kin_transformation} is \citep{bib:math_robotics}:
 \begin{equation}
-^j_iT^{-1} = 
+^j_i\textbf{T}^{-1} = 
 \begin{bmatrix}
-^j_iR^T & -^j_iR^T\,\,^j_ip\\
+^j_i\textbf{R}^T & -^j_i\textbf{R}^T\,\,^j_i\textbf{p}\\
 0 & 1
 \end{bmatrix}
 \end{equation}
-With the sequence of transformations from frame $k$ to frame $i$ being represented by the transformation matrix $^k_i T$, the inverse transformation, from frame $i$ to frame $k$, is then its matrix inverse $^k_i T^{-1}$ \citep{bib:math_robotics}:
+With the sequence of transformations from frame $k$ to frame $i$ being represented by the transformation matrix $^k_i \textbf{T}$, the inverse transformation, from frame $i$ to frame $k$, is then its matrix inverse $^k_i \textbf{T}^{-1}$ \citep{bib:math_robotics}:
 \begin{equation}
-^k_iT = ^k_jT \,\, ^j_iT =
+^k_i\textbf{T} = ^k_j\textbf{T} \,\, ^j_i\textbf{T} =
 \begin{bmatrix}
-^k_jR \,\, ^j_iR & ^k_jp+^k_jR \,\, ^j_ip\\
+^k_j\textbf{R} \,\, ^j_i\textbf{R} & ^k_j\textbf{p}+^k_j\textbf{R} \,\, ^j_i\textbf{p}\\
 0 & 1
 \end{bmatrix}
 \qquad \Leftrightarrow \qquad
-^k_iT^{-1} = 
+^k_i\textbf{T}^{-1} = 
 \begin{bmatrix}
-^j_iR^T\,\, ^k_jR^T & -\,^j_iR^T\,\, ^k_jR^T\,\,^k_jp -\, ^j_iR^T\,\, ^j_ip\\
+^j_i\textbf{R}^T\,\, ^k_j\textbf{R}^T & -\,^j_i\textbf{R}^T\,\, ^k_j\textbf{R}^T\,\,^k_j\textbf{p} -\, ^j_i\textbf{R}^T\,\, ^j_i\textbf{p}\\
 0 & 1
 \end{bmatrix}
 \end{equation}
@@ -589,7 +593,9 @@ a \gls{fk} position solver is created along with an \gls{ik} velocity solver in 
 
 The \gls{kdl} \gls{ik} position solver utilizes the Newton-Raphson (NR) iterative numerical technique through the function \texttt{CartToJnt} to determine a prudent joint configuration implementing the desired Cartesian configuration (given as \texttt{dest\_frame} in the above example). Note that the NR requires both position and velocity (derivative of position) to find its solutions.  %In the above example the initial guess \texttt{q\_init} of the joint configuration is the current joint configuration, and hence care should be taken to only command small changes in configuration for the sake of fast convergence of the \gls{ik} solution.
 
-To summarize, the algorithm deployed to utilize the KDL solver follows the below step:
+The actual implementation of the KDL solver follows the recommended implementation method as described by The Orocos Project main web page \citep{bib:kdl_stuff}.
+
+Thus, the algorithm deployed for the KDL solver follows the steps described below:
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.48\textwidth}
@@ -623,9 +629,27 @@ To summarize, the algorithm deployed to utilize the KDL solver follows the below
 \end{itemize}
 \end{minipage}
 \end{figure}
+The KDL solver is, however, far from perfect. At present time, the solver has a tendency to circulate multiple times around the unit circle to obtain the same position as, obviously, less than one circulation could have done. This is caused by the lack of joint limit specification. The problem and the solution is outlined in \autoref{fig:correct_kdl} where \texttt{q(i)} is the $i^{\text{th}}$ controllable joint, e.g. \texttt{p4\_instrument\_roll}.
+\begin{figure}[H]
+\centering
+	\includegraphics[width=0.65\textwidth]{unit_circle.pdf}
+	\caption{Adjusting the KDL sultion for \texttt{q(i) > pi} and \texttt{q(i) < -pi}.}
+	\label{fig:correct_kdl}
+\end{figure}
+The solution found in \autoref{fig:correct_kdl} can be implemented as:
+\begin{flalign*}
+\text{while}(|q(i)|>\pi): \mm
+q(i) = 
+\begin{cases}
+- \left( \pi - \left( q(i) - \pi \right) \right) \mm &\text{if} \mm q(i) > \pi  \\
+ \left( \pi + \left( q(i) + \pi \right) \right) \mm &\text{if} \mm q(i) < -\pi  \\
+q(i) \mm &\text{otherwise} 
+\end{cases}
+\end{flalign*}
+This solution does, however, introduce limitations. The trajectory will inevitable be corrupted with flickr and other unsightly behaviours when the solver wishes to spin multiple times around the unit circle. Additionally, not all joints can reach all the way to $\pm \pi$ which can cause imprecise settling stages. 
 
-Three dimensional positions of the tool tip is described in a frame oriented as the inertial frame and offset such that a robot configuration with all free angles and slide set to zero equals a position of the tool tip in [0,0,0].
-\subsection{Main Algorithm and Results}
+With the FK  and IK solver readym the algorithm connecting the subtask can be presented.
+\subsection{Main Algorithm}
 The main algorithm is outlined in \autoref{gif:3d_flow}.
 \begin{figure}[H]
 \centering
@@ -633,7 +657,32 @@ The main algorithm is outlined in \autoref{gif:3d_flow}.
 	\caption{Main algorithm for a safe controller in the 3 dimensional euclidean space.}
 	\label{gif:3d_flow}
 \end{figure}
+The algorithm presented in \autoref{gif:3d_flow} comprise the entire code structure which will not be elaborated here, though as written in the introduction, it can be found in \autoref{app:slide_implement_2}. The real-time part runs every $0.01\,$s (100\,Hz) which corresponds to the publish rate which also is set to 100\,Hz. With all subtasks implemented appropriate, it is time to analyse the results.
+\subsection{Results}
+The results presented intends to demonstrate the below listed features:
+\begin{itemize}
+\item That the controller can find setpoints on $\mathcal{X}_0$.
+\item That the controller is stable on $\mathcal{X}_0$.
+\item That the controller will redirect the trajectory to a safe area if it passes through $\mathcal{X}_u$ or $\mathcal{T}$.
+\item That the controller will ensure that the trajectory is redirected to a safe area if a setpoint is given on $\mathcal{X}_u$.
+\item That $\sigma (\textbf{x})$ increases its values as the trajectory reaches $\mathcal{X}_u$ starting from $\mathcal{X}_0$ through $\mathcal{T}$ (from 0 to 1).
+\end{itemize}
+These features can be verified in the trajectory plot shown in \autoref{fig:3d_result}
+\begin{figure}[H]
+\centering
+	\includegraphics[width=1\textwidth]{traj_3d_meas.eps}
+	\caption{Results from safety controller in the 3D euclidean space. The interior of the green ellipsoid comprises $\mathcal{X}_u$ and around it is a 1\,cm thick rim which constitutes $\mathcal{T}$ (not plotted). The trajectory is plotted with a blue color, and it is intersected with a green color if $\sigma(\textbf{x}) \in (0,0.25]$ and a magenta color if $\sigma(\textbf{x}) \in (0.25,1]$. The red lines demonstrates the direct path between two desired setpoints (red circles). The trajectory is initiated in $(0.06,0.08,-0.01)$ (safe) and has a desired final destination in $(0,0,0)$ (unsafe).}
+	\label{fig:3d_result}
+\end{figure}
+The first 2-3 setpoints given in \autoref{fig:3d_result} are set on $\mathcal{X}_0$ and thereby safe. It is seen how the desired setpoints initially are reached (with a slight detour caused by the KDL solver). It is seen that when a setpoint is given, which requires a path through $\mathcal{X}_u$, the safety controller kicks in and redirects the trajectory around $\mathcal{X}_u$ and finally allows it to find its reference value. It is also seen that $\sigma(\textbf{x})$ increases along with a shorter distance to $\mathcal{X}_u$, as indicated with green when $\sigma (\textbf{x}) \in (0,0.25]$ and magenta  when $\sigma (\textbf{x}) \in (0.25,1]$ in \autoref{fig:3d_result}. It can be noted that not all setpoints are reached completely, which is due to imprecise kinematics, joint values that is outside a possible range and last but not least, the lack of integral action in the controller. Finally, when a setpoint is given on $\mathcal{X}_u$, it is seen how the safety controller quite aggressively forces the trajectory away from $\mathcal{X}_u$. All these features are indeed the expected outcome of the controller, thus verifying the implementation. 
 
-\section{Conclusion for Safety in the Euclidean Space}	
-only position, not orientation
+The result depicted in \autoref{fig:3d_result} and its associated analysed concludes the implementation part.
+\section{Conclusion for Safety in the 3D Euclidean Space}	
+A big step has been taken towards ensuring safety in the three dimensional euclidean space, i.e. a three dimensional control barrier function which is defined to fulfil the demands given in \autoref{eq:reqs} and a developed controller which proves itself very efficient in the MATLAB simulation environment, i.e. under ideal sampling speed and under no influence of an IK solver and other stochastic uncertainties. The controller fulfils all the initial outlined requirements.
+
+The implemented controller on the da Vinci robot, does indeed show the full potential and does indeed proof itself as being all that is desired. It does, however, suffer from a poor IK solver, imprecise kinematics and the lack of integral action. Also, the model derived for the three dimensional space is very simplified, though sufficient to establish a "proof of concept" framework. 
+
+An additional huge simplification is the consistent neglection of the orientation of the end effector in the preceding chapter, thus merely guaranteeing safety for the position of the end effector, \underline{not} the frame of the hand. 
+
+These topics are important to investigate and implement in future work.
 
