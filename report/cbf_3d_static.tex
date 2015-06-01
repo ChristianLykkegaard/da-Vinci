@@ -1,26 +1,27 @@
-This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus representing a heart or another vital sensitive organ which can not be cut under no circumstances. An important simplification is made throughout the entire chapter, i.e. the orientation of the hand is not considered.
+This chapter presents the design of a safe controller for the  robotic patient manipulator in 3D Cartesian space, where the unsafe region is defined as an ellipsoid with static boundaries, i.e. fixed in space with respect to time. The unsafe region is defined such that it is within the reach of the instrument tip. It is desired to construct the unsafe area such that the interior of the ellipsoid is unsafe, thus representing a heart or another vital sensitive organ which must not be cut under any circumstances. An important simplification is made throughout the entire chapter, i.e. the orientation of the hand is not considered.
 \begin{figure}[H]
 \centering
 \subbottom[The Robotic patient manipulator.]{\includegraphics[width=0.45\textwidth]{rviz_09_17_18_frame1.pdf}\label{fig:rviz_09_17_18_frame}}%
 	\hspace*{5mm}
 \subbottom[The robot hand and instrument.]{\includegraphics[width=0.45\textwidth]{robot_hand_unsafe_region.pdf}\label{fig:robot_hand_unsafe_region}}%
-\caption{Patient manipulator and a fixed region within the reachable space $\mathcal{X}$ that is unsafe, $\mathcal{X}_u$, marked by a red ellipsoid thus insinuating an ellipsoid as \gls{cbf}.}
+\caption{Patient manipulator and a fixed region within the reachable space $\mathcal{X}$ that is unsafe, $\mathcal{X}_u$, marked by a red ellipsoid thus implying an ellipsoid as zero level set of the \gls{cbf}.}
 \label{fig:robot_hand_3d}
 \end{figure}
 Given the reachability of the robotic end effector which is tested to be roughly a square with the measures [0.2 0.2 0.2]\,m centered in (0,0,0), the sets considered in this chapter can be outlined in \autoref{tab:intervals_3d}.
 \begin{table}[H]
-	\begin{tabularx}{\textwidth}{X X X X}
+	\begin{tabularx}{\textwidth}{X X p{2.5cm} X}
 \rowcolor{HeaderBlue} 
 $\mathcal{X}$ & $\mathcal{X}_u$  & $\mathcal{X}_0$ & $\mathcal{T}$ \\
-$\mathcal{X} = \{ x \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline $ {\color{white}{mmm}} y \in [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline ${\color{white}{mmm}} z \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] \}$ & 
-$\mathcal{X}_u$ consist of an ellipsoid with semi-axes $r_x,r_y,r_z$. &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ consist of a layer around the ellipsoid with $\text{thickness}=0.01\,$m.\\
+$\mathcal{X} = \{ x \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline $ \phantom{\mathcal{X} = \{ } y \in [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] $,\newline $\phantom{\mathcal{X} = \{ } z \in  [-\bar{\Lambda}_\text{lim}, \bar{\Lambda}_\text{lim}] \}$ & 
+$\mathcal{X}_u$ consist of an ellipsoid with semi-axes $r_x,r_y,r_z$. &  $\mathcal{X}_u^c = \mathcal{X} \backslash \mathcal{X}_u $& $\mathcal{T}$ is a layer around the ellipsoid with $\text{thickness}=0.01\,$m.\\
 \end{tabularx}
 \caption{Sets considered in this chapter, where $r_x=0.03$\,m, $r_y=0.06$\,m, $r_z=0.03$\,m are lengths of the semi-axes of an ellipsoid and $\bar{\Lambda}_\text{lim}=0.1$m being the extremity of the box encircling the reachable space.}
 \label{tab:intervals_3d}
 \end{table}
 %
-The theory, analysis and implementation aspects presented in this chapter differs from the previous work in this report. In contrast to \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}, which solely comprise the prismatic slide joint, this chapter concerns the five independent revolute joints as well. Accordingly, this chapter presents the material required to be able to manoeuvre in the 3D Cartesian space and to be able to specify an unsafe set $\mathcal{X}_u$ encircled by an ellipsoid. This implies the topics:
+The theory, analysis and implementation aspects presented in this chapter differ from the previous work in this report. In contrast to \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}, which solely comprise the prismatic slide joint, this chapter concerns the five independent revolute joints as well (see \autoref{fig:naming_convention}). Accordingly, this chapter presents the material required to be able to manoeuvre the da Vinci robot in the 3D Cartesian space and to be able to specify an unsafe set $\mathcal{X}_u$ contained within an ellipsoid. This implies the topics:
 \begin{itemize}
+	\itemsep-0.7mm
 \item Development of a sufficient model describing movement in three dimensions.
 \item Construction of a control barrier function fulfilling the demand for an ellipsoid encirclement of $\mathcal{X}_u$.
 \item Development of the control system.
@@ -35,7 +36,7 @@ The system shall be modelled as a linear state space system on the form:
 \textbf{y} &= \textbf{C}\textbf{x}
 \end{flalign*}
 %In order to set up a dynamic model of the da Vinci robot hand, a decision is made to model the three axes as decoupled for initial simplification. \textcolor{red}{Argue why, something about measurement, as movements are composed from changing joint angles obviously the axes are coupled, but it is also dependent on the low level controllers on the FPGA.} Measurements are made for a step input on each of the three axes, as shown in \textcolor{red}{FIGURE}
-The movement en the three dimensional space may be modelled as three decoupled systems. While there may be coupling between the systems, the decoupling simplifies the modelling phase significantly and it is still a realistic version of the real scenario.
+The movement in the three dimensional space may be modelled as three decoupled systems. While there may be coupling between the systems, the decoupling simplifies the modelling phase significantly and it is still a realistic version of the real scenario.
 %
 %\textcolor{red}{Make measurement of step for cases: x-axis, y-axis, z-axis, and xyz at the same time. Compare to slide measurement.}
 %
@@ -66,13 +67,13 @@ $\tau_y$ & is the time constant associated with a step purely in the $y$-axis \\
 $\tau_z$ & is the time constant associated with a step purely in the $z$-axis 
 \end{tabular}\\
 
-The time constants are measured from \autoref{sec:step_3d} and found to:
+The time constants are measured and as presented in \autoref{sec:step_3d} are found to be:
 \begin{flalign*}
-\tau_x = 0.070\,\text{s} \mm , \mm \tau_y = 0.100\,\text{s} \mm , \mm \tau_z = 0.040\,\text{s}
+\tau_x = 0.070\,\text{s}, \qquad \tau_y = 0.100\,\text{s}, \qquad \tau_z = 0.040\,\text{s}
 \end{flalign*}
 With a sufficient model established the \gls{cbf} can be considered.
 \section{Construction of CBF}
-A \gls{cbf} is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool will not penetrate the heart or another desired three dimensional region, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the CBF. The CBF is proposed of the form:
+A \gls{cbf} is proposed that complies with the first two constraints in \autoref{def:barrier_certificate}, i.e. a function that is positive on the set $\mathcal{X}_u$ and nonpositive on the set $\mathcal{X}_0$. In order to make sure that the robot tool can be prevented from penetrating the heart or another desired three dimensional region, the unsafe set $\mathcal{X}_u$ is defined as an ellipsoid. This ellipsoid enclosing the region $\mathcal{X}_u$ as visualized in \autoref{fig:robot_hand_unsafe_region}, must be the zero level set of the CBF. The CBF is proposed of the form:
 \begin{equation}
 	B(\mathbf{x}) = -\left(  \left(\frac{x_x-c_x}{r_x}\right)^2 + \left(\frac{x_y-c_y}{r_y}\right)^2 + \left(\frac{x_z-c_z}{r_z}\right)^2 - 1 \right)\label{eq:barrier_3d}
 \end{equation}
@@ -82,13 +83,13 @@ A \gls{cbf} is proposed that complies with the first two constraints in \autoref
 	$[r_x\,\, r_y\,\, r_z]$ & is the lengths of the semi-axes of the ellipsoid, $\mathbf{r}\in\mathbb{R}^3_+$ \\
 \end{tabular}\\
 
-The \gls{cbf} is visualized in \autoref{fig:zerolevelset_3d}. The zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a red ellipsoid, the one level set shown in black. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
+The \gls{cbf} is visualized in \autoref{fig:zerolevelset_3d}. The zero level set enclosing the unsafe region $\mathcal{X}_u$ shown as a green ellipsoid. Note that the function $-B(\mathbf{x})$ will have the same zero level set, but have positive values outside the ellipsoid, indicating that it is the safe area $\mathcal{X}_0$ that is enclosed by the ellipsoid.
 \vspace{-0.5cm}
 \begin{figure}[H]
 \centering
 	\hspace*{-3cm}
 	\includegraphics[width=1.3\textwidth]{cbf_3d_init.eps}
-	\caption{CBF on the form described in with center $\mathbf{c}= [0,\,\,\,\, 0,\,\,\,\, 0]$ and $\mathbf{r}=[0.03,\,\,\,\, 0.05,\,\,\,\, 0.03]$.}
+	\caption{CBF on the form described in \autoref{eq:barrier_3d} with  $\mathbf{c}= [0,\,\,\,\, 0,\,\,\,\, 0]$ and $\mathbf{r}=[0.03,\,\,\,\, 0.05,\,\,\,\, 0.03]$.}
 	\label{fig:zerolevelset_3d}
 \end{figure}
 %
@@ -118,28 +119,28 @@ As suggested in \autoref{req2}, if $L_fB(\textbf{x})\neq 0\,\, \forall \, \textb
 	\begin{bmatrix} 
 		\dfrac{1}{r_x^2\tau_x}(c_x-x_x) & \dfrac{1}{r_y^2\tau_y}(c_y-x_y) & \dfrac{1}{r_z^2\tau_z}(c_z-x_z)  
 	\end{bmatrix} \label{eq:LgB_3d} \\
-	& \neq 0 \mm \forall \mm c_x \neq x_x, \mm c_y \neq x_y , \mm c_z \neq x_z  \nonumber
+	& \neq 0 \mm \forall \mm x_x \neq c_x, \mm x_y \neq c_y , \mm x_z \neq c_z  \nonumber
 \end{flalign}
-It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. While $L_gB(\textbf{x}) = 0$ implies the demand $L_fB(\textbf{x}) \leq 0$, it causes no issue in this specific case. Simply subtract a small region around the center of the ellipsoid, call it $\mathcal{S}=\{ x_x = [-\delta\,\,\,\,\,\, -\delta], \,\, x_y = [-\delta\,\,\,\,\, -\delta]\,\, x_z = [-\delta\,\,\,\,\, -\delta] \}$ where $\delta$ is some small scalar, from $\mathcal{X}$ such that $\bar{\mathcal{X}} = \mathcal{X} \backslash \mathcal{S}$. Thus $B(\textbf{x})$ is valid on $\bar{\mathcal{X}}$. These considerations are valid as no trajectory under any circumstances will penetrate the surface of the ellipsoid, thus no reason to include the interior in $\mathcal{X}$. With $L_gB(\textbf{x}) \neq 0\,\, \forall x \in \bar{\mathcal{X}}$, the control design can be initiated.
+It can be seen that $L_gB(\mathbf{x})=0$ in the centre of the ellipsoid $[c_x,c_y,c_z]$, which is the vertex of the barrier function. While $L_gB(\textbf{x}) = 0$ implies the demand $L_fB(\textbf{x}) \leq 0$, it causes no issue in this specific case. Simply subtract a small region around the center of the ellipsoid, call it $\mathcal{S}=\{ x_x = [-\delta\,\,\,\,\,\, \delta], \,\, x_y = [-\delta\,\,\,\,\, \delta]\,\, x_z = [-\delta\,\,\,\,\, \delta] \}$ where $\delta$ is some small scalar, from $\mathcal{X}$ such that $\bar{\mathcal{X}} = \mathcal{X} \backslash \mathcal{S}$. Thus $B(\textbf{x})$ is valid on $\bar{\mathcal{X}}$. These considerations are valid as no trajectory under any circumstances will penetrate the surface of the ellipsoid, thus no reason to include the interior in $\mathcal{X}$. With $L_gB(\textbf{x}) \neq 0\,\, \forall \mathbf{x} \in \bar{\mathcal{X}}$, the control design can be initiated.
 \section{Control Design}
 The control design is built upon the control law from \autoref{eq:control_law}, i.e:
 \begin{flalign}
-\textbf{u}(\textbf{x},\tilde{\textbf{u}}) &= \sigma(\textbf{x})k_0(\textbf{x})+(1-\sigma(\textbf{x}))\tilde{\textbf{u}}(\textbf{x}) \label{eq:3d_main_contr} \\
+u(\textbf{x},\tilde{\textbf{u}}) &= \sigma(\textbf{x})k_0(\textbf{x})+(1-\sigma(\textbf{x}))\tilde{u}(\textbf{x}) \label{eq:3d_main_contr} \\
 &\text{with:} \nonumber \\
-\tilde{\textbf{u}}(\textbf{x}) &= \bar{\textbf{N}}x_\text{ref} - \textbf{K}\textbf{x} \label{eq:normal_control_3d}
+\tilde{u}(\textbf{x}) &= \bar{\textbf{N}}x_\text{ref} - \textbf{K}\textbf{x} \label{eq:normal_control_3d}
 \end{flalign}
 \begin{tabular}{rp{12.5cm}} 
 where  &  \\
-$\textbf{u}(\textbf{x},\tilde{\textbf{u}})$ & is the control input where safety ensured \\
-$\tilde{\textbf{u}}(\textbf{x}) $ & is the input where no safety is considered \\
-$k_0(\textbf{x})$ & is the controller ensuring safety \\
-$\sigma(\textbf{x})$ & founds a linear combination between the two control laws \\
-$\bar{\textbf{N}}$ & ensures unity gain from reference input to output \\
-$\textbf{K}$ & is the controller where no safety is considered \\
-$\textbf{x}$ & is the state vector containing $x_x,x_y,x_z$
+$u(\textbf{x},\tilde{u})$ & is the control input where safety ensured, $u(\textbf{x},\tilde{u})\in \mathbb{R}^3$ \\
+$\tilde{u}(\textbf{x}) $ & is the input where no safety is considered, $\tilde{u}(\textbf{x})\in \mathbb{R}^3$\\
+$k_0(\textbf{x})$ & is the controller ensuring safety, $k_0(\textbf{x})\in \mathbb{R}^3$ \\
+$\sigma(\textbf{x})$ & founds a linear combination between the two control laws, $\sigma(\textbf{x})\in \mathbb{R}$ \\
+$\bar{\textbf{N}}$ & ensures unity gain from reference input to output, $\bar{\textbf{N}}\in\mathbb{R}^{3\times 3}$ \\
+$\textbf{K}$ & is the gain in the controller where no safety is considered, $\textbf{K}\in\mathbb{R}^{3\times 3}$ \\
+$\textbf{x}$ & is the state vector, $\textbf{x}=[x_x \mm x_y \mm x_z]^T \in \mathbb{R}^3$
 \end{tabular}\\
 
-The input $\tilde{\textbf{u}}$ is used in the safe area and thus found according to regular pole placement where stability is the main design consideration, thus the MATLAB command \texttt{acker} is simply used to places the poles faster than the system itself and in the left half plane in the complex frequency domain. Thus:
+The input $\tilde{u}(\textbf{x})$ is used in the safe area and is found according to regular pole placement where stability is the main design consideration, thus the MATLAB command \texttt{acker} is simply used to places the poles faster than the system itself and in the left half plane in the complex frequency domain:
 \begin{flalign}
 \textbf{K} = \texttt{acker}\left(\textbf{A},\textbf{B},\begin{bmatrix}
 -15 & -15 & -15
@@ -161,10 +162,10 @@ The matrix $\bar{\textbf{N}}$ is found as \citep{bib:Nbar}:
 \label{eq:nbar_3d}
 \end{flalign}
 
-The safety controller $k_0(\textbf{x})$ require both $L_gB(\textbf{x})$ and $L_fB(\textbf{x})$. With $L_gB(\textbf{x})$ found in \autoref{eq:LgB_3d}, $L_fB(\textbf{x})$ is found to:
+The safety controller $k_0(\textbf{x})$ requires both $L_gB(\textbf{x})$ and $L_fB(\textbf{x})$. With $L_gB(\textbf{x})$ found in \autoref{eq:LgB_3d}, $L_fB(\textbf{x})$ is found to:
 %This means that instead of testing $L_fB(\mathbf{x})<0$ in this point, the relaxed requirement $L_fB(\mathbf{x})\leq 0$ applies:
 \begin{flalign}
-	L_fB(\mathbf{x}) &= \frac{\partial B(\mathbf{x})}{\partial \mathbf{x}}f(\mathbf{x})\Bigm|_{f(\textbf{x})= \textbf{A}\textbf{x}} = \begin{bmatrix}
+	L_fB(\mathbf{x}) &= \frac{d B(\mathbf{x})}{d \mathbf{x}}f(\mathbf{x})\Bigm|_{f(\textbf{x})= \textbf{A}\textbf{x}} = \begin{bmatrix}
 	 \dfrac{\partial B(\textbf{x})}{\partial x_x} & \dfrac{\partial B(\textbf{x})}{\partial x_y} & \dfrac{\partial B(\textbf{x})}{\partial x_z}
 \end{bmatrix} \textbf{A}\textbf{x} \nonumber \\ &= 
 	\begin{bmatrix} 
@@ -182,7 +183,7 @@ The safety controller $k_0(\textbf{x})$ require both $L_gB(\textbf{x})$ and $L_f
 	\label{eq:Lf_3d}
 %	\\	L_fB_0(c_x,c_y,c_z)&= 0 \nonumber
 \end{flalign}
-The control law presented in \autoref{chap:cbf_3d_static} suggest a smooth transition on $\mathcal{T}$, just as derived in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}. This obeys with the desire to cover the ellipsoid with a 1\,cm thick rim (from \autoref{tab:intervals_3d}), such that the scalar $\epsilon > 0$ is introduced according to \autoref{eq:smoothness}, i.e.:
+The control law presented in \autoref{eq:normal_control_3d} suggests a smooth transition on $\mathcal{T}$, just as derived in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic}. This obeys with the desire to cover the ellipsoid with a 1\,cm thick rim (from \autoref{tab:intervals_3d}), such that the scalar $\epsilon > 0$ is introduced according to \autoref{eq:smoothness}, i.e.:
 \begin{flalign}
 \sigma(\textbf{x}) = 
 \begin{cases}
@@ -192,7 +193,7 @@ The control law presented in \autoref{chap:cbf_3d_static} suggest a smooth trans
 \end{cases}
 \label{eq:smoothness_3d}
 \end{flalign} 
-Where $\epsilon$ can be found by considering the CBF:
+where $\epsilon$ can be found by considering the CBF:
 \begin{flalign}
  \epsilon =	B(\mathbf{x})_{\left\vert \scriptsize \begin{matrix}
   \hspace{-0.8cm} x_z = 0 \\
@@ -208,7 +209,7 @@ Where $\epsilon$ can be found by considering the CBF:
 \end{matrix} \right.} = 0.778 
 \label{eq:epsilon_3d}
 \end{flalign}
-Note that setting $x_x = r_x+0.01$ and  $x_y=x_z = 0$ ensures that a 1\,cm thick layer arise around the ellipsoid. Thus, from \autoref{eq:control_law_safety}, the non-linear controller ensuring safety can be found as:
+Note that setting $x_x = r_x+0.01$ and  $x_y=x_z = 0$ ensures that a 1\,cm thick transition layer is designated around the ellipsoid. Thus, from \autoref{eq:control_law_safety}, the non-linear controller ensuring safety can be found as:
 \begin{flalign}
 k_0(\textbf{x}) = \begin{cases}
 -\dfrac{L_fB(\textbf{x})+ \sqrt{(L_fB(\textbf{x}))^2 + \kappa^2L_gB(\textbf{x})(L_gB(\textbf{x}))^T}}{L_gB(\textbf{x})(L_gB(\textbf{x}))^T}(L_gB(\textbf{x}))^T &\text{if} \mm L_gB(\textbf{x}) \neq 0 \\
@@ -220,13 +221,13 @@ The control law can thereby be summarized.
 \begin{recap}[Control Law for Safety Controller in the Euclidean Space]
 Using \autoref{eq:3d_main_contr}, the control law can be summarized as:
 \begin{flalign}
-\textbf{u}(\mathbf{x},\tilde{\textbf{u}}) = \sigma(\mathbf{x})k_0(\mathbf{x}) + (1-\sigma(\mathbf{x}))\tilde{\textbf{u}}(\mathbf{x})
+u(\mathbf{x},\tilde{u}) = \sigma(\mathbf{x})k_0(\mathbf{x}) + (1-\sigma(\mathbf{x}))\tilde{u}(\mathbf{x})
 \end{flalign}
 \begin{tabular}{rp{12.5cm}} 
 where  &  \\
 $\sigma(\mathbf{x})$ & is calculated in \autoref{eq:smoothness_3d} with $\epsilon$ from \autoref{eq:epsilon_3d} \\
 $k_0(\textbf{x})$ & is calculated from \autoref{eq:ko_3d} with Lie derivatives from \ref{eq:LgB_3d} and \ref{eq:Lf_3d} \\
-$\tilde{\textbf{u}}(\textbf{x})$ & is calculated from \autoref{eq:normal_control_3d} with $\bar{\textbf{N}}$ from \ref{eq:k_3d} and $\textbf{K}$ from \ref{eq:nbar_3d}
+$\tilde{u}(\textbf{x})$ & is calculated from \autoref{eq:normal_control_3d} with $\bar{\textbf{N}}$ from \ref{eq:k_3d} and $\textbf{K}$ from \ref{eq:nbar_3d}
 \end{tabular}\\
 \end{recap}
 \section{MATLAB Implementation}
@@ -237,30 +238,30 @@ The MATLAB implementation can be found in found in \autoref{app:slide_implement_
 \item Simulation time at 10\,s.
 \item Various setpoints are given to illustrate how the controller ensures that the trajectory is redirected in alternative paths to ensure that the ellipsoid is not penetrated at any time.
 \end{itemize}
-The trajectory (blue) along with the immediate trajectory (red) determined from the setpoints given (blue stars) and the unsafe set outlined by $B(\textbf{x})$ as an ellipsoid (green) are plotted in \autoref{fig:traj3d_1}. The black circle indicates the initial position (outside $\mathcal{X}_u$) of the trajectory and the destination coordinate is indicated as a green circle.
+The trajectory (blue) along with the immediate path (red) between  the given setpoints  (blue stars) and the unsafe set outlined by $B(\textbf{x})=0$ as an ellipsoid (green) are plotted in \autoref{fig:traj3d_1}. The black circle indicates the initial position (outside $\mathcal{X}_u$) of the trajectory and the destination coordinate is indicated as a green circle.
 \begin{figure}[H]
 \centering
 	\hspace*{-2cm}
 	\includegraphics[width=1.4\textwidth]{traj_3d_1.eps}
-	\caption{Result of the MATLAB implementation of the safe controller which allows manoeuvring in the euclidean space with an ellipsoid as CBF outlining $\mathcal{X}_u$. The trajectory (blue) along with the immediate trajectory (red) determined from the setpoints given (blue stars). The black circle indicates initial position and the green circle indicates the destination.}
+	\caption{Result of the MATLAB implementation of the safe controller which allows manoeuvring in the Euclidean space with an ellipsoid as zero level set of the CBF outlining $\mathcal{X}_u$. The trajectory (blue) along with the immediate trajectory (red) determined from the setpoints given (blue stars). The black circle indicates initial position and the green circle indicates the destination.}
 	\label{fig:traj3d_1}
 \end{figure}
-It is from \autoref{fig:traj3d_1} seen how the controller ensures that the state will never enter the interior of the ellipsoid which indeed was the purpose of the controller. It is also seen how the controller ensures a smooth and elegant detour to reach the desired setpoint while ensuring safety. If a setpoint is given in the interior of $B(\textbf{x})$, the state will settle at the shortest safe distance from that setpoint. It is finally seen how setpoints in the safe area are reached without any problems.
+It is from \autoref{fig:traj3d_1} seen how the controller ensures that the state  never enters the interior of the ellipsoid which indeed was the purpose of the controller. It is also seen how the controller ensures a smooth and elegant detour to reach the desired setpoint while ensuring safety. If a setpoint is given in the interior of $\mathcal{X}_u$, the state will settle at the shortest safe distance from that setpoint. It is finally seen how setpoints in the safe area are reached without any problems.
 
-The state trajectory is also plotted in \autoref{fig:traj3d_2} where $x,y,z$ are plotted individually which makes it slightly easier to see the effect of $\sigma(\textbf{x})$. 
+The state trajectory is also plotted in \autoref{fig:traj3d_2} where each coordinate trajectory is plotted individually which makes it slightly easier to see the effect of $\sigma(\textbf{x})$. 
 \begin{figure}[H]
 \centering
 	\includegraphics[width=1\textwidth]{traj_3d_2.eps}
-	\caption{The same trajectory as depicted in \autoref{fig:traj3d_1}. It is seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$ and the position is adjusted accordingly.}
+	\caption{The same trajectory as depicted in \autoref{fig:traj3d_1}. It is seen how  $\sigma(\textbf{x})$ increases in value when the trajectory approaches the zero level set of $B(\textbf{x})$ and the position is adjusted accordingly.}
 	\label{fig:traj3d_2}
 \end{figure}
-It is from \autoref{fig:traj3d_2} seen how the effect of $\sigma(\textbf{x})$ kicks in when the trajectory approaches the interior of $B(\textbf{x})$; the position is adjusted accordingly. Additionally,  \autoref{fig:traj3d_2} is the only plot where the actual dynamics can be seen, which as expected, comprise a first order approximation in both $x,\,y$ and $z$. It is also seen how the dynamics are completely changed when the trajectory enters $\mathcal{T}$, hence causing a highly non-linear system, for which it actually is very difficult to predict the exact behaviour, except it will escape the unsafe area.
+It is from \autoref{fig:traj3d_2} seen how $\sigma(\textbf{x})$ increases in value when the trajectory approaches the zero level set of $B(\textbf{x})$, and the position is adjusted accordingly. Additionally,  \autoref{fig:traj3d_2} is the only plot where the actual dynamics can be seen, which clearly demonstrate the first order approximations in both $x,\,y$ and $z$. It is also seen how the dynamics is completely changed when the trajectory enters $\mathcal{T}$, hence causing a highly non-linear system, for which it actually is very difficult to predict the exact behaviour, except that it will escape the unsafe area.
 
-The thickness of 1\,cm, outlining $\mathcal{T}$, ensured by $\sigma(\textbf{x})$, is visualized in \autoref{fig:traj3d_2:med_sig} along with the simulated trajectory.
+The thickness of 1\,cm, outlining $\mathcal{T}$, ensured by $\epsilon$, is visualized in \autoref{fig:traj3d_2:med_sig} along with the simulated trajectory.
 \begin{figure}[H]
 \centering
-	\includegraphics[width=1\textwidth]{traj_3d_med_sigma.pdf}
-	\caption{The inner (black) ellipsoid is $\mathcal{X}_u$ and the rim around the inner ellipsoid is $\mathcal{T}$. Thus $\mathcal{X}_0 = \mathcal{X} \backslash \mathcal{X}_u$. The trajectory is initiated from the black circle.}
+	\includegraphics[width=1\textwidth]{traj_3d_med_sigma.jpg}
+	\caption{The inner (black) ellipsoid marks the surface of $\mathcal{X}_u$ and the rim between the two ellipsoids is $\mathcal{T}$. Thus $\mathcal{X}_0 = \mathcal{X} \backslash \mathcal{X}_u$. The trajectory is initiated from the black circle.}
 	\label{fig:traj3d_2:med_sig}
 \end{figure}
 It is from \autoref{fig:traj3d_2:med_sig} seen that the trajectory starts to be redirected when it enters $\mathcal{T}$ in a smooth manner. The trajectory will always take the shortest safe path.
@@ -318,15 +319,15 @@ It is from \autoref{fig:traj3d_2:med_sig} seen that the trajectory starts to be 
 %
 %Hence, before modelling the system and designing a controller, the kinematics of the AAU da Vinci robot is presented in the following section along with considerations for the definition of the coordinate frames and the transformation between them constituting the kinematic description of the robot.
 \section{Implementation on the da Vinci Robot}
-In contrast to the MATLAB implementation, the implementation on the da Vinci robot comprises quite some additional topics. The code developed as a result of the implementation can be found in \autoref{app:slide_implement_2}, \autoref{app:auxiliary} and \autoref{app:cd}. It can also be cloned from github with the following git commands:
+In contrast to the MATLAB implementation, the implementation on the da Vinci robot comprises  some additional topics. The code developed as a result of the implementation can be found in \autoref{app:slide_implement_2}, \autoref{app:auxiliary} and \autoref{app:cd}. It can also be cloned from GitHub with the following git commands:
 \begin{itemize}
 \item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/Gr1032}
 \item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/\newline davinci\_description ---branch reduced\_robot} 
 \item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/\newline davinci\_driver ---branch gr1032}
 \end{itemize}
-It is also important to setup the ROS framework as described in \autoref{app:ros}. The implementation of the controller derived in this chapter consist of the topics stated below:
+It is also important to setup the ROS framework as described in \autoref{app:ros}. The implementation of the controller derived in this chapter consists of the topics stated below:
 \begin{itemize}
-\item A description of the kinematic chain. This is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described deeper in \autoref{app:ros}.
+\item A description of the kinematic chain. This is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described more thoroughly in \autoref{app:ros}.
 \item Integration of an inverse kinematic solver such that a desired $(x,y,z)$ position can be obtained from the six active joint angles (see \autoref{fig:naming_convention}), i.e. from:
 \begin{itemize}
 \item \texttt{p4\_hand\_roll}
@@ -337,18 +338,20 @@ It is also important to setup the ROS framework as described in \autoref{app:ros
 \item \texttt{p4\_instrument\_jaw\_right}
 \end{itemize}
 \item Integration of a forward kinematic solver such that the position can be read from the six angles.
-\item An original description of the kinematic chain is present at the Robotic Surgery Group - Aalborg University at github. However, a modification of the kinematic chain is required such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solver as it will not be able to distinct passive to active. 
+\item An original description of the kinematic chain is present at the Robotic Surgery Group - Aalborg University at GitHub. However, a modification of the kinematic chain is required such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solver as it will not be able to distinct passive joints from active. 
 \item Algorithm development such that the above topics are connected and real-time signal processing is ensured. As discussed in \autoref{sec:davinci-implementation}, this should be done in C++ in the ROS framework. 
 \end{itemize} 
 Thus before proceeding to the actual implementation, a kinematic description is necessary.
+
 \subsection{Kinematics of the AAU da Vinci Robot}\label{britt}
-The upcoming subsection will first describe how kinematics in general are defined, then how the kinematics are desired to be defined followed by the original kinematic description (the structure of the \texttt{xacro} files when this project was initiated). It concludes with a necessary modification of the original kinematic description such that a sufficiently fast solver can be applied. 
+The upcoming subsections will first describe how kinematics in general are defined, then how the kinematics are desired to be defined for the da Vinci robot followed by the original kinematic description (the structure of the \texttt{xacro} files when this project was initiated). It concludes with a necessary modification of the original kinematic description such that a sufficiently fast solver can be applied. 
+
 \subsubsection{How a Kinematic Description is Defined}
-A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $\textbf{T}$, containing the orthonormal rotation matrix $R$ and the translation vector $\textbf{p}$ of the frame origin, as 
+A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $\textbf{T}$, containing the orthonormal rotation matrix $\mathbf{R}$ and the translation vector $\textbf{p}$ of the frame origin, as 
 \begin{equation}
 ^j_i\textbf{T} = 
 \begin{bmatrix}
-R & p\\
+\mathbf{R} & \mathbf{p}\\
 0 & 1
 \end{bmatrix}, \label{eq:kin_transformation}
 \qquad \text{where} \qquad
@@ -357,7 +360,7 @@ R & p\\
 a\\b\\d
 \end{bmatrix}
 \end{equation}
-and the simplest rotation matrices $R$ are rotations about a single axis, which can be combined to obtain an arbitrary rotation
+and the simplest rotation matrices $\mathbf{R}$ are rotations about a single axis, which can be combined to obtain an arbitrary rotation
 \begin{small}
 	\begin{equation}
 	\textbf{R}_x(\alpha) = 
@@ -391,7 +394,8 @@ $\textbf{R}_y(\beta)$ & is rotation around the $y$-axis  \\
 $\textbf{R}_z(\theta)$ & is rotation around the $z$-axis  
 \end{tabular}\\
 
-For the robotic patient manipulator comprising a number of links, coordinate frames are defined for each degree of freedom, i.e. placed in each joint such that one of the frame axes is the axis of free rotation or translation. The kinematic chain is now the sequence of alternate links and joints starting from the link fixed in inertial space and ending at the tip of the robotic tool. The link preceding a joint is its parent link, while the link succeeding it is its child link. The transformation between any two frames is given as the product of the transformation matrices in the kinematic chain between them. An example of a sequence of transformations can be seen in \autoref{app:kinematic_model_robot}.
+For the robotic patient manipulator, which comprises a number of links, coordinate frames are defined for each degree of freedom, i.e. placed in each joint such that one of the frame axes is the axis of free rotation or translation. The kinematic chain is now the sequence of alternate links and joints starting from the link fixed in inertial space and ending at the tip of the robotic tool. The link preceding a joint is its parent link, while the link succeeding it is its child link. The transformation between any two frames is given as the product of the transformation matrices in the kinematic chain between them. An example of a sequence of transformations can be seen in \autoref{app:kinematic_model_robot}.
+
 \subsubsection{Desired Kinematic Description}
 For the resolution of frame definitions it is preferred to adapt the  robot coordinate frame convention \gls{dh} because it is one of the most widespread kinematic descriptions in the robot kinematics community, and because it describes transformations between two successive frames in the kinematic chain on a succinct and standardized form, i.e.:
 \begin{equation}
@@ -408,7 +412,7 @@ For the resolution of frame definitions it is preferred to adapt the  robot coor
 \end{bmatrix}
 \label{eq:dh}
 \end{equation}
-In the \gls{dh} kinematic description each frame is fixed with respect to its parent link, and its $z$-axis is aligned with the actuation axis of its child link. The free rotation/translation always taking place around/along the local $z$ axis, and as seen from \autoref{eq:dh} any fixed or free rotation/translation about/along the $z$-axis is implemented (intrinsically) before any fixed rotation/translation about/along the (new) $x$-axis. For more details on the \gls{dh} convention and robot frames defined according to is, see \autoref{sec:denavit_hartenberg}.
+In the \gls{dh} kinematic description each frame is fixed with respect to its parent link, and its $z$-axis is aligned with the actuation axis of its child link. The free rotation/translation always takes place around/along the local $z$ axis, and as seen from \autoref{eq:dh} any fixed or free rotation/translation about/along the $z$-axis is implemented (intrinsically) before any fixed rotation/translation about/along the (new) $x$-axis. For more details on the \gls{dh} convention and robot frames defined according to it, see \autoref{sec:denavit_hartenberg}.
 
 %\begin{itemize}
 %	\itemsep-1.3mm 
@@ -445,7 +449,7 @@ rpy="1.5708 0 0" />
 ...
 </joint>
 \end{lstlisting}
-Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggest that $\textbf{R}_z(\theta_i)^* = 1$ and $\textbf{R}_x(\theta_i)^*  = \textbf{R}_y(\beta_i)^* = 0$ and $a_i^* = b_i^* = d_i^* = 0$ 
+Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation and rotation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggests a free rotation about the $z$-axis (i.e. $\theta_i^*$) and that  $\textbf{R}_x(\alpha_i^*)  = \textbf{R}_y(\beta_i^*) = \mathbf{I}$ and $a_i^* = b_i^* = d_i^* = 0$ 
 \subsubsection{Modifying the Kinematic Description to fit the Kinematic Solver}
 The indisputable most important application of the kinematic description, is to use it for \gls{fk} and  \gls{ik}. The \gls{ik} is not a trivial task and can be implemented in different ways. Three candidate technologies are described in \autoref{tab:cand_ik}.
 \begin{table}[H]
