@@ -1,3 +1,23 @@
-can be difficult to find a barrier certificate that is valid for a system, especially as the order of the system grows, as seen from the second order system
+%\vspace{-0.3cm}
+An introduction to the concept of automated surgery with robotic manipulators is given in \autoref{chap:intro}. It founds the need for a way to guarantee safety in such operations. Thus, the initial task posed in \autoref{sec:project_overview} concerns two approached to the problem of ensuring safety for the da Vinci robotic manipulator, i.e.:
+%\vspace{-0.3cm}
+\begin{enumerate}
+\item The design of a safe controller ensuring safety in real-time. 
+\item The analysis of a controller, posing the question if it is safe. 
+\end{enumerate}
+%\vspace{-0.3cm}
+The first bullet point is at this point investigated. The theory presented in \citep{bib:org_control} is adopted and described in \autoref{chap:cbf} which ensures that the barrier certificates outlined in \autoref{chap:barrier_cerificates} are obeyed, thereby allowing the development of safe controllers.
 
-it is desirable to find a different approach to defining barrier certificates that is more efficient, and for this purpose the MATLAB toolbox SOSTOOLS can be used. This toolbox uses Sums of Squares optimization to solve problems, so it is necessary to cast the definition of the barrier certificate as a SOS program to us it for barrier certificate search. Hence the background to the SOS  formulation of the problem is presented in the next chapter, after which the SOSTOOLS toolbox is introduced, and used for barrier certificate search.
+The theory is applied to specific use cases. First, a palpable example is conducted in \autoref{chap:cbf_1d_static} which ought to give experience with control barrier functions (CBFs) and the way the theory is applied. The outcome is not only a fully functional safe controller in one dimension, but also a valuable experience. As expected, when the system order increases, the difficulty in constructing valid CBF, is also increased. Though, with a system order $n=2$, it is indeed still possible. Primary because the states can be translated into physical meaningful quantities such as position and velocity. However, it is easy to imagine that as $n$ increases and the meaningful states vanish to abstract states, this approach will be as good as impossible.
+
+The next step is taken in \autoref{chap:cbf_1d_dynamic} where the problem consist of ensuring safety for a beating heart, such that a virtual fixture can be ensured in a safe manner. The problem here differs from \autoref{chap:cbf_1d_static} because the CBF is dynamic. Though, again, a successful implementation is performed and a valid CBF can be found. The dimensions of the system is kept low which simplifies the task of finding a valid CBF. The lack of integral action is obvious in this chapter and with a more advanced/realistic model of the heart, the search for a valid CBF will be a highly non-trivial task. If not impossible.
+
+The dimensions is yet again increased in \autoref{chap:cbf_3d_static}. A safe controller in the 3D euclidean space is developed with an associated valid CBF alongside. It is from here seen that the creativity and complexity increases yet a step. With a simplified model of the robotic manipulator, a successful analysis and implementation is performed. The result is as expected and indeed quite convincing, but it is also clear that to reach the end goal of a realistic model of the heart or other vital organs and of the robotic manipulator, the system order must be increased. Again, this implies serious challenges in the construction of a valid CBF.
+
+%can be difficult to find a barrier certificate that is valid for a system, especially as the order of the system grows, as seen from the second order system
+
+Accordingly, it is desirable to find a different approach to defining barrier certificates that is more efficient for higher order systems. Indeed, an efficient and straight forward approach may be difficult to derive, but the success criteria for a higher order system can more appropriate be defined as: \textit{If it is possible, it is better.} This is where the second bullet points become active.
+
+The MATLAB toolbox SOSTOOLS can be used to perform a "controller analysis". This toolbox uses Sums of Squares optimization to solve problems, so it is necessary to cast the definition of the barrier certificate as an SOS program to use it for barrier certificate search. Hence the background to the SOS  formulation of the problem is presented in the upcoming chapter, after which the SOSTOOLS toolbox is introduced, and used for barrier certificate search.
+
+This approach intends to solve the second bullet point, i.e. to find a way to analyse if the controller is safe, thereby giving it a "safe" or "not safe" verdict.
