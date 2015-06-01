@@ -1,19 +1,21 @@
 This appendix contains auxiliary files developed such that the ROS framework is initialized correct. All packages mentioned in this appendix can be found at github - Robotic Surgery Group - Aalborg University (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup}). For the package \texttt{gr1032} it includes development (from scratch):
 \begin{itemize}
-\item \texttt{CMakeLists.txt} (shown in this appendix)
-\item \texttt{package.xml} (shown in this appendix)
-\item \texttt{run\_controllers.cpp} (shown in \autoref{app:slide_implement_2})
-\item \texttt{run\_controllers.py} (wrapper script - shown in this appendix).
+\item \texttt{CMakeLists.txt} (Founds Cmake build system)
+\item \texttt{package.xml} (States dependencies)
+\item \texttt{run\_controllers.py} (wrapper script to run all developed controllers)
+\item \texttt{p4\_hand\_controller.yaml} (allows direct propagation of the control signal to the joints)
+\item \texttt{davinci\_driver.launch} (spawn controllers such the control signal can be passed to the joints)
+\item \texttt{remote\_center\_manipulator.xacro} (implementation of the kinematics for the hand and instrument slide. A similar one is present for the remaining parts of the instrument, though not shown here).
 \end{itemize}
-A number of files are modified to allow proper control outputs. They are not shown here, but it includes  modifications of:
-\begin{itemize}
-\item \texttt{davinci\_driver.launch} located at \texttt{daVinci\_ws/src/davinci\_driver/launch} in the package \texttt{davinci\_driver}. Modification: Control output for the six joints are added such that the previous controller \texttt{controller\_spawner\_joint\_state\_controller} is overruled by:
-\begin{itemize}
-\item \texttt{slide\_position\_controller}
-\item \texttt{hand\_pitch\_position\_controller}
-\item \texttt{hand\_roll\_position\_controller}
-\end{itemize}
-\end{itemize}
+%A number of files are modified to allow proper control outputs. They are not shown here, but it includes  modifications of:
+%\begin{itemize}
+%\item \texttt{davinci\_driver.launch} located at \texttt{daVinci\_ws/src/davinci\_driver/launch} in the package \texttt{davinci\_driver}. Modification: Control output for the six joints are added such that the previous controller \texttt{controller\_spawner\_joint\_state\_controller} is overruled by:
+%\begin{itemize}
+%\item \texttt{slide\_position\_controller}
+%\item \texttt{hand\_pitch\_position\_controller}
+%\item \texttt{hand\_roll\_position\_controller}
+%\end{itemize}
+%\end{itemize}
 \section*{CMakeLists.txt}
 \begin{lstlisting}[language=cmake]
 cmake_minimum_required(VERSION 2.8.3)
@@ -30,9 +32,22 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_library(ik_gr1032
+   src/${gr1032}/ik_gr1032
+)
+add_library(demo_gr1032
+   src/${gr1032}/demo_gr1032
+)
+add_library(safe_3d
+   src/${gr1032}/safe_3d
+)
+
 add_executable(run_controllers src/run_controllers.cpp)
 
 target_link_libraries(run_controllers
+                      ik_gr1032
+                      demo_gr1032
+                      safe_3d
   ${catkin_LIBRARIES}
 )
 \end{lstlisting}
@@ -57,6 +72,217 @@ target_link_libraries(run_controllers
 \end{lstlisting}
 \section*{run\_controllers.py}
 \begin{lstlisting}[language=cmake]
-import os
-os.system("rosrun gr1032 run_controllers /slide_command:=/davinci/slide_position_controller/command /pitch_command:=/davinci/hand_pitch_position_controller/command /roll_command:=/davinci/hand_roll_position_controller/command")
+  1 import os
+  2 os.system("rosrun gr1032 run_controllers /slide_command:=/davinci/slide_position_controller/c    ommand /pitch_command:=/davinci/hand_pitch_position_controller/command /roll_command:=/davinc    i/hand_roll_position_controller/command /inst_roll_command:=/davinci/instrument_roll_position    _controller/command /inst_pitch_command:=/davinci/instrument_pitch_position_controller/comman    d /inst_jaw_right_command:=/davinci/instrument_jaw_right_position_controller/command")
+\end{lstlisting}
+\section*{p4\_hand\_controller.yaml}
+\begin{lstlisting}[language=cmake]
+davinci:
+    # Publish all joint states -----------------------------------
+    joint_state_controller:
+        type: joint_state_controller/JointStateController
+        publish_rate: 100
+        
+ # Position Controllers ---------------------------------------
+    slide_position_controller:
+        type: position_controllers/JointPositionController
+        joint: p4_instrument_slide
+        publish_rate: 100
+    hand_pitch_position_controller:
+        type: position_controllers/JointPositionController
+        joint: p4_hand_pitch
+        publish_rate: 100
+    hand_roll_position_controller:
+        type: position_controllers/JointPositionController
+        joint: p4_hand_roll
+        publish_rate: 100
+    instrument_roll_position_controller:
+        type: position_controllers/JointPositionController
+        joint: p4_instrument_roll
+        publish_rate: 100
+    instrument_pitch_position_controller:
+        type: position_controllers/JointPositionController
+        joint: p4_instrument_pitch
+        publish_rate: 100
+    instrument_jaw_right_position_controller:
+        type: position_controllers/JointPositionController
+        joint: p4_instrument_jaw_right
+        publish_rate: 100
+\end{lstlisting}
+\section*{davinci\_driver.launch}
+\begin{lstlisting}[language=cmake]
+<!--
+Launch file for the driver.
+
+Karl D. Hansen (kdh@es.aau.dk)
+modified by: Gr1032 in 2015
+-->
+
+<launch>
+    <!--
+    If not using default ips, remember to load them
+    into the param server elsewhere.
+    -->
+    <arg name="default_ips" default="true" />
+
+    <!--
+    Load the IPs of the davinci embedded controllers
+    into the parameter server as a list.
+    -->
+    <rosparam
+        if="$(arg default_ips)"
+        command="load"
+        file="$(find davinci_driver)/config/davinci_ip_adresses.yaml"
+    />
+
+    <node name="davinci_driver_node" pkg="davinci_driver" type="davinci_driver_node" output="screen" ns="davinci">
+        <remap from="/davinci/joint_states" to="/joint_states" />
+    </node>
+
+    <!-- Load the robot description into the param server. -->
+    <param name="robot_description"
+        command="$(find xacro)/xacro.py '$(find davinci_description)/robots/davinci_description.xacro'" />
+
+    <!-- Combine joint values into the tf tree based on the above model. -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <rosparam
+        command="load"
+        file="$(find davinci_driver)/config/p4_hand_controller.yaml"
+    />
+    <!-- load the controllers -->
+    <node
+        name="controller_spawner_joint_state_controller"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="joint_state_controller"
+    />
+    <node
+        name="controller_spawner_position_controller_slide"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="slide_position_controller"
+    />
+    <node
+        name="controller_spawner_position_controller_hand_pitch"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="hand_pitch_position_controller"
+    />
+    <node
+        name="controller_spawner_position_controller_hand_roll"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="hand_roll_position_controller"
+    />
+    <node
+        name="controller_spawner_position_controller_instrument_roll"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="instrument_roll_position_controller"
+    />
+    <node
+        name="controller_spawner_position_controller_instrument_pitch"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="instrument_pitch_position_controller"
+    />
+    <node
+        name="controller_spawner_position_controller_instrument_jaw_right"
+        pkg="controller_manager"
+        type="spawner"
+        respawn="false"
+        output="screen"
+        ns="davinci"
+        args="instrument_jaw_right_position_controller"
+    />
+</launch>
+\end{lstlisting}
+\section*{remote\_center\_manipulator.xacro}
+\begin{lstlisting}[language=gedit]
+<?xml version="1.0"?>
+<robot name="davinci" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find davinci_description)/robots/davinci_link_macro.xacro" />
+
+  <xacro:davinci_link name="p4_rcm_base" color="slate" />
+
+  <joint name="p4_hand_roll"
+    type="revolute">
+    <origin
+      xyz="0.482 0 0.047"
+      rpy="0 1.5708 0" />
+    <parent
+      link="p4_rcm_base" />
+    <child
+      link="rcm_vitual0" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.5708"
+      upper="1.5708"
+      effort="1"
+      velocity="1" />
+  </joint>
+
+  <link name="rcm_vitual0" />
+
+  <joint name="p4_hand_pitch"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="rcm_vitual0" />
+    <child
+      link="rcm_vitual1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.8"
+      upper="1.0"
+      effort="1"
+      velocity="1" />
+  </joint>
+
+  <link name="rcm_vitual1" />
+
+  <joint name="p4_instrument_slide"
+    type="prismatic">
+    <origin
+      xyz="0.097 0 0"
+      rpy="0 -1.5708 0" />
+    <parent
+      link="rcm_vitual1" />
+    <child
+      link="needle_driver_house" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.12"
+      upper="0.12"
+      effort="1"
+      velocity="1" />
+  </joint>
+
+</robot>
 \end{lstlisting}
