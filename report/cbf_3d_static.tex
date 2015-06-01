@@ -329,7 +329,7 @@ In contrast to the MATLAB implementation, the implementation on the da Vinci rob
 It is also important to setup the ROS framework as described in \autoref{app:ros}. The implementation of the controller derived in this chapter consist of the topics stated below:
 \begin{itemize}
 \item A description of the kinematic chain which is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described deeper in \autoref{app:ros}.
-\item Integration of an inverse kinematic solver such that a desired $(x,y,x)$ position can be obtained from the six joint angles (see \autoref{fig:naming_convention}), i.e. from:
+\item Integration of an inverse kinematic solver such that a desired $(x,y,z)$ position can be obtained from the six active joint angles (see \autoref{fig:naming_convention}), i.e. from:
 \begin{itemize}
 \item \texttt{p4\_hand\_roll}
 \item \texttt{p4\_hand\_pitch}
@@ -339,18 +339,13 @@ It is also important to setup the ROS framework as described in \autoref{app:ros
 \item \texttt{p4\_instrument\_jaw\_right}
 \end{itemize}
 \item Integration of a forward kinematic solver such that the position can be read from the six angles.
-\item Modify the kinematic chain such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solvers as they wont be able to distinct passive to active. 
+\item Modification of the kinematic chain such that only active joints are a part of the kinematic chain. This is necessary for the kinematic solvers as they wont be able to distinct passive to active. 
 \item Algorithm development such that the above topics are connected and real-time signal processing is ensured. As discussed in \autoref{sec:davinci-implementation}, this should be done in C++. 
 \end{itemize} 
-The main algorithm is outlined in \autoref{gif:3d_flow}.
-\begin{figure}[H]
-\centering
-	\includegraphics[width=1\textwidth]{flowchart_3d_controller.pdf}
-	\caption{Main algorithm for a safe controller in the 3 dimensional euclidean space.}
-	\label{gif:3d_flow}
-\end{figure}
 Thus before proceeding to the actual implementation, a kinematic description is necessary.
-\subsection{Kinematics of the AAU da Vinci Robot}
+\subsection{Kinematics of the AAU da Vinci Robot}\label{britt}
+The upcoming subsection will first describe how kinematics in general are defined, then how the kinematics are desired to be defined followed by the original kinematic description (the structure of the \texttt{xacro} files when this project was initiated). It concludes with a necessary modification of the original kinematic description such that a sufficiently fast solver can be applied. 
+\subsubsection{How a Kinematic Description is Defined}
 A kinematic description of an object requires defining a right-handed coordinate frame fixed in the object and a coordinate frame fixed in inertial space, the latter which the position and orientation of the object can be described relative to. This relative orientation and position of an object (or the frame $i$ fixed in it) with respect to another frame $j=i-1$ can be described through a transformation matrix $T$, containing the orthonormal rotation matrix $R$ and the translation vector $p$ of the frame origin, as 
 \begin{equation}
 ^j_iT = 
@@ -399,7 +394,7 @@ $R_z(\theta)$ & is rotation around the $z$-axis
 \end{tabular}\\
 
 For the robotic patient manipulator comprising a number of links, coordinate frames are defined for each degree of freedom, i.e. placed in each joint such that one of the frame axes is the axis of free rotation or translation. The kinematic chain is now the sequence of alternate links and joints starting from the link fixed in inertial space and ending at the tip of the robotic tool. The link preceding a joint is its parent link, while the link succeeding it is its child link. The transformation between any two frames is given as the product of the transformation matrices in the kinematic chain between them. An example of a sequence of transformations can be seen in \autoref{app:kinematic_model_robot}.
-
+\subsubsection{Desired Kinematic Description}
 For the resolution of frame definitions it is preferred to adapt the  robot coordinate frame convention \gls{dh} because it is one of the most widespread kinematic descriptions in the robot kinematics community, and because it describes transformations between two successive frames in the kinematic chain on a succinct and standardized form, i.e.:
 \begin{equation}
 \hspace*{-2mm}
@@ -424,7 +419,7 @@ In the \gls{dh} kinematic description each frame is fixed with respect to its pa
 %	\item parameter $a_i$ is the distance from $z_{i-1}$ to $z_i$ measured along $x_i$
 %	\item parameter $\alpha_i$ is the angle from $z_{i-1}$ to $z_i$ about $x_i$
 %\end{itemize}
-
+\subsubsection{Implementable Kinematic Description}
 In the robot description in \gls{ros} (the implementation framework), however, the kinematics are described in the \texttt{xacro} files on the form
 \begin{equation}
 \hspace*{-2mm}
@@ -452,15 +447,41 @@ rpy="1.5708 0 0" />
 ...
 </joint>
 \end{lstlisting}
-\subsection{The KDL Kinematic Solver and its Constraints}
-A compromise is made, defining a new set of frames for the da Vinci kinematics, adhering to the \gls{dh} constraint that each free rotation/translation is about/along the local $z$-axis. The new kinematic frames are visualized in \autoref{fig:p4_hand_compromise_frames_chapter}, the parameters listed in table \ref{tab:new_kin_short}. Furthermore, (VIGtIGT) for simplification of the inverse kinematics solver, the two passive joints mimicking the hand pitch movement are removed from the existing kinematic chain, visualized in \autoref{fig:p4_hand_xacro_frames_chapter}, and parameters listed in table \ref{tab:old_kin_short} for comparison.  
+Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggest that $R_z(\theta_i)^* = 1$ and $R_x(\theta_i)^*  = R_y(\beta_i)^* = 0$ and $a_i^* = b_i^* = d_i^* = 0$ 
+\subsubsection{Modifying the Kinematic Description to fit the Kinematic Solver}
+The indisputable most important application of the kinematic description, is to use it for \gls{fk} and  \gls{ik}. The \gls{ik} is not a trivial task and can be implemented in different ways. Three candidate technologies are described in \autoref{tab:cand_ik}.
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{X X X X}
+\rowcolor{HeaderBlue} 
+\textbf{Technology} &  \textbf{Advantage} &  \textbf{Disadvantage} & \textbf{Conclusion} \\
+\textbf{MoveGroup} (a thorough test of MoveGroup is made in \autoref{sec:moveit}.) & This is an API which is easy and simple to use. It offers a GUI to initialize joints and links and certain poses. It is possible to specify joint limits. & It is slow and requires computational time between every setpoint. Also, it implements its own controller destructing the dynamics. & Due to the slow processing time an the shattered dynamics, the solver offered by the MoveGroup API is rejected. \\
+\rowcolor{textBlue} 
+\textbf{\gls{kdl}} (offered by The Orocos Project) (it is in fact the underlying solver of MoveGroup) & All additional features offered by MoveGroup can be bypassed and the speed can thereby be increased. & Interfacing with KDL directly complicates the code significantly. No specification of joint limits is possible. Can not distinct between passive and active joints. & This is a good solution with the only real issue being the lack of joint limit specification. Passive joints can be omitted by redefining the kinematic description. \\
+\textbf{Custom design} & Full control of all aspects of the solver and the possibility to tailor each developed feature. & The development of an IK solver for a six \gls{dof} manipulator is not a trivial task. & The extra features offered by a custom IK solver does not match the development costs which it will induce. \\
+\end{tabularx}
+	\caption{Candidate technologies to implement inverse kinematics and forward kinematics.}
+\label{tab:cand_ik}
+\end{table}
+Weighting the advantages and disadvantages from \autoref{tab:cand_ik}, a proper solver is chosen as the KDL solver.
 
+The original kinematic description/chain needs to be modified to exclude all passive joints such that it only describes the active joints. This is necessary for the KDL solver as it otherwise will attempt to adjust passive joints. A simplified overview of the problem and how it is solved is outlined in \autoref{fig:simple_oveview_ik_solve}
 
+\begin{figure}[H]
+\centering
+	%\includegraphics[width=1\textwidth]{traj_3d_med_sigma.pdf}
+	HER KOMMER EN FIGURE MED ET SIMPELT OVERVIEW OVER HVILKE JOINTS DER ER BYPASSED
+	\caption{..}
+	\label{fig:simple_oveview_ik_solve}
+\end{figure}
 
-\begin{table}[htbp]
+The new modified set of frames is defined for the da Vinci kinematics, adhering to the \gls{dh} constraint such that each free rotation/translation is about/along the local $z$-axis. The new kinematic chain is modified to comply with the KDL solvers needs, i.e. a kinematic chain consisting of purely active joints.
+
+The distinction between the new modified kinematic description and the original frames are visualized in a simple manner in \autoref{fig:simple_oveview_ik_solve}. The new modified kinematics are depicted more thoroughly in \autoref{fig:p4_hand_compromise_frames_chapter}. The parameters associated with the new modified description are listed in table \ref{tab:new_kin_short}. The original kinematics, containing the two passive joints mimicking the hand pitch movement (which are removed from the original kinematic chain), are visualized in \autoref{fig:p4_hand_xacro_frames_chapter} and the associated parameters are listed in table \ref{tab:old_kin_short} for comparison.  
+
+\begin{table}[H]
 	\small
 	\centering
-\subbottom[Old robot hand kinematics including mimicking joints, corresponding to \autoref{fig:p4_hand_xacro_frames_chapter}.]{%
+\subbottom[Original robot hand kinematics including mimicking joints, corresponding to \autoref{fig:p4_hand_xacro_frames_chapter}. The two mimicking joints mimic \texttt{hand\_pitch} are removed in the modified description.]{%
 	\begin{tabular}{r | rrr | ccc | c l}\hline
 		& \multicolumn{3}{c|}{fixed translation  [m]} & \multicolumn{3}{c|}{fixed rotation [rad]} & freedom & \\
 		frame  & $a$ ($x$)  & $b$ ($y$)  & $d$ ($z$)  & roll  & pitch & yaw & $\alpha^*, \beta^*, \theta^*$ or $d^*$ & joint name\\\hline
@@ -490,20 +511,20 @@ A compromise is made, defining a new set of frames for the da Vinci kinematics, 
 	\caption{Parameters and variables (marked with $^*$) for the robot kinematic description implemented in \gls{ros} and visualized in \autoref{fig:robot_hand_kinematics}. Free angles are named with $\alpha$ being a rotation about the $+x$-axis, $\beta$ about the $+y$-axis and $\theta$ about the $+z$-axis.}
 	\label{tab:xacro_param_short}
 \end{table}
+All variables from \autoref{eq:xacro_transformation_chapter} are outlined in \autoref{tab:old_kin_short}. All values are measured on the da Vinci robot in the AAU control and surgery laboratory. It is in \autoref{tab:xacro_param_short} seen how the two mimic joints for \texttt{hand\_pitch} are excluded. It is also seen how the variables are modified to follow the \gls{dh} standard as close as possible (the two matrices in \autoref{eq:xacro_transformation_chapter} are interchanged in the DH convention).
 
 
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \hspace*{-15mm}
 \begin{minipage}{1.15\textwidth}
-	\subbottom[Old robot hand kinematics including mimick joints, parameters given in table \ref{tab:old_kin_short}.]{\includegraphics[width=\textwidth]{p4_hand_xacro_frames_chapter.pdf}\label{fig:p4_hand_xacro_frames_chapter}}%
+	\subbottom[Original robot hand kinematics including mimick joints, parameters given in table \ref{tab:old_kin_short}.]{\includegraphics[width=\textwidth]{p4_hand_xacro_frames_chapter.pdf}\label{fig:p4_hand_xacro_frames_chapter}}%
 	\vspace*{5mm}
 	\subbottom[New robot hand kinematics excluding mimick joints, parameters given in table \ref{tab:new_kin_short}.]{\includegraphics[width=\textwidth]{p4_hand_compromise_frames_chapter.pdf}\label{fig:p4_hand_compromise_frames_chapter}}%
-	\caption{Orientation and position of coordinate frames $\Psi_7$, $\Psi_8$, etc. corresponding to the controllable joints of the robotic patient manipulator.  For convenience of placing the hand roll and pitch frames in the pivot point in the new kinematic description in \autoref{fig:p4_hand_compromise_frames_chapter}, a virtual link is inserted in the \texttt{xacro} file after each of these two joints.}
+	\caption{Orientation and position of coordinate frames 7,8, etc., corresponding to the controllable joints of the robotic patient manipulator.  For convenience of placing the hand roll and pitch frames in the pivot point (the stagnant fixed point) in the new kinematic description in \autoref{fig:p4_hand_compromise_frames_chapter}, a virtual link is inserted in the \texttt{xacro} file after each of these two joints.}
 	\label{fig:robot_hand_kinematics}
 \end{minipage}
 \end{figure}
-For more details on the original and new kinematic descriptions implemented in \gls{ros}; including all measurements of parameters, gearing ratios, code for testing the kinematic description in Matlab, and measurements of distances for different configurations; please refer to \autoref{sec:existing_kinematics} and \ref{sec:app_activejoints_kinematics} in \autoref{app:kinematic_model_robot}.
+For more details on the original and new kinematic descriptions implemented in \gls{ros}; including all measurements of parameters, gearing ratios, code for testing the kinematic description in MATLAB, and measurements of distances for different configurations; please refer to \autoref{sec:existing_kinematics} and \ref{sec:app_activejoints_kinematics} in \autoref{app:kinematic_model_robot}.
 
 
 
@@ -514,8 +535,8 @@ For more details on the original and new kinematic descriptions implemented in \
 
 
 
-\subsection{Employing Inverse Kinematics for a Controller in 3D Cartesian Space}
-The controller presented in this chapter is developed for 3D position and orientation control of the tool tip, and hence relies on the use of inverse kinematics for the (ambiguous) mapping from 3D Cartesian space to 6D joint space. The inverse of the kinematic transformation matrix presented in \autoref{eq:kin_transformation} is
+\subsubsection{Employing Inverse Kinematics for a Controller in 3D Cartesian Space}
+The controller relies on the use of inverse kinematics for the (ambiguous) mapping from 3D Cartesian space to 6D joint space. The inverse of the kinematic transformation matrix presented in \autoref{eq:kin_transformation} is \citep{bib:math_robotics}:
 \begin{equation}
 ^j_iT^{-1} = 
 \begin{bmatrix}
@@ -523,7 +544,7 @@ The controller presented in this chapter is developed for 3D position and orient
 0 & 1
 \end{bmatrix}
 \end{equation}
-With the sequence of transformations from frame $k$ to frame $i$ being represented by the transformation matrix $^k_i T$, the inverse transformation, from frame $i$ to frame $k$, is then its matrix inverse $^k_i T^{-1}$
+With the sequence of transformations from frame $k$ to frame $i$ being represented by the transformation matrix $^k_i T$, the inverse transformation, from frame $i$ to frame $k$, is then its matrix inverse $^k_i T^{-1}$ \citep{bib:math_robotics}:
 \begin{equation}
 ^k_iT = ^k_jT \,\, ^j_iT =
 \begin{bmatrix}
@@ -537,39 +558,82 @@ With the sequence of transformations from frame $k$ to frame $i$ being represent
 0 & 1
 \end{bmatrix}
 \end{equation}
-A mapping from six to three degrees of freedom is a surjective map, i.e. several elements in the 6D domain may map to the same element in the 3D co-domain. However the inverse map from 3D to 6D is neither injective nor surjective, as each element in the 3D domain can map to several elements in the 6D co-domain, and hence the mapping requires a decision of the "best" map.
+A mapping from six to three degrees of freedom is a surjective map, i.e. several elements in the 6D domain may map to the same element in the 3D co-domain. % The inverse map from 3D to 6D is accordingly injective and hence the mapping requires a decision of the "best" map. %
+However the inverse map from 3D to 6D is neither injective nor surjective, as each element in the 3D domain can map to several elements in the 6D co-domain, and hence the mapping requires a decision of the "best" map.
 
-In practice this mapping from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator is handled by the \gls{kdl} inverse kinematics solver. Then the transformed joint position commands are passed to the low level controllers (see \autoref{fig:overview}).
+In practice this mapping from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator is handled by the \gls{kdl} inverse kinematics solver. Then the transformed joint position commands are published on the appropriate topic and thereby passed to the low level controllers (see \autoref{fig:overview}).
 
 The \gls{ik} \gls{kdl} solver employed in \gls{ros} utilizes the kinematic chain from the URDF, which is generated from the \texttt{xacro} link and joint kinematic description as presented in %\autoref{app:kinematic_model_robot}, the model implemented in ROS defined in
-\autoref{sec:app_activejoints_kinematics}. From this chain (\texttt{my\_chain} in the below example) a \gls{fk} position solver is created along with an \gls{ik} velocity solver in order to define the \gls{ik} position solver:
+\autoref{sec:app_activejoints_kinematics}. From this chain % (\texttt{my\_chain} in the below example) 
+a \gls{fk} position solver is created along with an \gls{ik} velocity solver in order to define the \gls{ik} position solver.
 
-\begin{lstlisting}[language=xml]
-//Create solver based on kinematic chain
-KDL::ChainFkSolverPos_recursive fksolver(my_chain);
-KDL::ChainIkSolverVel_pinv iksolverv(my_chain);
-KDL::ChainIkSolverPos_NR iksolver = KDL::ChainIkSolverPos_NR(my_chain,fksolver,iksolverv,100,1e-6);
+%\begin{lstlisting}[language=xml]
+%//Create solver based on kinematic chain
+%KDL::ChainFkSolverPos_recursive fksolver(my_chain);
+%KDL::ChainIkSolverVel_pinv iksolverv(my_chain);
+%KDL::ChainIkSolverPos_NR iksolver = KDL::ChainIkSolverPos_NR(my_chain,fksolver,iksolverv,100,1e-6);
+%
+%KDL::JntArray q(my_chain.getNrOfJoints());
+%KDL::JntArray q_init(my_chain.getNrOfJoints());
+%
+%//Set destination frame
+%double x, y, z;
+%std::cout << "Set end-effector position <x y z>:" << std::endl;
+%std::cin >> x >> y >> z;
+%KDL::Vector dest_pos(x,y,z);
+%KDL::Frame dest_frame(dest_pos);
+%
+%// Compute!
+%int ret = iksolver.CartToJnt(q_init,dest_frame,q);
+%\end{lstlisting}
 
-KDL::JntArray q(my_chain.getNrOfJoints());
-KDL::JntArray q_init(my_chain.getNrOfJoints());
+The \gls{kdl} \gls{ik} position solver utilizes the Newton-Raphson (NR) iterative numerical technique through the function \texttt{CartToJnt} to determine a prudent joint configuration implementing the desired Cartesian configuration (given as \texttt{dest\_frame} in the above example). Note that the NR requires both position and velocity (derivative of position) to find its solutions.  %In the above example the initial guess \texttt{q\_init} of the joint configuration is the current joint configuration, and hence care should be taken to only command small changes in configuration for the sake of fast convergence of the \gls{ik} solution.
 
-//Set destination frame
-double x, y, z;
-std::cout << "Set end-effector position <x y z>:" << std::endl;
-std::cin >> x >> y >> z;
-KDL::Vector dest_pos(x,y,z);
-KDL::Frame dest_frame(dest_pos);
-
-// Compute!
-int ret = iksolver.CartToJnt(q_init,dest_frame,q);
-\end{lstlisting}
-
-The \gls{kdl} \gls{ik} position solver uses the Newton-Raphson iterative numerical technique through the function \texttt{CartToJnt} to determine a prudent joint configuration implementing the desired Cartesian configuration (given as \texttt{dest\_frame} in the above example). In the above example the initial guess \texttt{q\_init} of the joint configuration is the current joint configuration, and hence care should be taken to only command small changes in configuration for the sake of fast convergence of the \gls{ik} solution.
-
+To summarize, the algorithm deployed to utilize the KDL solver follows the below step:
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\textwidth}
+\textbf{Utilize KDL for Forward Kinematics}
+\begin{itemize}[leftmargin=*]
+\item Make a KDL tree (several chains) from URDF.
+\item Fetch all KDL segments, i.e. links
+\item Create chain from desired links: \texttt{p4\_rcm\_base} to \texttt{needle\_driver\_jawbone\_right}.
+\item Create FK kinematic solver based on that chain
+\item Get number of joints and create a joint array
+\item Ask for joint values
+\item Compute Rotation/translation matrix $T$
+\end{itemize}
+\end{minipage}
+\hspace{0.3cm}
+\begin{minipage}{0.48\textwidth}
+%\vspace{0.3cm}
+\textbf{Utilize KDL for Inverse Kinematics}
+\begin{itemize}[leftmargin=*]
+%\item Make a KDL tree (several chains) from URDF.
+%\item Fetch all KDL segments, i.e. links
+%\item Create chain from desired links: \texttt{p4\_rcm\_base} to \texttt{needle\_driver\_jawbone\_right}.
+\item First three points are identical to FK solver
+%\item Create IK solver based in kinematic chain
+\item Instantiate position solver $x$ for Newton-Raphson (NR) based on that chain
+\item Instantiate velocity solver $\dot{x}$ for NR
+\item Specify NR resolution and no. of iterations
+\item Ask for desired $(x,y,z)$ destination
+\item Call solver to compute necessary 6D angles 
+\item Deliver result in a vector \texttt{q}
+\end{itemize}
+\end{minipage}
+\end{figure}
 
 Three dimensional positions of the tool tip is described in a frame oriented as the inertial frame and offset such that a robot configuration with all free angles and slide set to zero equals a position of the tool tip in [0,0,0].
+\subsection{Main Algorithm and Results}
+The main algorithm is outlined in \autoref{gif:3d_flow}.
+\begin{figure}[H]
+\centering
+	\includegraphics[width=1\textwidth]{flowchart_3d_controller.pdf}
+	\caption{Main algorithm for a safe controller in the 3 dimensional euclidean space.}
+	\label{gif:3d_flow}
+\end{figure}
 
-
-\section{Conclusion for Safety in the Euclidean Space}
+\section{Conclusion for Safety in the Euclidean Space}	
 only position, not orientation
 
