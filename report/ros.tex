@@ -389,10 +389,10 @@ It is furthermore important that it has the following joints specified:
 \end{figure}
 This ensures that the group \texttt{gripper} can operate with six \gls{dof}. It is 
 \item \textbf{Robot Poses:} It is from here possible to specify standard positions for the arm. The code developed during this thesis utilized a pose for an initial positions, hence be sure that a pose named \texttt{ready} is present under the group \texttt{gripper}. All joint states should be set to zero for this pose.
-\item \textbf{End Effectors:} The end-effector is specified as shown:
+\item \textbf{End Effectors:} The end effector is specified as shown:
 \begin{table}[H]
 \hspace{1cm}\begin{tabular}{l|l|l|l}
-\textbf{End-Effector Name} & \textbf{Group Name}  & \textbf{Parent Link}  & \textbf{Parent Group}   \\
+\textbf{End Effector Name} & \textbf{Group Name}  & \textbf{Parent Link}  & \textbf{Parent Group}   \\
 \hline
  \texttt{Gripper} & \texttt{gripper}  & \texttt{base\_link}  &  \texttt{--leave this empty--} \\
 \end{tabular}

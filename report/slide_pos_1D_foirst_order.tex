@@ -1,7 +1,7 @@
 This appendix contains the MATLAB implementation of the controllers developed throughout the project, i.e.:
 \begin{itemize}
 \item Safety controller for a system with static boundaries for instrument slide in \autoref{sec:app:static}
-\item Safety controller for a system with dynamic boundaries to simulate a set-up consisting of a beating hearth and a safe distance between hearth and robot end effector. This is in \autoref{sec:app:dynamic}.
+\item Safety controller for a system with dynamic boundaries to simulate a set-up consisting of a beating heart and a safe distance between heart and robot end effector. This is in \autoref{sec:app:dynamic}.
 \end{itemize}
 \section{Implementation of Instrument Slide Safety Controller with Static Boundaries}\label{sec:app:static}
 This section contains the MATLAB implementation of the slide controller developed in \autoref{chap:cbf_1d_static}. No user inputs are required to run the script. The script shown here includes no plotting, but the script found in \autoref{app:cd} under the path \texttt{matlab\_scripts/slide\_controller/slide\_controller.m} includes all plotting details.\\
@@ -181,7 +181,7 @@ for R = 1:length(i)
 end
 \end{lstlisting}
 \section{Implementation of Instrument Slide Safety Controller with Dynamic Boundaries}\label{sec:app:dynamic}
-This section contains MATLAB implementation of the controller developed in \autoref{chap:cbf_1d_dynamic}. All plotting details are omitted in this section, but the controller can also be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_hearth/beating\_hearth\_controller.m} which includes the plotting section as well.\\
+This section contains MATLAB implementation of the controller developed in \autoref{chap:cbf_1d_dynamic}. All plotting details are omitted in this section, but the controller can also be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_heart/beating\_heart\_controller.m} which includes the plotting section as well.\\
 
 \begin{lstlisting}[language=matlab]
 %--- setup systems ---%
@@ -198,8 +198,8 @@ K = [-k Nbar 0 Nbar];
 
 %--- initial conditions ---%
 x(1,1) = 0.05; % initial state position
-x(2,1) = -0.03; % initial hearth position
-x(3,1) = 0; % initial hearth velocity
+x(2,1) = -0.03; % initial heart position
+x(3,1) = 0; % initial heart velocity
 x(4,1) = 0.03; % initial distance
 
 kappa = 1;
@@ -272,7 +272,7 @@ for R = 1:length(i)
   %--- record sigma ---%
   sig(1,R) = sigma;
 
-  %--- calculate distance between hearth and robot end effector ---%
+  %--- calculate distance between heart and robot end effector ---%
   Delta(1,R) = x(1,R) - x(2,R);
 end
 \end{lstlisting}
