@@ -4,7 +4,7 @@
     basicstyle=\scriptsize\color{black}\ttfamily
 }
 This appendix contains measurement description of most experiments carried out.
-\section{Step Response of Slide Position}
+\section{Step Response of Slide Position}\label{app:meas_1}
 The test setup for this test is fairly simple and includes:
 \begin{itemize}
 \item The Da Vinci robot
@@ -78,7 +78,7 @@ Instead of leaving the output as a terminal output, the information is mapped to
 
 \hspace{1cm} \texttt{rostopic echo joint\_states/position[6] > taus\_05cm\_1\_speedlimit\_100.txt}
 
-Use the MATLAB script and the recorded measurement data found in \autoref{app:cd} under the path \texttt{matlab\_scripts/slide\_step/plot\_slide\_pos.m}, to plot the recorded slide position along with an estimated first and second order approximation. The step response is seen in \autoref{fig:stepresponseslideapp}.
+Use the MATLAB script and the recorded measurement data found in \autoref{app:cd} under the path \texttt{matlab\_ scripts/slide\_step/plot\_slide\_pos.m}, to plot the recorded slide position along with an estimated first and second order approximation. The step response is seen in \autoref{fig:stepresponseslideapp}.
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.5]{step_slide.eps}
