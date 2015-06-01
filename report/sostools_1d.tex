@@ -4,9 +4,9 @@ In order to search for a barrier certificate the robot slide system from \autore
 \vspace{-2mm}
 \begin{itemize}
 \itemsep-0.7mm
-\item Considered subset of the state space is the interval between the physical limits of the slide movement, i.e. $\mathcal{X}=\{x\in [-0.1,0.1] \}\subset\mathbb{R}$
-\item The unsafe set is $\mathcal{X}_u=\{x\in [0.05,0.1] \}\subset\mathcal{X}$
-\item The safe set is as much of the remaining part of the considered set as possible, i.e. $\mathcal{X}_0=\{x\in [-0.1,0.05-\Delta] \}\subset\mathcal{X}\setminus\mathcal{X}_u$
+\item Considered subset of the state space is the interval between the physical limits of the slide movement, i.e. $\mathcal{X}=\{x_1\in [-0.1,0.1] \}\subset\mathbb{R}$
+\item The unsafe set is $\mathcal{X}_u=\{x_1\in [0.05,0.1] \}\subset\mathcal{X}$
+\item The safe set is as much of the remaining part of the considered set as possible, i.e. $\mathcal{X}_0=\{x_1\in [-0.1,0.05-\Delta] \}\subset\mathcal{X}\setminus\mathcal{X}_u$
 \end{itemize}
 It is noted that the design criteria differ from the criteria in \autoref{chap:cbf_1d_static} given that the barrier certificate now must be valid in the entire safe region.
 
@@ -90,13 +90,13 @@ function [a,b,c] = parabola(p1,p2,a)
 	c=-a*p1^2-b*p1;
 end
 \end{lstlisting}
-Now declare the polynomial barrier function with the command \texttt{sospolyvar}. To do this, a monomial vector must be specified with \texttt{monomials} (see the monomial example in \autoref{eq:monomial_example}), which takes the state variable and the monomial degree(s) as input. The monomial degrees for $B(x)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x)$ that is [0:4], i.e. a polynomial in $x_1$ of degrees zero through four.
+Now declare the polynomial barrier function with the command \texttt{sospolyvar}. To do this, a monomial vector must be specified with \texttt{monomials} (see the monomial example in \autoref{eq:monomial_example}), which takes the state variable and the monomial degree(s) as input. The monomial degrees for $B(x_1)$ are chosen as low as possible until a solution can be found. In this case a solution can be found for a degree of $B(x_1)$ that is [0:4], i.e. a polynomial in $x_1$ of degrees zero through four.
 \begin{lstlisting}[language=matlab]
 % Declare the polynomial barrier function
 zB = monomials(x1,0:4);
 [prog,Bar] = sospolyvar(prog,zB);
 \end{lstlisting}
-Now the set $\mathcal{X}$ can be defined as the slide region according to \autoref{fig:sos_slide} using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial}, i.e. $q=Z^TQZ$ (so the degree of $q$ is twice the degree of the monomial vector $Z$), and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
+Now the set $\mathcal{X}$ can be defined as the slide region according to \autoref{fig:sos_slide} using the Lie derivative inequality in \autoref{cer3_putinar}, which is defined with the command \texttt{sosineq}. The SOS polynomials $q$ are of the form in \autoref{eq:sos_polynomial}, i.e. $q=\mathbf{z}^T\mathbf{Q}\,\mathbf{z}$ (so the degree of $q$ is twice the degree of the monomial vector $\mathbf{z}$), and are declared with the command \texttt{sossosvar}, also taking a monomial vector as input.
 \begin{lstlisting}[language=matlab]
 % Define space X in Rn
 [a,b,c] = parabola(-0.1,0.1); % get coefficients for parabola which is positive for x in [-0.1,0.1] m
@@ -129,7 +129,7 @@ zX0 = monomials(x1,0:4);
 
 prog = sosineq(prog,-Bar-gX0*qX0);
 \end{lstlisting}
-With all three areas defined according to \autoref{def:barrier_sos}, the program is ready to be solved by using the command \texttt{sossolve}. If a solution is found, an overview of the solution accuracy is printed in the MATLAB terminal as the residual norm, feasibility ratio, number of iteration steps and solving time. To get the polynomial $B(x)$ use the function \texttt{sosgetsol}.
+With all three areas defined according to \autoref{def:barrier_sos}, the program is ready to be solved by using the command \texttt{sossolve}. If a solution is found, an overview of the solution accuracy is printed in the MATLAB terminal as the residual norm, feasibility ratio, number of iteration steps and solving time. To get the polynomial $B(x_1)$ use the function \texttt{sosgetsol}.
 \begin{lstlisting}[language=matlab]
 % Solve for barrier certificate
 prog = sossolve(prog);
@@ -217,7 +217,7 @@ B(x_1) = 373.0249\cdot x_1^4 + 151.3339\cdot x_1^3 + 16.8843\cdot x_1^2 - 6.4509
 \end{equation}
 
 \vspace{-3mm}
-The first three coefficients of the polynomial barrier certificate are of ample size (not in the order 1e-5 or less), while the fourth seem unimportant. Decreasing the degree of the monomial $Z_B$ (and thereby\,the\,order of $B$) to [0,2:4] %does, however, not prove a proper solution, as the inequality \autoref{cer3_putinar} cannot be resolved on the form in \autoref{eq:sos_polynomial} and hence is not \gls{sos}. 
+The first three coefficients of the polynomial barrier certificate are of ample size (not in the order 1e-5 or less), while the fourth seem unimportant. Decreasing the degree of the monomial $\mathbf{z}_B$ (and thereby\,the\,order of $B$) to [0,2:4] %does, however, not prove a proper solution, as the inequality \autoref{cer3_putinar} cannot be resolved on the form in \autoref{eq:sos_polynomial} and hence is not \gls{sos}. 
 gives the solution
 \begin{equation}
 B(x_1) = 290.559\cdot x_1^4 + 112.4642\cdot x_1^3 + 12.2165\cdot x_1^2 - 0.044304
@@ -287,8 +287,8 @@ The goal is to verify safety of this system for a range of references, preferabl
 
 \vspace{-2mm}
 In order to get a picture of the expected outcome, a brief analysis of the considered state space is made.
-It can be seen from \autoref{eq:1storder_augmented} that the system vector field will be zero when $x=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_dBdx} with a green line. 
-To the upper left of this line the system will have a positive time derivative, thus requiring that the derivative of the barrier function with respect to $x_1$ must be negative in this region in order to comply with \autoref{cer3} i.e. $L_{f_{cl}}B(x) \leq 0$. 
+It can be seen from \autoref{eq:1storder_augmented} that the system vector field will be zero when $x_1=x_\text{ref}$, which in turn means that the Lie derivative of the barrier function will be zero for $x_1=x_\text{ref}$, marked in \autoref{fig:sos_Xregion_dBdx} with a green line. 
+To the upper left of this line the system will have a positive time derivative, thus requiring that the derivative of the barrier function with respect to $x_1$ must be negative in this region in order to comply with \autoref{cer3} i.e. $L_{f_{cl}}B(\mathbf{x}) \leq 0$. 
 Thus, to the left of this line the barrier polynomial will have decreasing values in the positive $x_1$ direction. 
 \begin{figure}[htbp]
 	\centering
@@ -298,14 +298,14 @@ Thus, to the left of this line the barrier polynomial will have decreasing value
 	\hspace{3mm}
 	\subbottom[]{\includegraphics[width=0.3\textwidth]{sos_Xregion_Bvalue.pdf}\label{fig:sos_Xregion_Bvalue}}%
 	\caption{Outline of the safe and unsafe sets marking the value requirements for the barrier certificate as a function of the robot position and the  position reference. % \Autoref{fig:sos_Xregion} depicts a set $\mathcal{X}$ where all references within the safe positions are allowed.
-		\Autoref{fig:sos_Xregion_dBdx} sketches that $L_{f_{cl}}B(x)=0$  in $x=x_\text{ref}$ as inferred from \autoref{eq:sos_firstorder}. %, and \autoref{fig:sos_Xregion_Bvalue} shows a zero level set for $B(x)$.
+		\Autoref{fig:sos_Xregion_dBdx} sketches that $L_{f_{cl}}B(\mathbf{x})=0$  in $x_1=x_\text{ref}$ as inferred from \autoref{eq:sos_firstorder}. %, and \autoref{fig:sos_Xregion_Bvalue} shows a zero level set for $B(x)$.
 	}
 	\label{fig:sets_reference}
 \end{figure}
-To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region, meaning that $B(x)$ will have increasing values in the positive $x_1$ direction here.
+To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region, meaning that $B(\mathbf{x})$ will have increasing values in the positive $x_1$ direction here.
 %Requiring a zero level set of the barrier certificate between $x_1=0.05-\Delta$ and $x_1=0.05$, this means that the value of $B(x)$ \textcolor{red}{something something}
 
-In \autoref{fig:sos_Xregion_Bvalue} the zero level set of a barrier function is sketched with a red line between the safe and unsafe regions. As this level set gets  closer to the green line indicating the zero-value of the Lie derivative for increasing values of $x_\text{ref}$, it is expected that the value of  $B(x)$ is increasing along this line in the positive $x_\text{ref}$ direction.
+In \autoref{fig:sos_Xregion_Bvalue} the zero level set of a barrier function is sketched with a red line between the safe and unsafe regions. As this level set gets  closer to the green line indicating the zero-value of the Lie derivative for increasing values of $x_\text{ref}$, it is expected that the value of  $B(\mathbf{x})$ is increasing along this line in the positive $x_\text{ref}$ direction.
 
 %As this line crosses through the safe region, it means that it will be a minimum value of the barrier function of negative value. In \autoref{fig:sos_Xregion_Bvalue} it can be seen that this minimum is very close to the zero level set around the unsafe region, requiring a very high degree polynomial to obtain this shape of zero level set. This can be resolved by decreasing the upper value of allowed references, as illustrated in \autoref{fig:sos_Xregion_Bvalue_limitref} with an example of a fairly smooth zero level set.
 
@@ -314,7 +314,7 @@ In \autoref{fig:sos_Xregion_Bvalue} the zero level set of a barrier function is 
 \subsubsection{Results and Conclusions}
 
 \vspace{-2mm}
-A number of tests are run with SOSTOOLS varying the values of the parameters  $\bar{\epsilon}$, $\Delta$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(x)$, % itself, in order to understand the effect of varying each of these parameters and to test for which intervals of references a solution can be found.
+A number of tests are run with SOSTOOLS varying the values of the parameters  $\bar{\epsilon}$, $\Delta$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(\mathbf{x})$, % itself, in order to understand the effect of varying each of these parameters and to test for which intervals of references a solution can be found.
 %A solution found with SOSTOOLS is considered valid if it passes the test that each of the expressions in the inequalities are \gls{sos} by testing if they can be resolved on the form in \autoref{eq:sos_polynomial}. The analysis in the following is based on the results for these solutions, with 
 in order to see for how high a level of the upper  end  of the allowed reference interval, \texttt{rMax}, solutions can be found. The MATLAB implementation can be found in appendix \ref{app:sos_refinterval} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_withRef.m}.
 As seen from \autoref{fig:sets_reference} $\bar{\epsilon}$ is the minimum value of the barrier function on the unsafe set, and increasing this may require the zero level set to be pushed further away from $\mathcal{X}_u$. This may in turn require also increasing the distance $\Delta$ to the safe set, i.e. contracting the region $\mathcal{X}_0$.
@@ -327,7 +327,7 @@ The conclusions are summarized in \autoref{tab:sostools_varying_param}.
 \begin{tabularx}{\textwidth}{l X}
 \rowcolor{HeaderBlue}
 \textbf{Parameter} & \textbf{Effect of variation}\\
-deg$(B)$ & In general the feasibility ratio is better (closer to one) when testing for higher degrees of $B(x)$ ([0:6] or [0:8] compared to [0:4]), and solutions can be found for larger intervals of the reference when $B(x)$ has higher degree.\\
+deg$(B)$ & In general the feasibility ratio is better (closer to one) when testing for higher degrees of $B(\mathbf{x})$ ([0:6] or [0:8] compared to [0:4]), and solutions can be found for larger intervals of the reference when $B(\mathbf{x})$ has higher degree.\\
 \rowcolor{textBlue}
 deg$(q_j)$ & Increasing the degree of the \gls{sos} polynomials (monomial degrees [0:6] compared to [0:2] or [0:4]) generally degrades the feasibility ratio.\\
 $\bar{\epsilon}$ & Increasing $\bar{\epsilon}$ decreases the allowed reference interval and also shows a trend of slightly increasing the residual norm. Increasing $\bar{\epsilon}$ iteratively proves that gradually an increase in $\Delta$ is also required in order for solutions to be found. \\
@@ -376,8 +376,8 @@ Numerical problems are reported for all solutions found, and the residual norms 
 %  x_1  x_\text{ref} - 84  x_\text{ref}^2 - 0.002  x_1 + 15  x_\text{ref} - 0.412\label{eq:B6_q4_e0001}
 %\end{align}
 
-The choice of parameter values are explained in \autoref{tab:sostools_choice} and the barrier certificate is plotted in \autoref{fig:1storder_withRef} separately for the safe and unsafe sets to validate the sign of $B(x)$ on each set. 
-Evaluating the curve for the barrier polynomial and its Lie derivative,  the geometric considerations are verified in that $B(x)$ indeed is (slightly) decreasing along the $x_1$ axis to the left of the line $x_1=x_\text{ref}$, and increasing to the right, as seen on the plot of $\mathcal{X}_0$ (and increasing along the $x_1$ axis on the entire set $\mathcal{X}_u$). It is also verified that the Lie derivative is zero along the line $x_1=x_\text{ref}$. Thereby it is verified that the barrier certificate is valid according to \autoref{def:barrier_certificate},  guaranteeing  safety for the first order system in \autoref{eq:1storder_augmented} with references in the interval $x_\text{ref}\in [\texttt{rMin,rMax}]=[-0.1,0.017]$\,m.
+The choice of parameter values are explained in \autoref{tab:sostools_choice} and the barrier certificate is plotted in \autoref{fig:1storder_withRef} separately for the safe and unsafe sets to validate the sign of $B(\mathbf{x})$ on each set. 
+Evaluating the curve for the barrier polynomial and its Lie derivative,  the geometric considerations are verified in that $B(\mathbf{x})$ indeed is (slightly) decreasing along the $x_1$ axis to the left of the line $x_1=x_\text{ref}$, and increasing to the right, as seen on the plot of $\mathcal{X}_0$ (and increasing along the $x_1$ axis on the entire set $\mathcal{X}_u$). It is also verified that the Lie derivative is zero along the line $x_1=x_\text{ref}$. Thereby it is verified that the barrier certificate is valid according to \autoref{def:barrier_certificate},  guaranteeing  safety for the first order system in \autoref{eq:1storder_augmented} with references in the interval $x_\text{ref}\in [\texttt{rMin,rMax}]=[-0.1,0.017]$\,m.
 
 
 
@@ -385,7 +385,7 @@ Evaluating the curve for the barrier polynomial and its Lie derivative,  the geo
 	\begin{tabularx}{\textwidth}{l X}
 		\rowcolor{HeaderBlue}
 		\textbf{Choice} & \textbf{Reason}\\
-		deg$(B)=$ [0:6] & Increasing the degree of $B(x)$ from [0:4] to [0:6] elevates the upper limit for allowed references. Increasing the degree (keeping the remaining parameters constant) yields an infeasible solution. \\
+		deg$(B)=$ [0:6] & Increasing the degree of $B(\mathbf{x})$ from [0:4] to [0:6] elevates the upper limit for allowed references. Increasing the degree (keeping the remaining parameters constant) yields an infeasible solution. \\
 		\rowcolor{textBlue}
 		deg$(q_j)=$ [0:2] & Keeping the degree low, as increased degree entails poorer feasibility ratio and greater residual norm.\\
 		$\bar{\epsilon}=0.1$ & Smaller values of  $\bar{\epsilon}$ allows solutions to be found for larger values of \texttt{rMax}, while the residual norm  speaks in favour of increasing $\bar{\epsilon}$. A compromise is made, as this choice of $\bar{\epsilon}$ gives a residual norm that is approximately twice as big as with $\bar{\epsilon}=0.01$, while it is almost an order of magnitude smaller than for $\bar{\epsilon}=1$.\\
@@ -481,7 +481,7 @@ In order to decrease the number of parameters, a different approach is used in t
 \subsection{Considering the Error as the Independent Variable}\label{sec:sos_1storder_error}
 
 As it is seen from \autoref{tab:sostools_varying_param} there are many tuning parameters when searching for a barrier certificate in SOSTOOLS, and iteratively finding a combination giving as large an interval of allowed references outside $\mathcal{X}_u$ as possible can be a long process. 
-In the previous section a barrier certificate was found validating the system for references in the interval $x_\text{ref}\in [-0.1,0.017]$\,m, i.e. references up to a distance of 3.3\,cm from the unsafe set, $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$\, (see \ref{fig:sos_slide}). 
+In the previous section a barrier certificate was found validating the system for references in the interval $x_\text{ref}\in [-0.1,0.017]$\,m, i.e. references up to a distance of 3.3\,cm from the unsafe set, $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$\, (see \autoref{fig:sos_slide}). 
 %Recall the system:
 %\begin{flalign*}
 %\dot{x} = \underbrace{(\textbf{A} - \textbf{B}\textbf{K})}_{-\tau^{-1}(\textbf{K}+1)} x + \underbrace{\textbf{B}\bar{\textbf{N}}}_{\tau^{-1}(\textbf{K}+1)} x_\text{ref} \kk \Leftrightarrow \kk \dot{x} = \tau^{-1}(\textbf{K}+1)\underbrace{(x_\text{ref} - x)}_{x_\text{err}}
@@ -491,14 +491,14 @@ A different approach is now used in order to validate system safety for referenc
 Instead of formulating the barrier certificate in terms of the robot position and the position reference as in \autoref{eq:sos_firstorder}, the dimensionality of the problem can be reduced  through a coordinate shift to the error state as seen in \autoref{fig:sos_error_2d}, the error being: % it can plainly be formulated as the error between the two:
 \vspace{-3mm}
 \begin{equation*}
-x_\text{err}=x_\text{ref}-x
+x_\text{err}=x_\text{ref}-x_1
 \end{equation*}
 
 \vspace{-5mm}
 giving the error dynamics
 \vspace{-3mm}
 \begin{align}
-\dot{x}_\text{err} = -\dot{x} &= -\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x) \nonumber\\
+\dot{x}_\text{err} = -\dot{x} &= -\tau^{-1}(\mathbf{K}+1)(x_\text{ref}-x_1) \nonumber\\
 &= -\tau^{-1}(\mathbf{K}+1)x_\text{err}
 \end{align}
 
@@ -511,7 +511,7 @@ Now safety can  be tested for relative positions instead of absolute.
 %It is still assumed that any reference given is given outside the unsafe area, which according to \autoref{tab:intervals} is the absolute slide positions $\mathcal{X}_u=\{x_1\in[0.05,0.1]\}$, and it is still the goal to determine how close to the unsafe set references can be given while still guaranteeing safety.
 %The error will be negative when the end effector is above the reference, and 
 As seen from \autoref{fig:sos_slide}, the unsafe region is the upper part of the interval $\mathcal{X}$, which means that for references given outside the unsafe set, unsafety of the system will only occur if the robot end effector position is above the reference, corresponding to a negative error. This is illustrated in \autoref{fig:sos_delta_error}.
-Hence it is required to restrict the error in the negative direction to some value -$\delta_\text{err}$, thus restricting the upper value of allowed (safe) references to a distance $\delta_\text{err}$ from the unsafe region, as sketched in \autoref{fig:sos_errorref_1d_new}. %corresponding to restricting how much the end effector position is allowed to be above (more positive than) the reference. 
+Hence it is required to restrict the error in the negative direction to some value -\gls{deltaerr}, thus restricting the upper value of allowed (safe) references to a distance $\delta_\text{err}$ from the unsafe region, as sketched in \autoref{fig:sos_errorref_1d_new}. %corresponding to restricting how much the end effector position is allowed to be above (more positive than) the reference. 
 
 %If a reference is given at a distance $\delta_\text{err}$ from the unsafe region starting at 5\,cm, it is required that the error does not exceed $-\delta_\text{err}$ in the negative direction. This is illustrated in \autoref{fig:sos_error_2d}. Thus testing how large an interval of allowed references can be given with guaranteed system safety, corresponds to testing how small an (absolute) value of $-\delta_\text{err}$ outlining the unsafe region of the error state system, for which safety can be guaranteed. This is illustrated in \autoref{fig:sos_error_1d}.
 
@@ -548,16 +548,16 @@ If a valid solution can be found, it will certify that steps in positive directi
 \vspace{-3mm}
 \begin{itemize}
 	\itemsep-0.7mm
-	\item The set considered is the set described in \autoref{fig:sos_slide}, $\mathcal{X}=\{x\in[-0.1,0.1] \}$.
-	\item The unsafe set is also seen in \autoref{fig:sos_slide}, $\mathcal{X}_u=\{x\in [0.05,0.1] \}$.
+	\item The set considered is the set described in \autoref{fig:sos_slide}, $\mathcal{X}=\{x_1\in[-0.1,0.1] \}$.
+	\item The unsafe set is also seen in \autoref{fig:sos_slide}, $\mathcal{X}_u=\{x_1\in [0.05,0.1] \}$.
 	\item The safe set for the references is $\mathcal{X}_0=\{x_\text{ref}\in [-0.1,0.05-\delta_\text{err}] \}$ ensuring that $\mathcal{X}_0\subseteq\mathcal{X}\setminus\mathcal{X}_u$.
 \end{itemize}
 
 \subsubsection{Results and Conclusions}
 
 \vspace{-2mm}
-The parameters $\bar{\epsilon}$, $\Delta$, $\delta_\text{err}$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(x)$, are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution.
-The MATLAB implementation of this approach can be found in appendix \ref{app:sos_refinterval} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/}\texttt{sostools/} \texttt{1storder\_error.m}.
+The parameters $\bar{\epsilon}$, $\Delta$, $\delta_\text{err}$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(x_\text{err})$, are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution.
+The MATLAB implementation of this approach can be found in appendix \ref{app:sos_refinterval} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/ sostools/1storder\_error.m}.
 The findings conform with the conclusions presented in \autoref{tab:sostools_varying_param}, with the additional conclusions listed in \autoref{tab:sostools_varying_param_error}.
 
  
@@ -570,7 +570,7 @@ The findings conform with the conclusions presented in \autoref{tab:sostools_var
 \begin{tabularx}{\textwidth}{l X}
 \rowcolor{HeaderBlue}
 \textbf{Parameter} & \textbf{Effect of variation}\\
-deg$(B)$ & In general the residual norm is lower when testing for higher degrees of $B(x)$ ([0:6] compared to [0:4]).\\
+deg$(B)$ & In general the residual norm is lower when testing for higher degrees of $B(x_\text{err})$ ([0:6] compared to [0:4]).\\
 \rowcolor{textBlue}
 deg$(q_j)$ & Increasing the degree of the \gls{sos} polynomials (monomial degrees [0:4] compared to [0:2]) generally increases the residual norm. Having different degrees for the different \gls{sos} polynomials also generally increases the residual norm.\\
 $\bar{\epsilon}$ & Increasing $\bar{\epsilon}$ in general increases the residual norm of the solution. \\
@@ -593,7 +593,7 @@ $\delta_\text{err}$ & Decreasing $\delta_\text{err}$ increases the residual norm
 		deg$(B)=$ [0:6] & Increasing the degree of the barrier certificate from [0:4] to [0:6] does not change the curve much on the interval $\mathcal{X}$, while it does lower the residual norm an order.\\
 		\rowcolor{textBlue}
 		deg$(q_j)=$ [0:4] & The degree of the \gls{sos} polynomials are chosen as low as possible allowing a solution to be found with the remaining parameters.\\
-		$\bar{\epsilon}=1e$-2 & Increasing  $\bar{\epsilon}$ by an order of magnitude scales up the barrier certificate approximately ten times in value, but also increases  the residual norm approximately an order of magnitude. A compromise is made choosing a scaling of $B(x)$ yielding neither very small nor very large values of $B(x)$ on the set $\mathcal{X}$, still giving a solution with relatively low residual norm. \\
+		$\bar{\epsilon}=1e$-2 & Increasing  $\bar{\epsilon}$ by an order of magnitude scales up the barrier certificate approximately ten times in value, but also increases  the residual norm approximately an order of magnitude. A compromise is made choosing a scaling of $B(x_\text{err})$ yielding neither very small nor very large values of $B(x_\text{err})$ on the set $\mathcal{X}$, still giving a solution with relatively low residual norm. \\
 		\rowcolor{textBlue}
 		$\Delta=4e$-3 & The value of $\Delta$ is desired as low as possible, and at least lower than $\delta_\text{err}$ (such that the safe set will include $x_\text{err}=0$). The lowest value yielding a solution is chosen.\\
 		$\textbf{K}=0.2$ & A low gain is chosen identical to the choice in \autoref{sec:sos_1storder_references}, as implementable gains are ascertained to be of this order.\\

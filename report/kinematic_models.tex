@@ -1,26 +1,26 @@
-A rotation matrix $^a_bR$ is an orthonormal matrix ($R^{-1}=R^T$) describing the rotation between two right-handed coordinate frames $\Psi_a$ and $\Psi_b$ such that any vector $^bv$ (including $\Psi_b$ coordinate axes) given in the $\Psi_b$ frame can be "rotated" into $\Psi_a$ coordinates by the operation
+A rotation matrix $^a_b\mathbf{R}$ is an orthonormal matrix ($\mathbf{R}^{-1}=\mathbf{R}^T$) describing the rotation between two right-handed coordinate frames $\Psi_a$ and $\Psi_b$ such that any vector $^b\mathbf{v}$ (including $\Psi_b$ coordinate axes) given in the $\Psi_b$ frame can be "rotated" into $\Psi_a$ coordinates by the operation
 \begin{equation}
-^av =\, ^a_bR \,\,^bv
+^av =\, ^a_b\mathbf{R} \,\,^bv
 \end{equation}
-Note that the matrix $^a_bR$ can also be seen as the rotation required of the frame $\Psi_a$ for it to coincide with $\Psi_b$.
+Note that the matrix $^a_b\mathbf{R}$ can also be seen as the rotation required of the frame $\Psi_a$ for it to coincide with $\Psi_b$.
 Rotation of the frame $\Psi_a$ with an angle $\theta$ counterclockwise about a single axis (equal to clockwise "rotation" of the any vector in $\Psi_b$) correspond to the rotation matrices
 \begin{small}
 \begin{equation}
-^a_bR_x(\theta) = 
+^a_b\mathbf{R}_x(\theta) = 
 \begin{bmatrix}
 1 & 0 & 0\\
 0 & \cos\theta & -\sin\theta\\
 0 & \sin\theta & \cos\theta
 \end{bmatrix} 
 \qquad
-^a_bR_y(\theta) = 
+^a_b\mathbf{R}_y(\theta) = 
 \begin{bmatrix}
 \cos\theta & 0 & \sin\theta \\
 0 & 1 & 0\\
 -\sin\theta & 0 & \cos\theta
 \end{bmatrix}
 \qquad
-^a_bR_z(\theta) = 
+^a_b\mathbf{R}_z(\theta) = 
 \begin{bmatrix}
 \cos\theta & -\sin\theta & 0\\
 \sin\theta & \cos\theta & 0\\
@@ -31,35 +31,35 @@ Rotation of the frame $\Psi_a$ with an angle $\theta$ counterclockwise about a s
 \end{small}
 A sequence of rotations, transforming the vector $^cv$ given in the $\Psi_c$ frame to $\Psi_a$ coordinates, is implemented as
 \begin{equation}
-^av = \underbrace{^a_bR \,\, ^b_cR}_{^a_cR} \,\,^cv 
+^a\mathbf{v} = \underbrace{^a_b\mathbf{R} \,\, ^b_c\mathbf{R}}_{^a_c\mathbf{R}} \,\,^c\mathbf{v} 
 \end{equation}
 
-The translation of the origin from the coordinate system $\Psi_a$ to $\Psi_b$ can be described by the position vector $^a_bp$, which is a vector given in the $\Psi_a$ coordinate frame.
+The translation of the origin from the coordinate system $\Psi_a$ to $\Psi_b$ can be described by the position vector $^a_b\mathbf{p}$, which is a vector given in the $\Psi_a$ coordinate frame.
 The relative configuration of two coordinate frames is their relative position and orientation, which can be expressed expressed by a homogeneous transformation matrix
 \begin{equation}
-^a_bT = 
+^a_b\mathbf{T} = 
 \begin{bmatrix}
-^a_bR & ^a_bp\\
+^a_b\mathbf{R} & ^a_b\mathbf{p}\\
 0 & 1
 \end{bmatrix}
 \end{equation}
 The inverse of a configuration matrix is
 \begin{equation}
-^a_bT^{-1} = 
+^a_b\mathbf{T}^{-1} = 
 \begin{bmatrix}
-^a_bR^T & -^a_bR^T\,\,^a_bp\\
+^a_b\mathbf{R}^T & -^a_b\mathbf{R}^T\,\,^a_b\mathbf{p}\\
 0 & 1
 \end{bmatrix}
 \end{equation}
 A sequence of configurations is implemented as
 \begin{equation}
-^a_nT =\,\, ^a_bT \,\, ^b_cT \,\,...\,\, ^m_nT = 
+^a_n\mathbf{T} =\,\, ^a_b\mathbf{T} \,\, ^b_c\mathbf{T} \,\,...\,\, ^m_n\mathbf{T} = 
 \begin{bmatrix}
-^a_bR \,\, ^b_cR \,\,...\,\, ^l_mR \,\,^m_nR & ^a_bp + ^a_bR \,\, ^b_cp + ... + (^a_bR\,\, ^b_cR \,\,...\,\, ^l_mR \,\, ^m_np )\\
+^a_b\mathbf{R} \,\, ^b_c\mathbf{R} \,\,...\,\, ^l_m\mathbf{R} \,\,^m_n\mathbf{R} & ^a_b\mathbf{p} + ^a_b\mathbf{R} \,\, ^b_c\mathbf{p} + ... + (^a_b\mathbf{R}\,\, ^b_c\mathbf{R} \,\,...\,\, ^l_m\mathbf{R} \,\, ^m_n\mathbf{p} )\\
 0 & 1
 \end{bmatrix}
 \end{equation}
-where each matrix $T$ is a function of a rotation angle $\theta$ and a translation distance, which may be functions of time.
+where each matrix \gls{Tmtx} is a function of a rotation angle $\theta$ and a translation distance, which may be functions of time. \textcolor{white}{\gls{Rot} \gls{p_vec} \gls{alpha} \gls{beta} \gls{theta}}
 
 
 \section{Existing Kinematics for the AAU da Vinci Robot}\label{sec:existing_kinematics}
@@ -87,34 +87,34 @@ The position and orientation of the $i$th coordinate frame is given as a transfo
 	\begin{tabular}{r | rrr c c l}\hline
 		frame  & $a$ [m] & $b$ [m] & $d$ [m] & fixed rot. $\alpha$ [rad] & free rot. $\theta$ [rad] & name\\\hline
 		1 & 0 & 0 & $d_1^*$ & $I$ & $I$ & \texttt{elevation}\\
-		2 & 0.186 & 0 & 0.554 & $R_z(\pi/2)R_x(\pi)$ & $R_z(\theta_2^*)$ & \texttt{arm\_yaw1} \\
-		3 & 0 & 0.583 & 0 & $R_z(\pi/2)R_x(-\pi)$ & $R_z(-\theta_3^*)$ & \texttt{arm\_yaw2} \\
-		4 & 0.479 & 0 & -0.001 & $I$ & $R_z(-\theta_4^*)$ & \texttt{arm\_yaw3} \\
-		5 & 0.057 & 0 & 0.198 & $I$ & $R_x(-\theta_5^*)$ & \texttt{arm\_roll1} \\
-		6 & 0.352 & 0 & -0.117 & $I$ & $R_z(\theta_6^*)$ & \texttt{arm\_yaw4} \\
-		7 & -0.042 & 0 & 0.161 & $I$ & $R_x(\theta_7^*)$ & \texttt{hand\_roll} \\
-		8 & 0 & 0 & 0 & $R_y(-0.288)$ & $R_y(-\theta_8^*)$ & \texttt{hand\_pitch} \\
-		9 & 0.011 & 0 & 0.186 & $R_y(0.288)R_x(\pi)$ & $R_y(-\theta_8)$ & \texttt{upper\_bar} \\
-		10 & 0.520 & 0 & 0 & $R_x(\pi)$ & $R_y(-\theta_8)$ & \texttt{instrument\_holder} \\
+		2 & 0.186 & 0 & 0.554 & $\textbf{R}_z(\pi/2)\textbf{R}_x(\pi)$ & $\textbf{R}_z(\theta_2^*)$ & \texttt{arm\_yaw1} \\
+		3 & 0 & 0.583 & 0 & $\textbf{R}_z(\pi/2)\textbf{R}_x(-\pi)$ & $\textbf{R}_z(-\theta_3^*)$ & \texttt{arm\_yaw2} \\
+		4 & 0.479 & 0 & -0.001 & $I$ & $\textbf{R}_z(-\theta_4^*)$ & \texttt{arm\_yaw3} \\
+		5 & 0.057 & 0 & 0.198 & $I$ & $\textbf{R}_x(-\theta_5^*)$ & \texttt{arm\_roll1} \\
+		6 & 0.352 & 0 & -0.117 & $I$ & $\textbf{R}_z(\theta_6^*)$ & \texttt{arm\_yaw4} \\
+		7 & -0.042 & 0 & 0.161 & $I$ & $\textbf{R}_x(\theta_7^*)$ & \texttt{hand\_roll} \\
+		8 & 0 & 0 & 0 & $\textbf{R}_y(-0.288)$ & $\textbf{R}_y(-\theta_8^*)$ & \texttt{hand\_pitch} \\
+		9 & 0.011 & 0 & 0.186 & $\textbf{R}_y(0.288)\textbf{R}_x(\pi)$ & $\textbf{R}_y(-\theta_8)$ & \texttt{upper\_bar} \\
+		10 & 0.520 & 0 & 0 & $\textbf{R}_x(\pi)$ & $\textbf{R}_y(-\theta_8)$ & \texttt{instrument\_holder} \\
 		11 & 0 & 0 & -0.120 + $d_{11}^*$ & $I$ & $I$ & \texttt{instrument\_slide} \\
-		12 & 0.052 & 0 & 0 & $R_z(\pi/2)R_x(\pi)$ & $R_z(\theta_{12}^*)$ & \texttt{instrument\_roll} \\
-		13 & 0 & 0 & 0.177 & $I$ & $R_x(-\theta_{13}^*)$ & \texttt{instrument\_pitch} \\
-		14L & 0 & 0 & 0.009 & $R_y(\pi/2)R_x(\pi/2)$ & $R_z(-\theta_{14L}^*)$ & \texttt{instrument\_jaw\_left} \\
-		14R & 0 & 0 & 0.009 & $R_y(\pi/2)R_x(\pi/2)$ & $R_z(\theta_{14R}^*)$ & \texttt{instrument\_jaw\_right} \\
+		12 & 0.052 & 0 & 0 & $\textbf{R}_z(\pi/2)\textbf{R}_x(\pi)$ & $\textbf{R}_z(\theta_{12}^*)$ & \texttt{instrument\_roll} \\
+		13 & 0 & 0 & 0.177 & $I$ & $\textbf{R}_x(-\theta_{13}^*)$ & \texttt{instrument\_pitch} \\
+		14L & 0 & 0 & 0.009 & $\textbf{R}_y(\pi/2)\textbf{R}_x(\pi/2)$ & $\textbf{R}_z(-\theta_{14L}^*)$ & \texttt{instrument\_jaw\_left} \\
+		14\textbf{R} & 0 & 0 & 0.009 & $\textbf{R}_y(\pi/2)\textbf{R}_x(\pi/2)$ & $\textbf{R}_z(\theta_{14\textbf{R}}^*)$ & \texttt{instrument\_jaw\_right} \\
 	\end{tabular}
-	\caption{Variables (marked with $^*$) and parameters for the robot in \autoref{fig:robot_xacro_frames}. $I$ is the identity matrix (no rotation). Recent measures indicate that $d_2=0.812$, $a_2=0.198$, $a_4=0.435$, $\alpha_8=R_y(-0.07)$, $\alpha_9=R_y(0.07)R_x(\pi)$, $a_9=0$ and $d_\text{11,fixed}=0.188$ ($\Rightarrow$ $d_{12}=0.472$).}
+	\caption{Variables (marked with $^*$) and parameters for the robot in \autoref{fig:robot_xacro_frames}. $I$ is the identity matrix (no rotation). Recent measures indicate that $d_2=0.812$, $a_2=0.198$, $a_4=0.435$, $\alpha_8=\textbf{R}_y(-0.07)$, $\alpha_9=\textbf{R}_y(0.07)\textbf{R}_x(\pi)$, $a_9=0$ and $d_\text{11,fixed}=0.188$ ($\Rightarrow$ $d_{12}=0.472$).}
 	\label{tab:xacro_param}
 \end{table}
 
 
 I.e. according to \autoref{tab:xacro_param}, the transformation between frame 1 and 2 is given as:
 \begin{equation}
-^1_2T = 
+^1_2\mathbf{T} = 
 \begin{bmatrix}
-R_z(\pi/2)R_x(\pi)R_z(\theta_2^*) & p_2\\
+\textbf{R}_z(\pi/2)\textbf{R}_x(\pi)\textbf{R}_z(\theta_2^*) & \mathbf{p}_2\\
 0 & 1
 \end{bmatrix}, \qquad\qquad
-p_2 = [0.186 \quad 0 \quad 0.554]^T
+\mathbf{p}_2 = [0.186 \quad 0 \quad 0.554]^T
 \end{equation}
 
 The physical, low level controller and \gls{ros} limits for each of the variables are given in \autoref{tab:var_limits}
@@ -131,7 +131,7 @@ The physical, low level controller and \gls{ros} limits for each of the variable
 %\vspace{1mm}\\%
 \begin{tabular}{l | ccccccc}\hline
 limits & $\theta_7^*$ & $\theta_8^*$ & $d_{11}^*$ & $\theta_{12}^*$ & $\theta_{13}^*$ & $\theta_{14L}^*$ & $\theta_{14R}^*$ \\\hline
-physical & $\pm$1.670 & [-0.951, 0.912] & [0.169, 0.410] & $\pm$4.712 & [-1.466, 1.536] & [-1.850, $\theta_{14R}^*$] & [$\theta_{14L}^*$, 1.702] \\
+physical & $\pm$1.670 & [-0.951, 0.912] & [0.169, 0.410] & $\pm$4.712 & [-1.466, 1.536] & [-1.850, $\theta_{14\textbf{R}}^*$] & [$\theta_{14L}^*$, 1.702] \\
 FPGA & [-1.333, 1.424] & [-0.812, 0.773] & [0.170, 0.409] & [-4.294, 4.416] & [-0.977, 0.908] & [-0.785, 1.335] & \\
 \texttt{xacro} & $\pm\pi/2$ & [-0.8, 1] & $\pm$0.12 & $\pm3\pi/2$ & $\pm 1.5$ & $\pm 1.8$ & $\pm 1.8$
 \end{tabular}
@@ -147,16 +147,16 @@ The frames are superimposed on the robot in \autoref{fig:robot_frames_pot}.
 \vspace{-10mm}
 \begin{figure}[htbp]
 	\centering
-\subbottom[Robot arm.]{\includegraphics[width=0.6\textwidth]{20150316_125233_red.pdf}\label{20150316_125233_red}}%
+\subbottom[\textbf{R}obot arm.]{\includegraphics[width=0.6\textwidth]{20150316_125233_red.pdf}\label{20150316_125233_red}}%
 \hspace{5mm}
-\subbottom[Robot arm.]{\includegraphics[width=0.25\textwidth]{20150316_125701_red.pdf}\label{20150316_125701_red}}%
+\subbottom[\textbf{R}obot arm.]{\includegraphics[width=0.25\textwidth]{20150316_125701_red.pdf}\label{20150316_125701_red}}%
 \hspace{3mm}
-\subbottom[Robot hand.]{\includegraphics[height=68mm]{20150316_140845_red.pdf}\label{20150316_140845_red}}%
+\subbottom[\textbf{R}obot hand.]{\includegraphics[height=68mm]{20150316_140845_red.pdf}\label{20150316_140845_red}}%
 \hspace{3mm}
 \subbottom[Instr.]{\includegraphics[height=68mm]{20150317_110019_red.pdf}\label{20150317_110019_red}}%
 \hspace{3mm}
 \subbottom[Instr.]{\includegraphics[height=68mm]{20150317_111908_red.pdf}\label{20150317_111908_red}}%
-\caption{Coordinate frame placement, distances and positive rotation direction for the robot arm, hand and instrument. In \autoref{20150316_125701_red} the positive rotation direction is shown for both ROS (green) and potentiometers (blue).}
+\caption{Coordinate frame placement, distances and positive rotation direction for the robot arm, hand and instrument. In \autoref{20150316_125701_red} the positive rotation direction is shown for both \textbf{R}OS (green) and potentiometers (blue).}
 \label{fig:robot_frames_pot}
 \end{figure}
 
@@ -346,11 +346,11 @@ Using this convention, all transformations between frames can be written on the 
 \small
 ^{i-1}_i T = %T_{rot\,z,\theta_i} T_{trans\,z,d_i} T_{trans\,x,a_i} T_{rot\,x,\alpha_i} =
 \begin{bmatrix}
-R_z(\theta_i) & \begin{bmatrix}0\\ 0\\ d_i\end{bmatrix}\\
+\textbf{R}_z(\theta_i) & \begin{bmatrix}0\\ 0\\ d_i\end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-R_x(\alpha_i) & \begin{bmatrix}a_i\\ 0\\ 0\end{bmatrix}\\
+\textbf{R}_x(\alpha_i) & \begin{bmatrix}a_i\\ 0\\ 0\end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 =
@@ -523,11 +523,11 @@ Transformation matrices describing the kinematics of the \texttt{xacro} files ar
 \small
 ^{i-1}_i T =
 \begin{bmatrix}
-R_z(\text{yaw})R_y(\text{pitch})R_x(\text{roll}) & \begin{bmatrix}a_i\\ b_i\\ d_i\end{bmatrix}\\
+\textbf{R}_z(\text{yaw})\textbf{R}_y(\text{pitch})\textbf{R}_x(\text{roll}) & \begin{bmatrix}a_i\\ b_i\\ d_i\end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-R_z(\theta_i^*) & \begin{bmatrix}0\\ 0\\ d_i^* \end{bmatrix}\\
+\textbf{R}_z(\theta_i^*) & \begin{bmatrix}0\\ 0\\ d_i^* \end{bmatrix}\\
 0 & 1
 \end{bmatrix}
 \label{eq:xacro_transformation}
@@ -621,4 +621,4 @@ measured distance & 2.29\,m & 2.41\,m & 1.89\,m & 2.07\,m\\
 \end{table}
 
 
-
+\textcolor{white}{\gls{rpy}}

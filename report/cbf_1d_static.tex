@@ -81,7 +81,7 @@ $Y(s)$ & is the output in the Laplace domain  & [m] \\
 $U(s)$ & is the input in the Laplace domain  & [m] \\
 \gls{omegan} & is the natural frequency of the system & [rad/s] \\
 \gls{zeta} & is the damping coefficient  & [$\cdot$] \\
-$s$ & is the Laplace operator  & [rad/s] \\
+\gls{s} & is the Laplace operator  & [rad/s] \\
 \end{tabular}\\
 
 The model can unambiguously be approximated from the rise time $t_r$, settling time $t_s$ (5\,\% settling time) and the overshoot $M_p$ \citep[ pp. 134-136]{bib:dynamicsystems}. They are measured  from \autoref{fig:stepresponseslide} with the purpose to find $\omega_n$ and $\zeta$:
@@ -231,9 +231,9 @@ L_gB(\mathbf{x}) = \dfrac{d B(\mathbf{x})}{d \mathbf{x}}g(\mathbf{x}) \Bigm|_{g(
 This puts forth the requirement that $L_fB(\mathbf{x})<0\,\,\, \forall \, \mathbf{x}$. Accordingly:
 \vspace{-2mm}
 \begin{flalign*}
-L_fB(\mathbf{x}) = \dfrac{d B(x_1)}{d \mathbf{x}}f(\mathbf{x}) \Bigm|_{f(\mathbf{x})=\mathbf{Ax}} &= 
+L_fB(\mathbf{x}) = \dfrac{d B(\mathbf{x})}{d \mathbf{x}}f(\mathbf{x}) \Bigm|_{f(\mathbf{x})=\mathbf{Ax}} &= 
 \begin{bmatrix}
-\dfrac{\partial B(x_1)}{\partial x_1} & \dfrac{\partial B(x_1)}{\partial x_2} 
+\dfrac{\partial B(\mathbf{x})}{\partial x_1} & \dfrac{\partial B(\mathbf{x})}{\partial x_2} 
 \end{bmatrix}
 \begin{bmatrix}
 0 & 1 \\
@@ -273,7 +273,7 @@ M_{0} &= 4
 %\Lambda_{x2-} &= -4 \kk \text{denotion of the lowest value where $B(0,x_2)=0$} \\
 %\Lambda_{x2+} &= 4 \kk \text{denotion of the highest value where $B(0,x_2)=0$} 
 \end{flalign*}
-where ${M}_0$ denotes the semimajor axis of the zero level set of the \gls{cbf}.
+where \gls{M0} denotes the semimajor axis of the zero level set of the \gls{cbf}.
 Note that $x_{20}$ ensures velocity equilibrium in 0\,m/s and note that the velocity outermost points are determined far bigger than the robot's physical limits to ensure that all position values on the interval  $[-0.1\,\,\,\,0.05]$ are considered safe (almost) independently of the velocity. % $\mathcal{X}_0 \notin \mathcal{X}_u $. 
 This is sketched in \autoref{fig:cbf_2ndorder} along with the chosen values.
 \begin{figure}[htbp]
@@ -329,10 +329,10 @@ It is seen that $L_gB(\mathbf{x}) \neq 0 \mm \forall \,\,\, x_2 \neq 0$, hence $
 %\vspace{-3mm}
 \begin{flalign}
 L_fB(\mathbf{x}) &= 
-\dfrac{\partial B(x_1,x_2)}{\partial \mathbf{x}} f(\mathbf{x})
+\dfrac{\partial B(\mathbf{x})}{\partial \mathbf{x}} f(\mathbf{x})
 \Big|_{f(\mathbf{x}) = \textbf{\textbf{Ax}}} =
 \begin{bmatrix}
-\dfrac{\partial B(x_1,x_2)}{\partial x_1} & \dfrac{\partial B(x_1,x_2)}{\partial x_2}
+\dfrac{\partial B(\mathbf{x})}{\partial x_1} & \dfrac{\partial B(\mathbf{x})}{\partial x_2}
 \end{bmatrix} 
 \begin{bmatrix}
 0 & 1 \\

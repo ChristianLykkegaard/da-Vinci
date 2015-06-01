@@ -38,8 +38,8 @@ u(\mathbf{x}) =
 \end{flalign}
 \begin{tabular}{rp{14cm}} 
 where  &  \\
-$\tilde{u}(\mathbf{x})$ & is the non-safe controller applied on $\mathcal{Y}$ well within the safe region, $\tilde{u}(\mathbf{x}) \in \mathbb{R}^m$\\
-$k_0(\mathbf{x})$ & is a controller guaranteeing system safety, applied in the transition space $\mathcal{T}$ close to the unsafe set, $k_0(\mathbf{x}) \in \mathbb{R}^m$\\
+\gls{u_tilde} & is the non-safe controller applied on $\mathcal{Y}$ well within the safe region, $\tilde{u}(\mathbf{x}) \in \mathbb{R}^m$\\
+\gls{k0} & is a controller guaranteeing system safety, applied in the transition space $\mathcal{T}$ close to the unsafe set, $k_0(\mathbf{x}) \in \mathbb{R}^m$\\
 \end{tabular}\\
 
 %The controller $\tilde{u}(\mathbf{x})$ used for $\mathbf{x} \in \mathcal{Y}$ will be referred to as a non-safe controller and the controller $k_0(\mathbf{x})$ used for $\mathbf{x} \in \mathcal{T}$ will be referred to as a safety controller or a controller ensuring safety. 
@@ -75,13 +75,13 @@ u(\mathbf{x},\tilde{u}) &= \sigma(\mathbf{x})k_0(\mathbf{x})+(1-\sigma(\mathbf{x
 
 Note the two extremities of  $\sigma(\mathbf{x})$:
 \begin{flalign*}
-\sigma(x) = 
+\sigma(\mathbf{x}) = 
 \begin{cases}
 0 \mm &\Rightarrow \mm \text{Pure control by pole placement, i.e. $u(\mathbf{x}) = \tilde{u}(\mathbf{x}) =  \bar{\mathbf{N}} \mathbf{x}_\text{ref}-\textbf{Kx}$ } \\
 1 \mm &\Rightarrow \mm \text{Pure safety control i.e. $u(\mathbf{x}) = k_0(\mathbf{x})$ }
 \end{cases}
 \end{flalign*}
-The interval between 0 and 1 can be refined such that the transition between the two control laws is not instantaneous. This smoothing can be performed with a smooth approximation of the unit step (a bump function) of $B(\mathbf{x})$ by introducing a scalar $\epsilon>0$ \citep{bib:org_control}:
+The interval between 0 and 1 can be refined such that the transition between the two control laws is not instantaneous. This smoothing can be performed with a smooth approximation of the unit step (a bump function) of $B(\mathbf{x})$ by introducing a scalar \gls{epsilon} $>0$ \citep{bib:org_control}:
 \begin{flalign}
 \sigma(\mathbf{x}) = 
 \begin{cases}
