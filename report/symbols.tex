@@ -6,24 +6,49 @@ name=$\bar{d}$,
 description={Bounded disturbance},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
+\newglossaryentry{bar}{
+	name=$B(\mathbf{x})$,
+	description={Barrier function where $B(\mathbf{x})\,\in\,C^1(\mathcal{X})$},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
 \newglossaryentry{d}{
 name=$\mathbf{d}$,
-description={Disturbance input, restricted to $d \in D \subseteq \mathbb{R}^p$ and convex.},
+description={Disturbance input, restricted to $\mathbf{d} \in \mathcal{D} \subseteq \mathbb{R}^p$ and convex.},
 sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Delta}{
+	name=$\Delta$,
+	description={Distance between safe and unsafe regions $\mathcal{X}_0$ and $\mathcal{X}_u$, when defining $B(\mathcal{x})$ in SOS},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{deltaerr}{
+	name=$\delta_\text{err}$,
+	description={Maximum allowed distance between reference and state},
+	sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{fcl}{
 name=$f_\text{cl}$,
-description={A function with the closed loop characteristic: $f_{cl}: x \mapsto f(x)+g(x)k(x)$},
+description={A function with the closed loop characteristic: $f_{cl}: \mathbf{x} \mapsto f(\mathbf{x})+g(\mathbf{x})k(\mathbf{x})$},
 sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{epsilonbar}{
+	name=$\bar{\epsilon}$,
+	description={Minimum value of $B(\mathbf{x})$ on the unsafe set $\mathcal{X}_u$, when defining $B(\mathbf{x})$ in SOS},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{epsilon}{
+	name=$\epsilon$,
+	description={Value of $B(\mathbf{x})$ at the border between  $\mathcal{T}$ and  $\mathcal{Y}$},
+	sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{lie}{
 name=$L_fB$,
-description={Lie derivative of $B(x)$ along the vector field $f(x)$, i.e. $L_fB(x)=\frac{\partial B(x)}{\partial x}f(x)$},
+description={Lie derivative of $B(\mathbf{x})$ along the vector field $f(\mathbf{x})$, i.e. $L_fB(\mathbf{x})=\frac{d B(\mathbf{x})}{d \mathbf{x}}f(\mathbf{x})$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{lie2}{
 name=$L_gB$,
-description={Lie derivative of $B(x)$ along the vector field $g(x)$, i.e. $L_gB(x)=\frac{\partial B(x)}{\partial x}g(x)$},
+description={Lie derivative of $B(\mathbf{x})$ along the vector field $g(\mathbf{x})$, i.e. $L_gB(\mathbf{x})=\frac{d B(\mathbf{x})}{d \mathbf{x}}g(\mathbf{x})$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{T}{
@@ -31,19 +56,29 @@ name=T,
 description={Final value of a time series},
 sort=d, type=symbols, symbol=[s]}
 
+\newglossaryentry{Ts}{
+	name=$T_s$,
+	description={Sample period},
+	sort=d, type=symbols, symbol=[s]}
+
+\newglossaryentry{u_tilde}{
+	name=$\tilde{u}(\mathbf{x})$,
+	description={Linear position controller},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{k0}{
+	name=$k_0(\mathbf{x})$,
+	description={Safety controller},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
 \newglossaryentry{gammacl}{
 name=$\Gamma_\text{cl}$,
-description={Closep loop control system depended on....},
+description={Closed loop control system depended on....},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{phi}{
 name=$\phi_{X_0}^{\bar{d}}$,
 description={Trajectory initiating from the set of allowed initial conditions with bounded disturbance \gls{dbar}},
-sort=d, type=symbols, symbol=[$\cdot$]}
-
-\newglossaryentry{bar}{
-name=$B(\mathbf{x})$,
-description={Barrier function where $B(x)\,\in\,C^1(X)$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{taus}{
@@ -68,7 +103,7 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Yfancy}{
 name=$\mathcal{Y}$,
-description={The set of all safe states but excluding the set \gls{Tfancy}},
+description={The set of all safe states but excluding the set \gls{Tfancy}, i.e. $\mathcal{Y}=\mathcal{X}_0\setminus\mathcal{T}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{Tfancy}{
@@ -78,7 +113,7 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{lambdai}{
 name=$\Lambda_i$,
-description={Physical boundary where $i=h=\text{hard boundary}\,\, \vee \,\, i= s = \text{soft boundary}$},
+description={Physical boundary where $i=h=\text{hard boundary}$ and $i= s = \text{soft boundary}$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{lambda}{
@@ -90,6 +125,81 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 name=$\mathbf{x}$,
 description={The state variable which is restricted to $\mathbf{x} \in \mathbb{R}^n$ where  \gls{n} is the number of states},
 sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{M0}{
+	name=$M_0$,
+	description={Semimajor axis of a CBF which is a function of two state variables},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{s}{
+	name=$s$,
+	description={The Laplace operator},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Vx}{
+	name=$V(\mathbf{x})$,
+	description={Lyapunov function},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{SigmaSOS}{
+	name=$\Sigma[\mathbf{x}]$,
+	description={Denotion of an SOS polynomial in the variable \textbf{x}},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{monomialvec}{
+	name=$\mathbf{z}$,
+	description={Monomial vector in the variable \textbf{x}},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Q}{
+	name=$\mathbf{Q}$,
+	description={Real positive semidefinite symmetric SOS coefficient matrix},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{y}{
+	name=$\mathbf{y}$,
+	description={Output vector, $\mathbf{y}\in\mathbb{R}^q$ where $q$ is the number of outputs},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Tmtx}{
+	name=$\mathbf{T}$,
+	description={Transformation matrix describing rotation and translation between two coordinate frames, $\mathbf{T}\in\mathbb{R}^{4\times 4}$},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{Rot}{
+	name=$\mathbf{R}$,
+	description={Rotation matrix describing relative rotation between coordinate frames, $\mathbf{R}\in\mathbb{R}^{3\times 3}$},
+	sort=d, type=symbols, symbol=[$\cdot$]}
+
+\newglossaryentry{p_vec}{
+	name=$\mathbf{p}$,
+	description={Position vector describing translation between coordinate frame origins, $\mathbf{p}\in \mathbb{R}^3$},
+	sort=d, type=symbols, symbol=[m]}
+
+\newglossaryentry{alpha}{
+	name=$\alpha$,
+	description={Rotation angle about local $x$ axis},
+	sort=d, type=symbols, symbol=[rad]}
+
+\newglossaryentry{beta}{
+	name=$\beta$,
+	description={Rotation angle about local $y$ axis},
+	sort=d, type=symbols, symbol=[rad]}
+
+\newglossaryentry{theta}{
+	name=$\theta$,
+	description={Rotation angle about local $z$ axis},
+	sort=d, type=symbols, symbol=[rad]}
+
+\newglossaryentry{radius_vec}{
+	name=$\mathbf{r}$,
+	description={Radius vector for ellipsoid},
+	sort=d, type=symbols, symbol=[m]}
+
+\newglossaryentry{center_vec}{
+	name=$\mathbf{c}$,
+	description={Centre coordinate for ellipsoid},
+	sort=d, type=symbols, symbol=[m]}
 
 \newglossaryentry{n}{
 name=$n$,
@@ -129,7 +239,7 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{g}{
 name=$g$,
-description={A function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$, mostly an input function in a SS system},
+description={Either: A function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$, mostly an input function in a SS system. Or: In SOS $g$ is a polynomial which is positive on some set},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{h}{
@@ -144,7 +254,7 @@ sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{sigma}{
 name=$\sigma(\mathbf{x})$,
-description={Parameter that determines the linear combination between the safe and non-safe controller. It is restricted such that $0 \leq \sigma(x) \leq 1$},
+description={Parameter that determines the linear combination between the safe and non-safe controller. It is restricted such that $0 \leq \sigma(\mathbf{x}) \leq 1$},
 sort=d, type=symbols, symbol=[$\cdot$]}
 
 \newglossaryentry{zeta}{

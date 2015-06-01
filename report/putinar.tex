@@ -14,10 +14,10 @@ SOSTOOLS can be used to search for a polynomial barrier certificate given that: 
 %are described by polynomial (in)equalities, a polynomial barrier certificate can be constructed using \gls{sos} optimization. 
 
 \vspace{-1mm}
-Furthermore the recasting of the barrier certificate definition as an \gls{sos} problem requires the use of \gls{sos} polynomials. An \gls{sos} polynomial $p(x)$ is denoted by $p\in\Sigma[x]$ signifying that $p$ is a polynomial in the variable $x$ with coefficients in the set of \gls{sos} variables: $\Sigma$. A polynomial $p(x)$ is \gls{sos} if there exist polynomials $f_1,\dots,f_m$ such that \citep{bib:parrilo_sdp}
+Furthermore the recasting of the barrier certificate definition as an \gls{sos} problem requires the use of \gls{sos} polynomials. An \gls{sos} polynomial $p(\mathbf{x})$ is denoted by $p\in$ \gls{SigmaSOS} signifying that $p$ is a polynomial in the variable $\mathbf{x}$ with coefficients in the set of \gls{sos} variables: $\Sigma$. A polynomial $p(\mathbf{x})$ is \gls{sos} if there exist polynomials $f_1,\dots,f_m$ such that \citep{bib:parrilo_sdp}
 \vspace{-2mm}
 \begin{equation}
-p(x) = \sum_{j=1}^{m}f_j^2(x) \label{eq:sos_f_squared}
+p(\mathbf{x}) = \sum_{j=1}^{m}f_j^2(\mathbf{x}) \label{eq:sos_f_squared}
 \end{equation}
 %
 %A \gls{sos} program is a convex optimization problem of the form \citep{bib:prajna_framework,bib:sostools}
@@ -57,24 +57,24 @@ where $\Sigma[x]$ denotes a set of polynomials in $x$ with coefficients in $\Sig
 \end{exa}
 
 Declaring a polynomial in SOSTOOLS is done by defining a monomial vector for which the program solves for polynomial coefficients.
-Introducing the notion of a monomial vector as a vector $Z$ in $x$ of degree $deg$; e.g. if $x\in\mathbb{R}^2$ and $deg=[0:2]$ each entry has the form $x_1^ax_2^b$ with exponents $a+b=deg=0,...,2$ i.e.
+Introducing the notion of a monomial vector as a vector \gls{monomialvec} in $\mathbf{x}$ of degree $deg$; e.g. if $\mathbf{x}\in\mathbb{R}^2$ and $deg=[0:2]$ each entry has the form $x_1^ax_2^b$ with exponents $a+b=deg=0,...,2$ i.e.
 \vspace{-3mm}
 \begin{equation}
-Z=[x_1^0x_2^0\quad x_1^1x_2^0\quad x_1^0x_2^1\quad x_1^2x_2^0\quad x_1^1x_2^1\quad x_1^0x_2^2]^T=[1\quad x_1\quad x_2\quad x_1^2\quad x_1x_2\quad  x_2^2]^T
+\mathbf{z}=[x_1^0x_2^0\quad x_1^1x_2^0\quad x_1^0x_2^1\quad x_1^2x_2^0\quad x_1^1x_2^1\quad x_1^0x_2^2]^T=[1\quad x_1\quad x_2\quad x_1^2\quad x_1x_2\quad  x_2^2]^T
 \label{eq:monomial_example}
 \end{equation} 
 
 \vspace{-1mm}
-Now, according to \citep{bib:parrilo_sdp} an \gls{sos} polynomial $p\in \Sigma[x]$ can be formulated on a quadratic form comprising a coefficient matrix and a monomial vector
+Now, according to \citep{bib:parrilo_sdp} an \gls{sos} polynomial $p\in \Sigma[\mathbf{x}]$ can be formulated on a quadratic form comprising a coefficient matrix and a monomial vector
 \vspace{-1mm}
 \begin{equation}
-p = Z^T Q \, Z, \qquad\qquad p\geq 0 \quad \forall \, x\in\mathbb{R}^n %\setminus \{0\}
+p = \mathbf{z}^T \mathbf{Q} \, \mathbf{z}, \qquad\qquad p\geq 0 \quad \forall \,\, \mathbf{x}\in\mathbb{R}^n %\setminus \{0\}
 \label{eq:sos_polynomial}
 \end{equation}
 \begin{tabular}{rl}
 where &\\
-$Z$ & is a monomial vector in $x\in \mathbb{R}^n$\\
-$Q$ & is a real positive semidefinite symmetric coefficient matrix\\
+$\mathbf{z}$ & is a monomial vector in $\mathbf{x}\in \mathbb{R}^n$\\
+\gls{Q} & is a real positive semidefinite symmetric coefficient matrix\\
 \end{tabular}\\
 
 With monomials and \gls{sos} polynomials defined, a polynomial barrier certificate can now be constructed. An \gls{sos} description of a problem, however, is a global description of nonnegativity (positive or zero), and it is desired to set up local requirements for the barrier polynomial on each of the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$. % as given by \autoref{def:barrier_certificate}.
@@ -85,7 +85,7 @@ A Positivstellensatz is a structure theorem of a  polynomial which is positive o
 %A Positivstellensatz defines the regions of a semialgebraic set where a function is positive. 
 %non-commutative Positivstellens\"{a}tze characterize things like a polynomial $p$ being positive where another polynomial $q$ is positive
 In Putinar's Positivstellensatz, presented in \autoref{def:putinar}, a compact set $\mathbb{K}\subset\mathbb{R}^n$ (a strict subset of the state-space, i.e. not including the entire state-space) is defined by the nonnegativity of some polynomials $g_j$.
-Now the positivity of a polynomial $h$ on the set $\mathbb{K}$ can be expressed in terms of a weighted sum of these polynomials $g_j$ with \gls{sos} polynomials as coefficients $q_j\in\Sigma[x]$ \citep[pp 184-186]{bib:sos_putinar_laurent},\citep[pp 28-29]{bib:sos_putinar_lasserre}.\\
+Now the positivity of a polynomial $h$ on the set $\mathbb{K}$ can be expressed in terms of a weighted sum of these polynomials $g_j$ with \gls{sos} polynomials as coefficients $q_j\in\Sigma[\mathbf{x}]$ \citep[pp 184-186]{bib:sos_putinar_laurent},\citep[pp 28-29]{bib:sos_putinar_lasserre}.\\
 
  
 \vspace{-2mm}
@@ -94,16 +94,16 @@ Given the finite family of polynomials $(g_j)_{j=1}^m$ and the subset $Q(g)$ %is
 generated by the family $(g_j)_{j=1}^m$ \citep[p 29]{bib:sos_putinar_lasserre}
 \begin{subequations}\label{eq:putinar}
 \begin{align}
-\text{polynomials} \qquad & (g_j)_{j=1}^m \in\mathbb{R}[x]\label{eq:polynomials_g}\\
+\text{polynomials} \qquad & (g_j)_{j=1}^m \in\mathbb{R}[\mathbf{x}]\label{eq:polynomials_g}\\
 \text{set} \qquad & Q(g)=Q(g_1,...,g_m)\equiv\left\{\left.q_0+\sum\limits_{j=1}^{m}q_jg_j\,\,\right| \, (q_j)_{j=0}^m\in\Sigma[x]\right\}\label{eq:putinar_set_sos}
 \end{align}
 \end{subequations}
-Assume that there exists a function $u(x)\in Q(g)$ such that the level set $\{x\in\mathbb{R}^n \,\,|\,\, u(x)\geq 0\}$ is compact \citep[p 29]{bib:sos_putinar_lasserre}.
+Assume that there exists a function $u(\mathbf{x})\in Q(g)$ such that the level set $\{\mathbf{x}\in\mathbb{R}^n \,\,|\,\, u(x)\geq 0\}$ is compact \citep[p 29]{bib:sos_putinar_lasserre}.
 Given a polynomial $h$ and the compact basic semialgebraic set $\mathbb{K}$  defined by the nonnegativity of the polynomials $g_1,\dots, g_m$  
 \begin{subequations}
 \begin{align}
-\text{polynomial} \qquad & h \in\mathbb{R}[x]\\
-\text{set} \qquad & \mathbb{K}\equiv\left\{\left.x\in \mathbb{R}^n\,\, \right| \, (g_j)_{j=1}^m\geq0\right\}\qquad\qquad\qquad\qquad\qquad\quad\label{eq:setK}
+\text{polynomial} \qquad & h \in\mathbb{R}[\mathbf{x}]\\
+\text{set} \qquad & \mathbb{K}\equiv\left\{\left.\mathbf{x}\in \mathbb{R}^n\,\, \right| \, (g_j)_{j=1}^m\geq0\right\}\qquad\qquad\qquad\qquad\qquad\quad\label{eq:setK}
 \end{align}
 \end{subequations}
 If the polynomial $h$ is strictly positive on the set $\mathbb{K}$, then $h\in Q(g)$, which means that $h$  can be formulated as
@@ -122,7 +122,7 @@ h = q_0+\sum\limits_{j=1}^{m}q_jg_j
 \label{fig:1stordersys_staticlimits_g}
 \end{figure}
 
-In \autoref{eq:setK} the region of nonnegativity of the polynomial(s) $(g_j)_{j=1}^m$ define the extent of the set $\mathbb{K}$, the $g$s being  polynomials in the state variables $x$ as defined by \autoref{eq:polynomials_g}, e.g. in 1D Cartesian space $g(x)$ may be a parabola which is positive-valued on the interval $x\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{x\in[a,b]\}$. In this way appropriate polynomials $g_j$ can be constructed  to define each of the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ as given by \autoref{def:barrier_certificate}. An example of a polynomial $g_1$ for each of the sets is sketched in \autoref{fig:1stordersys_staticlimits_g}.
+In \autoref{eq:setK} the region of nonnegativity of the polynomial(s) $(g_j)_{j=1}^m$ define the extent of the set $\mathbb{K}$, the $g$s being  polynomials in the state variables $x$ as defined by \autoref{eq:polynomials_g}, e.g. in 1D Cartesian space $g(\mathbf{x})$ may be a parabola which is positive-valued on the interval $\mathbf{x}\in[a,b]$, hence defining the semialgebraic set $\mathbb{K}=\{\mathbf{x}\in[a,b]\}$. In this way appropriate polynomials $g_j$ can be constructed  to define each of the sets $\mathcal{X}$, $\mathcal{X}_0$ and $\mathcal{X}_u$ as given by \autoref{def:barrier_certificate}. An example of a polynomial $g_1$ for each of the sets is sketched in \autoref{fig:1stordersys_staticlimits_g}.
 
 The variables $(q_j)_{j=1}^m$ in \autoref{eq:putinar_set_sos} are \gls{sos} and thereby nonnegative per definition. Hence from the definition of the $g$s and $q$s it can be seen from \autoref{eq:sos_barrier} that the polynomial $h$ is positive on the set $\mathbb{K}$.
 % as defined by  being positive  in the region $\mathbb{K}$.
@@ -130,7 +130,7 @@ Outside the set $\mathbb{K}$ one or more $g_j$s are negative, and hence the sign
 Rearranging \autoref{eq:sos_barrier} to
 \vspace{-2mm}
 \begin{equation}
-\underbrace{q_0(x)}_{\geq 0\,\,\forall \,\,x} = h(x) - \sum _{j=1}^{m}\,\,\,\underbrace{q_j(x)}_{\geq 0\,\,\forall \,\,x}\,\,\,\underbrace{g_j(x)}_{\geq 0 \,\,\forall \,\,x\in\mathbb{K}} \kk \in\Sigma[x]\label{eq:putinar_sos}
+\underbrace{q_0(\mathbf{x})}_{\geq 0\,\,\forall \,\,\mathbf{x}} = h(\mathbf{x}) - \sum _{j=1}^{m}\,\,\,\underbrace{q_j(\mathbf{x})}_{\geq 0\,\,\forall \,\,\mathbf{x}}\,\,\,\underbrace{g_j(\mathbf{x})}_{\geq 0 \,\,\forall \,\,\mathbf{x}\in\mathbb{K}} \kk \in\Sigma[\mathbf{x}]\label{eq:putinar_sos}
 \end{equation} 
 
 \vspace{-1mm}
@@ -139,28 +139,28 @@ however, the right-hand expression will always be nonnegative due to the SOS equ
 \section{Recasting the Barrier Certificate Definition}
 \vspace{-2mm}
 Now \autoref{eq:putinar_sos} can be seen as a template for the reformulation of the requirements for a barrier certificate in \autoref{def:barrier_certificate}.
-Setting up each of the requirements for the barrier certificate $B(x)$ on each of the  semialgebraic sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$, is a matter of defining one or more polynomials $g_j(x)$ for each set such that the intersection of the nonnegative regions of the polynomials outline the set.
-E.g. in order to define the region $\mathcal{X}_u\subset\mathcal{X}\subset\mathbb{R}$ construct a polynomial $g(x)$ such that it is positive within the unsafe interval and its zero level set constitutes the desired border of the region. An example of a polynomial $g(x)$ defining the region $\mathcal{X}_u$ is seen in \autoref{fig:1stordersys_staticlimits_g} as the red curve. If several polynomials $g_j(x)$ are used to define $\mathcal{X}_u$, the set is defined by the nonnegative intersection region, i.e. the subset of the state-space where all of the $g_j(x)$s are nonnegative.
+Setting up each of the requirements for the barrier certificate $B(\mathbf{x})$ on each of the  semialgebraic sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$, is a matter of defining one or more polynomials $g_j(\mathbf{x})$ for each set such that the intersection of the nonnegative regions of the polynomials outline the set.
+E.g. in order to define the region $\mathcal{X}_u\subset\mathcal{X}\subset\mathbb{R}$ construct a polynomial $g(\mathbf{x})$ such that it is positive within the unsafe interval and its zero level set constitutes the desired border of the region. An example of a polynomial $g(\mathbf{x})$ defining the region $\mathcal{X}_u$ is seen in \autoref{fig:1stordersys_staticlimits_g} as the red curve. If several polynomials $g_j(\mathbf{x})$ are used to define $\mathcal{X}_u$, the set is defined by the nonnegative intersection region, i.e. the subset of the state-space where all of the $g_j(\mathbf{x})$s are nonnegative.
 
-When the polynomials $g_j(x)$ have been defined for each of the sets, the polynomial $h(x)$ in \autoref{eq:putinar_sos} is substituted according to \autoref{def:barrier_certificate}, such that $h(x)\geq 0$ on the relevant set. That is, when defining $\mathcal{X}$ according to \autoref{cer3}, the polynomial $h(x)$ can be written as $-L_{f_{cl}}B(x)$ and when defining $\mathcal{X}_0$ use $h(x)=-B(x)$ according to \autoref{cer1}. However, when defining $\mathcal{X}_u$ according to \autoref{cer2}, the positivity constraint on $B(x)$ has to be transformed into a nonnegativity constraint. This can be done by introducing a small scalar value $\bar{\epsilon}>0$, such that $B(x)\geq \bar{\epsilon} $ or identically $B(x)-\bar{\epsilon}\geq 0$ which can now be substituted for $h(x)$.
+When the polynomials $g_j(\mathbf{x})$ have been defined for each of the sets, the polynomial $h(\mathbf{x})$ in \autoref{eq:putinar_sos} is substituted according to \autoref{def:barrier_certificate}, such that $h(\mathbf{x})\geq 0$ on the relevant set. That is, when defining $\mathcal{X}$ according to \autoref{cer3}, the polynomial $h(\mathbf{x})$ can be written as $-L_{f_{cl}}B(\mathbf{x})$ and when defining $\mathcal{X}_0$ use $h(\mathbf{x})=-B(\mathbf{x})$ according to \autoref{cer1}. However, when defining $\mathcal{X}_u$ according to \autoref{cer2}, the positivity constraint on $B(\mathbf{x})$ has to be transformed into a nonnegativity constraint. This can be done by introducing a small scalar value $\bar{\epsilon}>0$, such that $B(\mathbf{x})\geq \bar{\epsilon} $ or identically $B(\mathbf{x})-\bar{\epsilon}\geq 0$ which can now be substituted for $h(\mathbf{x})$.
 
 \begin{defn}[Barrier Certificate Recast to \gls{sos} Formulation]\label{def:barrier_sos}
-In summary, referring to the requirements for a barrier certificate in \autoref{def:barrier_certificate} and the \gls{sos} formulation of the polynomial $h$ in \autoref{eq:putinar_sos} based on Putinar's Positivstellensatz, the inequalities defining the barrier certificate $B(x)$ can be set up as
+In summary, referring to the requirements for a barrier certificate in \autoref{def:barrier_certificate} and the \gls{sos} formulation of the polynomial $h$ in \autoref{eq:putinar_sos} based on Putinar's Positivstellensatz, the inequalities defining the barrier certificate $B(\mathbf{x})$ can be set up as
 \vspace{-2mm}
 \begin{subequations}\label{eq:barrier_constraints_putinar}
 \begin{flalign}
-&&	-B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_0 \qquad\quad \Leftarrow& 	-B(x) - \sum _{j=1}^{m}q_jg_j &\,\,\,\in \Sigma[x] &&& \label{cer1_putinar}\\
-&&	B(x)-\bar{\epsilon} &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X}_u \qquad\quad \Leftarrow& 	B(x)-\bar{\epsilon} - \sum _{j=1}^{m}q_jg_j &\,\,\,\in \Sigma[x] &&&\label{cer2_putinar} \\
-&&	-L_{f_{cl}}B(x) &\geq 0 \kk  \forall \hspace{2mm} x \in \mathcal{X} \qquad\quad\,\, \Leftarrow& 	-L_{f_{cl}}B(x) - \sum _{j=1}^{m}q_jg_j &\,\,\,\in \Sigma[x] &&& \label{cer3_putinar}
+&&	-B(\mathbf{x}) &\geq 0 \kk  \forall \hspace{2mm} \mathbf{x} \in \mathcal{X}_0 \qquad\quad \Leftarrow& 	-B(\mathbf{x}) - \sum _{j=1}^{m}q_jg_j &\,\,\,\in \Sigma[\mathbf{x}] &&& \label{cer1_putinar}\\
+&&	B(\mathbf{x})-\bar{\epsilon} &\geq 0 \kk  \forall \hspace{2mm} \mathbf{x} \in \mathcal{X}_u \qquad\quad \Leftarrow& 	B(\mathbf{x})-\bar{\epsilon} - \sum _{j=1}^{m}q_jg_j &\,\,\,\in \Sigma[\mathbf{x}] &&&\label{cer2_putinar} \\
+&&	-L_{f_{cl}}B(\mathbf{x}) &\geq 0 \kk  \forall \hspace{2mm} \mathbf{x} \in \mathcal{X} \qquad\quad\,\, \Leftarrow& 	-L_{f_{cl}}B(\mathbf{x}) - \sum _{j=1}^{m}q_jg_j &\,\,\,\in \Sigma[\mathbf{x}] &&& \label{cer3_putinar}
 \end{flalign}
 \end{subequations}
 \end{defn}
 %Note that the inequality is on positivity in \autoref{cer2} whereas it is on nonnegativity (being \gls{sos}) in \autoref{eq:putinar_set_sos}. By introducing an arbitrarily small $\epsilon>0$ the positivity constraint can be cast as the nonnegativity constraint in the  SOS inequality of \autoref{cer2_putinar}. %This is, however, not considered an issue in the scope of this project, as the position accuracy of the robot is not on the submillimeter level. 
 
 %\vspace{-15mm}
-With this formulation the Lie derivative is required to be nonpositive on set $\mathcal{X}$ and the barrier certificate is required to be nonpositive on the safe set $\mathcal{X}_0$ and greater than or equal to the constant $\bar{\epsilon}$ on the unsafe set $\mathcal{X}_u$. When defining the sets, the safe and unsafe regions must be separated by some distance $\Delta$. This is illustrated in \autoref{fig:sos_delta1}.
+With this formulation the Lie derivative is required to be nonpositive on set $\mathcal{X}$ and the barrier certificate is required to be nonpositive on the safe set $\mathcal{X}_0$ and greater than or equal to the constant \gls{epsilonbar} on the unsafe set $\mathcal{X}_u$. When defining the sets, the safe and unsafe regions must be separated by some distance \gls{Delta}. This is illustrated in \autoref{fig:sos_delta1}.
 
-The task of searching for a barrier certificate validating system safety is now a matter of the fairly easy construction of the polynomials $g_j(x)$ to define the desired outline of each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$, as in the example in \autoref{fig:1stordersys_staticlimits_g}, in SOSTOOLS. However, it is also a matter of deciding the polynomial degree (through monomials) of $B(x)$ and of each of the \gls{sos} polynomials $q_j(x)$. As small a degree "as possible" is desired for all monomials, but it may be necessary to increase the degree iteratively. This introduces numerical errors, which may require that the size of $\bar{\epsilon}$ must be increased. When no solution can be found, it may be necessary to increase the  distance $\Delta$ separating the safe and unsafe regions, i.e. contract the safe region by altering the polynomials $g_j(x)$ outlining the region.
+The task of searching for a barrier certificate validating system safety is now a matter of the fairly easy construction of the polynomials $g_j(\mathbf{x})$ to define the desired outline of each of the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$, as in the example in \autoref{fig:1stordersys_staticlimits_g}, in SOSTOOLS. However, it is also a matter of deciding the polynomial degree (through monomials) of $B(\mathbf{x})$ and of each of the \gls{sos} polynomials $q_j(\mathbf{x})$. As small a degree "as possible" is desired for all monomials, but it may be necessary to increase the degree iteratively. This introduces numerical errors, which may require that the size of $\bar{\epsilon}$ must be increased. When no solution can be found, it may be necessary to increase the  distance $\Delta$ separating the safe and unsafe regions, i.e. contract the safe region by altering the polynomials $g_j(\mathbf{x})$ outlining the region.
 
 %\textcolor{red}{Bemærk, at denne sætning ikke siger hvor høj grad I skal vælge qerne. (husk at tænke på dette)}
 

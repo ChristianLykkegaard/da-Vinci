@@ -62,18 +62,18 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 \begin{itemize}
 	\itemsep-0.7mm
 	\item \textbf{Initialize the Program}\\
-	First declare the state space variables $x\in\mathbb{R}^n$ as \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
+	First declare the state space variables $\mathbf{x}\in\mathbb{R}^n$ as \texttt{pvar}, and initialize the SOS program with the system states by the function \texttt{sosprogram}.
 	\item \textbf{Define the Vector Field}\\
-	The open-loop state space system $f_{ol}(x)$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}(x)$ in terms of the symbolic state vector.
+	The open-loop state space system $f_{ol}(\mathbf{x})$ is defined, and a controller is found according to pole placement or another preferred method. Then write the closed-loop system equation $f_{cl}(\mathbf{x})$ in terms of the symbolic state vector.
 	\item \textbf{Set up the Constraints for the Polynomial Barrier Certificate}\\
-	Declare a monomial vector $Z_B$ in $x$ (or part of $x$) of sufficiently large degree, and parametrize the polynomial $B(x)$ as a function of $Z_B$ with \texttt{sospolyvar}.  
+	Declare a monomial vector $\mathbf{z}_B$ in $\mathbf{x}$ (or part of $\mathbf{x}$) of sufficiently large degree, and parametrize the polynomial $B(\mathbf{x})$ as a function of $\mathbf{z}_B$ with \texttt{sospolyvar}.  
 	The problem of finding the coefficients for the barrier certificate is now for each region $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ a matter of defining the following:
 	\vspace*{-1mm}
 	\begin{itemize}
-		\item \textbf{Define the Polynomials $g_j(x)$}\\
+		\item \textbf{Define the Polynomials $g_j(\mathbf{x})$}\\
 		Define one or more polynomials $g_j$ that are positive in the region to be defined, e.g. $\mathcal{X}$, and negative outside. %Each polynomial may be solely a function of the robot tool position (and velocity) for static boundaries, and also a function of the heart position (and velocity) for dynamic boundaries. 
-		\item \textbf{Declare the SOS Variables $q_j(x)$}\\
-		Declare monomial vectors $Z_{q_j}$ in $x$ of appropriate degree (preferably as small as possible), % to keep the complexity of the problem as low as possible), 
+		\item \textbf{Declare the SOS Variables $q_j(\mathbf{x})$}\\
+		Declare monomial vectors $\mathbf{z}_{q_j}$ in $x$ of appropriate degree (preferably as small as possible), % to keep the complexity of the problem as low as possible), 
 		and parametrize the SOS polynomials (multipliers) $q_j$ with \texttt{sossosvar}.
 		\item \textbf{Set up the Inequality}\\
 		Cf. the nonnegativity of an \gls{sos} polynomial ($q_0$), each \texttt{sosineq} can be formulated as given by  \autoref{def:barrier_sos}. For \autoref{cer2_putinar} choose a small positive number $\bar{\epsilon}$. The inequality pertaining to a set may be defined in terms of several $g_j$s; if the set is defined by
@@ -84,7 +84,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 		Note that each expression in the inequalities in \autoref{def:barrier_sos} must have even degrees in the leading and trailing terms in order for the expressions to be \gls{sos}.
 	\end{itemize}
 	\item \textbf{Solve the SOS Program}\\
-	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(x)$. If no solution is found, adjusting the degree of the \gls{sos} variables $q_j$ or the polynomial $B(x)$ may yield a solution. Also, adjusting $\Delta$ and $\epsilon$ may increase the probability of finding a solution. Otherwise it can be concluded that safety cannot be guaranteed of the system under scrutiny and the set $\mathcal{X}_0$ may be forced smaller. 
+	With all inequalities defined in the program, SOSTOOLS is now ready to solve for the barrier certificate with \texttt{sossolve}, if any certificate exists for the given system $f_{cl}(\mathbf{x})$. If no solution is found, adjusting the degree of the \gls{sos} variables $q_j$ or the polynomial $B(\mathbf{x})$ may yield a solution. Also, adjusting $\Delta$ and $\epsilon$ may increase the probability of finding a solution. Otherwise it can be concluded that safety cannot be guaranteed of the system under scrutiny and the set $\mathcal{X}_0$ may be forced smaller. 
 \end{itemize}
 
 
@@ -99,7 +99,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 
 
 \subsection{Evaluating the SOSTOOLS Solution}\label{subsec:eval_sos}
-If no solution is found, the tested closed-loop system $f_{cl}(x)$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(x)$ or \gls{sos} polynomials $q_j(x)$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
+If no solution is found, the tested closed-loop system $f_{cl}(\mathbf{x})$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(\mathbf{x})$ or \gls{sos} polynomials $q_j(\mathbf{x})$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
 
 When the \gls{sos} program is solved, the list of information printed out in the MATLAB terminal includes a number of useful parameters for evaluating the validity of the solution, summarized in \autoref{tab:sostools_evaluation}.
 If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being 1, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to 1 for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
@@ -134,4 +134,4 @@ The \texttt{residual norm} is the norm of the numerical error in the solution \c
 	\label{tab:sostools_evaluation}
 \end{table}
 
-A final test that the solution is valid is to check that the \gls{sos} inequalities, i.e. the formulation of the constraints according to \autoref{def:barrier_sos}, are \gls{sos}. This can be done by testing that each of the expressions can be resolved in the form in \autoref{eq:sos_f_squared} or \autoref{eq:sos_polynomial}, i.e. as $\sum f^2(x)$ or $Z^T(x)QZ(x)$ with the function \texttt{findsos} using the polynomial coefficients from the solution (using \texttt{sosgetsol} as described in \autoref{tab:sostools_syntax}). If any of the three expressions cannot be resolved in these forms, it can be concluded that it is not \gls{sos}, and hence the solution does not comply with the requirements for a barrier certificate, i.e. the solution is invalid.
+A final test that the solution is valid is to check that the \gls{sos} inequalities, i.e. the formulation of the constraints according to \autoref{def:barrier_sos}, are \gls{sos}. This can be done by testing that each of the expressions can be resolved in the form in \autoref{eq:sos_f_squared} or \autoref{eq:sos_polynomial}, i.e. as $\sum f^2(\mathbf{x})$ or $\mathbf{z}^T(\mathbf{x})\mathbf{Q}\,\mathbf{z}(\mathbf{x})$ with the function \texttt{findsos} using the polynomial coefficients from the solution (using \texttt{sosgetsol} as described in \autoref{tab:sostools_syntax}). If any of the three expressions cannot be resolved in these forms, it can be concluded that it is not \gls{sos}, and hence the solution does not comply with the requirements for a barrier certificate, i.e. the solution is invalid.

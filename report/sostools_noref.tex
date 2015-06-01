@@ -1,4 +1,5 @@
-\section{Safety Verification of First Order System with Zero Reference}\label{app:sos_noref}
+\section{Safety Verification with SOSTOOLS}
+\subsection{Safety Verification of First Order System with Zero Reference}\label{app:sos_noref}
 This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{subsec:zeroref}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_noRef.m}.
 
 \begin{lstlisting}[language=matlab]
@@ -86,7 +87,7 @@ getqX1 = sosgetsol(prog,qX);
 [Q3,~,~] = findsos(-getdBdx*fx-gX*getqX1);
 \end{lstlisting}
 
-\section{Safety Verification of First Order System for Reference Interval}\label{app:sos_refinterval}
+\subsection{Safety Verification of First Order System for Reference Interval}\label{app:sos_refinterval}
 This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{sec:sos_1storder_references}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_withRef.m}.
 
 \begin{lstlisting}[language=matlab]
@@ -196,7 +197,7 @@ getqX2 = sosgetsol(prog,qX2);
 [Q3,~,~] = findsos(-getdBdx*fx-gX1*getqX1-gX2*getqX2);
 \end{lstlisting}
 
-\section{Safety Verification of First Order Error State System}\label{app:sos_errorstate_firstorder}
+\subsection{Safety Verification of First Order Error State System}\label{app:sos_errorstate_firstorder}
 This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{sec:sos_1storder_error}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/1storder\_error.m}.
 
 \begin{lstlisting}[language=matlab]
@@ -285,7 +286,7 @@ getqX1 = sosgetsol(prog,qX1);
 [Q3,~,~] = findsos(-getdBdx*fx-gX1*getqX1);
 \end{lstlisting}
 
-\section{Safety Verification of Second Order Error State System}\label{app:sos_errorstate_secondorder}
+\subsection{Safety Verification of Second Order Error State System}\label{app:sos_errorstate_secondorder}
 This section contains the MATLAB/SOSTOOLS implementation of the barrier certificate search described in \autoref{sec:sos_2ndorder_error}. All plotting details are omitted in this section, but can be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/sostools/2ndorder\_error.m}.
 
 \begin{lstlisting}[language=matlab]

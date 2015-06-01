@@ -24,7 +24,7 @@ When a barrier certificate can be found for a (closed-loop) dynamical system, th
 where &  \\
 \gls{x} &  is the state, $\mathbf{x}(t) \in \mathbb{R}^n$\\
 \gls{u} & is the control input, $\mathbf{u}(t) \in \mathbb{R}^m$\\
-\gls{d} & is the disturbance input, $\mathbf{d}(t) \in D \subseteq \mathbb{R}^p$ \\
+\gls{d} & is the disturbance input, $\mathbf{d}(t) \in \mathcal{D} \subseteq \mathbb{R}^p$ \\
 \gls{f} & is a non-linear function, $f:\mathbb{R}^n \rightarrow \mathbb{R}^n$\\
 \gls{g} & is a non-linear function, $g:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times m}$\\
 \gls{h} & is a non-linear function, $h:\mathbb{R}^n \rightarrow \mathbb{R}^{n \times p}$
@@ -35,11 +35,11 @@ Now safety of a closed-loop control system is given according to \citep{bib:safe
 %\begin{exa}
 
 \begin{defn}[Safety of a System]\label{def:safety}
-Denote a trajectory starting in $x(0)=x_0$ and with bounded disturbance function $\bar{d}:\mathbb{R}_{\geq 0}\rightarrow D$ by $\phi_{x_0}^{\bar{d}}$, defined by 
+Denote a trajectory starting in $x(0)=x_0$ and with bounded disturbance function $\bar{d}:\mathbb{R}_{\geq 0}\rightarrow \mathcal{D}$ by $\phi_{x_0}^{\bar{d}}$, defined by 
 \begin{equation}
 \frac{d \phi_{x_0}^{\bar{d}} }{dt} = f_{cl}\left( \phi_{x_0}^{\bar{d}} (t) \right) + h\left( \phi_{x_0}^{\bar{d}} (t) \right) \bar{d}(t)
 \end{equation}
-The system $\Gamma_{cl} = (f_{cl},h,\mathcal{X},\mathcal{X}_0,\mathcal{X}_u,D)$ is unsafe if there exists a $t \in [0,$\gls{T}$]$ such that the trajectory $\phi_{\mathcal{X}_0}^{\bar{d}}:\,[0,T]\rightarrow \mathbb{R}^n$ with initial state $x_0\in \mathcal{X}_0$ and bounded disturbance function $\bar{d}$ satisfies
+The system $\Gamma_{cl} = (f_{cl},h,\mathcal{X},\mathcal{X}_0,\mathcal{X}_u,\mathcal{D})$ is unsafe if there exists a $t \in [0,$\gls{T}$]$ such that the trajectory $\phi_{\mathcal{X}_0}^{\bar{d}}:\,[0,T]\rightarrow \mathbb{R}^n$ with initial state $x_0\in \mathcal{X}_0$ and bounded disturbance function $\bar{d}$ satisfies
 \begin{flalign}
 \left( \phi_{\mathcal{X}_0}^{\bar{d}}([0,t]) \cap \mathcal{X}_u \right) \neq \emptyset \kk \text{and} \kk 
 \phi_{\mathcal{X}_0}^{\bar{d}}([0,t]) \subseteq \mathcal{X}
@@ -70,7 +70,7 @@ A graphical interpretation of \autoref{eq:defsafety} is shown in \autoref{fig:de
 \end{figure}
 %\end{exa}
 
-Disturbances are not considered in the scope of this project, and hence $\mathbf{d}\in D$ is considered to be zero in the remainder of this thesis.
+Disturbances are not considered in the scope of this project, and hence $\mathbf{d}\in \mathcal{D}$ is considered to be zero in the remainder of this thesis.
 
 For the system in \autoref{eq:general_statespace} safety can be guaranteed if a barrier certificate for the system exists. A barrier certificate is defined as a function of the system state, satisfying a set of inequalities, entailing that its zero level set in the state space forms a barrier between the safe set of initial states $\mathcal{X}_0$ and the unsafe set $\mathcal{X}_u$, thereby certifying system safety \citep{bib:prajna_framework}.
 
@@ -105,7 +105,7 @@ Furthermore from \autoref{cer3} it is deduced that a controller incorporating th
 
 \subsubsection{Nexus to Lyapunov Functions}
 \vspace*{-3mm}
-As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function $V(\mathbf{x})$, a Lyapunov candidate function for a stable system given by
+As it can be seen from \autoref{eq:barrier_constraints} the definition of a barrier certificate strongly resembles that of a Lyapunov function, and indeed the Lie derivative nonpositivity constraint is identical to the time derivative constraint to a Lyapunov function \gls{Vx}, a Lyapunov candidate function for a stable system given by
 \vspace*{-5mm}
 %\begin{equation}
 %\dot{x}  = f(x) = \frac{d x}{d t} \qquad

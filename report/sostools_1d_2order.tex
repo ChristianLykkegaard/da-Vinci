@@ -78,11 +78,11 @@ Again, as seen in \autoref{fig:sos_slide}, the unsafe positions are positions in
 \end{figure}
 
 Equivalent to the first order system, the model in \autoref{eq:sos_2ndorder} is tested and known to be valid for small steps of approximately 5\,mm, and again the set $\mathcal{X}$ to be considered is chosen to $\pm 3$\,cm.
-For the second order system, the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ must also be specified for the velocity dimension. As the rate of change of the error is related to the end effector velocity by a factor -1, the considered interval of velocities is chosen as the upper limits for the robot slide velocity of $\pm 0.5$\,m/s \textcolor{red}{REFRERENCE TIL SLIDE M\AA LING}. This is visualized in \autoref{fig:sos_error_2d_2ndorder}, and gives the set definitions for the second order error state system:
+For the second order system, the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ must also be specified for the velocity dimension. As the rate of change of the error is related to the end effector velocity by a factor -1, the considered interval of velocities is chosen as the upper limits for the robot slide velocity of approximately $\pm 0.5$\,m/s. This is visualized in \autoref{fig:sos_error_2d_2ndorder}, and gives the set definitions for the second order error state system:
 \vspace{-2mm}
 \begin{itemize}
 \itemsep-0.7mm
-\item The set considered is well over the usual reference step size of 5\,mm, and the the upper bound on the velocity  considered is the physical limits of the system from \textcolor{red}{REFRERENCE TIL SLIDE M\AA LING}, $\mathcal{X}=\{x_\text{err,1}\in[-0.03,0.03], \,\,\, x_\text{err,2}\in[-0.5,0.5] \}$.
+\item The set considered is well over the usual reference step size of 5\,mm, and the the upper bound on the velocity  considered is the physical limits of the system, $\mathcal{X}=\{x_\text{err,1}\in[-0.03,0.03], \,\,\, x_\text{err,2}\in[-0.5,0.5] \}$.
 \item The unsafe set includes relative positions below -$\delta_\text{err}$, $\mathcal{X}_u=\{x_\text{err,1}\in[-0.03,-\delta_\text{err}],\,\,\, x_\text{err,2}\in[-0.5,0.5] \}$.
 \item The safe set is a distance $\Delta$ from the unsafe position, where $\Delta<\delta_\text{err}$ such that the safe set will include $x_\text{err,1}=0$, $\mathcal{X}_0=\{x_\text{err,1}\in[-\delta_\text{err}+\Delta,0.03], \,\,\, x_\text{err,2}\in[-0.5,0.5] \}$.
 \end{itemize}
@@ -91,7 +91,7 @@ If a valid solution can be found, it will certify that that steps in positive di
 \vspace{-2mm}
 \begin{itemize}
 \itemsep-0.7mm
-\item The positions considered are as described in \autoref{fig:sos_slide}, and the velocity is bounded by the physical limits of the system from \textcolor{red}{REFRERENCE TIL SLIDE M\AA LING}, $\mathcal{X}=\{x_1\in[-0.1,0.1],\,\,\, x_2\in[-0.5,0.5] \}$.
+\item The positions considered are as described in \autoref{fig:sos_slide}, and the velocity is bounded by the physical limits of the system, $\mathcal{X}=\{x_1\in[-0.1,0.1],\,\,\, x_2\in[-0.5,0.5] \}$.
 \item The unsafe positions are also seen in \autoref{fig:sos_slide}, $\mathcal{X}_u=\{x_1\in[0.05,0.1],\,\,\, x_2\in[-0.5,0.5] \}$.
 \item The safe set for the reference is $\mathcal{X}_0=\{x_\text{ref}\in[-0.1,0.05-\delta_\text{err}]$ ensuring that $\mathcal{X}_0\subseteq\mathcal{X}\setminus\mathcal{X}_u$.
 \end{itemize}
@@ -101,7 +101,7 @@ If a valid solution can be found, it will certify that that steps in positive di
 \subsubsection{Results and Conclusions}
 
 \vspace{-2mm}
-The parameters $\bar{\epsilon}$, $\Delta$, $\delta_\text{err}$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(x)$, are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution.
+The parameters $\bar{\epsilon}$, $\Delta$, $\delta_\text{err}$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(\mathbf{x}_\text{err})$, are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution.
 The MATLAB implementation of this certificate can be found in appendix \ref{app:sos_errorstate_secondorder} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/}\texttt{sostools/} \texttt{2ndorder\_error.m}.
 The findings conform with the conclusions presented in \autoref{tab:sostools_varying_param} and \autoref{tab:sostools_varying_param_error}. The choice of the parameter values is presented in \autoref{tab:sostools_choice_error2} and the  barrier certificate is plotted in \autoref{fig:1D_2ndordersys_error_B4_q1_e5-2_d5-3_8mm}.
 
@@ -112,7 +112,7 @@ The findings conform with the conclusions presented in \autoref{tab:sostools_var
 		\rowcolor{HeaderBlue}
 		\textbf{Choice} & \textbf{Reason}\\
 		deg$(B)=$ [0:4] & %Compared to the first order system increasing the degrees of the barrier function and the \gls{sos} polynomials  more clearly causes a scaling of the functional values, while the curves are close to identical in shape on the sets. 
-		The residual norm of the solution is growing when the polynomial degrees are increased, thus the smallest degree of $B(x)$ yielding a solution is chosen. 
+		The residual norm of the solution is growing when the polynomial degrees are increased, thus the smallest degree of $B(\mathbf{x}_\text{err})$ yielding a solution is chosen. 
 		%Numerical problems are reported for all three solutions as for almost all solutions found, however, numerical errors are only indicated for the two lowest-order polynomials plotted in .
 		\\
 		\rowcolor{textBlue}
