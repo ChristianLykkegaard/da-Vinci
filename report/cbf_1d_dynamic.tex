@@ -1,11 +1,11 @@
 \glsreset{cbf}
-This chapter establishes the fundamentals for a system ensuring safety when a surgeon operates on a patient with a beating heart. In addition to the safety, it is the objective to establish a system with virtual fixture of the heart, i.e. such that the surgeon experiences the beating heart as static. As suggested by chief surgeon at Aalborg University Hospital, Johan Poulsen (see \autoref{sec:aau_doc}), a proper initial set-up emulating a beating heart could be a surface mounted on a cylinder moving periodically as a sinusoid. This scheme is outlined in \autoref{fig:dynamic_overview} illustrating how the virtual fixture of the heart should be obtained by dynamically positioning the end-effector at a fixed distance from the surface of the heart.
+This chapter establishes the fundamentals for a system ensuring safety when a surgeon operates on a patient with a beating heart. In addition to the safety, it is the objective to establish a system with virtual fixture of the heart, i.e. such that the surgeon experiences the beating heart as static. As suggested by chief surgeon at Aalborg University Hospital, Johan Poulsen (see \autoref{sec:aau_doc}), a proper initial set-up emulating a beating heart could be a surface mounted on a cylinder moving periodically as a sinusoid. This scheme is outlined in \autoref{fig:dynamic_overview} illustrating how the virtual fixture of the heart should be obtained by dynamically positioning the end effector at a fixed distance from the surface of the heart.
 \vspace{-2mm}
 \begin{figure}[H]
 %\hspace*{-10mm}
 \subbottom[Terms]{\includegraphics[height=4.2cm]{dynamic_boundary_limits.pdf}\label{fig:over_1}} \hspace{0.5cm}
 \subbottom[Time sequence of a tool keeping a fixed distance  $d_\text{ref}$ to a moving surface]{\includegraphics[height=4.2cm]{dynamic_boundary_sequence.pdf}\label{fig:over_2}}%
-\caption{The objective is to attain a virtual fixture of the moving object by controlling the end-effector distance to its surface, such that the surgeon experiences the object as static and can operate as if the object was in fact standing still. An overview of terms applied is found in \autoref{fig:over_1}.}
+\caption{The objective is to attain a virtual fixture of the moving object by controlling the end effector distance to its surface, such that the surgeon experiences the object as static and can operate as if the object was in fact standing still. An overview of terms applied is found in \autoref{fig:over_1}.}
 \label{fig:dynamic_overview}
 \end{figure}
 Thus a model of  heart movement is needed along with a model of the robot dynamics, such that a reference relative to the surface of the heart can be given. These models are presented in the following, after which a \gls{cbf} can be constructed and from this a controller is designed that ensures safety of the system.
@@ -23,7 +23,7 @@ Thus a model of  heart movement is needed along with a model of the robot dynami
 %	\label{fig:dynamic_overview_2}
 %\end{figure}
 \section{Modelling the Dynamics of the System}
-First a model of a beating heart is introduced. This is needed in order to be able to give a dynamic position reference such thath the end-effector can be controlled to keep a fixed distance to the heart surface.
+First a model of a beating heart is introduced. This is needed in order to be able to give a dynamic position reference such thath the end effector can be controlled to keep a fixed distance to the heart surface.
 The the system model from \autoref{sec:model_slide} is recapitulated, and the dynamic reference is introduced through an augmented system.
 
 \subsection{Modelling the Beating Heart as a Sinusoid}
@@ -70,7 +70,7 @@ As in \autoref{chap:cbf_1d_static}, the slide movement of the robot is considere
 \vspace{-1mm}
 \begin{tabular}{rll}
 where && \\
-$x_1$ & is the position of the end-effector & [m]\\
+$x_1$ & is the position of the end effector & [m]\\
 $\tau$ & is the time constant of the first order system, measured in \autoref{fig:stepresponseslide}, $\tau=110$\,ms & [s]\\
 $u$ & is the input to the system & [m]\\
 \end{tabular}\\
@@ -321,7 +321,7 @@ For the implementation of the beating heart controller, the setup depicted in \a
 	\subbottom{\includegraphics[width=0.23\textwidth]{20150531_171531.jpg}}%
 	\hspace{2mm}
 	\subbottom{\includegraphics[width=0.23\textwidth]{20150531_171804.jpg}}%
-	\caption{Setup of the beating heart implementation. A tissue phantom is mounted on a cylinder controlled by a motor to move as a sinusoid. The robot end-effector is following the movement at a distance $d_\text{ref}$.}
+	\caption{Setup of the beating heart implementation. A tissue phantom is mounted on a cylinder controlled by a motor to move as a sinusoid. The robot end effector is following the movement at a distance $d_\text{ref}$.}
 	\label{fig:beatingheart_setup}
 \end{figure}
 

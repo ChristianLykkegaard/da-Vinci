@@ -3,7 +3,7 @@
 
 To complete the construction of barrier certificates with SOSTOOLS for the robot slide movement parallel to the construction of \glspl{cbf} in \autoref{chap:cbf_1d_static}, and in order to test SOSTOOLS on a system of a higher state space dimension, finally a barrier certificate is found for the second order model of the robot slide position from \autoref{subsec:model_2d}. 
 
-As for the first order model in \autoref{sec:sos_search_1storder}, safety is validated for the closed loop system using a linear position controller. The system is tested for safety compliance using the same controller gains as presented in \autoref{sec:K_Nbar_1D_2ndorder} with proportional gain $\mathbf{K}=[K_1\,\,\,\,K_2]=[5.173\,\,\,\,0.214]$ and unity gain between reference and position secured by $\bar{\mathbf{N}}=K_1+1=6.173$. The closed-loop second order system with $x_1=$ position and $x_2=$ velocity of the end-effector, is recapitulated as
+As for the first order model in \autoref{sec:sos_search_1storder}, safety is validated for the closed loop system using a linear position controller. The system is tested for safety compliance using the same controller gains as presented in \autoref{sec:K_Nbar_1D_2ndorder} with proportional gain $\mathbf{K}=[K_1\,\,\,\,K_2]=[5.173\,\,\,\,0.214]$ and unity gain between reference and position secured by $\bar{\mathbf{N}}=K_1+1=6.173$. The closed-loop second order system with $x_1=$ position and $x_2=$ velocity of the end effector, is recapitulated as
 \begin{equation}
 \dot{\mathbf{x}} = 
 \dot{\begin{bmatrix}
@@ -63,7 +63,7 @@ x_\text{err,1} \\ {x}_\text{err,2}
 
 \vspace{-2mm}
 The relation between the state space system of absolute positions in \autoref{eq:sos_2ndorder} and relative positions in \autoref{eq:sos_2ndorder_error} is equivalent to the relation presented in \autoref{sec:sos_1storder_error}.
-Again, as seen in \autoref{fig:sos_slide}, the unsafe positions are positions in the upper end of the interval of positions in the set $\mathcal{X}$, which means that for references given outside the unsafe set, the system can only be unsafe if the robot end-effector position is above the reference, corresponding to a negative error. This is illustrated in \autoref{fig:sos_delta_error_2ndorder} with an overshoot, although the system presented should  not overshoot due to the placement of real poles (in -40 and -50, see \autoref{eq:K_2}). When the error can be guaranteed to stay above a value -$\delta_\text{err}$, this is equivalent to guaranteeing that the end-effector position will never be more than the distance $\delta_\text{err}$ above the reference which in turn means that the system is safe for all references with a minimum distance $\delta_\text{err}$ to the unsafe region. This is illustrated in \autoref{fig:sos_errorref_1d_new_2ndorder}.
+Again, as seen in \autoref{fig:sos_slide}, the unsafe positions are positions in the upper end of the interval of positions in the set $\mathcal{X}$, which means that for references given outside the unsafe set, the system can only be unsafe if the robot end effector position is above the reference, corresponding to a negative error. This is illustrated in \autoref{fig:sos_delta_error_2ndorder} with an overshoot, although the system presented should  not overshoot due to the placement of real poles (in -40 and -50, see \autoref{eq:K_2}). When the error can be guaranteed to stay above a value -$\delta_\text{err}$, this is equivalent to guaranteeing that the end effector position will never be more than the distance $\delta_\text{err}$ above the reference which in turn means that the system is safe for all references with a minimum distance $\delta_\text{err}$ to the unsafe region. This is illustrated in \autoref{fig:sos_errorref_1d_new_2ndorder}.
 
 \vspace{-2mm}
 \begin{figure}[htbp]
@@ -78,7 +78,7 @@ Again, as seen in \autoref{fig:sos_slide}, the unsafe positions are positions in
 \end{figure}
 
 Equivalent to the first order system, the model in \autoref{eq:sos_2ndorder} is tested and known to be valid for small steps of approximately 5\,mm, and again the set $\mathcal{X}$ to be considered is chosen to $\pm 3$\,cm.
-For the second order system, the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ must also be specified for the velocity dimension. As the rate of change of the error is related to the end-effector velocity by a factor -1, the considered interval of velocities is chosen as the upper limits for the robot slide velocity of $\pm 0.5$\,m/s \textcolor{red}{REFRERENCE TIL SLIDE M\AA LING}. This is visualized in \autoref{fig:sos_error_2d_2ndorder}, and gives the set definitions for the second order error state system:
+For the second order system, the sets $\mathcal{X}$, $\mathcal{X}_u$ and $\mathcal{X}_0$ must also be specified for the velocity dimension. As the rate of change of the error is related to the end effector velocity by a factor -1, the considered interval of velocities is chosen as the upper limits for the robot slide velocity of $\pm 0.5$\,m/s \textcolor{red}{REFRERENCE TIL SLIDE M\AA LING}. This is visualized in \autoref{fig:sos_error_2d_2ndorder}, and gives the set definitions for the second order error state system:
 \vspace{-2mm}
 \begin{itemize}
 \itemsep-0.7mm

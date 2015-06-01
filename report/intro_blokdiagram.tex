@@ -61,7 +61,7 @@ an overview of the terminology used for the robot  outlined in \autoref{fig:nami
 \end{figure}
 depicting the distinction of the robotic parts each comprising a number of links connected by joints. 
 The  "arm"  joints are fixed by electromagnets and are hence uncontrollable, but can be manually released for positioning. 
-The  "hand" consists of the controllable dynamic joints (joint naming convention is displayed in green), including the "tool", which is a replaceable instrument worth 10.000\,kr only licensed to be used for 10 operations. The outermost point of the instrument is labelled the "end-effector" and it is  this which should follow a reference point in the developed controllers.
+The  "hand" consists of the controllable dynamic joints (joint naming convention is displayed in green), including the "tool", which is a replaceable instrument worth 10.000\,kr only licensed to be used for 10 operations. The outermost point of the instrument is labelled the "end effector" and it is  this which should follow a reference point in the developed controllers.
 
 %
 %\subsection{Technical Overview of the Robotic Surgery System}
@@ -92,7 +92,7 @@ Given the topics described in the introduction to this project and the desire to
 \begin{tabularx}{\textwidth}{X X}
 \rowcolor{HeaderBlue} 
 \textbf{Problem} &  \textbf{Origin}\\
-Design a position controller such that it is possible to specify regions where it can be guaranteed that the end-effector will never enter. & Provide the surgeon with a feature ensuring that certain regions will never be touched, e.g. veins and similar. \\
+Design a position controller such that it is possible to specify regions where it can be guaranteed that the end effector will never enter. & Provide the surgeon with a feature ensuring that certain regions will never be touched, e.g. veins and similar. \\
 \rowcolor{textBlue} 
 Design a position controller taking  user input relative to a point on the surface of a beating heart while ensuring that the heart is not penetrated. & Founding automated control on beating hearts where a safe distance to the heart is maintained such that the heart under no circumstances is penetrated.\\
 Modelling the system sufficiently without touching the underlying controllers. & The cascaded controllers seen in \autoref{fig:overview} are not to be touched. Safety is desired solely from the ROS environment. \\
@@ -105,7 +105,7 @@ Implement the controllers physically on the da Vinci robot. This also implies an
 The problems given in \autoref{tab:requirement} may be solved in a number of ways and it is not initially obvious which is the more appropriate one. For this reason, it is chosen to bifurcate a solution strategy, thus two approaches are used:
 \vspace{-2mm}
 \begin{itemize}
-\item The design of a safe end-effector setpoint controller, utilizing control barrier functions such that the robot is physically prevented from entering unsafe areas, thereby guaranteeing safety in real time \citep{bib:safety}. 
+\item The design of a safe end effector setpoint controller, utilizing control barrier functions such that the robot is physically prevented from entering unsafe areas, thereby guaranteeing safety in real time \citep{bib:safety}. 
 \item The design of a controller unrestricted from safety considerations. The safety is ensured before the controller is physically implemented by conducting an analysis adjudicating system safety. Thus the controller will be given a \textit{pass} verdict if it does not violate the safety constraints and a \textit{not pass} verdict if it violates predefined safety conditions, thus suggesting an iteration of the controller such that it becomes safe. 
 \end{itemize}
 The analysis of these two strategies will provide an indication as to which method may be the most appropriate one to use given a specific problem, its complexity taken into account. Consequently, this report presents algorithms, analyses, controllers, software development and formal verification that guarantees safety for automated surgeries.
