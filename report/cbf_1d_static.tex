@@ -23,7 +23,7 @@ $ \mathcal{X}=\{\mathbf{x} \in[\Lambda_{\text{lim}-},\Lambda_{s-}] \cup$ \newlin
 \caption{\gls{cbf} state intervals for the robotslide position, with limits as given in \autoref{fig:safe:overview} i.e. $\Lambda_\text{lim}$ is the physical slide limit ($\pm$0.1\,m), $\Lambda_s$ is a soft limit denoting a transition line and $\Lambda_h$ is a hard limit where a trajectory at all cost can not cross. }
 \label{tab:intervals}
 \end{table}
-The interval $\mathbf{x} \in [\Lambda_{s-},\Lambda_{s+}] = \mathcal{Y}$ is safe thus $\tilde{u}(\mathbf{x})$ stated in \autoref{eq:utilde} can be used in this region.
+The interval $\mathcal{Y}=\{\mathbf{x} \in [\Lambda_{s-},\Lambda_{s+}]\}$ is safe thus $\tilde{u}(\mathbf{x})$ stated in \autoref{eq:utilde} can be used in this region.
 As the control law stated in \autoref{eq:control_law} utilizes Lie derivatives, a system model is required before any controller design may be initiated.
 %\hspace{1cm }\texttt{rostopic echo joint\_states/position[6]} \hspace{0.2cm} {\color{blue}{\# Be sure to have the ROS environment correctly configured according to \autoref{app:ros}}}
 
@@ -351,6 +351,7 @@ x_2 \\ -\omega_n^2 x_1 - 2\zeta \omega_n x_2
 &= 2c_1\left( \dfrac{x_1-x_{10}}{a_2^2} - \dfrac{\omega_n^2 x_1 +2\zeta \omega_n x_2}{b_2^2} \right) x_2 \Big|_{x_{2} = 0} = 0
 \label{eq:LfB_2}
 \end{flalign}
+
 It is noted that $L_fB(\mathbf{x}) = 0$ for all points $(x_1,0)$ (i.e. at zero velocity) which % implies stability but not asymptotic stability. That is in general not good for physical systems and 
 does not fulfil \autoref{req2}. It does, however, fulfil \autoref{req2_weak} thus proving $B(\mathbf{x})$ from \autoref{eq:cbf2} to be a weak \gls{cbf}. %However, an engineering reflection and decision is taken at this point.
 Note that when the velocity is zero, the slide movement is stable, although only marginally stable. %At this point $k_0(x)=0$, which indeed will force the slide movement to its origin as the control signal is the reference to a position controller. 
