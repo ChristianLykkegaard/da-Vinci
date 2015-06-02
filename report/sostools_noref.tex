@@ -55,7 +55,7 @@ zB = monomials(x1,degB);
 
 % =============================================
 % Define space X in Rn
-[a,b,c] = parabola(Xmin,Xmax); % get coefficients for parabola which is positive for x ? [-0.1,0.1]
+[a,b,c] = parabola(Xmin,Xmax); % get coefficients for parabola which is positive for x in [-0.1,0.1]
 gX = a*x1^2+b*x1+c;
 zX = monomials(x1,degq);
 [prog,qX] = sossosvar(prog,zX);
