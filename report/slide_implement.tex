@@ -159,7 +159,7 @@ All plots and measurements in this subsection can be reconstructed by running th
 \begin{figure}[htbp]
 \hspace{-7mm}
 		\includegraphics[width=1.1\textwidth]{trajectory_slide_meas_1.eps}
-	\caption{Measured position trajectory based on the first order system approximation.}
+	\caption{Measured position trajectory based on the first order system approximation. Joint velocity limiting to 25\,\% becomes effective when large steps are given, thus altering the system dynamics. This feature is set in the underlying low-level controllers on the FPGA (see \autoref{fig:overview}) in the development phase to protect the system from excessive mechanical stress. This is particularly noticeable for the step at sample 700, but is not important in this context as the aim merely is to show setpoint tracking and safety controller effectiveness.}
     \label{fig:traj_meas_1}
 \end{figure}
 The measured state trajectory is plotted in \autoref{fig:traj_meas_1}.
@@ -201,7 +201,7 @@ It is seen that the real time part is completed within the allowed 10\,ms (100\,
 \begin{figure}[H]
 	\center
 		\includegraphics[scale=0.65]{meas_trajectory_2_order.eps}
-	\caption{Measured position trajectory based on the second order approximation.}
+	\caption{Measured position trajectory based on the second order approximation. Similar to \autoref{fig:traj_meas_1} it is seen how joint velocity limiting becomes effective when large steps are given.}
     \label{fig:traj_meas_2}
 \end{figure}
 The measured state trajectory is plotted in \autoref{fig:traj_meas_2}, visualizing how the overshoot is eliminated, which was indeed the main purpose of the development of a controller based on a second order approximation. Also, note how it is possible to give setpoints close to the the set $\mathcal{T}$ and still avoid oscillations caused by $\sigma(\mathbf{x})\neq 0$. This is a big advantage when a doctor needs to operate close to an unsafe region. Finally, just as in \autoref{fig:traj_meas_1}, it is seen how $\sigma(\mathbf{x})$ allows $k_0(\mathbf{x})$ to force the position from reaching its setpoint when $x_\text{ref} \in \mathcal{X}_u$ but allows $x$ to cross $x_\text{ref}$ when $x_\text{ref} \in \mathcal{T}$, as is intended with $\sigma(\mathbf{x})$.
