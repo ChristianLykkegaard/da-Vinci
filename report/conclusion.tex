@@ -1,4 +1,4 @@
-This chapter will conclude on the results obtained throughout this thesis and put the solution and entire strategy into perspective in the discussion.
+This chapter will conclude on the results obtained throughout this thesis and put the solution and entire strategy into perspective in the discussion part.
 \section*{Conclusion}
 Safety aspects in robotic surgeries and automated robotic surgeries are found to be \textit{the} important factor, as analysed in \autoref{chap:intro}. Concurrently, it founds the desire to obtain virtual fixtures. Consequently, a barrier certificate is stated in \autoref{chap:barrier_cerificates} which adapt and twist the Lyapunov stability criteria to enable a way to define regions which are safe and unsafe respectively. 
 
@@ -10,7 +10,7 @@ The control topology presented in \autoref{chap:cbf} is applied to three use cas
 \item A safe regulator is designed to ensure virtual fixtures in \autoref{chap:cbf_1d_dynamic}. A dynamic CBF is in that sense constructed and founding safety while operating on beating hearts. The result for this use case is that a safe distance between heart and robotic end effector get be set as desired.
 \item The safety is extended to the Euclidean Space in \autoref{chap:cbf_3d_static} which implies additional implementation challenges such as a kinematic description (mapped and verified in \autoref{app:kinematic_model_robot}), forward kinematics and inverse kinematics. The construction of a CBF is taken to higher dimensions outlining the interior of an ellipsoid, thus representing a heart or another vital organ fixed in space. The result is a valid CBF ensuring that the robot end effector is kept in the exterior of the ellipsoid at all time.
 \end{itemize}
-All three use cases are implemented in a simulation environment in MATLAB with convincing results, i.e. safety is ensured for the desired regions. The controllers are furthermore implemented in C++ in the ROS (Robotic Operating System) framework. The ROS framework is founded in \autoref{app:ros} as a necessary condition to allow any implementation on da Vinci robot. All development within ROS is tailored for this project and was not existing when the project was initiated. The implemented controllers corresponds with the expected outcome and does indeed behave as expected, i.e. ensuring safety for the predefined regions.
+All three use cases are implemented in a simulation environment in MATLAB with convincing results, i.e. safety is ensured for the desired regions. The controllers are furthermore implemented in C++ in the ROS (Robotic Operating System) framework. The ROS framework is founded in \autoref{app:ros} as a necessary condition to allow any implementation on da Vinci robot. All development within ROS is tailored for this project and was not existing when the project was initiated. The implemented controllers corresponds with the expected outcome and does indeed behave as expected, i.e. ensuring safety for the predefined regions. Additionally, the implemented controllers are verified to require very little processing power making them ideal as real-time controllers.
 
 The three use cases does, however, consist of simple models where the system order does not exceed 3. An important conclusion is drawn from the use cases, which already could be inferred from the one dimensional safe slide controller (developed in \autoref{chap:cbf_1d_static}) with system order 2. That is, for high order systems where the physical interpretation of the state vector is vanished, the construction of a valid CBF is a highly non-trivial task - if not impossible. 
 
@@ -19,35 +19,27 @@ For that reason, the problem is turned upside down in \autoref{chap:putinar}, th
 The strategy presented in \autoref{chap:putinar} is applied in the MATLAB toolbox SOSTOOLS in \autoref{chap:sostools} such that the barrier certificates can be searched automatically. Here, a framework is developed such that the toolbox takes a closed loop system description and a description of the safe and unsafe regions as inputs. The developed framework delivers an unambiguous certificate answering if the system is safe, thus constituting the \textit{pass} and \textit{not pass} verdict. The slide controller developed in \autoref{chap:cbf_3d_static} is accordingly taken as an example and the framework is verified with this example. Both the first and second order system approximation is analysed in the designed SOSTOOL framework. It is, as expected, certified to be safe in almost the entire desired range.  This examples concludes and verifies the use of the developed framework. The framework can easily handle other systems, as the task merely comprise other closed loop system descriptions as input in other dimensions with different safe and unsafe sets. This is a trivial task.
 
 Hence, it can be concluded that the two initial desired strategies comprising the design and analysis of a safe controller are investigates and solved sufficiently to provide a "proof of concept" framework. This applies for both theory, simulation and implementation.
-\section*{Discussion}
+\section*{Discussion and Future Work}
 The developed solution proves itself very efficient in both theory and simulation. However, the implementation aspect suffers from a number of issues which should be investigated in future work. This entails:
 \begin{itemize}
 \item Incorporate integral action in all controllers to eliminate steady state errors.
-\item Increase the sampling rate from 100\,Hz to 2\,kHz which indeed is the long term goal. All controllers will draw benefits from this on the transition set $\mathcal{T}$. This may, however, introduce challenges as the allowed executution time is lowered to 0.5\,ms .. 
+\item Increase the sampling rate from 100\,Hz to 2\,kHz which indeed is the long term goal. All controllers will draw benefits from this on the transition set $\mathcal{T}$. This may, however, introduce challenges as the allowed execution time (process time between every sample) is lowered to 0.5\,ms which is less than the actual execution time in \autoref{fig:3d_exe} for the safety controller in the 3D Euclidean space. Therefore, optimization must be performed in the implementation.
 \item Improvement of the inverse kinematic solver as it occasionally chooses to circulate multiple times around the unit circle to obtain a position which could be reached with an angle less than $\pi$.
 \end{itemize}
-Additionally, the position controller implemented on the FPGA (as seen in \autoref{fig:overview}), is left untouched. It may with removed to draw benefits from a more clear dynamics. This will require another system model, but may be worth the trouble.
+Additionally, the position controller already implemented on the FPGA (as seen in \autoref{fig:overview}), is left untouched. It may with removed to draw benefits from a more clear dynamics. This will require another system model, but may be worth the trouble.
 
-\section*{noter}
-ROS er klargjort og klar..
+The application of the safety controllers derived throughout the project is exclusively the surgical robot. However, it should take very little imagination to imagine that this way of constructing controllers has the potential to be used in many other industries where safety is critical or simply where regions are desirable to be left untouched.
 
-vores controllers er lynhurtige
+Furthermore, a consistent neglecting topic in this project is the use of trajectory planning. The controllers developed takes only small steps as input. However, large step sizes has been given to the controllers in this project to demonstrate certain features, but obviously, it is desired to construct an outer layer ensuring that small step sizes are given.
 
-ved 2kHz kan 3d safety controlleren godt riskiere at halte efter
+Additionally, at no point has the orientation of the robot hand been considered. Obviously, ensuring safety for then end effector is not sufficiently as the heart or other vital organs can be broken from the instrument elsewhere. This is an important topic in future work.
 
-This will hopefully become a nice conclusion.
+As explained by assistant nurse Jane Petersson in \autoref{sec:aau_doc}, veins, nerves and organs can not be cut. It has been the attempt to construct barrier certificates that could represent these parts of the body. However, it is clear that a realistic barrier certificate representing these parts is far away. Especially because they are time dependent and because, from time to time, the surgeon needs to move these parts to be able to operate in a certain area, thus reshaping these parts. Consequently, a very creative and adaptive barrier function is required and will as a necessary condition require video stream such that these parts can be measured. A way to resolve this could be a combination of the design approach and analysis approach such that:
+\begin{enumerate}
+\item Search for a barrier certificate using the framework developed in \autoref{chap:sostools}.
+\item Apply this barrier certificate as control barrier function in a similar way as done in \autoref{chap:cbf_1d_static}, \autoref{chap:cbf_1d_dynamic} and \autoref{chap:cbf_3d_static}.
+\item Analyse the situation. Adjust barrier certificate if necessary and describe new closed loop system.
+\item Take the new close loop system as input to the framework developed in \autoref{chap:sostools} and start from 1 again.
+\end{enumerate}
+This iterative approach may along with the preceding listed bullet point get the surgery industry one step closer to the end goal of a safe robotic surgery with the da Vinci robot. 
 
-to be used in further development of an advanced automated control system for the Aalborg University modified da Vinci surgical robot
-
-en udfording at designe barrier functions der variere i tid og kan flytte sig, som det sås i operationen
-
-iterative method of using the analytic approach
-
-udvid kompleksitet:
-in contrast to a more advanced (realistic) model of the heart, such as the one described in \autoref{app:dynamic_model_heart}
-
-integral action
-
-i stedet for manuelt at give (alt for store) steps i setpunkter, kan der lægges et lag ovenpå med trajektorieplanlægning der sender setpunkter ned til det her controlsystem som så sikrer sikkerhed :)
-
-perspektiver til at det kan bruges i mange andre automatiseringssammenhænge end lige til kirurgi
