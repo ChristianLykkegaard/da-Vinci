@@ -142,7 +142,7 @@ The controller is implemented at the highest abstraction layer, i.e. the ROS env
 	c_{p,\text{max}} = \dfrac{1}{100\,\text{Hz}} = 10\,\text{ms}
 \end{flalign*}
 The main algorithm is depicted in \autoref{fig:slide_safery_algorithm}, and the source code
-can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}.
+can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. A complete description on how to run the developed framework is found in \autoref{appsec:ros_development}.
 
 \subsection{Implementation on the da Vinci Robot Based on the First Order Model}\label{subsec:implement-davinci-1d}
 All plots and measurements in this subsection can be reconstructed by running the MATLAB script \texttt{plot\_data} found in \autoref{app:cd} in the folder \texttt{measurements/slide\_safety\_controller/1D\_1st\_order}. The execution time is validated first as it is essential for the controller to complete successfully. \Autoref{fig:exe_1} shows a plot of measured execution time for each iteration, verifying that $c_p < c_{p,\text{max}}$ and thereby the real-time part.

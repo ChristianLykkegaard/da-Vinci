@@ -307,9 +307,11 @@ The MATLAB implementation itself can be found in \autoref{app:slide_implement_1}
 \end{figure}
 It is from \autoref{fig:matlab_dynamics} seen that the robot end effector settles at a distance at $d_\textbf{•}t{ref}=3\,$cm until the simulation reaches 2\,s ($k=4000$). It is, however, seen that $d_\text{ref}$ is not constant which is due to the lack of integral action in the system. This could obviously be resolved by including integral action in the controller.  At 2\,s $d_\text{ref}$ changes to -1\,cm which causes the safety controller to react. The state $x_1$ settles at a safe distance from the beating heart which is left untouched, and the simulated controller is thereby verified to work as intended.
 
-\vspace{-0.2cm}
+\vspace{-0.3cm}
 \section{Implementation on the da Vinci Robot}
-\vspace{-0.2cm}
+\vspace{-0.3cm}
+
+A complete description on how to run the developed framework is found in \autoref{appsec:ros_development}.
 
 For the implementation of the beating heart controller, the setup depicted in \autoref{fig:beatingheart_setup} is used. A tissue phantom representing the heart is mounted on top of a cylinder controlled by a motor to move in a sinusoid. In the motor controller interface the amplitude, frequency and offset of the sinusoid can be set.%
 \begin{figure}[h]
@@ -329,7 +331,9 @@ The algorithm that implements the beating heart controller is outlined in \autor
 The execution time is not shown here as it is verified in \autoref{fig:exe_1} and \autoref{fig:exe_2} that it is far below the allowed maximum execution time and this controller does not constitute heavier calculations. The measured state trajectory is plotted on \autoref{fig:beating_heart_meas}.%
 
 
-It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1}$ for all $t$ even when the distance $d_\text{ref}$ is set to the unsafe value -2\,cm. It is also seen how $d_\text{ref}$ can be set to various values. The lack of integral action is again exposed in the plot. It is also seen how the trajectory fluctuates significantly more than the simulated response from \autoref{fig:matlab_dynamics} which is due to the far lower sampling rate.
+It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1}$ for all $t$ even when the distance $d_\text{ref}$ is set to the unsafe value -2\,cm. It is also seen how $d_\text{ref}$ can be set to various values. The lack of integral action is again exposed in the plot. It is also seen how the trajectory fluctuates significantly more than the simulated response from \autoref{fig:matlab_dynamics} which is due to the far lower sampling rate. 
+
+
 
 \begin{figure}[H]
 	\center
@@ -345,8 +349,6 @@ It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves 
 	\caption{Algorithm for dynamic slide safety controller. The source code associated with the algorithm can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032} (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}).}
 	\label{fig:beating_heart_flow}
 \end{figure}
-
-
 
 \vspace{2mm}
 \section{Conclusion for the Beating Heart Controller}

@@ -21,8 +21,15 @@
 
 \chapter*{Nomenclature}\label{chap:acronym}
 \addcontentsline{toc}{chapter}{Nomenclature} % Adds chapter to TOC even though it is unnumbered
-\printglossary[style=mcoltree,title=Glossary] %Print the glossary			%style=altlist
+
+\vspace{-0.35cm}
+
 \printglossary[type=\acronymtype,style=glossary2col] %Print list of acronyms
+
+%\newpage
+
+%\printglossary[style=mcoltree,title=Glossary] %Print the glossary			%style=altlist
+
 \printglossary[type=symbols,style=altlong4col] %Print list of symbols
 
 \input{nomenclature_remarks}
@@ -126,6 +133,8 @@
 \input{auxiliary.tex}
 
 \chapter{Attached CD}\label{app:cd}
+\section*{$\bullet$ Digital Copy of this Thesis}
+\section*{$\bullet$ Literature}
 \section*{$\bullet$ MATLAB scripts}
 \section*{$\bullet$ Measurement Files}
 \section*{$\bullet$ Source Code}
@@ -151,4 +160,9 @@
 {\color{white}{\gls{Nbar}}}
 {\color{white}{\gls{Con}}}
 {\color{white}{\gls{Obs}}}
+{\color{white}{\gls{rostopic}}}
+
+\textcolor{white}{%\gls{analytic_func} \gls{rational_func} \gls{proper_func} \gls{lipschitz} \gls{dimension} \gls{hurwitz} 
+	\gls{injective_func} \gls{surjective_func} \gls{bijective_func}  \gls{compact_space}  \gls{extrinsic} \gls{intrinsic} \gls{tcp} \gls{Ts} \gls{y} \gls{radius_vec} \gls{center_vec}}
+
 \end{document}

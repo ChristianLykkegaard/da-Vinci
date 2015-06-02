@@ -326,7 +326,7 @@ In contrast to the MATLAB implementation, the implementation on the da Vinci rob
 \item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/\newline davinci\_description ---branch reduced\_robot} 
 \item \texttt{git clone https://github.com/AalborgUniversity-RoboticSurgeryGroup/\newline davinci\_driver ---branch gr1032}
 \end{itemize}
-It is also important to setup the ROS framework as described in \autoref{app:ros}. The implementation of the controller derived in this chapter consists of the topics stated below:
+It is also important to setup the ROS framework as described in \autoref{app:ros}. A complete description on how to run the developed framework is found in \autoref{appsec:ros_development}. The implementation of the controller derived in this chapter consists of the topics stated below:
 \begin{itemize}
 \item A description of the kinematic chain. This is required to compute the end effector position. The kinematic description is written in the ROS framework, located in the \texttt{davinci\_description} package under the folder \texttt{robots} as a number of \texttt{xacro} (XML macros) files. These \texttt{xacro} files are at launch time converted to a Unified Robot Description Format (URDF) such that kinematic solvers can access the information. The ROS framework and file system is described more thoroughly in \autoref{app:ros}.
 \item Integration of an inverse kinematic solver such that a desired $(x,y,z)$ position can be obtained from the six active joint angles (see \autoref{fig:naming_convention}), i.e. from:
