@@ -99,7 +99,7 @@ Searching for a polynomial barrier certificate in SOSTOOLS requires the definiti
 
 
 \subsection{Evaluating the SOSTOOLS Solution}\label{subsec:eval_sos}
-If no solution is found, the tested closed-loop system $f_{cl}(\mathbf{x})$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(\mathbf{x})$ or \gls{sos} polynomials $q_j(\mathbf{x})$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
+If no valid solution is found, the tested closed-loop system $f_{cl}(\mathbf{x})$ cannot be guaranteed to be safe. It may, however, still be possible to find a barrier certificate and validate safety using a different degree of the polynomial $B(\mathbf{x})$ or \gls{sos} polynomials $q_j(\mathbf{x})$. Otherwise the safe region $\mathcal{X}_0$ may have to be smaller.
 
 When the \gls{sos} program is solved, the list of information printed out in the MATLAB terminal includes a number of useful parameters for evaluating the validity of the solution, summarized in \autoref{tab:sostools_evaluation}.
 If the problem is either primal or dual infeasible, indicated by \texttt{pinf} or \texttt{dinf} being 1, respectively, obviously no solution could be found. The feasibility ratio is an indicator of the feasibility as well, and converges to 1 for feasible solutions and to -1 for strongly infeasible solutions \citep{bib:feasratio}. A value in between is an indicator of numerical problems, which will also be written in the overview.
