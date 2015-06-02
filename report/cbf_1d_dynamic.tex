@@ -305,7 +305,7 @@ The MATLAB implementation itself can be found in \autoref{app:slide_implement_1}
 	\caption{Dynamic system with heart position defined as the zero level set of the CBF. References are given as relative distances to the moving surface. When a reference outside the safe region is given, the safety controller prevents the tool from entering the unsafe region.}
     \label{fig:matlab_dynamics}
 \end{figure}
-It is from \autoref{fig:matlab_dynamics} seen that the robot end effector settles at a distance at $d_\text{ref}=3\,$cm until the simulation reaches 2\,s ($k=4000$). It is, however, seen that $d_\text{ref}$ is not constant which is due to the lack of integral action in the system. This could obviously be resolved by including integral action in the controller.  At 2\,s $d_\text{ref}$ changes to -1\,cm which causes the safety controller to react. The state $x_1$ settles at a safe distance from the beating heart which is left untouched, and the simulated controller is thereby verified to work as intended.
+It is from \autoref{fig:matlab_dynamics} seen that the robot end effector settles at a distance at $d_\textbf{•}t{ref}=3\,$cm until the simulation reaches 2\,s ($k=4000$). It is, however, seen that $d_\text{ref}$ is not constant which is due to the lack of integral action in the system. This could obviously be resolved by including integral action in the controller.  At 2\,s $d_\text{ref}$ changes to -1\,cm which causes the safety controller to react. The state $x_1$ settles at a safe distance from the beating heart which is left untouched, and the simulated controller is thereby verified to work as intended.
 
 \vspace{-0.2cm}
 \section{Implementation on the da Vinci Robot}
@@ -334,7 +334,7 @@ It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves 
 \begin{figure}[H]
 	\center
 	\includegraphics[width=1.05\textwidth]{meas_beating_heart.eps}
-	\caption{It is seen how $x_1$ moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1}$ for all $t$ even when the distance $d_\text{ref}$ is set to the unsafe value -2\,cm. It is also seen how $d_\text{ref}$ can be set to various values.}
+	\caption{It is seen how $x_1$ moves along with the beating heart with a nearly constant distance $d_\text{ref}$. It is seen how the safety controller ensures that $x_1 > x_{h1}$ for all $t$ even when the distance $d_\text{ref}$ is set to the unsafe value -2\,cm. It is also seen how $d_\text{ref}$ can be set to various values. Measurement files and plotting details can be found in \autoref{app:cd} under the path \texttt{measurements/beating\_heart}.}
 	\label{fig:beating_heart_meas}
 \end{figure}
 
