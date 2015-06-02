@@ -176,7 +176,8 @@ scaling factor [rad/V] & -0.225365326 & 0.302076216 & -0.306198114 & -0.31166593
 
 \newpage
 
-\subsection{Testing Existing Kinematics in Matlab}
+\subsection{Testing Existing Kinematics in MATLAB}
+MATLAB script and measurement files can be found in \autoref{app:cd} on the path \texttt{matlab\_scripts/kinematic\_ models/robot\_kinematics.m}.
 The single-axis rotation matrices are defined according to \autoref{eq:RxRyRz}
 
 \begin{lstlisting}[language=matlab]
@@ -402,8 +403,9 @@ The placement of coordinate frames according to the \gls{dh} convention is shown
 	\label{tab:DH_param}
 \end{table}
 
-\subsection{Testing \gls{dh} Kinematics in Matlab}
+\subsection{Testing \gls{dh} Kinematics in MATLAB}
 The new transformation matrices are computed and tested similarly, to determine the accuracy of the defined robot kinematics, and the results are seen in \autoref{tab:DH_distances}.
+MATLAB script and measurement files can be found in \autoref{app:cd} on the path \texttt{matlab\_scripts/kinematic\_models/robot\_kinematics.m}.
 \begin{lstlisting}[language=matlab]
 %% Coordinate frames defined according to Denavit-Hartenberg convention
 % Parameters
@@ -584,8 +586,9 @@ frame  & $a$ ($x$)  & $b$ ($y$)  & $d$ ($z$)  & roll  & pitch & yaw & $\theta^*$
 	\label{fig:robot_compromise_frames}
 \end{figure}
 
-\subsection{Testing Active Joint Kinematics in Matlab}
-As for the previous sets of coordinate frames, the transformations are tested in Matlab to check the conformity with the two other kinematic chains.
+\subsection{Testing Active Joint Kinematics in MATLABb}
+As for the previous sets of coordinate frames, the transformations are tested in MATLAB to check the conformity with the two other kinematic chains.
+MATLAB script and measurement files can be found in \autoref{app:cd} on the path \texttt{matlab\_scripts/kinematic\_models/robot\_kinematics.m}.
 
 \begin{lstlisting}[language=matlab]
 %% Coordinate frames defined as a compromise between DH and the xacro syntax, excluding passive joints
