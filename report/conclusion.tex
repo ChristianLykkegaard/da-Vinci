@@ -1,8 +1,45 @@
+This chapter will conclude on the results obtained throughout this thesis and put the solution and entire strategy into perspective in the discussion.
+\section*{Conclusion}
+Safety aspects in robotic surgeries and automated robotic surgeries are found to be \textit{the} important factor, as analysed in \autoref{chap:intro}. Concurrently, it founds the desire to obtain virtual fixtures. Consequently, a barrier certificate is stated in \autoref{chap:barrier_cerificates} which adapt and twist the Lyapunov stability criteria to enable a way to define regions which are safe and unsafe respectively. 
+
+A theoretical controller is developed in \autoref{chap:cbf} which built upon control barrier functions which ensures that the barrier certificate presented in \autoref{chap:barrier_cerificates} are obeyed at all time. Thus, the control barrier function allows a way to ensure safety in real-time with astounding few calculations.
+
+The control topology presented in \autoref{chap:cbf} is applied to three use cases which intend to commence a solution of the problem of guaranteeing safety in automated surgeries, i.e.:
+\begin{itemize}
+\item A concrete example of the use of control barrier functions is founded in \autoref{chap:cbf_1d_static}. It comprises the instrument slide movement. The system is modelled as both a first and second order system, thereby slowly increasing the complexity of the CBFs, such that necessary experience in the construction of CBFs can be gathered. The result is a successful controller guaranteeing safety for predefined regions in one dimension for both a first and second order system approximation.
+\item A safe regulator is designed to ensure virtual fixtures in \autoref{chap:cbf_1d_dynamic}. A dynamic CBF is in that sense constructed and founding safety while operating on beating hearts. The result for this use case is that a safe distance between heart and robotic end effector get be set as desired.
+\item The safety is extended to the Euclidean Space in \autoref{chap:cbf_3d_static} which implies additional implementation challenges such as a kinematic description (mapped and verified in \autoref{app:kinematic_model_robot}), forward kinematics and inverse kinematics. The construction of a CBF is taken to higher dimensions outlining the interior of an ellipsoid, thus representing a heart or another vital organ fixed in space. The result is a valid CBF ensuring that the robot end effector is kept in the exterior of the ellipsoid at all time.
+\end{itemize}
+All three use cases are implemented in a simulation environment in MATLAB with convincing results, i.e. safety is ensured for the desired regions. The controllers are furthermore implemented in C++ in the ROS (Robotic Operating System) framework. The ROS framework is founded in \autoref{app:ros} as a necessary condition to allow any implementation on da Vinci robot. All development within ROS is tailored for this project and was not existing when the project was initiated. The implemented controllers corresponds with the expected outcome and does indeed behave as expected, i.e. ensuring safety for the predefined regions.
+
+The three use cases does, however, consist of simple models where the system order does not exceed 3. An important conclusion is drawn from the use cases, which already could be inferred from the one dimensional safe slide controller (developed in \autoref{chap:cbf_1d_static}) with system order 2. That is, for high order systems where the physical interpretation of the state vector is vanished, the construction of a valid CBF is a highly non-trivial task - if not impossible. 
+
+For that reason, the problem is turned upside down in \autoref{chap:putinar}, thus no restriction is put forth for the controller development. Instead, the closed loop controller is evaluated and asked if it complies with the barrier certificate in \autoref{chap:barrier_cerificates}. The verdict is hereafter given as \textit{pass} or \textit{not pass}. In that sense, \autoref{chap:putinar} utilizes the global SOS (Sum Of Squares) formulation and through Putinar's Positivstellensatz recast the problem as a local problem, thus allowing sets of unsafe and safe regions to be defined.
+
+The strategy presented in \autoref{chap:putinar} is applied in the MATLAB toolbox SOSTOOLS in \autoref{chap:sostools} such that the barrier certificates can be searched automatically. Here, a framework is developed such that the toolbox takes a closed loop system description and a description of the safe and unsafe regions as inputs. The developed framework delivers an unambiguous certificate answering if the system is safe, thus constituting the \textit{pass} and \textit{not pass} verdict. The slide controller developed in \autoref{chap:cbf_3d_static} is accordingly taken as an example and the framework is verified with this example. Both the first and second order system approximation is analysed in the designed SOSTOOL framework. It is, as expected, certified to be safe in almost the entire desired range.  This examples concludes and verifies the use of the developed framework. The framework can easily handle other systems, as the task merely comprise other closed loop system descriptions as input in other dimensions with different safe and unsafe sets. This is a trivial task.
+
+Hence, it can be concluded that the two initial desired strategies comprising the design and analysis of a safe controller are investigates and solved sufficiently to provide a "proof of concept" framework. This applies for both theory, simulation and implementation.
+\section*{Discussion}
+The developed solution proves itself very efficient in both theory and simulation. However, the implementation aspect suffers from a number of issues which should be investigated in future work. This entails:
+\begin{itemize}
+\item Incorporate integral action in all controllers to eliminate steady state errors.
+\item Increase the sampling rate from 100\,Hz to 2\,kHz which indeed is the long term goal. All controllers will draw benefits from this on the transition set $\mathcal{T}$. This may, however, introduce challenges as the allowed executution time is lowered to 0.5\,ms .. 
+\item Improvement of the inverse kinematic solver as it occasionally chooses to circulate multiple times around the unit circle to obtain a position which could be reached with an angle less than $\pi$.
+\end{itemize}
+Additionally, the position controller implemented on the FPGA (as seen in \autoref{fig:overview}), is left untouched. It may with removed to draw benefits from a more clear dynamics. This will require another system model, but may be worth the trouble.
+
+\section*{noter}
+ROS er klargjort og klar..
+
+vores controllers er lynhurtige
+
+ved 2kHz kan 3d safety controlleren godt riskiere at halte efter
+
 This will hopefully become a nice conclusion.
 
 to be used in further development of an advanced automated control system for the Aalborg University modified da Vinci surgical robot
 
-
+en udfording at designe barrier functions der variere i tid og kan flytte sig, som det sås i operationen
 
 iterative method of using the analytic approach
 
