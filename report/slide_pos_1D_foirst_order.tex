@@ -1,9 +1,11 @@
+\section{Implementation of Safety Controllers}
 This appendix contains the MATLAB implementation of the controllers developed throughout the project, i.e.:
 \begin{itemize}
-\item Safety controller for a system with static boundaries for instrument slide in \autoref{sec:app:static}
+\item Safety controller for a system with static boundaries for instrument slide in \autoref{sec:app:static}.
 \item Safety controller for a system with dynamic boundaries to simulate a set-up consisting of a beating heart and a safe distance between heart and robot end effector. This is in \autoref{sec:app:dynamic}.
+\item Safety controller for a system in 3D Euclidean space comprising control of all joints in the robotic hand, employing forward an inverse kinematics. This is in found \autoref{sec:app:3d}.
 \end{itemize}
-\section{Implementation of Instrument Slide Safety Controller with Static Boundaries}\label{sec:app:static}
+\subsection{Implementation of Instrument Slide Safety Controller with Static Boundaries}\label{sec:app:static}
 This section contains the MATLAB implementation of the slide controller developed in \autoref{chap:cbf_1d_static}. No user inputs are required to run the script. The script shown here includes no plotting, but the script found in \autoref{app:cd} under the path \texttt{matlab\_scripts/slide\_controller/slide\_controller.m} includes all plotting details.\\
 
 \begin{lstlisting}[language=matlab]
@@ -180,7 +182,7 @@ for R = 1:length(i)
   
 end
 \end{lstlisting}
-\section{Implementation of Instrument Slide Safety Controller with Dynamic Boundaries}\label{sec:app:dynamic}
+\subsection{Implementation of Instrument Slide Safety Controller with Dynamic Boundaries}\label{sec:app:dynamic}
 This section contains MATLAB implementation of the controller developed in \autoref{chap:cbf_1d_dynamic}. All plotting details are omitted in this section, but the controller can also be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/beating\_heart/beating\_heart\_controller.m} which includes the plotting section as well.\\
 
 \begin{lstlisting}[language=matlab]
@@ -274,5 +276,129 @@ for R = 1:length(i)
 
   %--- calculate distance between heart and robot end effector ---%
   Delta(1,R) = x(1,R) - x(2,R);
+end
+\end{lstlisting}
+
+\subsection{Implementation of 3D Euclidean Space Safety Controller}\label{sec:app:3d}
+
+This section contains the MATLAB implementation of the controller of the full robotic hand and instrument in 3D Euclidean space developed in \autoref{chap:cbf_3d_static}. All plotting details are omitted in this section, but the controller can also be found in \autoref{app:cd} under the path \texttt{matlab\_scripts/safe\_3d/safety\_in\_3d.m}.
+\begin{lstlisting}[language=matlab]
+close all;
+clear; 
+clc; 
+format long;
+hfile = matlab.desktop.editor.getAll;
+
+%--- setup systems ---%
+taux = 0.070;
+tauy = 0.100
+tauz = 0.041
+
+A = [-1/taux    0         0 ;
+0       -1/tauy     0 ;
+0        0        -1/tauz];
+B = [ 1/taux    0         0 ;
+0        1/tauy     0 ;
+0        0         1/tauz];
+K = place(A,B,[-15 -15 -15])
+C = eye(3);
+x = [0.05 0.05 0.02]'; % initial conditions
+xref = [0.05 0.05 0.02]'; % initial reference
+
+Nbar = - inv(C*inv(A-B*K)*B); % ensure unity gain
+kappa = 1;
+scrsz = get(groot,'ScreenSize'); % get screen information
+
+f = 2000; Ts = 1/f; % sampling frequency
+N = 10; % simulation time in seconds
+fprintf('Simulation time: %d seconds\n', N)
+
+i = (0:Ts:N); % make simulation resolution realistic
+%utilde = zeros(3,round(length(i))); % init utilde
+Rplot(1) = 1; % init reference plot
+
+cx = 0;
+cy = 0;
+cz = 0;
+rx = 0.03;
+ry = 0.06;
+rz = 0.03;
+
+%--- run controller ---%
+for R = 1:length(i)
+xref_vec(:,R) = xref;
+if mod(R,1000) == 1 
+if R ~= 1
+fprintf('iter = %d of %d\n', R-1, length(i)-1);
+else
+fprintf('iter = %d of %d\n', R, length(i)-1);
+end
+end
+
+if R > f*1 
+xref = [0.06 0.02 0.0]';
+end
+if R > f*1.5 
+xref = [-0.055 0.03 0.01]';
+end
+if R > f*2.5
+xref = [-0.01 -0.01 0]';
+end
+if R > f*3.5
+xref = [-0.055 0 -0.01]';
+end  
+if R > f*4.5
+xref = [0 -0.09 0]';
+end
+if R > f*5.5
+xref = [0 0.09 0.0001]';
+end
+if R > f*6.5
+xref = [0.01 0.09 0.01]';
+end       
+
+cbf = -(((x(1,R)-cx)/rx)^2 + ((x(2,R)-cy)/ry)^2 + ((x(3,R)-cz)/rz)^2 -1);
+
+%--- determine sigma  ---% 
+epsilon = 0.777777777777778;
+if cbf <= -epsilon
+sigma = 0;
+elseif ( (cbf > -epsilon) && (cbf <  0)   )
+sigma = -2*(cbf/epsilon).^3 - 3.*(cbf/epsilon).^2 + 1;
+else
+sigma = 1;
+end
+
+LgB(R,:) = [(2/(taux*rx^2))*(cx-x(1,R)) ...
+(2/(tauy*ry^2))*(cy-x(2,R)) ...
+(2/(tauz*rz^2))*(cz-x(3,R))];
+LfB(1,R) = -2*( ((cx*x(1,R)-x(1,R)^2)/(taux*rx^2)) + ...
+((cy*x(2,R)-x(2,R)^2)/(tauy*ry^2)) + ...
+((cz*x(3,R)-x(3,R)^2)/(tauz*rz^2)));
+
+utilde(:,R) = -K*x(:,R) + Nbar*xref(:);
+
+%--- Find safe controller ---%
+threshold = 0.000001;
+%abs(LgB(R,:));
+
+if norm(LgB(R,:),2) >= 0.0000001
+k0(:,R) = -( ( LfB(1,R) + sqrt(LfB(1,R)^2 ...
++ kappa^2*LgB(R,:)*LgB(R,:)' )) /  (LgB(R,:)*LgB(R,:)')  ) *LgB(R,:)';
+else
+k0(:,R) = [0 0 0]';
+disp(R);
+end 
+%sigma = 0;
+u0(:,R) = sigma*k0(:,R)+(1-sigma)*utilde(:,R);
+
+%--- extrapolate with forward euler ---%
+xdot = A*x(:,R) + B*u0(:,R);
+x(:,R+1) = xdot*Ts + x(:,R);
+
+sig(1,R) = sigma;
+xref_plot(1,R) = xref(1);
+xref_plot(2,R) = xref(2);
+xref_plot(3,R) = xref(3);
 end
 \end{lstlisting}
