@@ -36,7 +36,7 @@ This system is used in the following subsections in the barrier function search.
 First with a reference in zero giving detailed explanations of the program formulation, and subsequently for the same system, testing for how wide a range of references safety can be guaranteed. Last, a coordinate shift from the position-reference-space to the error-space is performed in order to simplify the search for reference intervals yielding valid solutions.
 
 \subsection{Safety Verification of First Order System with Zero Reference}\label{subsec:zeroref}
-To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position. Commands associated with SOSTOOLS is marked in brown in the following code snips. The full code can be found in \autoref{app:sos_noref} and on the attached cd on the path \texttt{matlab\_scripts/sostools/1storder\_noRef.m}
+To give a clear picture of the structure of the \gls{sos} program, an initial exhaustive example is given for the  one-dimensional first order system with zero as reference position. Commands associated with SOSTOOLS is marked in brown in the following code snips. The full code can be found in \autoref{app:sos_noref} and in \autoref{app:cd} on the path \texttt{matlab\_scripts/sostools/1storder\_noRef.m}
 
 Search for a barrier certificate by first defining the open-loop system, and designing a controller (with pole placement) as described in \autoref{sec:K_Nbar_1D_1storder}.
 \begin{lstlisting}[language=matlab]
@@ -246,7 +246,7 @@ It is noted that the safety verification is accomplished with a fourth order pol
 \subsection{Verifying a Range of Reference Positions for the First Order System}\label{sec:sos_1storder_references}
 
 \vspace{-2mm}
-Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x,x_\text{ref})$, thus introducing the reference as an independent state implying an augmented state space equation equivalent to \autoref{eq:sos_firstorder}: 
+Now a non-zero reference is introduced. As it is desired to verify safety for a whole range of references, the barrier polynomial is now formulated as a function of both position and reference $B(x_1,x_\text{ref})$, thus introducing the reference as an independent state implying an augmented state space equation equivalent to \autoref{eq:sos_firstorder}: 
 %However, from \autoref{eq:sos_firstorder} it can be seen that with the unity gain matrix $\bar{\mathbf{N}}$ the system can be  written as
 \begin{equation}
 \dot{\mathbf{x}}=\dot{\begin{bmatrix}
@@ -302,7 +302,7 @@ Thus, to the left of this line the barrier polynomial will have decreasing value
 	}
 	\label{fig:sets_reference}
 \end{figure}
-To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB/dx_1$ must be positive in this region, meaning that $B(\mathbf{x})$ will have increasing values in the positive $x_1$ direction here.
+To the lower right of the green line the system will have negative time derivative, thus analogously requiring that the derivative $dB(\textbf{x})/dx_1$ must be positive in this region, meaning that $B(\mathbf{x})$ will have increasing values in the positive $x_1$ direction here.
 %Requiring a zero level set of the barrier certificate between $x_1=0.05-\Delta$ and $x_1=0.05$, this means that the value of $B(x)$ \textcolor{red}{something something}
 
 In \autoref{fig:sos_Xregion_Bvalue} the zero level set of a barrier function is sketched with a red line between the safe and unsafe regions. As this level set gets  closer to the green line indicating the zero-value of the Lie derivative for increasing values of $x_\text{ref}$, it is expected that the value of  $B(\mathbf{x})$ is increasing along this line in the positive $x_\text{ref}$ direction.
@@ -475,7 +475,7 @@ Evaluating the curve for the barrier polynomial and its Lie derivative,  the geo
 %increase $\bar{\epsilon}=1$ not working (for $\Delta=0.005$ at 1.7cm), increase $\Delta=0.01$ not working, down to 1.5cm not working, 1cm not working, increase $\Delta=0.02$ works feasr 0.9683 numerr 1 resnorm 0.0015249, this also works for 1.5cm feasr 1.0014 numerr 1 resnorm 0.00093821, not working at 2cm, decrease $\Delta=0.015$ still not working, or at 1.7cm, works at 1.6cm feasr 1.0134 numerr 1 resnorm 0.0016455, increasing $\Delta=0.02$ not working, or at $\Delta=0.01$
 
 \vspace{-2mm}
-It can be concluded that this approach to determining for which references system safety can be guaranteed is not ideal. The tests conducted are not exhaustive, as the possibilities of combining parameter values are vast. This also means that it is highly possible that a "better" barrier certificate can be found certifying safety for a wider range of references without compromising on the feasibility ratio.
+It can be concluded that this approach to determining for which references system safety can be guaranteed is not ideal. The tests conducted are not exhaustive, as the possibilities of combining parameter values are vast. This also means that it is highly possible that a "better" barrier certificate can be found certifying safety for a wider range of references without compromising on the feasibility ratio. It is in particular desired to increase the value of \texttt{rMax} such that it gets closer to $\mathcal{X}_{u,\text{max}}$.
 In order to decrease the number of parameters, a different approach is used in the following.
 
 \subsection{Considering the Error as the Independent Variable}\label{sec:sos_1storder_error}

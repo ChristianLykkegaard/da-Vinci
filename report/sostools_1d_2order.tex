@@ -102,7 +102,7 @@ If a valid solution can be found, it will certify that that steps in positive di
 
 \vspace{-2mm}
 The parameters $\bar{\epsilon}$, $\Delta$, $\delta_\text{err}$, and the degree of the \gls{sos} polynomials $q_j$ and the polynomial $B(\mathbf{x}_\text{err})$, are tweaked to find the smallest possible value of $\delta_\text{err}$ yielding a valid solution.
-The MATLAB implementation of this certificate can be found in appendix \ref{app:sos_errorstate_secondorder} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/}\texttt{sostools/} \texttt{2ndorder\_error.m}.
+The MATLAB implementation of this certificate can be found in appendix \ref{app:sos_errorstate_secondorder} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/} \texttt{sostools/}\texttt{2ndorder\_error.m}.
 The findings conform with the conclusions presented in \autoref{tab:sostools_varying_param} and \autoref{tab:sostools_varying_param_error}. The choice of the parameter values is presented in \autoref{tab:sostools_choice_error2} and the  barrier certificate is plotted in \autoref{fig:1D_2ndordersys_error_B4_q1_e5-2_d5-3_8mm}.
 
 %Again, the same parameters as in \autoref{sec:sos_1storder_references} and \ref{sec:sos_1storder_error} are varied, and the same conclusions are drawn i.e. in general decreasing either  $\Delta$, $\bar{\epsilon}$ or deg$(q)$ decreases the residual norm. With  $\textbf{K}=[5.173  \,\,\,\,  0.214]$ as determined in \autoref{eq:K_2}, solutions can be found to the problem for $\delta_\text{err}=8$\,mm and above, again signifying a verification that the system is safe for references given at a distance of least 8\,mm from the unsafe area.
@@ -175,7 +175,7 @@ Relating the relative position to the absolute positions, this certificate guara
 To wrap up the approach of using the MATLAB toolbox SOSTOOLS in the construction of barrier certificates presented in this chapter, the following closing considerations are regarded:
 
 \begin{itemize}
-\item Formulating and setting up the constraints for a barrier certificate has successfully been implemented in SOSTOOLS. An overview has been gained into the evaluation of solutions, and barrier certificates validating safety for first and second order systems have been constructed. Furthermore, a thorough step-by-step guide has been compiled which can be used as a launch pad for future students at Aalborg University in using the toolbox for system safety validation. 
+\item Formulating and setting up the constraints for a barrier certificate has successfully been implemented in SOSTOOLS. An overview has been gained into the evaluation of solutions, and barrier certificates validating safety for first and second order systems have been constructed. Furthermore, a thorough step-by-step guide has been compiled which can be used as a launch pad for future studies at Aalborg University in using the toolbox for system safety validation. 
 %Hul igennem, udførlig guide til hvordan man bruger det, gjort det mere tilgængeligt for andre, de første til at beskrive sostools på aau
 
 \item Safety validation of  higher dimension systems can be seen as a natural extension of the tested systems, and it is considered a relatively staightforward task to expand the 1D system to a 3D system, such as the system presented in \autoref{chap:cbf_3d_static}, and test for safety using the same principles for the parameters. It is expected that dynamic barrier certificates such as the one described in \autoref{chap:cbf_1d_dynamic}, can be found with SOSTOOLS, as it has been proven to exist.
