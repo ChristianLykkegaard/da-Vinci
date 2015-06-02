@@ -230,7 +230,8 @@ $k_0(\textbf{x})$ & is calculated from \autoref{eq:ko_3d} with Lie derivatives f
 $\tilde{u}(\textbf{x})$ & is calculated from \autoref{eq:normal_control_3d} with $\bar{\textbf{N}}$ from \ref{eq:k_3d} and $\textbf{K}$ from \ref{eq:nbar_3d}
 \end{tabular}\\
 \end{recap}
-\section{MATLAB Implementation}
+
+\section{MATLAB Implementation}\label{sec:3d_matlab}
 The MATLAB implementation can be found in found in \autoref{app:slide_implement_1} and in \autoref{app:cd} under the path \texttt{matlab\_scripts/safe\_3d/safety\_in\_3d.m}. The implementation is built upon these considerations:
 \begin{itemize}
 \item Forward Euler extrapolation.
@@ -449,16 +450,17 @@ rpy="1.5708 0 0" />
 ...
 </joint>
 \end{lstlisting}
-Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation and rotation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggests a free rotation about the $z$-axis (i.e. $\theta_i^*$) and that  $\textbf{R}_x(\alpha_i^*)  = \textbf{R}_y(\beta_i^*) = \mathbf{I}$ and $a_i^* = b_i^* = d_i^* = 0$ 
+Taking this small code example for the \texttt{p4\_hand\_pitch} joint, line 3 and 4 constitute the fixed translation and rotation of \autoref{eq:xacro_transformation_chapter}. Line 7 represents the latter part of \autoref{eq:xacro_transformation_chapter}, and combined with the information given from the \texttt{revolute} parameter, it suggests a free rotation about the $z$-axis (i.e. $\theta_i^*$) and that  $\textbf{R}_x(\alpha_i^*)  = \textbf{R}_y(\beta_i^*) = \mathbf{I}$ and $a_i^* = b_i^* = d_i^* = 0$ .
+
 \subsubsection{Modifying the Kinematic Description to fit the Kinematic Solver}
 The indisputable most important application of the kinematic description, is to use it for \gls{fk} and  \gls{ik}. The \gls{ik} is not a trivial task and can be implemented in different ways. Three candidate technologies are described in \autoref{tab:cand_ik}.
 \begin{table}[H]
 \begin{tabularx}{\textwidth}{X X X X}
 \rowcolor{HeaderBlue} 
 \textbf{Technology} &  \textbf{Advantage} &  \textbf{Disadvantage} & \textbf{Conclusion} \\
-\textbf{MoveGroup} (a thorough test of MoveGroup is made in \autoref{sec:moveit}.) & This is an API which is easy and simple to use. It offers a GUI to initialize joints and links and certain poses. It is possible to specify joint limits. & It is slow and requires computational time between every setpoint. Also, it implements its own controller destructing the dynamics. & Due to the slow processing time an the shattered dynamics, the solver offered by the MoveGroup API is rejected. \\
+\textbf{MoveGroup} (a thorough test of MoveGroup is made in \autoref{sec:moveit}.) & This is an API which is easy and simple to use. It offers a GUI to initialize joints and links and certain poses. It is possible to specify joint limits. & It is slow and requires computational time between every setpoint. Also, it implements its own controller destructing the dynamics. & Due to the slow processing time and the shattered dynamics, the solver offered by the MoveGroup API is rejected. \\
 \rowcolor{textBlue} 
-\textbf{\gls{kdl}} (offered by The Orocos Project) (it is in fact the underlying solver of MoveGroup) & All additional features offered by MoveGroup can be bypassed and the speed can thereby be increased. & Interfacing with KDL directly complicates the code significantly. No specification of joint limits is possible. Can not distinct between passive and active joints. & This is a good solution with the only real issue being the lack of joint limit specification. Passive joints can be omitted by redefining the kinematic description. \\
+\textbf{\gls{kdl}} (offered by The Orocos Project) (it is in fact the underlying solver of MoveGroup) & All additional features offered by MoveGroup can be bypassed and the speed can thereby be increased. & Interfacing with KDL directly complicates the code significantly. No specification of joint limits is possible. Cannot distinct between passive and active joints. & This is a good solution with the only real issue being the lack of joint limit specification. Passive joints can be omitted by redefining the kinematic description. \\
 \textbf{Custom design} & Full control of all aspects of the solver and the possibility to tailor each developed feature. & The development of an IK solver for a six \gls{dof} manipulator is not a trivial task. & The extra features offered by a custom IK solver does not match the development costs which it will induce. \\
 \end{tabularx}
 	\caption{Candidate technologies to implement inverse kinematics and forward kinematics.}
@@ -473,7 +475,7 @@ Weighting the advantages and disadvantages from \autoref{tab:cand_ik}, a proper 
 	\label{fig:simple_oveview_ik_solve}
 \end{figure}
 %
-The new modified set of frames is defined for the da Vinci kinematics, adhering to the \gls{dh} constraint such that each free rotation/translation is about/along the local $z$-axis i.e. in conclusion the set of frames is modified to comply with the KDL solvers needs, i.e. a kinematic chain consisting of purely active joints.
+The new modified set of frames is defined for the da Vinci kinematics, adhering to the \gls{dh} constraint  that all free rotation/translation is about/along the local $z$-axis. In conclusion the set of frames is modified to comply with the KDL solvers needs, i.e. a kinematic chain consisting of purely active joints.
 
 %The distinction between the new modified kinematic description and the original frames are visualized in a simple manner in \autoref{fig:simple_oveview_ik_solve}. 
 The new modified kinematic description is depicted more thoroughly in \autoref{fig:p4_hand_compromise_frames_chapter}. The parameters associated with these are listed in table \ref{tab:new_kin_short}. The original kinematic description, containing the two passive joints mimicking the hand pitch movement are depicted in \autoref{fig:p4_hand_xacro_frames_chapter} and the associated parameters are listed in table \ref{tab:old_kin_short} for comparison.  
@@ -508,13 +510,13 @@ The new modified kinematic description is depicted more thoroughly in \autoref{f
 		12L & 0.009 & 0 & 0 & $-\pi/2$ & 0 & 0 & $\theta_{12L}^*$ & \texttt{instrument\_jaw\_left} \\
 		12R & 0.009 & 0 & 0 & $-\pi/2$ & 0 & 0 & $\theta_{12R}^*$ & \texttt{instrument\_jaw\_right} \\
 		\end{tabular}\label{tab:new_kin_short}}
-	\caption{Parameters and variables (marked with $^*$) for the robot kinematic description implemented in \gls{ros} and visualized in \autoref{fig:robot_hand_kinematics}. Free angles are named with $\alpha$ being a rotation about the $+x$-axis, $\beta$ about the $+y$-axis and $\theta$ about the $+z$-axis.}
+	\caption{Parameters and variables (marked with $^*$) for the robot kinematic description implemented in \gls{ros} and visualized in \autoref{fig:robot_hand_kinematics}. Free angles are named with $\alpha$ for rotation about the $+x$-axis, $\beta$ about the $+y$-axis and $\theta$ about the $+z$-axis.}
 	\label{tab:xacro_param_short}
 \end{table}
 The values are measured on the da Vinci robot in the AAU control and surgery laboratory. % It is in \autoref{tab:xacro_param_short} seen how the two mimic joints for \texttt{hand\_pitch} are excluded.
-Note that the new set of frames does not adhere to the \gls{dh} standard completely, but they follow it as close as possible (the two matrices in \autoref{eq:xacro_transformation_chapter} are interchanged in the DH convention). The reason that the DH convention is not implemented fully is the underlying structure in the way the URDF file is read. This is not straightforward to correct. The modified frames are tested and verified in \autoref{sec:app_activejoints_kinematics}.
+Note that the new set of frames does not adhere to the \gls{dh} standard completely, but they follow it as close as possible. The reason that the DH convention is not implemented fully is the underlying structure in the way the URDF file is read (in \autoref{eq:xacro_transformation_chapter} the free rotation/translation is post-multiplied the fixed rotation/translation, while in \autoref{eq:dh} the free rotation/translation is pre-multiplied). This is not straightforward to correct. The modified frames are tested and verified in \autoref{sec:app_activejoints_kinematics}.
 
-At this point, all variables from \autoref{eq:xacro_transformation_chapter} are outlined in table \ref{tab:old_kin_short} and implemented in the belonging \texttt{xacro} files in the \texttt{davinci\_description} package, i.e.:
+At this point, all variables from \autoref{eq:xacro_transformation_chapter} are outlined in table \ref{tab:new_kin_short} and implemented in the corresponding \texttt{xacro} files in the \texttt{davinci\_description} package, i.e.:
 \begin{itemize}
 \item \texttt{robot/remote\_center\_manipulator.xacro} containing all joints associated with \texttt{p4\_hand}
 \item \texttt{robot/instruments/needle\_driver.xacro} containing all joints associated with \texttt{p4\_instrument}
@@ -552,6 +554,7 @@ The controller relies on the use of inverse kinematics for the (ambiguous) mappi
 0 & 1
 \end{bmatrix}
 \end{equation}
+
 With the sequence of transformations from frame $k$ to frame $i$ being represented by the transformation matrix $^k_i \textbf{T}$, the inverse transformation, from frame $i$ to frame $k$, is then its matrix inverse $^k_i \textbf{T}^{-1}$ \citep{bib:math_robotics}:
 \begin{equation}
 ^k_i\textbf{T} = ^k_j\textbf{T} \,\, ^j_i\textbf{T} =
@@ -566,10 +569,11 @@ With the sequence of transformations from frame $k$ to frame $i$ being represent
 0 & 1
 \end{bmatrix}
 \end{equation}
+
 A mapping from six to three degrees of freedom is a surjective map, i.e. several elements in the 6D domain may map to the same element in the 3D co-domain. % The inverse map from 3D to 6D is accordingly injective and hence the mapping requires a decision of the "best" map. %
 However the inverse map from 3D to 6D is neither injective nor surjective, as each element in the 3D domain can map to several elements in the 6D co-domain, and hence the mapping requires a decision of the "best" map.
 
-In practice this mapping from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator is handled by the \gls{kdl} inverse kinematics solver. Then the transformed joint position commands are published on the appropriate topic and thereby passed to the low level controllers (see \autoref{fig:overview}).
+In practice this mapping from the desired 3D Cartesian space configuration to a prudent 6D joint space position of the da Vinci robotic patient manipulator is handled by the \gls{kdl} inverse kinematics solver. Then the transformed joint position commands are published on the appropriate ROS topic and thereby passed to the low level controllers (see \autoref{fig:overview}).
 
 The \gls{ik} \gls{kdl} solver employed in \gls{ros} utilizes the kinematic chain from the URDF, which is generated from the \texttt{xacro} link and joint kinematic description as presented in %\autoref{app:kinematic_model_robot}, the model implemented in ROS defined in
 \autoref{sec:app_activejoints_kinematics}. From this chain % (\texttt{my\_chain} in the below example) 
@@ -595,23 +599,24 @@ a \gls{fk} position solver is created along with an \gls{ik} velocity solver in 
 %int ret = iksolver.CartToJnt(q_init,dest_frame,q);
 %\end{lstlisting}
 
-The \gls{kdl} \gls{ik} position solver utilizes the Newton-Raphson (NR) iterative numerical technique through the function \texttt{CartToJnt} to determine a prudent joint configuration implementing the desired Cartesian configuration (given as \texttt{dest\_frame} in the above example). Note that the NR requires both position and velocity (derivative of position) to find its solutions.  %In the above example the initial guess \texttt{q\_init} of the joint configuration is the current joint configuration, and hence care should be taken to only command small changes in configuration for the sake of fast convergence of the \gls{ik} solution.
+The \gls{kdl} \gls{ik} position solver utilizes the Newton-Raphson (NR) iterative numerical technique through the function \texttt{CartToJnt} to determine a prudent joint configuration implementing the desired Cartesian configuration. Note that the NR requires both position and velocity (derivative of position) to find a solution.  %In the above example the initial guess \texttt{q\_init} of the joint configuration is the current joint configuration, and hence care should be taken to only command small changes in configuration for the sake of fast convergence of the \gls{ik} solution.
 
 The actual implementation of the KDL solver follows the recommended implementation method as described by The Orocos Project main web page \citep{bib:kdl_stuff}.
-
 Thus, the algorithm deployed for the KDL solver follows the steps described below:
+
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.48\textwidth}
 \textbf{Utilize KDL for Forward Kinematics}
 \begin{itemize}[leftmargin=*]
+	\itemsep-0.5mm
 \item Make a KDL tree (several chains) from URDF.
 \item Fetch all KDL segments, i.e. links
 \item Create chain from desired links: \texttt{p4\_rcm\_base} to \texttt{needle\_driver\_jawbone\_right}.
 \item Create FK kinematic solver based on that chain
 \item Get number of joints and create a joint array
 \item Ask for joint values
-\item Compute Rotation/translation matrix $T$
+\item Compute rotation/translation matrix $\mathbf{T}$
 \end{itemize}
 \end{minipage}
 \hspace{0.3cm}
@@ -619,13 +624,14 @@ Thus, the algorithm deployed for the KDL solver follows the steps described belo
 %\vspace{0.3cm}
 \textbf{Utilize KDL for Inverse Kinematics}
 \begin{itemize}[leftmargin=*]
+	\itemsep-0.5mm
 %\item Make a KDL tree (several chains) from URDF.
 %\item Fetch all KDL segments, i.e. links
 %\item Create chain from desired links: \texttt{p4\_rcm\_base} to \texttt{needle\_driver\_jawbone\_right}.
 \item First three points are identical to FK solver
 %\item Create IK solver based in kinematic chain
-\item Instantiate position solver $x$ for Newton-Raphson (NR) based on that chain
-\item Instantiate velocity solver $\dot{x}$ for NR
+\item Instantiate position solver $\mathbf{x}$ for Newton-Raphson (NR) based on that chain
+\item Instantiate velocity solver $\dot{\mathbf{x}}$ for NR
 \item Specify NR resolution and no. of iterations
 \item Ask for desired $(x,y,z)$ destination
 \item Call solver to compute necessary 6D angles 
@@ -633,11 +639,11 @@ Thus, the algorithm deployed for the KDL solver follows the steps described belo
 \end{itemize}
 \end{minipage}
 \end{figure}
-The KDL solver is, however, far from perfect. At present time, the solver has a tendency to circulate multiple times around the unit circle to obtain the same position as, obviously, less than one circulation could have done. This is caused by the lack of joint limit specification. The problem and the solution is outlined in \autoref{fig:correct_kdl} where \texttt{q(i)} is the $i^{\text{th}}$ controllable joint, e.g. \texttt{p4\_instrument\_roll}.
+The KDL solver is, however, far from perfect. At present time, the solver has a tendency to choose joint angles requiring multiple revolutions on the unit circle to obtain the same position as, obviously, less than one revolution could have done. This is caused by the lack of joint limit specification. The problem and the solution is outlined in \autoref{fig:correct_kdl} where \texttt{q(i)} is the $i^{\text{th}}$ controllable joint, e.g. \texttt{p4\_instrument\_roll}.
 \begin{figure}[H]
 \centering
 	\includegraphics[width=0.65\textwidth]{unit_circle.pdf}
-	\caption{Adjusting the KDL sultion for \texttt{q(i) > pi} and \texttt{q(i) < -pi}.}
+	\caption{Adjusting the KDL sultion for \texttt{q(i) > pi} and \texttt{q(i) < -pi} from red to blue direction of rotation.}
 	\label{fig:correct_kdl}
 \end{figure}
 The solution found in \autoref{fig:correct_kdl} can be implemented as:
@@ -650,9 +656,10 @@ q(i) =
 q(i) \mm &\text{otherwise} 
 \end{cases}
 \end{flalign*}
-This solution does, however, introduce limitations. The trajectory will inevitable be corrupted with flickr and other unsightly behaviours when the solver wishes to spin multiple times around the unit circle. Additionally, not all joints can reach all the way to $\pm \pi$ which can cause imprecise settling stages. 
+This solution does, however, introduce limitations. The trajectory will inevitably be corrupted with flicker and other unsightly behaviours when the solver wishes to spin a joint multiple times around the unit circle. Additionally, not all joints can reach all the way to $\pm \pi$ which can cause imprecise settling stages. 
 
-With the FK  and IK solver readym the algorithm connecting the subtask can be presented.
+With the FK  and IK solver ready, the algorithm connecting the subtasks can be presented.
+
 \subsection{Main Algorithm}
 The main algorithm is outlined in \autoref{gif:3d_flow}.
 \begin{figure}[H]
@@ -661,32 +668,49 @@ The main algorithm is outlined in \autoref{gif:3d_flow}.
 	\caption{Main algorithm for a safe controller in the 3 dimensional euclidean space.}
 	\label{gif:3d_flow}
 \end{figure}
-The algorithm presented in \autoref{gif:3d_flow} comprise the entire code structure which will not be elaborated here, though as written in the introduction, it can be found in \autoref{app:slide_implement_2}. The real-time part runs every $0.01\,$s (100\,Hz) which corresponds to the publish rate which also is set to 100\,Hz. With all subtasks implemented appropriate, it is time to analyse the results.
+The algorithm presented in \autoref{gif:3d_flow} comprises the entire code structure which will not be elaborated here, though as written in the introduction, it can be found in \autoref{app:slide_implement_2}. The real-time part runs every $0.01\,$s (100\,Hz) which corresponds to the publish rate which also is set to 100\,Hz. With all subtasks implemented appropriately, it is time to analyse the results.
 \subsection{Results}
 The results presented intends to demonstrate the below listed features:
+\vspace{-3mm}
 \begin{itemize}
-\item That the controller can find setpoints on $\mathcal{X}_0$.
-\item That the controller is stable on $\mathcal{X}_0$.
-\item That the controller will redirect the trajectory to a safe area if it passes through $\mathcal{X}_u$ or $\mathcal{T}$.
-\item That the controller will ensure that the trajectory is redirected to a safe area if a setpoint is given on $\mathcal{X}_u$.
-\item That $\sigma (\textbf{x})$ increases its values as the trajectory reaches $\mathcal{X}_u$ starting from $\mathcal{X}_0$ through $\mathcal{T}$ (from 0 to 1).
+	\itemsep-0.6mm
+\item That the controller can find setpoints on $\mathcal{Y}=\mathcal{X}_0\setminus\mathcal{T}$.
+\item That the controller is stable on $\mathcal{Y}$.
+\item That the controller will redirect the trajectory to a safe area if the direct path to the setpoint passes through $\mathcal{X}_u$ or $\mathcal{T}$.
+\item That the controller will ensure that the trajectory is redirected to a safe area if a setpoint is given on the unsafe set $\mathcal{X}_u$.
+\item That $\sigma (\textbf{x})$ increases its value as the trajectory reaches $\mathcal{X}_u$ starting from $\mathcal{X}_0$ through $\mathcal{T}$ (from 0 to 1).
 \end{itemize}
-These features can be verified in the trajectory plot shown in \autoref{fig:3d_result}
-\begin{figure}[H]
-\centering
-	\includegraphics[width=1\textwidth]{traj_3d_meas.eps}
-	\caption{Results from safety controller in the 3D euclidean space. The interior of the green ellipsoid comprises $\mathcal{X}_u$ and around it is a 1\,cm thick rim which constitutes $\mathcal{T}$ (not plotted). The trajectory is plotted with a blue color, and it is intersected with a green color if $\sigma(\textbf{x}) \in (0,0.25]$ and a magenta color if $\sigma(\textbf{x}) \in (0.25,1]$. The red lines demonstrates the direct path between two desired setpoints (red circles). The trajectory is initiated in $(0.06,0.08,-0.01)$ (safe) and has a desired final destination in $(0,0,0)$ (unsafe).}
+
+The execution time of the controller is validated first, and a measurement is plotted in \autoref{fig:3d_exe}. From this it is seen that the real time part is completed well within the 10\,ms (100\,Hz sample rate). As expected, the execution time is considerably higher than for the 1D system (compare to \autoref{fig:exe_1}) because of the necessity of an inverse kinematics solver.
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{exe_3d.pdf}
+	\caption{Execution time for 3D system. It is seen that the controller never exceeds a computation time of 1.2\,ms. This plot can be reconstructed by running the MATLAB script \texttt{measurements/safety\_3d/execution\_time/plot\_exe\_3d.m} in \autoref{app:cd}.}
+	\label{fig:3d_exe}
+\end{figure}
+
+The features listed above can be verified in the trajectory plot shown in \autoref{fig:3d_result}. Plot details and measurements  can be reconstructed by running the MATLAB script \texttt{plot\_3d\_meas.m} found in \autoref{app:cd} in the folder \texttt{measurements/safety\_3d}.
+\begin{figure}[h]
+\hspace{-45mm}
+	\includegraphics[width=1.55\textwidth]{traj_3d_meas.eps}
+	\caption{Results from safety controller in the 3D Euclidean space. The interior of the green ellipsoid comprises $\mathcal{X}_u$ and around it is a 1\,cm thick rim which constitutes $\mathcal{T}$ (not plotted). The trajectory is plotted with a blue color, and it is overlay with a green color if $\sigma(\textbf{x}) \in (0,0.25]$ and a magenta color if $\sigma(\textbf{x}) \in (0.25,1]$. The red lines demonstrate the direct path between two desired setpoints (red circles). The trajectory is initiated in $\mathbf{x}=(0.06,0.08,-0.01)$ (safe) and has a desired final destination in $\mathbf{x}=(0,0,0)$ (unsafe). This plot can be reconstructed by running the MATLAB script \texttt{measurements/safety\_3d/plot\_3d\_meas.m} in \autoref{app:cd}.}
 	\label{fig:3d_result}
 \end{figure}
-The first 2-3 setpoints given in \autoref{fig:3d_result} are set on $\mathcal{X}_0$ and thereby safe. It is seen how the desired setpoints initially are reached (with a slight detour caused by the KDL solver). It is seen that when a setpoint is given, which requires a path through $\mathcal{X}_u$, the safety controller kicks in and redirects the trajectory around $\mathcal{X}_u$ and finally allows it to find its reference value. It is also seen that $\sigma(\textbf{x})$ increases along with a shorter distance to $\mathcal{X}_u$, as indicated with green when $\sigma (\textbf{x}) \in (0,0.25]$ and magenta  when $\sigma (\textbf{x}) \in (0.25,1]$ in \autoref{fig:3d_result}. It can be noted that not all setpoints are reached completely, which is due to imprecise kinematics, joint values that is outside a possible range and last but not least, the lack of integral action in the controller. Finally, when a setpoint is given on $\mathcal{X}_u$, it is seen how the safety controller quite aggressively forces the trajectory away from $\mathcal{X}_u$. All these features are indeed the expected outcome of the controller, thus verifying the implementation. 
+The first 2-3 setpoints given in \autoref{fig:3d_result} are within the set $\mathcal{Y}$ and thereby safe. It is seen how the desired setpoints initially are reached (with a slight detour caused by the KDL solver). It is seen that when a setpoint is given which requires a path through $\mathcal{X}_u$, the safety controller gradually takes over and redirects the trajectory around $\mathcal{X}_u$ and finally allows it to find its reference value. 
 
-The result depicted in \autoref{fig:3d_result} and its associated analysed concludes the implementation part.
-\section{Conclusion for Safety in the 3D Euclidean Space}	
-A big step has been taken towards ensuring safety in the three dimensional euclidean space, i.e. a three dimensional control barrier function which is defined to fulfil the demands given in \autoref{eq:reqs} and a developed controller which proves itself very efficient in the MATLAB simulation environment, i.e. under ideal sampling speed and under no influence of an IK solver and other stochastic uncertainties. The controller fulfils all the initial outlined requirements.
+It is also seen that $\sigma(\textbf{x})$ increases along with a shorter distance to $\mathcal{X}_u$, as indicated with green when $\sigma (\textbf{x}) \in (0,0.25]$ and magenta  when $\sigma (\textbf{x}) \in (0.25,1]$ in \autoref{fig:3d_result}. It can be noted that not all setpoints are reached completely, which is due to imprecise kinematics, joint values computed by the \gls{ik} solver that are outside the implementable range and last but not least, the lack of integral action in the controller. Finally, when a setpoint is given on $\mathcal{X}_u$, it is seen how the safety controller quite aggressively forces the trajectory away from $\mathcal{X}_u$. All these features are indeed the expected outcome of the controller, thus verifying the implementation. 
 
-The implemented controller on the da Vinci robot, does indeed show the full potential and does indeed proof itself as being all that is desired. It does, however, suffer from a poor IK solver, imprecise kinematics and the lack of integral action. Also, the model derived for the three dimensional space is very simplified, though sufficient to establish a "proof of concept" framework. 
+The result depicted in \autoref{fig:3d_result} and its associated analysis concludes the implementation.
 
-An additional huge simplification is the consistent neglection of the orientation of the end effector in the preceding chapter, thus merely guaranteeing safety for the position of the end effector, \underline{not} the frame of the hand. 
+\section{Conclusion for Safety in the 3D Euclidean Space}
+\vspace{-3mm}	
+A big step has been taken towards ensuring safety in the three dimensional Euclidean space, i.e. a three dimensional control barrier function which is defined to fulfil the demands given in \autoref{def:cbf} and a developed controller which proves itself very efficient in the MATLAB simulation environment, i.e. with ideal sampling rate and under no influence of an IK solver and other stochastic uncertainties. The controller fulfils all the initial outlined requirements.
+
+The implemented controller on the da Vinci robot does indeed show the full potential of using barrier certificates in surgical robotics and proves that safety control can be implemented on a robot moving in 3D Cartesian space. It does, however, suffer from a poor IK solver, imprecise kinematics and the lack of integral action. Also, the model derived for the three dimensional space is very simplified, though sufficient to establish a "proof of concept" framework. 
+
+An additional huge simplification is the consistent disregard of the orientation of the end effector in the implementation, thus merely guaranteeing safety for the position of the end effector, \underline{not} the full extent of the physical volume of the robotic tool. 
+
+Due to present limitations in the TCP/IP connection to the robot the implementation is made at a 100\,Hz sampling rate, which causes erratic behaviour. Based on the results in \autoref{chap:cbf_1d_static} and \autoref{chap:cbf_1d_dynamic} it is expected that an increase of the sampling rate to  2\,kHz will smooth the behaviour of the trajectory on the verge of the transition region, where the safety controller starts to take effect. It is anticipated that the trajectory will settle at a near constant distance to the unsafe set on its path to setpoints "on the other side" of this region, similar to what was seen in the MATLAB simulation in \autoref{sec:3d_matlab}.
 
 These topics are important to investigate and implement in future work.
 
