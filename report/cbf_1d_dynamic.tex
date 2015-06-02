@@ -346,7 +346,7 @@ It can from \autoref{fig:beating_heart_meas} be seen how the end effector moves 
 	\center
 	\includegraphics[width=1\textwidth]{flowchart_beating_controller.pdf}
 	\vspace{2mm}
-	\caption{Algorithm for dynamic slide safety controller. The source code associated with the algorithm can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032} (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}).}
+	\caption{Algorithm for dynamic slide safety controller. The source code associated with the algorithm can be found in \autoref{app:slide_implement_2} and in \autoref{app:cd}. It can also be found at github at the Robotic Surgery Group - Aalborg University under the repository \texttt{gr1032} (\textit{https://github.com/AalborgUniversity-RoboticSurgeryGroup/}). Note that the control signal is published to the \texttt{pitch\_command} topic as well. This is used to change the dynamics in the $x$-direction in case of resonance.}
 	\label{fig:beating_heart_flow}
 \end{figure}
 
