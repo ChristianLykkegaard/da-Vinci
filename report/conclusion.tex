@@ -30,18 +30,20 @@ The developed solution proves itself very efficient in both theory and simulatio
 \end{itemize}
 Additionally, the position controller already implemented on the FPGA (as seen in \autoref{fig:overview}), is left untouched. It may with removed to draw benefits from a more clear dynamics. This will require another system model, but may well be worth the trouble.
 
-The application of the safety controllers derived throughout the project is exclusively the surgical robot. However, it should take very little imagination to envisage that this way of constructing controllers has the potential to be used in many other industries where safety is critical or simply where regions are desirable to be left untouched.
-
 Furthermore, a consistently disregarded topic in this project is the use of trajectory planning. The controllers developed take only small steps as input. However, large step sizes have been given to the controllers in this project to demonstrate certain features, but obviously, it is desired to construct a trajectory planning layer taking the setpoints as input and breaking the path down into a sequence of adjacent points, thus ensuring that small step sizes are given to the controller.
 
 Additionally, at no point  the orientation of the robot hand has been considered. Obviously, ensuring safety for the end effector is not sufficient as the heart or other vital organs can be penetrated or crushed by collision with the physical volume of the robotic tool other than the tip of the tool. This is an important topic in future work. Collision avoidance for the robotic parts themselves must also be studied when employing all four of the da Vinci arms in the setup, which is indeed the long term objective.
 
+It is suggested for future use of the framework developed for barrier certificate search with SOSTOOLS to conduct the search in a more methodical manner by running the search like a Monte Carlo simulation, each time varying a parameter while keeping the others fixed. In this way the chance of determining a valid barrier function is maximized, thus indispensably invalidating system safety if no valid certificate can be found.
+
 As explained by assistant nurse Jane Petersson in \autoref{sec:aau_doc}, there are veins, nerves and other organs which must not be cut during a surgery. It has been the aim to construct barrier certificates that can represent these parts of the body. However, it is clear that a realistic barrier certificate representing these parts is far away. Especially because they are time dependent and because, from time to time, the surgeon needs to move these parts to be able to operate in a certain area, thus reshaping these parts. Consequently, a very creative and adaptive barrier function is required and will as a necessary condition require robot vision (a continuous video stream analysis) such that these parts can be tracked. A way to resolve this complex problem of high dimensionality could be a combination of the design approach and analysis approach in the following way:
+\vspace{-1.5mm}
 \begin{enumerate}
+	\itemsep-0.5mm
 \item Search for a barrier certificate using the framework developed in \autoref{chap:sostools}.
 \item Apply this barrier certificate as control barrier function in a similar way as done in \autoref{chap:cbf_1d_static}, \autoref{chap:cbf_1d_dynamic} and \autoref{chap:cbf_3d_static}.
 \item Analyse the situation. Adjust the barrier certificate if necessary and describe the new closed loop system.
 \item Take the new closed loop system as input to the framework developed in \autoref{chap:sostools} and start from 1 again.
 \end{enumerate}
-This iterative approach may along with the preceding listed bullet points get the robotic surgery industry one step closer to the end goal of guaranteed safe robotic surgery with the da Vinci robot. 
-
+This iterative approach may along with the preceding listed bullet points get the robotic surgery industry one step closer to the end goal of guaranteed safe robotic surgery with the da Vinci robot,
+which has been the sole application of the safety controllers derived throughout this project. However, it should take very little imagination to envisage that this way of constructing controllers has the potential to be used in many other industries where safety is critical or simply where regions are desirable to be left untouched.
