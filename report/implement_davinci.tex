@@ -372,11 +372,11 @@ int slide_safety_controller(int model) {
                      u = -0.099;
                 
                 /*** send control signals to robot ***/
-		std_msgs::Float64 zero_msg;
-		zero_msg.data = 0.7;
+		        std_msgs::Float64 zero_msg;
+		        zero_msg.data = 0.7;
                 setpoints_pub_pitch.publish(zero_msg);
-		std_msgs::Float64 u_msg;
-		u_msg.data = u;
+		        std_msgs::Float64 u_msg;
+		        u_msg.data = u;
                 setpoints_pub_slide.publish(u_msg);
 
                 /*** provide some user information ***/
@@ -523,11 +523,11 @@ int beating_heart() {
                 }
  
                 /*** send control signals to robot ***/
-		std_msgs::Float64 zero_msg;
-		zero_msg.data = 0.0;
+		        std_msgs::Float64 zero_msg;
+		        zero_msg.data = 0.0;
                 setpoints_pub_pitch.publish(zero_msg);
-		std_msgs::Float64 u_msg;
-		u_msg.data = u;
+		        std_msgs::Float64 u_msg;
+		        u_msg.data = u;
                 setpoints_pub_slide.publish(u_msg);
 
                 /*** give some user information ***/
