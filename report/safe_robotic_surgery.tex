@@ -95,9 +95,9 @@ The interval between 0 and 1 can be refined such that the transition between the
 %
 % 
 A block diagram of a linear closed loop system with control input as described in \autoref{eq:control_law} is depicted in \autoref{fig:controlsystem}.
-\begin{figure}[h]\hspace*{-1.2cm}
-	%\center
-		\includegraphics[scale=1]{control_system.pdf}
+\begin{figure}[h]
+\centering
+	\includegraphics[width=\textwidth]{control_system.pdf}
 	\caption{Block diagram of the control system. The limiter limits the control signal such that it does not exceed the physical boundaries of the Da Vinci robot. The gearing ensures that there is a 1:1 mapping between the control signal and the physical position, i.e. meters for prismatic joints and radians for revolute joints.}
 	\label{fig:controlsystem}
 \end{figure}
