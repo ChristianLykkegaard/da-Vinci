@@ -1,0 +1,87 @@
+\documentclass[10pt]{beamer}
+\usetheme[
+%%% options passed to the outer theme
+    hidetitle,           % hide the (short) title in the sidebar
+    hideauthor,          % hide the (short) author in the sidebar
+%    hideinstitute,       % hide the (short) institute in the bottom of the sidebar
+%    shownavsym,          % show the navigation symbols
+%    width=2cm,           % width of the sidebar (default is 2 cm)
+%    hideothersubsections,% hide all subsections but the subsections in the current section
+%    hideallsubsections,  % hide all subsections
+%    left                % right of left position of sidebar (default is right)
+  ]{Aalborg}
+  
+% If you want to change the colors of the various elements in the theme, edit and uncomment the following lines
+% Change the bar and sidebar colors:
+%\setbeamercolor{Aalborg}{fg=red!20,bg=red}
+%\setbeamercolor{sidebar}{bg=red!20}
+% Change the color of the structural elements:
+%\setbeamercolor{structure}{fg=red}
+% Change the frame title text color:
+%\setbeamercolor{frametitle}{fg=blue}
+% Change the normal text color background:
+%\setbeamercolor{normal text}{bg=gray!10}
+% ... and you can of course change a lot more - see the beamer user manual.
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\usepackage{rotating}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+\usepackage{helvet}
+\usepackage{tabularx}	
+\usepackage{multirow}                   % Tabelfunktion
+\usepackage{multicol}                   % Tabelfunktion
+\usepackage{wrapfig}	
+\usepackage{import}					%For at importere svg med latex font
+\usepackage{longtable}
+\usepackage{color} 
+\usepackage{colortbl}
+
+
+
+
+
+
+\definecolor{textBlue}{rgb}{0.90, 0.94, 1}    % {0.95, 0.98, 1}
+
+% colored hyperlinks
+\newcommand{\chref}[2]{%
+	\href{#1}{{\usebeamercolor[bg]{Aalborg}#2}}%
+}
+
+% specify the logo in the top right/left of the slide
+\pgfdeclareimage[height=1cm]{mainlogo}{images/AAUgraphics/aau_logo_new} % placed in the upper left/right corner
+\logo{\pgfuseimage{mainlogo}}
+
+\graphicspath{{images/}}
+
+
+
+\begin{document}
+% the titlepage
+\newgeometry{top=-96mm, bottom=0cm, outer=0cm, inner=0cm, marginparwidth=0cm, marginparsep=0cm}
+\includepdf{thesis_presentation.pdf}
+\restoregeometry
+
+%{\aauwavesbg
+%\begin{frame}[plain,noframenumbering] % the plain option removes the sidebar and header from the title page
+%  \titlepage
+%\end{frame}}
+
+\input{presentation}
+\input{background}
+
+{\aauwavesbg%
+\begin{frame}[plain,noframenumbering]%
+  \finalpage{Demo}
+\end{frame}}
+%%%%%%%%%%%%%%%%
+
+\end{document}
